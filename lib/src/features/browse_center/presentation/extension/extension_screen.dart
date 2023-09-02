@@ -10,6 +10,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/language_list.dart';
+import '../../../../global_providers/locale_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
@@ -53,7 +54,22 @@ class ExtensionScreen extends HookConsumerWidget {
     final extensionMap = {...?extensionMapData.valueOrNull};
     final installed = extensionMap.remove("installed");
     final update = extensionMap.remove("update");
-    final all = extensionMap.remove("all");
+    //final all = extensionMap.remove("all");
+
+    final preferLocales = ref.watch(sysPreferLocalesProvider) + ['all', 'en'];
+    final extensionMapKeys = [];
+    if (extensionMap.isNotEmpty) {
+      final left = [...extensionMap.keys];
+      //print("before $left");
+      for (final code in preferLocales) {
+        if (extensionMap.containsKey(code)) {
+          extensionMapKeys.add(code);
+          left.remove(code);
+        }
+      }
+      extensionMapKeys.addAll(left);
+      //print("after $extensionMapKeys");
+    }
 
     refresh() => ref.refresh(extensionProvider.future);
     useEffect(() {
@@ -73,8 +89,7 @@ class ExtensionScreen extends HookConsumerWidget {
       context,
       (data) => (extensionMap.isEmpty &&
               installed.isBlank &&
-              update.isBlank &&
-              all.isBlank)
+              update.isBlank)
           ? Emoticons(
               text: context.l10n!.extensionListEmpty,
               button: TextButton(
@@ -100,6 +115,7 @@ class ExtensionScreen extends HookConsumerWidget {
                       extensions: installed,
                       refresh: refresh,
                     ),
+                  /*
                   if (all.isNotBlank)
                     ...extensionSet(
                       key: const ValueKey("all"),
@@ -107,7 +123,8 @@ class ExtensionScreen extends HookConsumerWidget {
                       extensions: all,
                       refresh: refresh,
                     ),
-                  for (final k in extensionMap.keys)
+                  */
+                  for (final k in extensionMapKeys)
                     ...extensionSet(
                       key: ValueKey(k),
                       title: languageMap[k]?.displayName ?? k,

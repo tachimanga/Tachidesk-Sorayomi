@@ -9,6 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../constants/enum.dart';
 import '../../../browse_center/domain/source/source_model.dart';
 import '../chapter/chapter_model.dart';
+import '../img/image_model.dart';
 
 part 'manga_model.freezed.dart';
 part 'manga_model.g.dart';
@@ -41,6 +42,7 @@ class Manga with _$Manga {
     int? chaptersLastFetchedAt,
     String? url,
     MangaMeta? meta,
+    ImgData? thumbnailImg,
   }) = _Manga;
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);

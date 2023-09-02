@@ -77,9 +77,10 @@ class ExtensionRepository {
         cancelToken: cancelToken,
       );
 
-  Future<List<Extension>?> getExtensionList({CancelToken? cancelToken}) async =>
+  Future<List<Extension>?> getExtensionList(String repoUrl, {CancelToken? cancelToken}) async =>
       (await dioClient.get<List<Extension>, Extension>(
         ExtensionUrl.list,
+        queryParameters: {"repoUrl": repoUrl},
         decoder: (e) =>
             e is Map<String, dynamic> ? Extension.fromJson(e) : Extension(),
         cancelToken: cancelToken,

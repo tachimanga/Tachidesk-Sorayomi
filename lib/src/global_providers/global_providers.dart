@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +27,7 @@ DioClient dioClientKey(ref) => DioClient(
             authType: ref.watch(authTypeKeyProvider) ?? DBKeys.authType.initial,
             credentials: ref.watch(credentialsProvider),
           ),
+      pipe: ref.watch(getMagicPipeProvider),
     );
 
 @riverpod
@@ -39,6 +41,59 @@ class AuthTypeKey extends _$AuthTypeKey
         enumList: AuthType.values,
       );
 }
+
+class Magic {
+  bool a0 = true; // enable repo tag, show broken status
+  bool a1 = false; // no use
+  bool a2 = false; // no use
+  bool a3 = false; // no use
+  bool a4 = false; // no use
+  bool a5 = false; // no use
+  bool a6 = true; // enable install apk
+  bool a7 = true; // enable nsfw
+  bool a8 = true; // enable nsfw settings
+  bool a9 = false; // enable custom repo url
+  bool b0 = true; // enable ads
+  bool b1 = false; // no use
+  bool b2 = false; // no use
+  bool b3 = false; // no use
+  bool b4 = false; // no use
+  bool b5 = false; // no use
+  bool b6 = false; // no use
+  bool b7 = false; // no use
+  bool b8 = false; // no use
+  bool b9 = false; // no use
+}
+
+@riverpod
+Magic getMagic(GetMagicRef ref) {
+  final magic = Magic();
+  final userDefaults = ref.watch(sharedPreferencesProvider);
+  magic.a0 = userDefaults.getBool("flutter.config.a0") ?? false;
+  magic.a6 = userDefaults.getBool("flutter.config.a7") ?? false;
+  magic.a7 = userDefaults.getBool("flutter.config.a7") ?? false;
+  magic.a9 = userDefaults.getBool("flutter.config.a9") ?? false;
+  magic.b1 = userDefaults.getBool("flutter.config.b1") ?? false;
+  return magic;
+}
+
+@riverpod
+MethodChannel getMagicPipe(GetMagicPipeRef ref) {
+  var pipe = const MethodChannel('MAGIC_PIPE');
+  return pipe;
+}
+
+@riverpod
+class InstallLocalCount extends _$InstallLocalCount
+    with SharedPreferenceClientMixin<int> {
+  @override
+  int? build() => initialize(
+    ref,
+    initial: DBKeys.installLocalCount.initial,
+    key: DBKeys.installLocalCount.name,
+  );
+}
+
 
 @riverpod
 class L10n extends _$L10n with SharedPreferenceClientMixin<Locale> {
@@ -67,3 +122,6 @@ class L10n extends _$L10n with SharedPreferenceClientMixin<Locale> {
 
 @riverpod
 SharedPreferences sharedPreferences(ref) => throw UnimplementedError();
+
+@riverpod
+Map<String, String>? systemProxy(ref) => throw UnimplementedError();

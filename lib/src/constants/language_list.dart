@@ -19,6 +19,17 @@ String getLanguageNameFormLocale(Locale locale) {
   return displayName ?? locale.toLanguageTag();
 }
 
+String getLanguageEnNameFormLocale(Locale locale) {
+  String? displayName;
+  final localeCode = locale.toLanguageTag().toLowerCase();
+  if (languageMap[localeCode] != null) {
+    displayName = languageMap[localeCode]!.enName;
+  } else if (languageMap[locale.languageCode.toLowerCase()] != null) {
+    displayName = languageMap[locale.languageCode.toLowerCase()]!.enName;
+  }
+  return displayName ?? locale.toLanguageTag();
+}
+
 final languageMap = {
   for (final e in customLanguageList) e['code'] ?? "other": Language.fromJson(e)
 };

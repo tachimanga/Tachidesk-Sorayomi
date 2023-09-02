@@ -20,6 +20,8 @@ class SourceLanguageFilter extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final languageCodes = ref.watch(sourceFilterLangListProvider);
     final enabledLanguages = ref.watch(sourceLanguageFilterProvider);
+    print("SourceLanguageFilter languageCodes $languageCodes");
+    print("SourceLanguageFilter enabledLanguages $enabledLanguages");
     return AlertDialog(
       title: Text(context.l10n!.languages),
       content: SizedBox(
@@ -28,9 +30,13 @@ class SourceLanguageFilter extends ConsumerWidget {
         child: ListView.builder(
           itemCount: languageCodes.length,
           itemBuilder: (context, index) {
-            final Language? language = languageMap[languageCodes[index]];
+            final Language? language = languageMap[languageCodes[index]] ??
+                languageMap[languageCodes[index].toLowerCase()];
             final enabledLanguagesIndex =
                 enabledLanguages?.indexOf(languageCodes[index]);
+            // if (enabledLanguagesIndex == -1) {
+            //   enabledLanguagesIndex = enabledLanguages?.indexOf(languageCodes[index].toLowerCase());
+            // }
             return SwitchListTile(
               value: enabledLanguagesIndex != -1,
               onChanged: (value) {
@@ -50,6 +56,7 @@ class SourceLanguageFilter extends ConsumerWidget {
               title: Text(
                 language?.nativeName ?? language?.name ?? languageCodes[index],
               ),
+              subtitle: language?.name != null ? Text(language?.name ?? "") : null,
             );
           },
         ),

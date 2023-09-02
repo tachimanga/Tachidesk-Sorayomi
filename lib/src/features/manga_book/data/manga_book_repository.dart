@@ -111,6 +111,16 @@ class MangaBookRepository {
       dioClient.get(MangaUrl.categoryId(mangaId, categoryId));
   Future<void> removeMangaFromCategory(String mangaId, String categoryId) =>
       dioClient.delete(MangaUrl.categoryId(mangaId, categoryId));
+
+  //  History
+  Future<List<Manga>?> getMangasFromHistory({
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.get<List<Manga>, Manga>(
+        HistoryUrl.list,
+        decoder: (e) => e is Map<String, dynamic> ? Manga.fromJson(e) : Manga(),
+      ))
+          .data;
 }
 
 @riverpod

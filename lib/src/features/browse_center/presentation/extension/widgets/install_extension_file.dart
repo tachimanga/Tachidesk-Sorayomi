@@ -19,8 +19,8 @@ class InstallExtensionFile extends ConsumerWidget {
   void extensionFilePicker(WidgetRef ref, BuildContext context) async {
     final toast = ref.read(toastProvider(context));
     final file = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['apk'],
+      type: FileType.any,
+      // allowedExtensions: ['apk'], //UTType not support apk, ref: https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html#//apple_ref/doc/uid/TP40009259-SW1
     );
     if ((file?.files).isNotBlank) {
       if (context.mounted) {

@@ -79,7 +79,8 @@ class MangaCoverGridTile extends StatelessWidget {
                           )
                         : null,
                   ),
-                  child: ServerImage(imageUrl: manga.thumbnailUrl ?? ""),
+                  child: ServerImage(imageUrl: manga.thumbnailUrl ?? "",
+                      imageData: manga.thumbnailImg),
                 )
               : SizedBox(
                   height: context.height * .3,

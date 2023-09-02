@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
+import '../../../../../global_providers/locale_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../data/source_repository/source_repository.dart';
@@ -59,6 +60,10 @@ AsyncValue<Map<String, List<Source>>?> sourceMapFiltered(
   final sourceMapData = ref.watch(sourceMapProvider);
   final sourceMap = {...?sourceMapData.valueOrNull};
   final enabledLangList = [...?ref.watch(sourceLanguageFilterProvider)];
+  print('enabledLangList $enabledLangList');
+  // if (enabledLangList.contains("all")) {
+  //   return sourceMapData;
+  // }
   for (final e in enabledLangList) {
     if (sourceMap.containsKey(e)) sourceMapFiltered[e] = sourceMap[e]!;
   }
@@ -72,7 +77,7 @@ class SourceLanguageFilter extends _$SourceLanguageFilter
   List<String>? build() => initialize(
         ref,
         key: DBKeys.sourceLanguageFilter.name,
-        initial: DBKeys.sourceLanguageFilter.initial,
+        initial: DBKeys.sourceLanguageFilter.initial + ref.watch(sysPreferLocalesProvider),
       );
 }
 

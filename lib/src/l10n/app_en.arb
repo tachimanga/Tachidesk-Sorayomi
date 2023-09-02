@@ -595,7 +595,7 @@
     "addToLibrary": "Add to Library",
     "appLanguage": "App Language",
     "appTheme": "App Theme",
-    "appTitle": "Tachidesk Sorayomi",
+    "appTitle": "iTachi",
     "appearance": "Appearance",
     "authType": "Authentication Type",
     "authTypeBasic": "Basic Auth",
@@ -657,9 +657,9 @@
     "globalUpdate": "Global Update",
     "help": "Help",
     "inLibrary": "In library",
-    "install": "Install",
-    "installing": "Installing",
-    "installingExtension": "Installing Extension",
+    "install": "Add",
+    "installing": "Adding",
+    "installingExtension": "Adding Extension",
     "languages": "Languages",
     "latest": "Latest",
     "library": "Library",
@@ -752,8 +752,8 @@
     "themeModeDark": "Dark",
     "themeModeLight": "Light",
     "themeModeSystem": "System",
-    "uninstall": "Uninstall",
-    "uninstalling": "Uninstalling",
+    "uninstall": "Remove",
+    "uninstalling": "Removing",
     "unknownAuthor": "Unknown Author",
     "unknownManga": "Unknown Manga",
     "unknownSource": "Unknown Source",
@@ -767,5 +767,41 @@
     "versionAvailable": "Version {version} available for {app}!!",
     "webUI": "Open in WEB",
     "webView": "Web View",
-    "whatsNew": "What's New?"
+    "whatsNew": "What's New?",
+    "@getPremium": {
+        "description": "get premium"
+    },
+    "getPremium": "Get Premium",
+    "@share": {
+        "description": "share app"
+    },
+    "share": "Share",
+    "@discordServer": {
+        "description": "discord"
+    },
+    "discordServer": "Discord Server",
+    "@externalRepository": {
+        "description": "External repository"
+    },
+    "externalRepository": "External repository",
+    "@addRepository": {
+        "description": "Add repository"
+    },
+    "addRepository": "Add repository",
+    "@externalRepositoryUrl": {
+        "description": "External extension repo url"
+    },
+    "externalRepositoryUrl": "External extension repo url",
+    "@externalRepositoryUrlShort": {
+        "description": "RepoUrl"
+    },
+    "externalRepositoryUrlShort": "RepoUrl",
+    "@copyRightClaim": {
+        "description": "copyright claim"
+    },
+    "copyRightClaim": "Copyright claim",
+    "@history": {
+        "description": "history"
+    },
+    "history": "History"
 }

@@ -23,10 +23,12 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
     this.onTitleClicked,
     this.showBadges = true,
     this.showCountBadges = true,
+    this.showLastReadChapter = false,
   });
   final Manga manga;
   final bool showBadges;
   final bool showCountBadges;
+  final bool showLastReadChapter;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final ValueChanged<String?>? onTitleClicked;
@@ -101,6 +103,24 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
                           ),
                       ],
                     ),
+                    if (showLastReadChapter) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Text(
+                          manga.lastChapterRead?.name ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textTheme.bodySmall,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Text(
+                          manga.lastReadAt.toDaysAgoFromSeconds ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
                     if (showBadges)
                       context.isTablet
                           ? MangaChipsRow(

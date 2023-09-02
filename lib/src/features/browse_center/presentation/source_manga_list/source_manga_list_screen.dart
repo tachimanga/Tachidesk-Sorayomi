@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -16,11 +17,13 @@ import '../../../../constants/enum.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
+import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/search_field.dart';
 import '../../../manga_book/domain/manga/manga_model.dart';
 import '../../data/source_repository/source_repository.dart';
 import '../../domain/filter/filter_model.dart';
 import 'controller/source_manga_controller.dart';
+import 'widgets/install_manga_file.dart';
 import 'widgets/source_manga_display_icon_popup.dart';
 import 'widgets/source_manga_display_view.dart';
 import 'widgets/source_manga_filter.dart';
@@ -107,6 +110,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.read(toastProvider(context));
     final sourceRepository = ref.watch(sourceRepositoryProvider);
     final filtersProvider =
         sourceMangaFilterListProvider(sourceId, filter: initialFilter);
@@ -136,11 +140,25 @@ class SourceMangaListScreen extends HookConsumerWidget {
         appBar: AppBar(
           title: Text(data?.displayName ?? context.l10n!.source),
           actions: [
+            if (sourceId == "0") ...[
+              InstallMangaFile(
+                  onSuccess: () => controller.refresh()
+              ),
+            ],
             IconButton(
               onPressed: () => showSearch.value = true,
               icon: const Icon(Icons.search_rounded),
             ),
-            const SourceMangaDisplayIconPopup()
+            const SourceMangaDisplayIconPopup(),
+            if (data?.baseUrl?.isNotEmpty ?? false) ...[
+              IconButton(
+                onPressed: () async {
+                  toast.show("Loading...", gravity: ToastGravity.CENTER);
+                  context.push(Routes.getWebView(data?.baseUrl ?? ""));
+                },
+                icon: const Icon(Icons.public),
+              ),
+            ],
           ],
           bottom: PreferredSize(
             preferredSize: kCalculateAppBarBottomSize([true, showSearch.value]),

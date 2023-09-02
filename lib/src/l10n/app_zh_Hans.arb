@@ -105,7 +105,7 @@
   "@appTheme": {
     "description": "Popup title and Button text to change App Theme"
   },
-  "appTitle": "Sorayomi",
+  "appTitle": "iTachi",
   "@appTitle": {
     "description": "Name of the app (Tachidesk Sorayomi in native script)"
   },

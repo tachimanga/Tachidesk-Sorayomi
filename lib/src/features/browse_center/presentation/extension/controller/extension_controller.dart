@@ -8,12 +8,17 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
+import '../../../../../global_providers/global_providers.dart';
+import '../../../../../global_providers/locale_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
+import '../../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../../settings/presentation/browse/widgets/show_nsfw_switch/show_nsfw_switch.dart';
 import '../../../data/extension_repository/extension_repository.dart';
 import '../../../domain/extension/extension_model.dart';
+import '../../../domain/extension/extension_tag.dart';
 
 part 'extension_controller.g.dart';
 
@@ -23,17 +28,74 @@ Future<List<Extension>?> extension(ExtensionRef ref) async {
   ref.onDispose(token.cancel);
   final result = await ref
       .watch(extensionRepositoryProvider)
-      .getExtensionList(cancelToken: token);
+      .getExtensionList("", cancelToken: token);
   ref.keepAlive();
   return result;
+}
+
+@riverpod
+Future<Map<String, ExtensionTag>> extensionTag(ExtensionTagRef ref) async {
+  final token = CancelToken();
+  ref.onDispose(token.cancel);
+
+  final magic = ref.watch(getMagicProvider);
+  final dioClient = ref.watch(dioClientKeyProvider);
+  ExtensionTagData? result = ExtensionTagData();
+  if (magic.a0) {
+    try {
+      result = (await dioClient.get<ExtensionTagData, ExtensionTagData>(
+        "https://mangacrushteam.github.io/repo_tag.json",
+        decoder: (e) =>
+        e is Map<String, dynamic>
+            ? ExtensionTagData.fromJson(e)
+            : ExtensionTagData(),
+        cancelToken: token,
+      ))
+          .data;
+    } catch (e) {
+      log("load extension tag err:$e");
+    }
+  }
+
+  final extensionTagMap = <String, ExtensionTag>{};
+  result?.list?.forEach((tag) {
+    extensionTagMap[tag.pkg ?? ""] = tag;
+  });
+
+  ref.keepAlive();
+  return extensionTagMap;
 }
 
 @riverpod
 AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
   final extensionMap = <String, List<Extension>>{};
   final extensionListData = ref.watch(extensionProvider);
-  final extensionList = [...?extensionListData.valueOrNull];
-  final showNsfw = ref.watch(showNSFWProvider).ifNull(true);
+  final extensionListDraft = [...?extensionListData.valueOrNull];
+  final extensionList = <Extension>[];
+  final extensionTagMapValue = ref.watch(extensionTagProvider);
+  final extensionTagMap = extensionTagMapValue.valueOrNull ?? {};
+
+  for (final e in extensionListDraft) {
+    final extensionTag = extensionTagMap[e.pkgName];
+    if (extensionTag == null) {
+      extensionList.add(e);
+    } else {
+      if (extensionTag.down != true) {
+        final ee = e.copyWith(
+          name: (e.name ?? "") + (extensionTag.suffix ?? ""),
+          tagList: extensionTag.tagList,
+        );
+        extensionList.add(ee);
+      }
+    }
+  }
+
+  var showNsfw = false;
+  var userPref = ref.watch(showNSFWProvider);
+  if (userPref != null) {
+    showNsfw = userPref;
+  }
+
   for (final e in extensionList) {
     if (!showNsfw && (e.isNsfw.ifNull())) continue;
     if (e.installed.ifNull()) {
@@ -52,7 +114,7 @@ AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
       }
     } else {
       extensionMap.update(
-        e.lang?.code ?? "other",
+        e.lang?.code?.toLowerCase() ?? "other",
         (value) => [...value, e],
         ifAbsent: () => [e],
       );
@@ -78,7 +140,8 @@ class ExtensionLanguageFilter extends _$ExtensionLanguageFilter
   List<String>? build() => initialize(
         ref,
         key: DBKeys.extensionLanguageFilter.name,
-        initial: DBKeys.extensionLanguageFilter.initial,
+        initial: DBKeys.extensionLanguageFilter.initial +
+            ref.watch(sysPreferLocalesProvider),
       );
 }
 

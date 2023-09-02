@@ -44,12 +44,20 @@ class NavigationBarData {
       path: Routes.browse,
       activeOn: [Routes.browse],
     ),
+    /*
     NavigationBarData(
       icon: Icons.download_outlined,
       activeIcon: Icons.download_rounded,
       label: (context) => context.l10n!.downloads,
       path: Routes.downloads,
       activeOn: [Routes.downloads],
+    ),*/
+    NavigationBarData(
+      icon: Icons.history_outlined,
+      activeIcon: Icons.history_rounded,
+      label: (context) => context.l10n!.history,
+      path: Routes.history,
+      activeOn: [Routes.history],
     ),
     NavigationBarData(
       icon: Icons.more_horiz_outlined,

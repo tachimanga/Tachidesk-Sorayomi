@@ -48,7 +48,12 @@ mixin SharedPreferenceClientMixin<T extends Object> {
   void update(T? value) => state = value;
 
   T? get _get {
-    final value = _client.get(_key);
+    var value = _client.get(_key);
+
+    if (value is List) {
+      value = _client.getStringList(_key);
+    }
+
     if (_fromJson != null) {
       return _fromJson!(jsonDecode(value.toString()));
     }

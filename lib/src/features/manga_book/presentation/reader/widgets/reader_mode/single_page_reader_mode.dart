@@ -79,6 +79,8 @@ class SinglePageReaderMode extends HookWidget {
               mangaId: "${manga.id}",
               pageIndex: index.toString(),
             ),
+            imageData: chapter.pageData?[index],
+            reloadButton: true,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 CenterCircularProgressIndicator(
               value: downloadProgress.progress,

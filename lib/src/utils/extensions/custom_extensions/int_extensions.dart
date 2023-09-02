@@ -38,11 +38,13 @@ extension IntExtensions on int? {
 
   String get toDaysAgoFromSeconds {
     if (isNull) return "";
+    if (this == 0) return "N/A";
     return DateTime.fromMillisecondsSinceEpoch(this! * 1000).convertToDaysAgo;
   }
 
   String get toDaysAgo {
     if (isNull) return "";
+    if (this == 0) return "N/A";
     return DateTime.fromMillisecondsSinceEpoch(this!).convertToDaysAgo;
   }
 

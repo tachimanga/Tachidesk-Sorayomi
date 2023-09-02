@@ -6,6 +6,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../dio_error_util.dart';
 
@@ -13,7 +14,11 @@ typedef ResponseDecoderCallBack<DecoderType> = DecoderType Function(dynamic);
 
 class DioClient {
   final Dio dio;
-  DioClient({required this.dio});
+  final MethodChannel pipe;
+  DioClient({
+    required this.dio,
+    required this.pipe,
+  });
 
   /// Handy method to make http GET request
   ///
@@ -165,8 +170,10 @@ class DioClient {
 
       return response.copyWith<ReturnType>(data: result);
     } on DioError catch (e) {
-      if (kDebugMode) rethrow;
-      throw DioErrorUtil.handleError(e);
+      //if (kDebugMode) rethrow;
+      final msg = DioErrorUtil.handleError(e);
+      pipe.invokeMethod("LogEvent", "ERR_$msg");
+      throw msg;
     } catch (e) {
       if (kDebugMode) rethrow;
       throw "Unexpected error occurred";

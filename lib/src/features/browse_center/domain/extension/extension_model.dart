@@ -8,6 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../utils/freezed_converters/language_json_converter.dart';
 import '../language/language_model.dart';
+import 'extension_tag.dart';
 
 part 'extension_model.freezed.dart';
 part 'extension_model.g.dart';
@@ -30,6 +31,7 @@ class Extension with _$Extension {
     String? pkgName,
     int? versionCode,
     String? versionName,
+    List<Tag>? tagList,
   }) = _Extension;
 
   factory Extension.fromJson(Map<String, dynamic> json) =>

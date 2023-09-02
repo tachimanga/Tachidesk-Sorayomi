@@ -53,6 +53,7 @@ class ShellScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    /*
     useEffect(() {
       Future.microtask(
         () => checkForUpdate(
@@ -64,6 +65,7 @@ class ShellScreen extends HookConsumerWidget {
       );
       return;
     }, []);
+     */
     return context.isTablet
         ? Scaffold(
             body: Row(

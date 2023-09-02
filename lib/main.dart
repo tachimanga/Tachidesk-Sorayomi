@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:system_proxy/system_proxy.dart';
 
 import 'src/features/about/presentation/about/controllers/about_controller.dart';
 import 'src/global_providers/global_providers.dart';
@@ -17,11 +18,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final packageInfo = await PackageInfo.fromPlatform();
   final sharedPreferences = await SharedPreferences.getInstance();
+  final proxy = await SystemProxy.getProxySettings();
   runApp(
     ProviderScope(
       overrides: [
         packageInfoProvider.overrideWithValue(packageInfo),
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+        systemProxyProvider.overrideWithValue(proxy),
       ],
       child: const Sorayomi(),
     ),

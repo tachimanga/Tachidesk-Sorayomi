@@ -18,6 +18,7 @@ import '../../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../../settings/presentation/appearance/widgets/grid_cover_min_width.dart';
 import '../../../domain/source/source_model.dart';
+import 'source_page_error_view.dart';
 
 class SourceMangaGridView extends ConsumerWidget {
   const SourceMangaGridView({super.key, required this.controller, this.source});
@@ -28,13 +29,7 @@ class SourceMangaGridView extends ConsumerWidget {
     return PagedGridView(
       pagingController: controller,
       builderDelegate: PagedChildBuilderDelegate<Manga>(
-        firstPageErrorIndicatorBuilder: (context) => Emoticons(
-          text: controller.error.toString(),
-          button: TextButton(
-            onPressed: () => controller.refresh(),
-            child: Text(context.l10n!.retry),
-          ),
-        ),
+        firstPageErrorIndicatorBuilder: (context) => SourcePageErrorView(controller: controller, source: source),
         noItemsFoundIndicatorBuilder: (context) => Emoticons(
           text: context.l10n!.noMangaFound,
           button: TextButton(

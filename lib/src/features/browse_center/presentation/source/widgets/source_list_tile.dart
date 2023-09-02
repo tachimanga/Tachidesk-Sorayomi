@@ -43,8 +43,20 @@ class SourceListTile extends ConsumerWidget {
       subtitle: (source.lang?.displayName).isNotBlank
           ? Text(source.lang?.displayName ?? "")
           : null,
-      trailing: (source.supportsLatest.ifNull())
-          ? TextButton(
+      trailing: Wrap(
+        spacing: 0, // space between two icons
+        children: [
+          if (source.isConfigurable.ifNull()
+              && (source.name?.startsWith("Komga") ?? false)) ...[
+            TextButton(
+              onPressed: () async {
+                context.push(Routes.getSourcePref(source.id!));
+              },
+              child: Text(context.l10n!.settings),
+            )
+          ],
+          if (source.supportsLatest.ifNull()) ...[
+            TextButton(
               onPressed: () async {
                 ref.read(sourceLastUsedProvider.notifier).update(source.id);
                 context.push(Routes.getSourceManga(
@@ -54,7 +66,21 @@ class SourceListTile extends ConsumerWidget {
               },
               child: Text(context.l10n!.latest),
             )
-          : null,
+          ],
+        ],
+      ),
+      // trailing: (source.supportsLatest.ifNull())
+      //     ? TextButton(
+      //         onPressed: () async {
+      //           ref.read(sourceLastUsedProvider.notifier).update(source.id);
+      //           context.push(Routes.getSourceManga(
+      //             source.id!,
+      //             SourceType.latest,
+      //           ));
+      //         },
+      //         child: Text(context.l10n!.latest),
+      //       )
+      //     : null,
     );
   }
 }

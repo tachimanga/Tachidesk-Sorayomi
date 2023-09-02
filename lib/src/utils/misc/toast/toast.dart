@@ -25,23 +25,36 @@ class Toast {
     show(msg);
   }
 
-  void show(String msg, {bool withMicrotask = false}) {
+  void show(String msg,
+      {bool withMicrotask = false,
+      ToastGravity gravity = ToastGravity.BOTTOM,
+      Duration toastDuration = const Duration(seconds: 2)}) {
     {
       if (withMicrotask) {
         Future.microtask(() => _fToast.showToast(
               child: ToastWidget(text: msg),
-              gravity: ToastGravity.BOTTOM,
+              toastDuration: toastDuration,
+              gravity: gravity,
             ));
       } else {
         _fToast.showToast(
           child: ToastWidget(text: msg),
-          gravity: ToastGravity.BOTTOM,
+          toastDuration: toastDuration,
+          gravity: gravity,
         );
       }
     }
   }
 
-  void showError(String error) => _fToast.showToast(
+  void showError(String error, {bool withMicrotask = false}) {
+    if (withMicrotask) {
+      Future.microtask(() => _showError(error));
+    } else {
+      _showError(error);
+    }
+  }
+
+  void _showError(String error) => _fToast.showToast(
         child: ToastWidget(
           text: error,
           backgroundColor: Colors.red.shade400,
@@ -49,7 +62,15 @@ class Toast {
         gravity: ToastGravity.TOP,
       );
 
-  void close() => _fToast.removeCustomToast();
+  void close({bool withMicrotask = false}) {
+    if (withMicrotask) {
+      Future.microtask(() => _close());
+    } else {
+      _close();
+    }
+  }
+
+  void _close() => _fToast.removeCustomToast();
 }
 
 class ToastWidget extends StatelessWidget {

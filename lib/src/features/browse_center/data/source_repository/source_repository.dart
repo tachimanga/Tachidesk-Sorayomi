@@ -5,15 +5,19 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../constants/endpoints.dart';
 import '../../../../constants/enum.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/storage/dio/dio_client.dart';
 import '../../domain/filter/filter_model.dart';
 import '../../domain/manga_page/manga_page.dart';
 import '../../domain/source/source_model.dart';
+import '../../domain/source_pref/source_pref_model.dart';
 
 part 'source_repository.g.dart';
 
@@ -27,6 +31,36 @@ class SourceRepository {
         SourceUrl.sourceList,
         decoder: (e) =>
             e is Map<String, dynamic> ? Source.fromJson(e) : Source(),
+        cancelToken: cancelToken,
+      ))
+          .data;
+
+  Future<List<SourcePref>?> getSourcePrefList({
+    required String sourceId,
+    CancelToken? cancelToken}
+      ) async =>
+      (await dioClient.get<List<SourcePref>, SourcePref>(
+        SourceUrl.preferences(sourceId),
+        decoder: (e) =>
+        e is Map<String, dynamic> ? SourcePref.fromJson(e) : SourcePref(),
+        cancelToken: cancelToken,
+      ))
+          .data;
+
+  // POST http://127.0.0.1:4567/api/v1/source/4508733312114627536/preferences
+  // {"position":0,"value":"hello"}
+  Future<void> saveSourcePref({
+    required String sourceId,
+    required int index,
+    required String value,
+    CancelToken? cancelToken}
+      ) async =>
+      (await dioClient.post(
+        SourceUrl.preferences(sourceId),
+        data: {
+          "position": index,
+          "value": value,
+        },
         cancelToken: cancelToken,
       ))
           .data;
@@ -84,6 +118,34 @@ class SourceRepository {
         cancelToken: cancelToken,
       ))
           .data;
+
+
+  Future<void> installMangaFile(
+      BuildContext context, {
+        PlatformFile? file,
+        CancelToken? cancelToken,
+      }) async {
+    if ((file?.path).isBlank) {
+      throw context.l10n!.errorFilePick;
+    }
+    final name = file!.name;
+    if (!(name.endsWith('.zip') || name.endsWith('.cbz') || name.endsWith('.epub'))) {
+      throw context.l10n!.errorFilePickUnknownExtension(".zip");
+    }
+    return (file.path).isNotBlank
+        ? (await dioClient.post(
+      "/manga/install",
+      data: FormData.fromMap({
+        'file': MultipartFile.fromFileSync(
+          file.path!,
+          filename: file.name,
+        )
+      }),
+      cancelToken: cancelToken,
+    ))
+        .data
+        : null;
+  }
 }
 
 @riverpod

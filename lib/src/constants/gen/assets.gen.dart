@@ -22,12 +22,17 @@ class $AssetsIconsGen {
   AssetGenImage get lightIcon =>
       const AssetGenImage('assets/icons/light_icon.png');
 
+  /// File path: assets/icons/premium_icon.png
+  AssetGenImage get premiumIcon =>
+      const AssetGenImage('assets/icons/premium_icon.png');
+
   /// File path: assets/icons/previous_done.png
   AssetGenImage get previousDone =>
       const AssetGenImage('assets/icons/previous_done.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [darkIcon, lightIcon, previousDone];
+  List<AssetGenImage> get values =>
+      [darkIcon, lightIcon, premiumIcon, previousDone];
 }
 
 class $AssetsIconsLauncherGen {
@@ -117,7 +122,16 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider() => AssetImage(_assetName);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
+  }
 
   String get path => _assetName;
 

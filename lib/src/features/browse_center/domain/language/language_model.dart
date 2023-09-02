@@ -19,6 +19,7 @@ class Language with _$Language {
   }) = _Language;
 
   String? get displayName => nativeName ?? name ?? code;
+  String? get enName => name ?? code;
 
   factory Language.fromJson(Map<String, dynamic> json) =>
       _$LanguageFromJson(json);

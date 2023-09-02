@@ -10,13 +10,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants/enum.dart';
 import '../features/about/presentation/about/about_screen.dart';
+import '../features/about/presentation/about/about_screen_lite.dart';
 import '../features/browse_center/domain/filter/filter_model.dart';
 import '../features/browse_center/presentation/browse/browse_screen.dart';
 import '../features/browse_center/presentation/global_search/global_search_screen.dart';
 import '../features/browse_center/presentation/source_manga_list/source_manga_list_screen.dart';
+import '../features/browse_center/presentation/source_preference/source_pref_screen.dart';
+import '../features/browse_center/presentation/webview/webview_screen.dart';
+import '../features/custom/inapp/presentation/purchase_screen.dart';
 import '../features/library/presentation/category/edit_category_screen.dart';
 import '../features/library/presentation/library/library_screen.dart';
 import '../features/manga_book/presentation/downloads/downloads_screen.dart';
+import '../features/manga_book/presentation/history/history_screen.dart';
 import '../features/manga_book/presentation/manga_details/manga_details_screen.dart';
 import '../features/manga_book/presentation/reader/reader_screen.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
@@ -26,9 +31,11 @@ import '../features/settings/presentation/browse/browse_settings_screen.dart';
 import '../features/settings/presentation/general/general_screen.dart';
 import '../features/settings/presentation/library/library_settings_screen.dart';
 import '../features/settings/presentation/more/more_screen.dart';
+import '../features/settings/presentation/more/more_screen_lite.dart';
 import '../features/settings/presentation/reader/reader_settings_screen.dart';
 import '../features/settings/presentation/server/server_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
+import '../global_providers/global_providers.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../widgets/shell/shell_screen.dart';
 
@@ -45,14 +52,17 @@ abstract class Routes {
   static const librarySettings = 's-library';
   static const updates = '/updates';
   static const browse = '/browse';
-  static const downloads = '/downloads';
+  static const downloads = 'downloads';
+  static const history = '/history';
   static const more = '/more';
   static const about = '/about';
   static const appearanceSettings = 's-appearance';
   static const generalSettings = 's-general';
   static const backup = 'backup';
   static const settings = '/settings';
-  static const browseSettings = 'browse';
+  static const browseSettings = 'extensionSetting';
+  static getExtensionSetting(String name, String url) =>
+    '$browseSettings?name=$name&url=$url';
   static const readerSettings = 'reader';
   static const reader = '/reader/:mangaId/:chapterIndex';
   static getReader(String mangaId, String chapterIndex) =>
@@ -67,16 +77,23 @@ abstract class Routes {
   static getSourceManga(String sourceId, SourceType sourceType,
           {String? query}) =>
       '/source/$sourceId/${sourceType.name}${query.isNotBlank ? "?query=$query" : ''}';
+  static const sourcePref = '/configure/:sourceId';
+  static getSourcePref(String sourceId) =>
+      '/configure/$sourceId';
   static const globalSearch = '/global-search';
   static getGlobalSearch([String? query]) =>
       '/global-search${query.isNotBlank ? "?query=$query" : ''}';
+  static const goWebView = '/webView';
+  static getWebView(String url) => '$goWebView?url=$url';
+  static const purchase = '/purchase';
 }
 
 @riverpod
 GoRouter routerConfig(ref) {
+  var pipe = ref.watch(getMagicPipeProvider);
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: Routes.library,
+    initialLocation: Routes.browse,
     navigatorKey: _rootNavigatorKey,
     routes: [
       ShellRoute(
@@ -89,23 +106,24 @@ GoRouter routerConfig(ref) {
           ),
           GoRoute(
             path: Routes.library,
-            builder: (context, state) => const LibraryScreen(),
+            pageBuilder: (context, state) => const NoTransitionPage(child: LibraryScreen()),
           ),
           GoRoute(
             path: Routes.updates,
-            builder: (context, state) => const UpdatesScreen(),
+            pageBuilder: (context, state) => const NoTransitionPage(child: UpdatesScreen()),
           ),
           GoRoute(
             path: Routes.browse,
-            builder: (context, state) => const BrowseScreen(),
+            pageBuilder: (context, state) => const NoTransitionPage(child: BrowseScreen()),
           ),
           GoRoute(
-            path: Routes.downloads,
-            builder: (context, state) => const DownloadsScreen(),
+            path: Routes.history,
+            pageBuilder: (context, state) => const NoTransitionPage(child: HistoryScreen()),
           ),
           GoRoute(
             path: Routes.more,
-            builder: (context, state) => const MoreScreen(),
+            // builder: (context, state) => const MoreScreen(),
+            pageBuilder: (context, state) => const NoTransitionPage(child: MoreScreenLite()),
           ),
         ],
       ),
@@ -143,9 +161,18 @@ GoRouter routerConfig(ref) {
         ),
       ),
       GoRoute(
+        path: Routes.sourcePref,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => SourcePrefScreen(
+          key: ValueKey(state.params['sourceId'] ?? "0"),
+          sourceId: state.params['sourceId'] ?? "",
+        ),
+      ),
+      GoRoute(
         path: Routes.about,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const AboutScreen(),
+        // builder: (context, state) => const AboutScreen(),
+        builder: (context, state) => const AboutScreenLite(),
       ),
       GoRoute(
         path: Routes.reader,
@@ -187,13 +214,32 @@ GoRouter routerConfig(ref) {
           ),
           GoRoute(
             path: Routes.browseSettings,
-            builder: (context, state) => const BrowseSettingsScreen(),
+            builder: (context, state) => BrowseSettingsScreen(
+              repoName: state.queryParams['name'],
+              repoUrl: state.queryParams['url'],
+            ),
           ),
           GoRoute(
             path: Routes.backup,
             builder: (context, state) => const BackupScreen(),
           ),
+          GoRoute(
+            path: Routes.downloads,
+            builder: (context, state) => const DownloadsScreen(),
+          ),
         ],
+      ),
+      GoRoute(
+        path: Routes.goWebView,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => WebViewScreen(
+          url: state.queryParams['url'],
+        ),
+      ),
+      GoRoute(
+        path: Routes.purchase,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PurchaseScreen(),
       ),
     ],
   );

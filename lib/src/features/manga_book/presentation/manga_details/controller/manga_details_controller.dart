@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
+import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
@@ -29,6 +30,10 @@ class MangaWithId extends _$MangaWithId {
         .watch(mangaBookRepositoryProvider)
         .getManga(mangaId: mangaId, cancelToken: token);
     ref.keepAlive();
+
+    final pipe = ref.watch(getMagicPipeProvider);
+    final pkgName = result?.source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
+    pipe.invokeMethod("LogEvent", "READ_$pkgName");
     return result;
   }
 
@@ -141,14 +146,25 @@ Chapter? firstUnreadInFilteredChapterList(
   FirstUnreadInFilteredChapterListRef ref, {
   required String mangaId,
 }) {
-  final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
-      DBKeys.chapterSortDirection.initial;
+  // final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
+  //     DBKeys.chapterSortDirection.initial;
   final filteredList = ref
       .watch(mangaChapterListWithFilterProvider(mangaId: mangaId))
       .valueOrNull;
   if (filteredList == null) {
     return null;
   } else {
+    var maxLastPageRead = -1;
+    Chapter? lastReadChapter;
+    for (final chapter in filteredList) {
+      final curr = chapter.lastReadAt ?? 0;
+      if (curr > maxLastPageRead) {
+        maxLastPageRead = curr;
+        lastReadChapter = chapter;
+      }
+    }
+    return lastReadChapter;
+    /*
     if (isAscSorted) {
       return filteredList
           .firstWhereOrNull((element) => !element.read.ifNull(true));
@@ -156,6 +172,7 @@ Chapter? firstUnreadInFilteredChapterList(
       return filteredList
           .lastWhereOrNull((element) => !element.read.ifNull(true));
     }
+    */
   }
 }
 

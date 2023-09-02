@@ -17,6 +17,7 @@ class Source with _$Source {
   factory Source({
     String? displayName,
     String? iconUrl,
+    String? baseUrl,
     String? id,
     bool? isConfigurable,
     bool? isNsfw,
@@ -27,6 +28,7 @@ class Source with _$Source {
         Language? lang,
     String? name,
     bool? supportsLatest,
+    String? extPkgName,
   }) = _Source;
 
   factory Source.fromJson(Map<String, dynamic> json) => _$SourceFromJson(json);

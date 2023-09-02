@@ -7,6 +7,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -35,6 +36,8 @@ class MangaDescription extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(context.isTablet);
+    final toast = ref.read(toastProvider(context));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -74,11 +77,13 @@ class MangaDescription extends HookConsumerWidget {
               if (manga.realUrl.isNotBlank)
                 TextButton.icon(
                   onPressed: () async {
-                    launchUrlInWeb(
-                      context,
-                      (manga.realUrl ?? ""),
-                      ref.read(toastProvider(context)),
-                    );
+                    toast.show("Loading...", gravity: ToastGravity.CENTER);
+                    context.push(Routes.getWebView(manga.realUrl ?? ""));
+                    // launchUrlInWeb(
+                    //   context,
+                    //   (manga.realUrl ?? ""),
+                    //   ref.read(toastProvider(context)),
+                    // );
                   },
                   icon: const Icon(Icons.public),
                   style: TextButton.styleFrom(foregroundColor: Colors.grey),

@@ -12,6 +12,8 @@ enum AppUrls {
   tachideskReddit(url: "https://www.reddit.com/r/Tachidesk"),
   sorayomiWhatsNew(
       url: "https://github.com/Suwayomi/Tachidesk-Sorayomi/releases/tag/"),
+  telegram(url: "https://t.me/mangacrush"),
+  discord(url: "https://discord.gg/CsnjRU35Rd"),
   sorayomiLatestReleaseApiUrl(
     url:
         "https://api.github.com/repos/Suwayomi/Tachidesk-Sorayomi/releases/latest",

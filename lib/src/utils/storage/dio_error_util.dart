@@ -20,7 +20,7 @@ class DioErrorUtil {
           errorDescription = "Connection timeout";
           break;
         case DioErrorType.unknown:
-          errorDescription = "Check your Internet Connection";
+          errorDescription = "Unexpected error occurred, please kill the app and then reopen it";
           break;
         case DioErrorType.receiveTimeout:
           errorDescription = "Receive timeout";
@@ -29,6 +29,10 @@ class DioErrorUtil {
           errorDescription = (error.response?.statusCode) != null
               ? "Received invalid status code: ${error.response?.statusCode}"
               : "Something went wrong!";
+          final errMsg = error.response?.headers.value("x-err-msg");
+          if (errMsg != null) {
+            errorDescription = errMsg;
+          }
           break;
         case DioErrorType.sendTimeout:
           errorDescription = "Send timeout";

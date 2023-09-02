@@ -125,6 +125,8 @@ class ContinuousReaderMode extends HookWidget {
                 mangaId: "${manga.id}",
                 pageIndex: index.toString(),
               ),
+              imageData: chapter.pageData?[index],
+              reloadButton: true,
               progressIndicatorBuilder: (_, __, downloadProgress) => Center(
                 child: CircularProgressIndicator(
                   value: downloadProgress.progress,
@@ -132,10 +134,10 @@ class ContinuousReaderMode extends HookWidget {
               ),
               wrapper: (child) => SizedBox(
                 height: scrollDirection == Axis.vertical
-                    ? context.height * .7
+                    ? context.width
                     : null,
                 width: scrollDirection != Axis.vertical
-                    ? context.width * .7
+                    ? context.height
                     : null,
                 child: child,
               ),

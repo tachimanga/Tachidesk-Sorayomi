@@ -20,6 +20,8 @@ class ExtensionLanguageFilterDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final languageCodes = ref.watch(extensionFilterLangListProvider);
     final enabledLanguages = ref.watch(extensionLanguageFilterProvider);
+    print("ExtensionLanguageFilterDialog languageCodes $languageCodes");
+    print("ExtensionLanguageFilterDialog enabledLanguages $enabledLanguages");
     return AlertDialog(
       title: Text(context.l10n!.languages),
       content: SizedBox(
@@ -50,6 +52,7 @@ class ExtensionLanguageFilterDialog extends ConsumerWidget {
               title: Text(
                 language?.nativeName ?? language?.name ?? languageCodes[index],
               ),
+              subtitle: Text(language?.name ?? languageCodes[index]),
             );
           },
         ),

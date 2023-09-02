@@ -10,6 +10,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../constants/db_keys.dart';
 
+import '../../../../../../global_providers/global_providers.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 
@@ -20,8 +21,8 @@ class ShowNSFW extends _$ShowNSFW with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
         ref,
-        key: DBKeys.showNSFW.name,
-        initial: DBKeys.showNSFW.initial,
+        key: DBKeys.showPlus.name,
+        initial: DBKeys.showPlus.initial,
       );
 }
 
@@ -29,6 +30,8 @@ class ShowNSFWTile extends ConsumerWidget {
   const ShowNSFWTile({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var magic = ref.watch(getMagicProvider);
+
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.eighteen_up_rating_rounded),
@@ -36,7 +39,7 @@ class ShowNSFWTile extends ConsumerWidget {
         context.l10n!.nsfw,
       ),
       onChanged: ref.read(showNSFWProvider.notifier).update,
-      value: ref.watch(showNSFWProvider).ifNull(),
+      value: ref.watch(showNSFWProvider).ifNull(magic.a7),
     );
   }
 }

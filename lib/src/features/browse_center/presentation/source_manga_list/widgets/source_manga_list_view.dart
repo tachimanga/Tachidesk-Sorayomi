@@ -14,6 +14,7 @@ import '../../../../../widgets/emoticons.dart';
 import '../../../../../widgets/manga_cover/list/manga_cover_list_tile.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../domain/source/source_model.dart';
+import 'source_page_error_view.dart';
 
 class SourceMangaListView extends StatelessWidget {
   const SourceMangaListView({super.key, required this.controller, this.source});
@@ -24,13 +25,7 @@ class SourceMangaListView extends StatelessWidget {
     return PagedListView(
       pagingController: controller,
       builderDelegate: PagedChildBuilderDelegate<Manga>(
-        firstPageErrorIndicatorBuilder: (context) => Emoticons(
-          text: controller.error.toString(),
-          button: TextButton(
-            onPressed: () => controller.refresh(),
-            child: Text(context.l10n!.retry),
-          ),
-        ),
+        firstPageErrorIndicatorBuilder: (context) => SourcePageErrorView(controller: controller, source: source),
         noItemsFoundIndicatorBuilder: (context) => Emoticons(
           text: context.l10n!.noMangaFound,
           button: TextButton(

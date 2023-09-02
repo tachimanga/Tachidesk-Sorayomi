@@ -22,6 +22,8 @@ abstract class Endpoints {
 abstract class SettingsUrl {
   static const String about = '$_settings/about';
   static const String checkServerUpdate = '$_settings/check-update';
+  static const String uploadCookies = '$_settings/uploadCookies';
+  static const String clearCookies = '$_settings/clearCookies';
   static const String _settings = "/settings";
 }
 
@@ -68,6 +70,10 @@ abstract class MangaUrl {
       "$_manga/$mangaId/chapter/$chapterIndex/page/$pageIndex";
 
   static const String _manga = "/manga";
+}
+
+abstract class HistoryUrl {
+  static const String list = "/history/list";
 }
 
 abstract class DownloaderUrl {

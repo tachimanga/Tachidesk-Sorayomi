@@ -6,6 +6,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../img/image_model.dart';
+
 part 'chapter_model.freezed.dart';
 part 'chapter_model.g.dart';
 
@@ -30,6 +32,8 @@ class Chapter with _$Chapter {
     int? uploadDate,
     String? url,
     Map<String, String>? meta,
+    Map<int, ImgData>? pageData,
+    // bool? fromCache,
   }) = _Chapter;
 
   factory Chapter.fromJson(Map<String, dynamic> json) =>

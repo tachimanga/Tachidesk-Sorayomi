@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 
+import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/search_field.dart';
@@ -30,6 +31,10 @@ class BrowseScreen extends HookConsumerWidget {
     useListenable(tabController);
     final key = useMemoized(() => GlobalKey());
     final showSearch = useState(false);
+
+    var magic = ref.watch(getMagicProvider);
+    var pipe = ref.watch(getMagicPipeProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.browse),
@@ -43,7 +48,7 @@ class BrowseScreen extends HookConsumerWidget {
                   : Icons.search_rounded,
             ),
           ),
-          if (tabController.index == 1) ...[
+          if (tabController.index == 1 && magic.a6 == true) ...[
             const InstallExtensionFile(),
           ],
           IconButton(
@@ -98,9 +103,9 @@ class BrowseScreen extends HookConsumerWidget {
       body: TabBarView(
         key: key,
         controller: tabController,
-        children: const [
-          SourceScreen(),
-          ExtensionScreen(),
+        children: [
+          const SourceScreen(),
+          const ExtensionScreen()
         ],
       ),
     );

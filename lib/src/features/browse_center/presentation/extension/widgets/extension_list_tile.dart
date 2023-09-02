@@ -9,11 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/server_image.dart';
+import '../../../../custom/hex_color.dart';
 import '../../../data/extension_repository/extension_repository.dart';
 import '../../../domain/extension/extension_model.dart';
+import '../../../domain/extension/extension_tag.dart';
+import '../../source/controller/source_controller.dart';
 
 class ExtensionListTile extends HookConsumerWidget {
   const ExtensionListTile({
@@ -130,6 +134,15 @@ class ExtensionListTile extends HookConsumerWidget {
                               }
                               await repository
                                   .installExtension(extension.pkgName!);
+                              if (extension.lang?.code != null) {
+                                final code = extension.lang!.code!;
+                                final enabledLanguages = ref.watch(sourceLanguageFilterProvider);
+                                if (enabledLanguages != null && !enabledLanguages.contains(code)) {
+                                  ref.read(sourceLanguageFilterProvider.notifier).update(
+                                    {...enabledLanguages, code}.toList(),
+                                  );
+                                }
+                              }
                               await refresh();
                             }))
                                 .showToastOnError(

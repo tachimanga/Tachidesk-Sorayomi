@@ -21,11 +21,15 @@ enum DBKeys {
   readerMagnifierSize(1.0),
   readerNavigationLayout(ReaderNavigationLayout.disabled),
   invertTap(false),
-  showNSFW(true),
+  enableFileLog(false),
+  useSystemProxy(true),
+  showPlus(null),
+  repoUrl(null),
+  installLocalCount(0),
   downloadedBadge(true),
   unreadBadge(true),
   languageBadge(false),
-  l10n(Locale('en')),
+  l10n(null),
   mangaFilterDownloaded(null),
   mangaFilterUnread(null),
   mangaFilterCompleted(null),
@@ -39,6 +43,9 @@ enum DBKeys {
   libraryDisplayMode(DisplayMode.grid),
   sourceDisplayMode(DisplayMode.grid),
   gridMangaCoverWidth(192.0),
+  purchaseDone(false),
+  purchaseExpireMs(0),
+  serverApiUrl('https://api.tachiyomi.workers.dev'),
   ;
 
   const DBKeys(this.initial);
