@@ -27,7 +27,7 @@
   "@appTheme": {
     "description": "Popup title and Button text to change App Theme"
   },
-  "appTitle": "iTachi",
+  "appTitle": "Tachimanga",
   "@appTitle": {
     "description": "Name of the app (Tachidesk Sorayomi in native script)"
   },
@@ -830,5 +830,19 @@
   "quickSearchCategoryManga": "",
   "@quickSearchCategoryManga": {
     "description": "Quick Open Hint text for searching Manga M in Category C with prefill '#C/M'"
-  }
+  },
+  "getPremium": "Obtenir Premium",
+  "alreadyGetPremium": "Premium acheté",
+  "purchaseExpireAt": "L'abonnement Premium se renouvellera automatiquement le ",
+  "iapFaq": "FAQ sur les achats in-app",
+  "restorePurchase": "Restaurer l'achat",
+  "share": "Partager",
+  "discordServer": "Serveur Discord",
+  "externalRepository": "Paramètres de l'extension",
+  "addRepository": "Ajouter des extensions externes",
+  "externalRepositoryUrl": "URL du référentiel d'extensions",
+  "externalRepositoryUrlShort": "URL du référentiel d'extensions",
+  "history": "Historique",
+  "useSysProxy": "Utiliser les paramètres de proxy système",
+  "clearCookies": "Effacer les cookies"
 }

@@ -29,14 +29,13 @@ class SourceMangaGridView extends ConsumerWidget {
     return PagedGridView(
       pagingController: controller,
       builderDelegate: PagedChildBuilderDelegate<Manga>(
-        firstPageErrorIndicatorBuilder: (context) => SourcePageErrorView(controller: controller, source: source),
-        noItemsFoundIndicatorBuilder: (context) => Emoticons(
-          text: context.l10n!.noMangaFound,
-          button: TextButton(
-            onPressed: () => controller.refresh(),
-            child: Text(context.l10n!.refresh),
-          ),
-        ),
+        firstPageErrorIndicatorBuilder: (context) => SourcePageErrorView(
+            controller: controller,
+            source: source),
+        noItemsFoundIndicatorBuilder: (context) => SourcePageErrorView(
+            controller: controller,
+            source: source,
+            message: context.l10n!.noMangaFound),
         itemBuilder: (context, item, index) => MangaCoverGridTile(
           manga: item.copyWith(source: source),
           showDarkOverlay: item.inLibrary.ifNull(),

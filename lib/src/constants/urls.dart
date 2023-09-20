@@ -14,6 +14,12 @@ enum AppUrls {
       url: "https://github.com/Suwayomi/Tachidesk-Sorayomi/releases/tag/"),
   telegram(url: "https://t.me/mangacrush"),
   discord(url: "https://discord.gg/CsnjRU35Rd"),
+  iap(url: "https://mangacrushteam.github.io/iap.html"),
+  terms(url: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"),
+  privacy(url: "https://github.com/MangaCrushTeam/MangaCrush/blob/main/PRIVACY.md"),
+  faqUrl(url: "https://tachimanga.github.io/help/faq/"),
+  addRepo(url: "https://tachimanga.github.io/help/guides/adding-repos.html"),
+  findAnswer(url: "https://tachimanga.github.io/help/guides/find-answer.html"),
   sorayomiLatestReleaseApiUrl(
     url:
         "https://api.github.com/repos/Suwayomi/Tachidesk-Sorayomi/releases/latest",

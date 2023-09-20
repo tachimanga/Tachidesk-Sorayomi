@@ -9,8 +9,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/launch_url_in_web.dart';
+import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/pop_button.dart';
 import 'widgets/repo_setting/repo_url_tile.dart';
 import 'widgets/show_nsfw_switch/show_nsfw_switch.dart';
@@ -30,6 +33,8 @@ class BrowseSettingsScreen extends HookConsumerWidget {
     var magic = ref.watch(getMagicProvider);
     showImportRepoIfNeeded(context, ref);
     bool alwaysShow = repoName != null && repoUrl != null;
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n!.extensions)),
       body: ListView(
@@ -38,12 +43,24 @@ class BrowseSettingsScreen extends HookConsumerWidget {
             const RepoUrlTile(),
             ListTile(
               subtitle: Text("To set external repositories, you need to agree to the following agreement:\n"
-                  + "1. I understand that iTachi does not regulate external repositories in any way and that iTachi is not responsible for any damages or harm done to my device or my identity by using external extensions.\n"
-                  + "2. I understand that iTachi is not affiliated with any external extensions.\n"
-                  + "3. I agree to not use iTachi to view content that I do not have the rights for."),
+                  + "1. I understand that Tachimanga does not regulate external repositories in any way and that Tachimanga is not responsible for any damages or harm done to my device or my identity by using external extensions.\n"
+                  + "2. I understand that Tachimanga is not affiliated with any external extensions.\n"
+                  + "3. I agree to not use Tachimanga to view content that I do not have the rights for."),
               leading: const Icon(Icons.info_rounded),
               dense: true,
             ),
+            if (magic.b4) ...[
+              Center(
+                  child: TextButton.icon(
+                      onPressed: () => launchUrlInWeb(
+                            context,
+                            userDefaults.getString("config.helpUrl") ??
+                                AppUrls.addRepo.url,
+                            ref.read(toastProvider(context)),
+                          ),
+                      icon: const Icon(Icons.help_rounded),
+                      label: Text(context.l10n!.help))),
+            ],
             const Divider(),
           ],
           if (magic.a8 || alwaysShow) ...[
@@ -61,7 +78,7 @@ class BrowseSettingsScreen extends HookConsumerWidget {
   }
 
   void showImportRepoIfNeeded(BuildContext context, WidgetRef ref) {
-    https://stackoverflow.com/questions/74721839/how-do-you-show-a-dialog-snackbar-inside-a-useeffect-on-flutter
+    https: //stackoverflow.com/questions/74721839/how-do-you-show-a-dialog-snackbar-inside-a-useeffect-on-flutter
     if (repoUrl.isNotBlank && repoName.isNotBlank) {
       useEffect(() {
         WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -842,5 +842,19 @@
   "yesterday": "أمس",
   "@yesterday": {
     "description": "Yesterday Text to show the release date of manga"
-  }
+  },
+  "getPremium": "احصل على النسخة المميزة",
+  "alreadyGetPremium": "تم شراء النسخة المميزة",
+  "purchaseExpireAt": "الاشتراك في النسخة المميزة سيتم تجديده تلقائيًا في ",
+  "iapFaq": "أسئلة حول شراء التطبيق داخل التطبيق",
+  "restorePurchase": "استعادة الشراء",
+  "share": "مشاركة",
+  "discordServer": "سيرفر Discord",
+  "externalRepository": "إعدادات التمديد",
+  "addRepository": "إضافة تمديدات خارجية",
+  "externalRepositoryUrl": "عنوان مستودع التمديدات",
+  "externalRepositoryUrlShort": "عنوان مستودع التمديدات",
+  "history": "التاريخ",
+  "useSysProxy": "استخدام إعدادات وكيل النظام",
+  "clearCookies": "مسح ملفات تعريف الارتباط"
 }

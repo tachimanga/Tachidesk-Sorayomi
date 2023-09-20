@@ -121,13 +121,9 @@ class Sorayomi extends ConsumerWidget {
   }
 
   void setupProxy(WidgetRef ref) {
-    final proxy = ref.watch(systemProxyProvider);
-    final useSystemProxy = ref.watch(useSystemProxyProvider);
-    if (useSystemProxy ?? false) {
-      print("use system proxy $proxy");
-      if (proxy != null && proxy['host'] != null && proxy['port'] != null) {
-        HttpOverrides.global = HttpProxy(proxy['host'], proxy['port']);
-      }
-    }
+    log("main setupProxy");
+    final proxy = ref.read(systemProxyProvider);
+    final useSystemProxy = ref.read(useSystemProxyProvider);
+    configHttpClient(proxy, useSystemProxy);
   }
 }

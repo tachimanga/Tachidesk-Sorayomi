@@ -10,8 +10,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/language_list.dart';
+import '../../../../constants/urls.dart';
+import '../../../../global_providers/global_providers.dart';
 import '../../../../global_providers/locale_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../domain/extension/extension_model.dart';
@@ -71,6 +74,10 @@ class ExtensionScreen extends HookConsumerWidget {
       //print("after $extensionMapKeys");
     }
 
+    final magic = ref.watch(getMagicProvider);
+    final repo = ref.watch(repoParamProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+
     refresh() => ref.refresh(extensionProvider.future);
     useEffect(() {
       if (!extensionMapData.isLoading) refresh();
@@ -87,9 +94,7 @@ class ExtensionScreen extends HookConsumerWidget {
 
     return extensionMapData.showUiWhenData(
       context,
-      (data) => (extensionMap.isEmpty &&
-              installed.isBlank &&
-              update.isBlank)
+      (data) => (extensionMap.isEmpty && installed.isBlank && update.isBlank)
           ? Emoticons(
               text: context.l10n!.extensionListEmpty,
               button: TextButton(
@@ -131,6 +136,18 @@ class ExtensionScreen extends HookConsumerWidget {
                       extensions: extensionMap[k],
                       refresh: refresh,
                     ),
+                  if (magic.b4 && repo == "DEFAULT") ...[
+                    SliverToBoxAdapter(
+                        child: TextButton.icon(
+                            onPressed: () => launchUrlInWeb(
+                                  context,
+                                  userDefaults.getString("config.helpUrl") ??
+                                      AppUrls.addRepo.url,
+                                  ref.read(toastProvider(context)),
+                                ),
+                            icon: const Icon(Icons.help_rounded),
+                            label: Text(context.l10n!.help))),
+                  ]
                 ],
               ),
             ),

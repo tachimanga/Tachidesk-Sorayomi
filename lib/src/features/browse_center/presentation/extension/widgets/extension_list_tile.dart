@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_sizes.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
@@ -32,6 +33,7 @@ class ExtensionListTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.watch(extensionRepositoryProvider);
+    final magicPipe = ref.watch(getMagicPipeProvider);
     final isLoading = useState(false);
     return ListTile(
       key: key,
@@ -65,9 +67,28 @@ class ExtensionListTile extends HookConsumerWidget {
                 text: context.l10n!.nsfw18,
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
-                  color: Colors.redAccent,
                 ),
               ),
+            if (extension.tagList?.isNotEmpty == true) ...[
+              for (final tag in extension.tagList!)
+                WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    baseline: TextBaseline.ideographic,
+                    child: Padding(
+                        padding: KEdgeInsets.h4.size,
+                        child: Container(
+                          padding: KEdgeInsets.h4.size,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              border: Border.all(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                  width: 0.5)),
+                          child: Text(tag.text ?? ""),
+                        ))),
+            ]
           ],
         ),
       ),

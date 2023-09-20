@@ -11,7 +11,7 @@
   "@appTheme": {
     "description": "Popup title and Button text to change App Theme"
   },
-  "appTitle": "iTachi",
+  "appTitle": "Tachimanga",
   "@appTitle": {
     "description": "Name of the app (Tachidesk Sorayomi in native script)"
   },
@@ -850,5 +850,19 @@
   "readerSwipeChapterToggleDescription": "Проведіть пальцем, щоб змінити розділ в читачу",
   "@readerSwipeChapterToggleDescription": {
     "description": "Switch tile description for, toggle `swipe to change chapter` in reader screen"
-  }
+  },
+  "getPremium": "Отримати Premium",
+  "alreadyGetPremium": "Придбано Premium",
+  "purchaseExpireAt": "Підписка Premium буде автоматично продовжуватися на ",
+  "iapFaq": "Часті запитання щодо покупок в додатку",
+  "restorePurchase": "Відновити покупку",
+  "share": "Поділитися",
+  "discordServer": "Discord-сервер",
+  "externalRepository": "Налаштування розширення",
+  "addRepository": "Додати зовнішні розширення",
+  "externalRepositoryUrl": "Адреса репозиторію розширень",
+  "externalRepositoryUrlShort": "Адреса репозиторію розширень",
+  "history": "Історія",
+  "useSysProxy": "Використовувати системні налаштування проксі",
+  "clearCookies": "Очистити кукі"
 }

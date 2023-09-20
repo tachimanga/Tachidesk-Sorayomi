@@ -38,7 +38,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     bool addScaffoldWrapper = false,
   }) {
     if (addScaffoldWrapper) {
-      wrapper = (body) => Scaffold(appBar: AppBar(), body: body);
+      wrapper = (body) => Scaffold(appBar: AppBar(backgroundColor: Colors.black.withOpacity(.7)), body: body);
     }
     return when(
       data: data,

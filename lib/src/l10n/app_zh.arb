@@ -105,7 +105,7 @@
   "@appTheme": {
     "description": "Popup title and Button text to change App Theme"
   },
-  "appTitle": "iTachi",
+  "appTitle": "Tachimanga",
   "@appTitle": {
     "description": "Name of the app (Tachidesk Sorayomi in native script)"
   },
@@ -762,5 +762,22 @@
   "missingTrackers": "跟踪器缺失",
   "@missingTrackers": {
     "description": "Group title to show the Missing Trackers when restoring Backup"
-  }
+  },
+  "getPremium": "获取专业版",
+  "alreadyGetPremium": "已购买专业版",
+  "purchaseExpireAt": "专业版订阅将于自动续期 ",
+  "iapFaq": "应用内购买常见问题",
+  "restorePurchase": "恢复购买",
+  "share": "分享",
+  "discordServer": "Discord服务器",
+  "externalRepository": "插件设置",
+  "addRepository": "添加外部插件",
+  "externalRepositoryUrl": "插件仓库的地址",
+  "externalRepositoryUrlShort": "插件仓库的地址",
+  "history": "历史",
+  "useSysProxy": "使用系统代理设置",
+  "clearCookies": "清除Cookies",
+  "clearCache": "清除缓存",
+  "termsUrl": "使用条款",
+  "privacyUrl": "隐私政策"
 }

@@ -26,7 +26,7 @@ DioClient dioClientApi(ref) {
   );
   dio.options.headers = {
     'Content-Type': 'application/json; charset=utf-8',
-    'User-Agent': 'iTachi iOS ${packageInfo.version} ${packageInfo.buildNumber}',
+    'User-Agent': 'Tachimanga iOS ${packageInfo.version} ${packageInfo.buildNumber}',
   };
   return DioClient(
     dio: dio,

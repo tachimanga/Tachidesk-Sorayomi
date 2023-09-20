@@ -595,7 +595,7 @@
     "addToLibrary": "Add to Library",
     "appLanguage": "App Language",
     "appTheme": "App Theme",
-    "appTitle": "iTachi",
+    "appTitle": "Tachimanga",
     "appearance": "Appearance",
     "authType": "Authentication Type",
     "authTypeBasic": "Basic Auth",
@@ -769,39 +769,75 @@
     "webView": "Web View",
     "whatsNew": "What's New?",
     "@getPremium": {
-        "description": "get premium"
+        "description": ""
     },
     "getPremium": "Get Premium",
+    "@alreadyGetPremium": {
+        "description": ""
+    },
+    "alreadyGetPremium": "Premium Purchased",
+    "@purchaseExpireAt": {
+        "description": ""
+    },
+    "purchaseExpireAt": "Premium Subscription will automatically renew on ",
+    "@iapFaq": {
+        "description": ""
+    },
+    "iapFaq": "In-App Purchase FAQ",
+    "@restorePurchase": {
+        "description": ""
+    },
+    "restorePurchase": "Restore Purchase",
     "@share": {
-        "description": "share app"
+        "description": ""
     },
     "share": "Share",
     "@discordServer": {
-        "description": "discord"
+        "description": ""
     },
     "discordServer": "Discord Server",
     "@externalRepository": {
-        "description": "External repository"
+        "description": ""
     },
-    "externalRepository": "External repository",
+    "externalRepository": "Extension Settings",
     "@addRepository": {
-        "description": "Add repository"
+        "description": ""
     },
-    "addRepository": "Add repository",
+    "addRepository": "Add External Extensions",
     "@externalRepositoryUrl": {
-        "description": "External extension repo url"
+        "description": ""
     },
-    "externalRepositoryUrl": "External extension repo url",
+    "externalRepositoryUrl": "Extension Repository Url",
     "@externalRepositoryUrlShort": {
-        "description": "RepoUrl"
+        "description": ""
     },
-    "externalRepositoryUrlShort": "RepoUrl",
+    "externalRepositoryUrlShort": "Extension Repository Url",
     "@copyRightClaim": {
-        "description": "copyright claim"
+        "description": ""
     },
     "copyRightClaim": "Copyright claim",
     "@history": {
-        "description": "history"
+        "description": ""
     },
-    "history": "History"
+    "history": "History",
+    "@useSysProxy": {
+        "description": ""
+    },
+    "useSysProxy": "Use system proxy settings",
+    "@clearCookies": {
+        "description": ""
+    },
+    "clearCookies": "Clear Cookies",
+    "@clearCache": {
+        "description": ""
+    },
+    "clearCache": "Clear Cache",
+    "@termsUrl": {
+        "description": ""
+    },
+    "termsUrl": "Terms of Use",
+    "@privacyUrl": {
+        "description": ""
+    },
+    "privacyUrl": "Privacy Policy"
 }

@@ -28,7 +28,7 @@ class SourceMangaFilter extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final filters = useState(initialFilters);
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kAppBarBottomHeight),
         child: Padding(
@@ -68,6 +68,6 @@ class SourceMangaFilter extends HookWidget {
         },
         itemCount: filters.value.length,
       ),
-    );
+    ));
   }
 }

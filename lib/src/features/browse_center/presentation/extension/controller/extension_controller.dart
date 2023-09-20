@@ -26,11 +26,18 @@ part 'extension_controller.g.dart';
 Future<List<Extension>?> extension(ExtensionRef ref) async {
   final token = CancelToken();
   ref.onDispose(token.cancel);
+
+  final repo = ref.watch(repoParamProvider);
   final result = await ref
       .watch(extensionRepositoryProvider)
-      .getExtensionList("", cancelToken: token);
+      .getExtensionList(repo, cancelToken: token);
   ref.keepAlive();
   return result;
+}
+
+@riverpod
+String repoParam(RepoParamRef ref) {
+  return "";
 }
 
 @riverpod

@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -38,9 +40,9 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
     }
 
     final selectedList = selectedChapters.value.values;
-
+    final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return Padding(
-      padding: KEdgeInsets.a8.size,
+      padding: EdgeInsets.fromLTRB(8, 8, 8, safeAreaBottom > 0 ? max(0, safeAreaBottom - 14) : 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

@@ -15,6 +15,7 @@ import '../../../../constants/app_sizes.dart';
 import '../../../../constants/gen/assets.gen.dart';
 import '../../../../constants/urls.dart';
 
+import '../../../../global_providers/preference_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
@@ -51,7 +52,7 @@ class AboutScreenLite extends HookConsumerWidget {
           ),
           ClipboardListTile(
             title: "About",
-            value: "iTachi is an unofficial port of Tachiyomi for iOS, developed solely by @oldmike and has no affiliation with the original development team.",
+            value: "Tachimanga is an unofficial port of Tachiyomi for iOS, developed solely by @oldmike and has no affiliation with the original development team.",
           ),
           ClipboardListTile(
             title: "Credit",
@@ -60,6 +61,13 @@ class AboutScreenLite extends HookConsumerWidget {
           const Divider(),
           const FileLogTile(),
           const FileLogExport(),
+          SwitchListTile(
+            controlAffinity: ListTileControlAffinity.trailing,
+            secondary: const Icon(Icons.switch_left_rounded),
+            title: Text("Native net for flutter (Need restart)"),
+            onChanged: ref.read(useNativeNetProvider.notifier).update,
+            value: ref.watch(useNativeNetProvider).ifNull(true),
+          ),
         ],
       ),
     );

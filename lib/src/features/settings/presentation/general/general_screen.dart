@@ -10,11 +10,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:system_proxy/system_proxy.dart';
 
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../global_providers/preference_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/http_proxy.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/radio_list_popup.dart';
@@ -55,13 +57,17 @@ class GeneralScreen extends ConsumerWidget {
           SwitchListTile(
             controlAffinity: ListTileControlAffinity.trailing,
             secondary: const Icon(Icons.switch_left_rounded),
-            title: const Text('Use system proxy settings'),
-            onChanged: ref.read(useSystemProxyProvider.notifier).update,
+            title: Text(context.l10n!.useSysProxy),
+            onChanged: (value) async {
+              ref.read(useSystemProxyProvider.notifier).update(value);
+              final proxy = await SystemProxy.getProxySettings();
+              configHttpClient(proxy, value);
+            },
             value: ref.watch(useSystemProxyProvider).ifNull(),
           ),
           ListTile(
             leading: const Icon(Icons.cleaning_services_rounded),
-            title: const Text('Clear Cookies'),
+            title: Text(context.l10n!.clearCookies),
             onTap: () async {
               try {
                 await pipe.invokeMethod("ClearCookies");
@@ -74,9 +80,9 @@ class GeneralScreen extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.cleaning_services_rounded),
-            title: const Text('Clear Cache'),
+            title: Text(context.l10n!.clearCache),
             onTap: () async {
-              toast.show("Cache Clearing...",
+              toast.show("${context.l10n!.clearCache}...",
                   gravity: ToastGravity.CENTER,
                   toastDuration: const Duration(seconds: 30));
               try {

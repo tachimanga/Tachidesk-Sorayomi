@@ -4,13 +4,16 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_sizes.dart';
 import '../../../../constants/app_themes/color_schemas/default_theme.dart';
 import '../../../../constants/enum.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -89,22 +92,24 @@ class ReaderScreen extends HookConsumerWidget {
       [chapter],
     );
 
+    final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return WillPopScope(
       onWillPop: () async {
-        ref.invalidate(chapterProviderWithIndex);
+        //ref.invalidate(chapterProviderWithIndex);
         ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
         return true;
       },
-      child:
-          SafeArea(
-            child: Theme(
-              data: Theme.of(context).copyWith(scaffoldBackgroundColor:
-                context.isDarkMode ? Colors.black : defaultColorSchema.light.background
+      child: Theme(
+              data: defaultTheme.dark.copyWith(scaffoldBackgroundColor:
+                Colors.black,
+                appBarTheme: const AppBarTheme(
+                  systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
+                )
               ),
               child: Column(
               children: [
                 Expanded(
-                  child: manga.showUiWhenData(
+              child: manga.showUiWhenData(
                     context,
                         (data) {
                       if (data == null) return const SizedBox.shrink();
@@ -173,21 +178,16 @@ class ReaderScreen extends HookConsumerWidget {
                   ),
                 ),
                 if (bannerAd.hasValue && bannerAd.value?.loaded == true) ...[
-                  SizedBox(
-                    width: bannerAd.value!.bannerAd!.size.width.toDouble(),
-                    height: bannerAd.value!.bannerAd!.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd.value!.bannerAd!),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: max(0, safeAreaBottom - 14)),
+                    child: SizedBox(
+                      width: bannerAd.value!.bannerAd!.size.width.toDouble(),
+                      height: bannerAd.value!.bannerAd!.size.height.toDouble(),
+                      child: AdWidget(ad: bannerAd.value!.bannerAd!),
+                    )
                   )
-                ]
-                // bannerAd.showUiWhenData(context, (data) {
-                //   return SizedBox(
-                //     width: data!.bannerAd!.size.width.toDouble(),
-                //     height: data!.bannerAd!.size.height.toDouble(),
-                //     child: AdWidget(ad: data.bannerAd!),
-                //   );
-                // }),
+                ],
               ],
-            ),
             ),
           )
     );

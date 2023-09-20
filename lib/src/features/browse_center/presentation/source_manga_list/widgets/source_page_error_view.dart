@@ -12,24 +12,30 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../../constants/app_sizes.dart';
 
+import '../../../../../constants/urls.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/emoticons.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../domain/source/source_model.dart';
 
 class SourcePageErrorView extends ConsumerWidget {
-  const SourcePageErrorView({super.key, required this.controller, this.source});
+  const SourcePageErrorView({super.key, required this.controller, this.source, this.message});
   final PagingController<int, Manga> controller;
   final Source? source;
+  final String? message;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    final magic = ref.watch(getMagicProvider);
+    final message = this.message ?? controller.error.toString();
     return Emoticons(
-      text: controller.error.toString(),
+      text: message,
       button: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -54,6 +60,25 @@ class SourcePageErrorView extends ConsumerWidget {
                   children: [
                     const Icon(Icons.public),
                     Text("WebView")
+                  ]
+              ),
+            )
+          ],
+          if (magic.b5) ...[
+            TextButton(
+              onPressed: () {
+                final url = userDefaults.getString("config.findAnswerUrl") ??
+                    AppUrls.findAnswer.url;
+                launchUrlInWeb(
+                  context,
+                  "$url?source=${source?.name}&ext=${source?.extPkgName}&err=${message}",
+                  ref.read(toastProvider(context)),
+                );
+              },
+              child: Column(
+                  children: [
+                    const Icon(Icons.help_rounded),
+                    Text(context.l10n!.help)
                   ]
               ),
             )

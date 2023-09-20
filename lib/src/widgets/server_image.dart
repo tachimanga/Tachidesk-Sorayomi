@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../constants/endpoints.dart';
 import '../constants/enum.dart';
+import '../constants/urls.dart';
 import '../features/manga_book/domain/img/image_error_widget.dart';
 import '../features/manga_book/domain/img/image_model.dart';
 import '../features/manga_book/domain/img/unique_key_provider.dart';
@@ -18,6 +19,8 @@ import '../features/settings/presentation/server/widget/credential_popup/credent
 import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../global_providers/global_providers.dart';
 import '../utils/extensions/custom_extensions.dart';
+import '../utils/launch_url_in_web.dart';
+import '../utils/misc/toast/toast.dart';
 import 'emoticons.dart';
 
 class ServerImage extends ConsumerWidget {
@@ -47,6 +50,9 @@ class ServerImage extends ConsumerWidget {
     final baseUrl = ref.watch(serverUrlProvider);
     final authType = ref.watch(authTypeKeyProvider);
     final basicToken = ref.watch(credentialsProvider);
+    final magic = ref.watch(getMagicProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+
     var baseApi =
         "${Endpoints.baseApi(baseUrl: baseUrl, appendApiToUrl: appendApiToUrl)}"
         "$imageUrl";
@@ -66,9 +72,27 @@ class ServerImage extends ConsumerWidget {
       if (reloadButton) {
         return ImgError(
             text: error.toString(),
-            button: TextButton(
-              onPressed: () => ref.read(keyProvider!.notifier).reload(),
-              child: Text(context.l10n!.refresh),
+            button: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => ref.read(keyProvider!.notifier).reload(),
+                  child: Text(context.l10n!.refresh),
+                ),
+                if (magic.b5) ...[
+                  TextButton(
+                    onPressed: () {
+                      final url = userDefaults.getString("config.findAnswerUrl") ?? AppUrls.findAnswer.url;
+                      launchUrlInWeb(
+                        context,
+                        "$url?src=img&err=${error.toString()}",
+                        ref.read(toastProvider(context)),
+                      );
+                    },
+                    child: Text(context.l10n!.help),
+                  )
+                ],
+              ],
             ));
       }
       return const Icon(

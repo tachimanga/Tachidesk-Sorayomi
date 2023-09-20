@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -185,6 +187,7 @@ class ReaderWrapper extends HookConsumerWidget {
       ],
     );
 
+    final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return Theme(
       data: context.theme.copyWith(
         bottomSheetTheme: const BottomSheetThemeData(
@@ -282,7 +285,7 @@ class ReaderWrapper extends HookConsumerWidget {
                     KSizedBox.h8.size,
                     Container(
                       color: Colors.black.withOpacity(.7),
-                      padding: KEdgeInsets.h16v8.size,
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, safeAreaBottom > 0 ? max(0, safeAreaBottom - 14) : 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -320,7 +323,10 @@ class ReaderWrapper extends HookConsumerWidget {
                                     context: context,
                                     backgroundColor: context.theme.cardColor,
                                     clipBehavior: Clip.hardEdge,
-                                    builder: (context) => quickSettings,
+                                    builder: (context) => Padding(
+                                      padding: EdgeInsets.only(bottom: safeAreaBottom),
+                                      child: quickSettings,
+                                    ),
                                   );
                                 }
                               },

@@ -23,3 +23,23 @@ class UseSystemProxy extends _$UseSystemProxy with SharedPreferenceClientMixin<b
     initial: DBKeys.useSystemProxy.initial,
   );
 }
+
+@riverpod
+class UseNativeNet extends _$UseNativeNet with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: "config.flutterNativeNet",
+    initial: true,
+  );
+}
+
+@riverpod
+class MaxConnPerHost extends _$MaxConnPerHost with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() => initialize(
+    ref,
+    key: "config.maxConnPerHost",
+    initial: "3",
+  );
+}

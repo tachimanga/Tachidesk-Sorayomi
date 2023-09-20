@@ -20,8 +20,10 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../about/presentation/about/widget/media_launch_button.dart';
+import '../../../custom/inapp/purchase_providers.dart';
 import '../../widgets/server_url_tile/server_url_tile.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
+import 'purchase_cell.dart';
 
 class MoreScreenLite extends ConsumerWidget {
   const MoreScreenLite({super.key});
@@ -41,7 +43,6 @@ class MoreScreenLite extends ConsumerWidget {
     final shareMsg = userDefaults.getString("config.shareMsg") ?? "Tachiyomi for iOS is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.more),
@@ -100,33 +101,62 @@ class MoreScreenLite extends ConsumerWidget {
               _onShare(context, toast, shareMsg);
             },
           ),
-          ListTile(
-              title: Text(context.l10n!.discordServer),
-              leading: const Icon(Icons.discord_rounded),
+          if (magic.a2) ...[
+            ListTile(
+                title: Text("Join our telegram group"),
+                leading: const Icon(Icons.telegram_rounded),
+                onTap: () =>
+                    launchUrlInWeb(
+                      context,
+                      AppUrls.telegram.url,
+                      ref.read(toastProvider(context)),
+                    )
+            ),
+          ],
+          if (magic.a3) ...[
+            ListTile(
+                title: Text(context.l10n!.discordServer),
+                leading: const Icon(Icons.discord_rounded),
+                onTap: () => launchUrlInWeb(
+                  context,
+                  userDefaults.getString("config.discordUrl") ?? AppUrls.discord.url,
+                  ref.read(toastProvider(context)),
+                )
+            ),
+          ],
+          if (magic.a5) ...[
+            ListTile(
+              title: Text(context.l10n!.help),
+              leading: const Icon(Icons.help_rounded),
               onTap: () => launchUrlInWeb(
                 context,
-                userDefaults.getString("config.discordUrl") ?? AppUrls.discord.url,
+                userDefaults.getString("config.faqUrl") ?? AppUrls.faqUrl.url,
                 ref.read(toastProvider(context)),
-              )
-          ),
-          ListTile(
-            title: Text(context.l10n!.about),
-            leading: const Icon(Icons.info_rounded),
-            onTap: () => context.push(Routes.about),
-          ),
-          ListTile(
-            title: Text(context.l10n!.copyRightClaim),
-            leading: const Icon(Icons.email_rounded),
-            onTap: () {
-              pipe.invokeMethod("LogEvent", "COPYRIGHT_CLAIM");
-              pipe.invokeMethod("SEND_MAIL", <String, Object?>{
-                'title': 'Copyright Claim Notice',
-                'content': 'Please provide the following details:\n'
-                    'Description of the copyrighted material: [Provide detailed description]\n'
-                    'Location of the infringing content: [Provide specific URLs or links]\n',
-              });
-            },
-          ),
+              ),
+            ),
+          ],
+          if (magic.a4) ...[
+            ListTile(
+              title: Text(context.l10n!.about),
+              leading: const Icon(Icons.info_rounded),
+              onTap: () => context.push(Routes.about),
+            ),
+          ],
+          if (magic.b3) ...[
+            ListTile(
+              title: Text(context.l10n!.copyRightClaim),
+              leading: const Icon(Icons.email_rounded),
+              onTap: () {
+                pipe.invokeMethod("LogEvent", "COPYRIGHT_CLAIM");
+                pipe.invokeMethod("SEND_MAIL", <String, Object?>{
+                  'title': 'Copyright Claim Notice',
+                  'content': 'Please provide the following details:\n'
+                      'Description of the copyrighted material: [Provide detailed description]\n'
+                      'Location of the infringing content: [Provide specific URLs or links]\n',
+                });
+              },
+            ),
+          ],
         ],
       ),
     );
