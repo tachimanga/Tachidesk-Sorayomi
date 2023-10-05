@@ -54,21 +54,13 @@ class GeneralScreen extends ConsumerWidget {
               ),
             ),
           ),
-          SwitchListTile(
-            controlAffinity: ListTileControlAffinity.trailing,
-            secondary: const Icon(Icons.switch_left_rounded),
-            title: Text(context.l10n!.useSysProxy),
-            onChanged: (value) async {
-              ref.read(useSystemProxyProvider.notifier).update(value);
-              final proxy = await SystemProxy.getProxySettings();
-              configHttpClient(proxy, value);
-            },
-            value: ref.watch(useSystemProxyProvider).ifNull(),
-          ),
           ListTile(
             leading: const Icon(Icons.cleaning_services_rounded),
             title: Text(context.l10n!.clearCookies),
             onTap: () async {
+              toast.show("${context.l10n!.clearCookies}...",
+                  gravity: ToastGravity.CENTER,
+                  toastDuration: const Duration(seconds: 30));
               try {
                 await pipe.invokeMethod("ClearCookies");
                 await settingsRepository.clearCookies();
@@ -76,6 +68,9 @@ class GeneralScreen extends ConsumerWidget {
               } catch (e) {
                 log("clearCookies err $e");
               }
+              toast.close();
+              toast.show("Cookies Cleared",
+                  gravity: ToastGravity.CENTER);
             },
           ),
           ListTile(

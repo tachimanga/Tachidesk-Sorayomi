@@ -122,7 +122,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
           );
         } else {
           return IconButton(
-            icon: const Icon(Icons.download_for_offline_rounded),
+            icon: const Icon(Icons.download_for_offline_outlined),
             onPressed: () {
               toggleChapterToQueue(toast, ref, isAdd: true);
             },

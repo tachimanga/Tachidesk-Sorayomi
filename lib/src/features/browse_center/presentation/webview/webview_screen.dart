@@ -25,26 +25,12 @@ class WebViewScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final backgroundColor = context.isDarkMode ? Colors.black : Colors.white;
     final controller = ref.watch(webViewControllerProvider(url: url ?? "", backgroundColor: backgroundColor));
-    final pipe = ref.watch(getMagicPipeProvider);
-    final settingsRepository = ref.watch(settingsRepositoryProvider);
-    return WillPopScope(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.l10n!.browse),
-        ),
-        body: WebViewWidget(controller: controller),
+    final uploadCookiesOnDispose = ref.watch(uploadCookiesOnDisposeProvider);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.l10n!.browse),
       ),
-      onWillPop: () async {
-        final json = await pipe.invokeMethod("GetCookies");
-        log("GetCookies $json");
-        try {
-          final result = await settingsRepository.uploadCookies(json: json);
-          log("uploadCookies succ");
-        } catch (e) {
-          log("uploadCookies err $e");
-        }
-        return true;
-      },
+      body: WebViewWidget(controller: controller),
     );
   }
 }

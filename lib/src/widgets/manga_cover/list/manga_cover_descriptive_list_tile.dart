@@ -24,6 +24,7 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
     this.showBadges = true,
     this.showCountBadges = true,
     this.showLastReadChapter = false,
+    this.popupItems,
   });
   final Manga manga;
   final bool showBadges;
@@ -32,6 +33,7 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final ValueChanged<String?>? onTitleClicked;
+  final List<PopupMenuItem>? popupItems;
   @override
   Widget build(BuildContext context) {
     final sourceName =
@@ -136,6 +138,13 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
                 ),
               ),
             ),
+            if (popupItems?.isNotEmpty == true) ...[
+              PopupMenuButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: KBorderRadius.r16.radius,
+                  ),
+                  itemBuilder: (context) => popupItems!)
+            ],
           ],
         ),
       ),

@@ -13,7 +13,9 @@ import '../../../../constants/app_sizes.dart';
 
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
+import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
 import '../../domain/chapter/chapter_model.dart';
@@ -90,13 +92,14 @@ class MangaDetailsScreen extends HookConsumerWidget {
       return;
     }, [filteredChapterList]);
 */
+    useRouteObserver(routeObserver, didPop: () {
+      log("MangaDetailsScreen did pop");
+      if (categoryId != null) {
+        ref.invalidate(categoryMangaListProvider(categoryId!));
+      }
+    });
     return WillPopScope(
-      onWillPop: () async {
-        if (categoryId != null) {
-          ref.invalidate(categoryMangaListProvider(categoryId!));
-        }
-        return true;
-      },
+      onWillPop: null,
       child: manga.showUiWhenData(
         context,
         (data) => Scaffold(

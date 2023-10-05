@@ -38,35 +38,21 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     bool addScaffoldWrapper = false,
   }) {
     if (addScaffoldWrapper) {
-      wrapper = (body) => Scaffold(appBar: AppBar(backgroundColor: Colors.black.withOpacity(.7)), body: body);
+      wrapper = (body) => Scaffold(
+          appBar: AppBar(backgroundColor: Colors.black.withOpacity(.7)),
+          body: body);
     }
     return when(
       data: data,
       error: (error, trace) => wrapper == null
-          ? Emoticons(
-              text: showGenericError
-                  ? context.l10n!.errorSomethingWentWrong
-                  : error.toString(),
-              button: refresh != null
-                  ? TextButton(
-                      onPressed: refresh,
-                      child: Text(context.l10n!.refresh),
-                    )
-                  : null,
-            )
-          : wrapper(
-              Emoticons(
-                text: showGenericError
-                    ? context.l10n!.errorSomethingWentWrong
-                    : error.toString(),
-                button: refresh != null
-                    ? TextButton(
-                        onPressed: refresh,
-                        child: Text(context.l10n!.refresh),
-                      )
-                    : null,
-              ),
-            ),
+          ? CommonErrorWidget(
+              refresh: refresh,
+              showGenericError: showGenericError,
+              error: error)
+          : wrapper(CommonErrorWidget(
+              refresh: refresh,
+              showGenericError: showGenericError,
+              error: error)),
       loading: () => wrapper == null
           ? const CenterCircularProgressIndicator()
           : wrapper(const CenterCircularProgressIndicator()),

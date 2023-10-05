@@ -3,6 +3,10 @@ import 'dart:ui';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../../global_providers/global_providers.dart';
+import '../../../../utils/log.dart';
+import '../../data/settings_repository/settings_repository.dart';
+
 part 'webview_provider.g.dart';
 
 // class WebViewData {
@@ -56,4 +60,23 @@ WebViewController webViewController(
    // ..setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/115.0.5790.160 Mobile/15E148 Safari/604.1")
     ..loadRequest(Uri.parse(url));
   return controller;
+}
+
+@riverpod
+int uploadCookiesOnDispose(UploadCookiesOnDisposeRef ref) {
+  log("uploadCookies create");
+  final pipe = ref.watch(getMagicPipeProvider);
+  final settingsRepository = ref.watch(settingsRepositoryProvider);
+  ref.onDispose(() async {
+    log("uploadCookies dispose");
+    final json = await pipe.invokeMethod("GetCookies");
+    log("GetCookies $json");
+    try {
+      final result = await settingsRepository.uploadSettings(json: json);
+      log("uploadCookies succ");
+    } catch (e) {
+      log("uploadCookies err $e");
+    }
+  });
+  return 0;
 }

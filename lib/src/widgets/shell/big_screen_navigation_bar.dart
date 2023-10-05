@@ -29,7 +29,7 @@ class BigScreenNavigationBar extends StatelessWidget {
           : NavigationRailLabelType.all,
       leading: context.isDesktop
           ? TextButton.icon(
-              onPressed: () => context.push(Routes.about),
+              onPressed: () => {},
               icon: ImageIcon(
                 AssetImage(Assets.icons.darkIcon.path),
                 size: 48,
@@ -40,7 +40,7 @@ class BigScreenNavigationBar extends StatelessWidget {
               ),
             )
           : IconButton(
-              onPressed: () => context.push(Routes.about),
+              onPressed: () => {},
               icon: ImageIcon(
                 AssetImage(Assets.icons.darkIcon.path),
                 size: 48,

@@ -19,6 +19,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/pop_button.dart';
+import '../../data/manga_book_repository.dart';
 import 'controller/history_controller.dart';
 
 class HistoryScreen extends HookConsumerWidget {
@@ -26,7 +27,8 @@ class HistoryScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var mangaList = ref.watch(historyListProvider);
+    final mangaList = ref.watch(historyListProvider);
+    final toast = ref.read(toastProvider(context));
 
     refresh() => ref.refresh(historyListProvider.future);
 
@@ -74,6 +76,23 @@ class HistoryScreen extends HookConsumerWidget {
                   },
                   showBadges: false,
                   showLastReadChapter: true,
+                  popupItems: [
+                    PopupMenuItem(
+                      child: Text(context.l10n!.delete),
+                      onTap: () async {
+                        final manga = data![index];
+                        if (manga.id != null) {
+                          (await AsyncValue.guard(
+                            () => ref
+                                .read(mangaBookRepositoryProvider)
+                                .batchDeleteHistory([manga.id!]),
+                          ))
+                              .showToastOnError(toast);
+                          await refresh();
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ));
         },

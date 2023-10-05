@@ -13,26 +13,37 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
+import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 
 part 'reader_controller.g.dart';
 
 @riverpod
-FutureOr<Chapter?> chapter(
-  ChapterRef ref, {
-  required String mangaId,
-  required String chapterIndex,
-}) async {
-  final token = CancelToken();
-  ref.onDispose(token.cancel);
-  final result = await ref.watch(mangaBookRepositoryProvider).getChapter(
-        mangaId: mangaId,
-        chapterIndex: chapterIndex,
-      );
-  ref.keepAlive();
-  return result;
+class ChapterWithId extends _$ChapterWithId {
+  @override
+  Future<Chapter?> build({
+    required String mangaId,
+    required String chapterIndex,
+  }) async {
+    final token = CancelToken();
+    ref.onDispose(token.cancel);
+    final result = await ref.watch(mangaBookRepositoryProvider).getChapter(
+          mangaId: mangaId,
+          chapterIndex: chapterIndex,
+        );
+    //ref.keepAlive();
+    return result;
+  }
+
+  Future<void> toggleBookmarked() async {
+    final result = state.copyWithData((chapter) => chapter?.copyWith(
+        bookmarked: chapter.bookmarked != null ? !chapter.bookmarked! : null));
+    //ref.keepAlive();
+    state = result;
+  }
 }
 
 class MyBannerAd {
@@ -46,7 +57,8 @@ FutureOr<MyBannerAd?> bannerAdAdaptive(BannerAdAdaptiveRef ref, {
 }) async {
   var userDefaults = ref.watch(sharedPreferencesProvider);
   var adUnitId = userDefaults.getString("config.adUnitId2");
-
+  var hasShowRate = userDefaults.getString("mc.app.hasShowRate");
+  final purchaseGate = ref.watch(purchaseGateProvider);
   var completer = Completer<MyBannerAd>();
   var empty = MyBannerAd();
   empty.loaded = false;
@@ -54,14 +66,25 @@ FutureOr<MyBannerAd?> bannerAdAdaptive(BannerAdAdaptiveRef ref, {
   if (adUnitId == null || adUnitId.isEmpty) {
     log('adUnitId is empty. $adUnitId ');
     completer.complete(empty);
+    return completer.future;
+  }
+
+  if (purchaseGate == true) {
+    log('premium not show ad');
+    completer.complete(empty);
+    return completer.future;
   }
 
   var magic = ref.watch(getMagicProvider);
   final magicPipe = ref.watch(getMagicPipeProvider);
 
   if (!magic.b0) {
+    if (hasShowRate == null || hasShowRate.isEmpty) {
+      log('wait rate $hasShowRate');
       magicPipe.invokeMethod("LogEvent", "LOAD_AD_WAIT");
       completer.complete(empty);
+      return completer.future;
+    }
   }
 
   final AnchoredAdaptiveBannerAdSize? size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(width.truncate());
