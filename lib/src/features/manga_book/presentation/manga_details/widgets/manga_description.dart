@@ -19,6 +19,7 @@ import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
 import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../../settings/presentation/tracking/widgets/tracker_setting_widget.dart';
 import '../../../domain/manga/manga_model.dart';
 
 class MangaDescription extends HookConsumerWidget {
@@ -37,6 +38,8 @@ class MangaDescription extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(context.isTablet);
     final toast = ref.read(toastProvider(context));
+    final trackerAvailable = manga.trackers?.isNotEmpty == true;
+    final trackerCount = manga.trackers?.where((t) => t.record != null).length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,9 +53,9 @@ class MangaDescription extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              AsyncTextButtonIcon(
+              Expanded(
+                  child: AsyncTextButtonIcon(
                 onPressed: () async {
                   final val = await AsyncValue.guard(() async {
                     if (manga.inLibrary.ifNull()) {
@@ -68,14 +71,44 @@ class MangaDescription extends HookConsumerWidget {
                 },
                 isPrimary: manga.inLibrary.ifNull(),
                 primaryIcon: const Icon(Icons.favorite_rounded),
+                primaryStyle: TextButton.styleFrom(padding: EdgeInsets.zero),
                 secondaryIcon: const Icon(Icons.favorite_border_outlined),
-                secondaryStyle:
-                    TextButton.styleFrom(foregroundColor: Colors.grey),
+                secondaryStyle: TextButton.styleFrom(
+                    foregroundColor: Colors.grey, padding: EdgeInsets.zero),
                 primaryLabel: Text(context.l10n!.inLibrary),
                 secondaryLabel: Text(context.l10n!.addToLibrary),
-              ),
+              )),
+              if (trackerAvailable)
+                Expanded(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      refresh();
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: context.theme.cardColor,
+                        clipBehavior: Clip.hardEdge,
+                        builder: (context) => TrackerSettingWidget(
+                            mangaId: manga.id.toString(), refresh: refresh),
+                      );
+                    },
+                    icon: trackerCount != null && trackerCount > 0
+                        ? const Icon(Icons.done_rounded)
+                        : const Icon(Icons.sync_outlined),
+                    style: trackerCount != null && trackerCount > 0
+                        ? TextButton.styleFrom(padding: EdgeInsets.zero)
+                        : TextButton.styleFrom(
+                            foregroundColor: Colors.grey,
+                            padding: EdgeInsets.zero),
+                    label: trackerCount != null && trackerCount > 0
+                        ? (trackerCount == 1
+                            ? const Text("1 tracker")
+                            : Text("$trackerCount trackers"))
+                        : const Text("Tracking"),
+                  ),
+                ),
               if (manga.realUrl.isNotBlank)
-                TextButton.icon(
+                Expanded(
+                    child: TextButton.icon(
                   onPressed: () async {
                     toast.show("Loading...", gravity: ToastGravity.CENTER);
                     context.push(Routes.getWebView(manga.realUrl ?? ""));
@@ -86,9 +119,10 @@ class MangaDescription extends HookConsumerWidget {
                     // );
                   },
                   icon: const Icon(Icons.public),
-                  style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey, padding: EdgeInsets.zero),
                   label: Text(context.l10n!.webView),
-                ),
+                )),
             ],
           ),
         ),

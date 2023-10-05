@@ -46,8 +46,7 @@ class SourceListTile extends ConsumerWidget {
       trailing: Wrap(
         spacing: 0, // space between two icons
         children: [
-          if (source.isConfigurable.ifNull()
-              && (source.name?.startsWith("Komga") ?? false)) ...[
+          if (source.isConfigurable.ifNull()) ...[
             TextButton(
               onPressed: () async {
                 context.push(Routes.getSourcePref(source.id!));
@@ -69,18 +68,6 @@ class SourceListTile extends ConsumerWidget {
           ],
         ],
       ),
-      // trailing: (source.supportsLatest.ifNull())
-      //     ? TextButton(
-      //         onPressed: () async {
-      //           ref.read(sourceLastUsedProvider.notifier).update(source.id);
-      //           context.push(Routes.getSourceManga(
-      //             source.id!,
-      //             SourceType.latest,
-      //           ));
-      //         },
-      //         child: Text(context.l10n!.latest),
-      //       )
-      //     : null,
     );
   }
 }

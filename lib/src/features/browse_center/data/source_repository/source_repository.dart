@@ -17,7 +17,7 @@ import '../../../../utils/storage/dio/dio_client.dart';
 import '../../domain/filter/filter_model.dart';
 import '../../domain/manga_page/manga_page.dart';
 import '../../domain/source/source_model.dart';
-import '../../domain/source_pref/source_pref_model.dart';
+import '../../domain/source_preference/source_preference.dart';
 
 part 'source_repository.g.dart';
 
@@ -35,32 +35,27 @@ class SourceRepository {
       ))
           .data;
 
-  Future<List<SourcePref>?> getSourcePrefList({
+  Future<List<SourcePreference>?> getPreferenceList({
     required String sourceId,
-    CancelToken? cancelToken}
-      ) async =>
-      (await dioClient.get<List<SourcePref>, SourcePref>(
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.get<List<SourcePreference>, SourcePreference>(
         SourceUrl.preferences(sourceId),
-        decoder: (e) =>
-        e is Map<String, dynamic> ? SourcePref.fromJson(e) : SourcePref(),
+        decoder: (e) => e is Map<String, dynamic>
+            ? SourcePreference.fromJson(e)
+            : SourcePreference(),
         cancelToken: cancelToken,
       ))
           .data;
 
-  // POST http://127.0.0.1:4567/api/v1/source/4508733312114627536/preferences
-  // {"position":0,"value":"hello"}
-  Future<void> saveSourcePref({
+  Future<void> updatePreferenceList({
     required String sourceId,
-    required int index,
-    required String value,
-    CancelToken? cancelToken}
-      ) async =>
+    CancelToken? cancelToken,
+    Map<String, dynamic>? preference,
+  }) async =>
       (await dioClient.post(
         SourceUrl.preferences(sourceId),
-        data: {
-          "position": index,
-          "value": value,
-        },
+        data: preference,
         cancelToken: cancelToken,
       ))
           .data;

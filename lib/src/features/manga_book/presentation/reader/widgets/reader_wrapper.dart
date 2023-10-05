@@ -302,10 +302,10 @@ class ReaderWrapper extends HookConsumerWidget {
                               ),
                               refresh: () async {
                                 if (manga.id != null && chapter.index != null) {
-                                  return ref.refresh(chapterProvider(
+                                  ref.read(chapterWithIdProvider(
                                     mangaId: "${manga.id!}",
                                     chapterIndex: "${chapter.index!}",
-                                  ).future);
+                                  ).notifier).toggleBookmarked();
                                 }
                               },
                             ),

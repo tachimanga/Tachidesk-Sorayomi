@@ -11,11 +11,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../constants/enum.dart';
 import '../features/about/presentation/about/about_screen.dart';
 import '../features/about/presentation/about/about_screen_lite.dart';
+import '../features/about/presentation/about/debug_screen.dart';
 import '../features/browse_center/domain/filter/filter_model.dart';
 import '../features/browse_center/presentation/browse/browse_screen.dart';
 import '../features/browse_center/presentation/global_search/global_search_screen.dart';
 import '../features/browse_center/presentation/source_manga_list/source_manga_list_screen.dart';
-import '../features/browse_center/presentation/source_preference/source_pref_screen.dart';
+import '../features/browse_center/presentation/source_preference/source_preference_screen.dart';
 import '../features/browse_center/presentation/webview/webview_screen.dart';
 import '../features/custom/inapp/presentation/purchase_screen.dart';
 import '../features/library/presentation/category/edit_category_screen.dart';
@@ -35,6 +36,9 @@ import '../features/settings/presentation/more/more_screen_lite.dart';
 import '../features/settings/presentation/reader/reader_settings_screen.dart';
 import '../features/settings/presentation/server/server_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
+import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
+import '../features/settings/presentation/tracking/tracking_manga_search_screen.dart';
+import '../firebase/observer.dart';
 import '../global_providers/global_providers.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../widgets/shell/shell_screen.dart';
@@ -58,12 +62,14 @@ abstract class Routes {
   static const about = '/about';
   static const appearanceSettings = 's-appearance';
   static const generalSettings = 's-general';
+  static const debugSettings = 's-debug';
   static const backup = 'backup';
   static const settings = '/settings';
   static const browseSettings = 'extensionSetting';
   static getExtensionSetting(String name, String url) =>
     '$browseSettings?name=$name&url=$url';
   static const readerSettings = 'reader';
+  static const trackingSettings = 'tracking';
   static const reader = '/reader/:mangaId/:chapterIndex';
   static getReader(String mangaId, String chapterIndex) =>
       '/reader/$mangaId/$chapterIndex';
@@ -73,6 +79,8 @@ abstract class Routes {
   static const manga = '/manga/:mangaId';
   static getManga(int mangaId, {int? categoryId}) =>
       '/manga/$mangaId${categoryId.isNull ? '' : "?categoryId=$categoryId"}';
+  static const mangaTrackSearch = '/track/search/:trackerId/:mangaId';
+  static getMangaTrackSearch(int trackerId, int mangaId) => '/track/search/$trackerId/$mangaId';
   static const sourceManga = '/source/:sourceId/:sourceType';
   static getSourceManga(String sourceId, SourceType sourceType,
           {String? query}) =>
@@ -88,6 +96,8 @@ abstract class Routes {
   static const purchase = '/purchase';
 }
 
+RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 @riverpod
 GoRouter routerConfig(ref) {
   var pipe = ref.watch(getMagicPipeProvider);
@@ -95,6 +105,7 @@ GoRouter routerConfig(ref) {
     debugLogDiagnostics: true,
     initialLocation: Routes.browse,
     navigatorKey: _rootNavigatorKey,
+    observers: [observer, routeObserver],
     routes: [
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
@@ -163,7 +174,7 @@ GoRouter routerConfig(ref) {
       GoRoute(
         path: Routes.sourcePref,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => SourcePrefScreen(
+        builder: (context, state) => SourcePreferenceScreen(
           key: ValueKey(state.params['sourceId'] ?? "0"),
           sourceId: state.params['sourceId'] ?? "",
         ),
@@ -180,6 +191,15 @@ GoRouter routerConfig(ref) {
         builder: (context, state) => ReaderScreen(
           mangaId: state.params['mangaId'] ?? '',
           chapterIndex: state.params['chapterIndex'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: Routes.mangaTrackSearch,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => TrackingMangaSearchScreen(
+          key: ValueKey(state.params['trackerId'] ?? ""),
+          trackerId: int.parse(state.params['trackerId'] ?? ""),
+          mangaId: int.parse(state.params['mangaId'] ?? ""),
         ),
       ),
       GoRoute(
@@ -205,12 +225,20 @@ GoRouter routerConfig(ref) {
             builder: (context, state) => const ReaderSettingsScreen(),
           ),
           GoRoute(
+            path: Routes.trackingSettings,
+            builder: (context, state) => const TrackerSettingsScreen(),
+          ),
+          GoRoute(
             path: Routes.appearanceSettings,
             builder: (context, state) => const AppearanceScreen(),
           ),
           GoRoute(
             path: Routes.generalSettings,
             builder: (context, state) => const GeneralScreen(),
+          ),
+          GoRoute(
+            path: Routes.debugSettings,
+            builder: (context, state) => const DebugScreen(),
           ),
           GoRoute(
             path: Routes.browseSettings,

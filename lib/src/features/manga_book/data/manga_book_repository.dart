@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -121,6 +123,9 @@ class MangaBookRepository {
         decoder: (e) => e is Map<String, dynamic> ? Manga.fromJson(e) : Manga(),
       ))
           .data;
+
+  Future<void> batchDeleteHistory(List<int> mangaIds) =>
+      dioClient.delete(HistoryUrl.batchDelete, data: jsonEncode({'mangaIds': mangaIds}));
 }
 
 @riverpod

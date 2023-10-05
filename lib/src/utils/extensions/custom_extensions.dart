@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../widgets/common_error_widget.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
 import '../../widgets/emoticons.dart';
 import '../misc/toast/toast.dart';

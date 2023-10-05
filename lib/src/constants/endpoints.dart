@@ -22,7 +22,7 @@ abstract class Endpoints {
 abstract class SettingsUrl {
   static const String about = '$_settings/about';
   static const String checkServerUpdate = '$_settings/check-update';
-  static const String uploadCookies = '$_settings/uploadCookies';
+  static const String uploadSettings = '$_settings/uploadSettings';
   static const String clearCookies = '$_settings/clearCookies';
   static const String _settings = "/settings";
 }
@@ -74,6 +74,16 @@ abstract class MangaUrl {
 
 abstract class HistoryUrl {
   static const String list = "/history/list";
+  static const String batchDelete = "/history/batch";
+}
+
+abstract class TrackingUrl {
+  static const String list = "/track/list";
+  static const String login = "/track/login";
+  static const String logout = "/track/logout";
+  static const String search = "/track/search";
+  static const String bind = "/track/bind";
+  static const String update = "/track/update";
 }
 
 abstract class DownloaderUrl {

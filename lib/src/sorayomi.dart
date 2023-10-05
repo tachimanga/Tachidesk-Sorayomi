@@ -90,8 +90,13 @@ class Sorayomi extends ConsumerWidget {
   }
 
   void setupHandler(MethodChannel pipe, GoRouter goRouter, WidgetRef ref) {
-    pipe.setMethodCallHandler((call) {
+    pipe.setMethodCallHandler((call) async {
       log("call: ${call.method}, arg: ${call.arguments}");
+      if (call.method == 'UPDATE_MAGIC') {
+        await ref.read(sharedPreferencesProvider).reload();
+        log("reload sharedPreferences succ");
+        ref.read(magicAdUnitIdProvider.notifier).update(call.arguments);
+      }
       if (call.method == 'OPENURL') {
         final uri = Uri.parse(call.arguments);
         //final location = goRouter.location;

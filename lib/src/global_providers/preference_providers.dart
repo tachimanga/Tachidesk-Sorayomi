@@ -41,5 +41,14 @@ class MaxConnPerHost extends _$MaxConnPerHost with SharedPreferenceClientMixin<S
     ref,
     key: "config.maxConnPerHost",
     initial: "3",
+}
+
+@riverpod
+class JavaUseNativeNet extends _$JavaUseNativeNet with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: "config.javaNativeNet",
+    initial: false,
   );
 }

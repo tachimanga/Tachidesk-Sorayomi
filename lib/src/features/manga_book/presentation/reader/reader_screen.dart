@@ -16,7 +16,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/app_themes/color_schemas/default_theme.dart';
 import '../../../../constants/enum.dart';
+import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/log.dart' as logger;
+import '../../../../utils/route/route_aware.dart';
+import '../../../../widgets/common_error_widget.dart';
 import '../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter_patch/chapter_put_model.dart';
@@ -42,7 +46,7 @@ class ReaderScreen extends HookConsumerWidget {
     final mangaProvider =
         useMemoized(() => mangaWithIdProvider(mangaId: mangaId), []);
     final chapterProviderWithIndex = useMemoized(
-        () => chapterProvider(mangaId: mangaId, chapterIndex: chapterIndex),
+        () => chapterWithIdProvider(mangaId: mangaId, chapterIndex: chapterIndex),
         []);
 
     final manga = ref.watch(mangaProvider);
@@ -92,13 +96,15 @@ class ReaderScreen extends HookConsumerWidget {
       [chapter],
     );
 
+    useRouteObserver(routeObserver, didPop: () {
+      logger.log("ReaderScreen did pop");
+      //ref.invalidate(chapterProviderWithIndex);
+      ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
+    });
+
     final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return WillPopScope(
-      onWillPop: () async {
-        //ref.invalidate(chapterProviderWithIndex);
-        ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
-        return true;
-      },
+      onWillPop: null,
       child: Theme(
               data: defaultTheme.dark.copyWith(scaffoldBackgroundColor:
                 Colors.black,
@@ -116,7 +122,15 @@ class ReaderScreen extends HookConsumerWidget {
                       return chapter.showUiWhenData(
                         context,
                             (chapterData) {
-                          if (chapterData == null) return const SizedBox.shrink();
+                          if (chapterData == null
+                              || chapterData.pageCount == null
+                              || chapterData.pageCount == 0) {
+                            return Scaffold(
+                                appBar: AppBar(backgroundColor: Colors.black.withOpacity(.7)),
+                                body: CommonErrorWidget(
+                                    refresh: () => ref.refresh(chapterProviderWithIndex),
+                                    error: "No Pages found"));
+                          }
                           switch (data.meta?.readerMode ?? defaultReaderMode) {
                             case ReaderMode.singleVertical:
                               return SinglePageReaderMode(

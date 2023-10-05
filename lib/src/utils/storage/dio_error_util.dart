@@ -33,6 +33,10 @@ class DioErrorUtil {
           if (errMsg != null) {
             errorDescription = errMsg;
           }
+          final data = error.response?.toString();
+          if (data?.isNotEmpty == true) {
+            errorDescription = data!;
+          }
           break;
         case DioErrorType.sendTimeout:
           errorDescription = "Send timeout";

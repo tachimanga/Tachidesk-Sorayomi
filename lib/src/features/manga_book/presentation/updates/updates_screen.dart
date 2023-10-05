@@ -126,7 +126,7 @@ class UpdatesScreen extends HookConsumerWidget {
                     return;
                   } else {
                     final chapter = ref
-                        .refresh(chapterProvider(
+                        .refresh(chapterWithIdProvider(
                           mangaId: "${item.manga!.id!}",
                           chapterIndex: "${item.chapter!.index!}",
                         ))

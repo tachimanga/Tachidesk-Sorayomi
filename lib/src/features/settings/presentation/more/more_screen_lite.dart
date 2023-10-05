@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,14 +26,14 @@ import '../../widgets/server_url_tile/server_url_tile.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'purchase_cell.dart';
 
-class MoreScreenLite extends ConsumerWidget {
+class MoreScreenLite extends HookConsumerWidget {
   const MoreScreenLite({super.key});
 
   void _onShare(BuildContext context, Toast toast, String text) async {
     toast.instantShow("Loading...");
     final box = context.findRenderObject() as RenderBox?;
     await Share.share(text,
-          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
   }
 
   @override
@@ -40,20 +41,33 @@ class MoreScreenLite extends ConsumerWidget {
     final toast = ref.watch(toastProvider(context));
 
     final userDefaults = ref.watch(sharedPreferencesProvider);
-    final shareMsg = userDefaults.getString("config.shareMsg") ?? "Tachiyomi for iOS is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
+    final shareMsg = userDefaults.getString("config.shareMsg") ??
+        "Tachimanga (Tachiyomi port for iOS) is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final testflightFlag = ref.watch(testflightFlagProvider);
+
+    final debugCount = useState(0);
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.more),
       ),
       body: ListView(
         children: [
-          ImageIcon(
-            AssetImage(Assets.icons.darkIcon.path),
-            size: context.height * .1,
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              if (debugCount.value++ > 10) {
+                context.push([Routes.settings, Routes.debugSettings].toPath);
+              }
+            },
+            child: ImageIcon(
+              AssetImage(Assets.icons.darkIcon.path),
+              size: context.height * .1,
+            ),
           ),
-          //const Divider(),
+          const Divider(),
           ListTile(
             title: Text(context.l10n!.general),
             leading: const Icon(Icons.tune_rounded),
@@ -77,6 +91,12 @@ class MoreScreenLite extends ConsumerWidget {
             leading: const Icon(Icons.chrome_reader_mode_rounded),
             onTap: () =>
                 context.push([Routes.settings, Routes.readerSettings].toPath),
+          ),
+          ListTile(
+            title: TextPremium(text: "Tracking"),
+            leading: const Icon(Icons.sync_rounded),
+            onTap: () => checkPurchaseAndGo(purchaseGate, testflightFlag,
+                context, [Routes.settings, Routes.trackingSettings].toPath),
           ),
           if (magic.a8 || magic.a9) ...[
             ListTile(
@@ -105,24 +125,22 @@ class MoreScreenLite extends ConsumerWidget {
             ListTile(
                 title: Text("Join our telegram group"),
                 leading: const Icon(Icons.telegram_rounded),
-                onTap: () =>
-                    launchUrlInWeb(
+                onTap: () => launchUrlInWeb(
                       context,
                       AppUrls.telegram.url,
                       ref.read(toastProvider(context)),
-                    )
-            ),
+                    )),
           ],
           if (magic.a3) ...[
             ListTile(
                 title: Text(context.l10n!.discordServer),
                 leading: const Icon(Icons.discord_rounded),
                 onTap: () => launchUrlInWeb(
-                  context,
-                  userDefaults.getString("config.discordUrl") ?? AppUrls.discord.url,
-                  ref.read(toastProvider(context)),
-                )
-            ),
+                      context,
+                      userDefaults.getString("config.discordUrl") ??
+                          AppUrls.discord.url,
+                      ref.read(toastProvider(context)),
+                    )),
           ],
           if (magic.a5) ...[
             ListTile(
@@ -160,6 +178,75 @@ class MoreScreenLite extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+
+  void checkPurchaseAndGo(bool purchaseGate, bool testflightFlag,
+      BuildContext context, String path) {
+    if (purchaseGate) {
+      context.push(path);
+    }
+    else {
+      if (testflightFlag) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('This is a Premium Feature'),
+              content: const Text(
+                  'Please install the App Store one to complete the purchase and then switch back to the TestFlight one. '
+                  'Alternatively, you can enjoy a free trial for 30 days.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    context.pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    context.push(path);
+                    context.pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+      else {
+        context.push(Routes.purchase);
+      }
+    }
+  }
+}
+
+class TextPremium extends ConsumerWidget {
+  const TextPremium({super.key, required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Text.rich(
+      TextSpan(text: text, children: [
+        WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            baseline: TextBaseline.ideographic,
+            child: Padding(
+                padding: const EdgeInsets.fromLTRB(6, 2, 0, 0),
+                child: Container(
+                  padding: KEdgeInsets.h4.size,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          width: 0.5)),
+                  child: Text("PREMIUM", style: Theme.of(context).textTheme.labelSmall),
+                ))),
+      ]),
     );
   }
 }
