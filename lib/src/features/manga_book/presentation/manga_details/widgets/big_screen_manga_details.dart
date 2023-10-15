@@ -15,6 +15,7 @@ import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
 import 'chapter_list_tile.dart';
 import 'manga_description.dart';
+import 'manga_details_no_chapter_view.dart';
 
 class BigScreenMangaDetails extends ConsumerWidget {
   const BigScreenMangaDetails({
@@ -100,16 +101,13 @@ class BigScreenMangaDetails extends ConsumerWidget {
                     ],
                   );
                 } else {
-                  return Emoticons(
-                    text: context.l10n!.noChaptersFound,
-                    button: TextButton(
-                      onPressed: () => onListRefresh(true),
-                      child: Text(context.l10n!.refresh),
-                    ),
-                  );
+                  return MangaDetailsNoChapterErrorView(
+                      manga: manga, refresh: () => onListRefresh(true));
                 }
               },
               refresh: () => onRefresh(false),
+              errorSource: "manga-details",
+              webViewUrl: manga.realUrl,
             ),
           ),
         ],

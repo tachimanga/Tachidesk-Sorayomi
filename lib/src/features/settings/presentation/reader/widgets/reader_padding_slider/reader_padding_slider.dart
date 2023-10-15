@@ -16,6 +16,7 @@ import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../../../manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import '../../../../widgets/slider_setting_tile/slider_setting_tile.dart';
 
 part 'reader_padding_slider.g.dart';
@@ -55,19 +56,22 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
   const AsyncReaderPaddingSlider({
     super.key,
     required this.onChanged,
-    required this.readerPadding,
+    required this.mangaId,
   });
 
   final ValueSetter<double> onChanged;
-  final ValueNotifier<double> readerPadding;
+  final String mangaId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final debounce = useRef<Timer?>(null);
 
+    final readerPaddingProvider = readerPaddingWithMangaIdProvider(mangaId: mangaId);
+    final readerPadding = ref.watch(readerPaddingProvider);
+
     final onDebounceChanged = useCallback<ValueSetter<double>>(
       (double paddingValue) async {
-        readerPadding.value = paddingValue;
+        ref.read(readerPaddingProvider.notifier).update(paddingValue);
         final finalDebounce = debounce.value;
         if ((finalDebounce?.isActive).ifNull()) {
           finalDebounce?.cancel();
@@ -83,7 +87,7 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
     return SliderSettingTile(
       icon: Icons.width_wide_rounded,
       title: context.l10n!.readerPadding,
-      value: readerPadding.value,
+      value: readerPadding,
       labelGenerator: (val) => (val * 2.5).toStringAsFixed(2),
       onChanged: onDebounceChanged,
       defaultValue: DBKeys.readerPadding.initial,

@@ -41,7 +41,7 @@ class SourceMangaGridView extends ConsumerWidget {
           showDarkOverlay: item.inLibrary.ifNull(),
           onPressed: () {
             if (item.id != null) {
-              context.push(Routes.getManga(item.id!));
+              context.push(Routes.getManga(item.id!), extra: item.copyWith(source: source));
             }
           },
         ),

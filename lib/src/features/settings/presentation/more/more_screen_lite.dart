@@ -47,6 +47,7 @@ class MoreScreenLite extends HookConsumerWidget {
     final magic = ref.watch(getMagicProvider);
     final purchaseGate = ref.watch(purchaseGateProvider);
     final testflightFlag = ref.watch(testflightFlagProvider);
+    final freeTrialFlag = ref.watch(freeTrialFlagProvider);
 
     final debugCount = useState(0);
     return Scaffold(
@@ -93,10 +94,15 @@ class MoreScreenLite extends HookConsumerWidget {
                 context.push([Routes.settings, Routes.readerSettings].toPath),
           ),
           ListTile(
-            title: TextPremium(text: "Tracking"),
+            title: TextPremium(text: context.l10n!.tracking),
             leading: const Icon(Icons.sync_rounded),
-            onTap: () => checkPurchaseAndGo(purchaseGate, testflightFlag,
-                context, [Routes.settings, Routes.trackingSettings].toPath),
+            onTap: () => checkPurchaseAndGo(
+                purchaseGate,
+                testflightFlag,
+                freeTrialFlag,
+                context,
+                toast,
+                [Routes.settings, Routes.trackingSettings].toPath),
           ),
           if (magic.a8 || magic.a9) ...[
             ListTile(
@@ -182,42 +188,80 @@ class MoreScreenLite extends HookConsumerWidget {
   }
 
   void checkPurchaseAndGo(bool purchaseGate, bool testflightFlag,
-      BuildContext context, String path) {
+      bool freeTrialFlag, BuildContext context, Toast toast, String path) {
     if (purchaseGate) {
       context.push(path);
     }
     else {
       if (testflightFlag) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('This is a Premium Feature'),
-              content: const Text(
-                  'Please install the App Store one to complete the purchase and then switch back to the TestFlight one. '
-                  'Alternatively, you can enjoy a free trial for 30 days.'),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    context.pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    context.push(path);
-                    context.pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        processTestflight(
+            purchaseGate, testflightFlag, freeTrialFlag, context, toast, path);
       }
       else {
         context.push(Routes.purchase);
       }
+    }
+  }
+
+  void processTestflight(bool purchaseGate, bool testflightFlag,
+      bool freeTrialFlag, BuildContext context, Toast toast, String path) {
+    if (freeTrialFlag) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('This is a Premium Feature'),
+            content: const Text(
+                'Please install the App Store one to complete the purchase and then switch back to the TestFlight one. '
+                'Alternatively, you can enjoy a free trial for 30 days.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  context.pop();
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  context.push(path);
+                  context.pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('This is a Premium Feature'),
+            content: const Text(
+                'Please install the App Store one to complete the purchase and then switch back to the TestFlight one.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  context.pop();
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  launchUrlInWeb(
+                    context,
+                    AppUrls.appstore.url,
+                    toast,
+                  );
+                  context.pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
@@ -244,7 +288,8 @@ class TextPremium extends ConsumerWidget {
                               ? Colors.white
                               : Colors.black,
                           width: 0.5)),
-                  child: Text("PREMIUM", style: Theme.of(context).textTheme.labelSmall),
+                  child: Text("PREMIUM",
+                      style: Theme.of(context).textTheme.labelSmall),
                 ))),
       ]),
     );

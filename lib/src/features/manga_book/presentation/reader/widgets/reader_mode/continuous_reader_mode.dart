@@ -69,6 +69,9 @@ class ContinuousReaderMode extends HookWidget {
       positionsListener.itemPositions.addListener(listener);
       return () => positionsListener.itemPositions.removeListener(listener);
     }, []);
+
+    final pointCount = useState(0);
+    //print("ContinuousReaderMode build point: ${pointCount.value}");
     return ReaderWrapper(
       scrollDirection: scrollDirection,
       chapter: chapter,
@@ -103,9 +106,23 @@ class ContinuousReaderMode extends HookWidget {
           alignment: alignment,
         );
       },
+      child: Listener(
+        onPointerDown: (event) {
+          pointCount.value = pointCount.value + 1;
+          //print("ContinuousReaderMode onPointerDown, point: ${pointCount.value}");
+        },
+        onPointerUp: (_)  {
+          pointCount.value = pointCount.value - 1;
+          //print("ContinuousReaderMode onPointerUp, point: ${pointCount.value}");
+        },
+        onPointerCancel: (_)  {
+          pointCount.value = pointCount.value - 1;
+          //print("ContinuousReaderMode onPointerCancel, point: ${pointCount.value}");
+        },
       child: InteractiveViewer(
         maxScale: 8,
         child: ScrollablePositionedList.separated(
+            physics: pointCount.value == 2 ? const NeverScrollableScrollPhysics() : null,
           itemScrollController: scrollController,
           itemPositionsListener: positionsListener,
           initialScrollIndex: chapter.read.ifNull()
@@ -143,6 +160,8 @@ class ContinuousReaderMode extends HookWidget {
                     : null,
                 child: child,
               ),
+              memCacheWidth: scrollDirection == Axis.vertical ? context.width.toInt() : null,
+              memCacheHeight: scrollDirection != Axis.vertical ? context.height.toInt() : null,
             );
             if (index == 0 || index == (chapter.pageCount ?? 1) - 1) {
               final separator = SizedBox(
@@ -153,8 +172,8 @@ class ContinuousReaderMode extends HookWidget {
                   title: index == 0
                       ? context.l10n!.current
                       : context.l10n!.finished,
-                  name: chapter.name ??
-                      context.l10n!.chapterNumber(chapter.chapterNumber ?? 0),
+                  name: (chapter.name ?? context.l10n!.chapterNumber(chapter.chapterNumber ?? 0))
+                      + (chapter.scanlator.withPrefix(" • ") ?? ""),
                 ),
               );
               final bool reverseDirection =
@@ -181,7 +200,7 @@ class ContinuousReaderMode extends HookWidget {
             }
           },
         ),
-      ),
+      )),
     );
   }
 }

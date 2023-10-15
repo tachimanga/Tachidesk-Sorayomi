@@ -58,7 +58,7 @@ class TrackerListTile extends ConsumerWidget {
               builder: (context) {
                 return AlertDialog(
                   title: Text(
-                    "Log out from ${tracker.name}",
+                    context.l10n!.logoutFrom(tracker.name ?? ""),
                   ),
                   actions: [
                     Row(
@@ -66,7 +66,7 @@ class TrackerListTile extends ConsumerWidget {
                       children: [
                         TextButton(
                             onPressed: () => context.pop(),
-                            child: const Text("Cancel")),
+                            child: Text(context.l10n!.cancel)),
                         const SizedBox(
                           width: 15,
                         ),
@@ -85,7 +85,7 @@ class TrackerListTile extends ConsumerWidget {
                                 context.pop();
                               }
                             },
-                            child: const Text("Log out")),
+                            child: Text(context.l10n!.logout)),
                       ],
                     )
                   ],
@@ -93,10 +93,11 @@ class TrackerListTile extends ConsumerWidget {
               });
         } else {
           try {
+            final processing = context.l10n!.processing;
             pipe.invokeMethod("LogEvent", "SET_TRACKER");
             final uri = await FlutterWebAuth2.authenticate(
                 url: tracker.authUrl ?? "", callbackUrlScheme: "tachimange");
-            toast.show("Processing...",
+            toast.show(processing,
                 gravity: ToastGravity.CENTER,
                 toastDuration: const Duration(seconds: 3));
             (await AsyncValue.guard(

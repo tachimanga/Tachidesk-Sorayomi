@@ -17,8 +17,10 @@ import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
 import '../../domain/chapter/chapter_model.dart';
+import '../../domain/manga/manga_model.dart';
 import '../../widgets/chapter_actions/multi_chapters_actions_bottom_app_bar.dart';
 import 'controller/manga_details_controller.dart';
 import 'widgets/big_screen_manga_details.dart';
@@ -27,9 +29,11 @@ import 'widgets/manga_chapter_organizer.dart';
 import 'widgets/small_screen_manga_details.dart';
 
 class MangaDetailsScreen extends HookConsumerWidget {
-  const MangaDetailsScreen({super.key, required this.mangaId, this.categoryId});
+  const MangaDetailsScreen(
+      {super.key, required this.mangaId, this.categoryId, this.mangaBasic});
   final String mangaId;
   final int? categoryId;
+  final Manga? mangaBasic;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Providers as Class for this screen
@@ -203,7 +207,6 @@ class MangaDetailsScreen extends HookConsumerWidget {
               : null,
           floatingActionButton: firstUnreadChapter != null
               ? FloatingActionButton.extended(
-                  isExtended: context.isTablet,
                   label: Text(
                     data?.lastChapterRead?.index != null
                         ? context.l10n!.resume
@@ -251,9 +254,21 @@ class MangaDetailsScreen extends HookConsumerWidget {
         refresh: refresh,
         wrapper: (body) => Scaffold(
           appBar: AppBar(
-            title: Text(context.l10n!.manga),
+            title: Text(mangaBasic?.title ?? context.l10n!.manga),
           ),
-          body: body,
+          body: context.isTablet || mangaBasic == null
+              ? body
+              : Stack(
+            children: [
+              MangaCoverDescriptiveListTile(
+                manga: mangaBasic!,
+                showBadges: false,
+                onTitleClicked: (query) =>
+                    context.push(Routes.getGlobalSearch(query)),
+              ),
+              body,
+            ],
+          ),
         ),
       ),
     );

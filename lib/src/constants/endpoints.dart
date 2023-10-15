@@ -101,6 +101,11 @@ abstract class DownloaderUrl {
   static const String downloads = "/downloads";
 }
 
+abstract class DownloadedUrl {
+  static const String list = "/downloaded/list";
+  static const String batchDelete = "/downloaded/batch";
+}
+
 abstract class BackupUrl {
   static String import = "$_backup/import/file";
   static String validate = "$_backup/validate/file";

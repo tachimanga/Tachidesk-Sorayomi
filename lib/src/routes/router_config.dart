@@ -21,6 +21,8 @@ import '../features/browse_center/presentation/webview/webview_screen.dart';
 import '../features/custom/inapp/presentation/purchase_screen.dart';
 import '../features/library/presentation/category/edit_category_screen.dart';
 import '../features/library/presentation/library/library_screen.dart';
+import '../features/manga_book/domain/manga/manga_model.dart';
+import '../features/manga_book/presentation/downloaded/downloaded_screen.dart';
 import '../features/manga_book/presentation/downloads/downloads_screen.dart';
 import '../features/manga_book/presentation/history/history_screen.dart';
 import '../features/manga_book/presentation/manga_details/manga_details_screen.dart';
@@ -57,6 +59,7 @@ abstract class Routes {
   static const updates = '/updates';
   static const browse = '/browse';
   static const downloads = 'downloads';
+  static const downloaded = 'downloaded';
   static const history = '/history';
   static const more = '/more';
   static const about = '/about';
@@ -145,6 +148,7 @@ GoRouter routerConfig(ref) {
           key: ValueKey(state.params['mangaId'] ?? "2"),
           mangaId: state.params['mangaId'] ?? "",
           categoryId: int.tryParse(state.queryParams['categoryId'] ?? ''),
+          mangaBasic: state.extra as Manga?,
         ),
       ),
       GoRoute(
@@ -254,6 +258,12 @@ GoRouter routerConfig(ref) {
           GoRoute(
             path: Routes.downloads,
             builder: (context, state) => const DownloadsScreen(),
+            routes: [
+              GoRoute(
+                path: Routes.downloaded,
+                builder: (context, state) => const DownloadedScreen(),
+              ),
+            ],
           ),
         ],
       ),

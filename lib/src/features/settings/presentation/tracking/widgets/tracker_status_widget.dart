@@ -42,6 +42,7 @@ class TrackerStatusWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final record = tracker.record!;
+    final processingText = context.l10n!.processing;
     return Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
         child: Column(children: [
@@ -76,7 +77,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                   ),
                   itemBuilder: (context) => [
                         PopupMenuItem(
-                          child: Text("Open in browser"),
+                          child: Text(context.l10n!.openInBrowser),
                           onTap: () async {
                             launchUrlInWeb(
                               context,
@@ -86,10 +87,11 @@ class TrackerStatusWidget extends ConsumerWidget {
                           },
                         ),
                         PopupMenuItem(
-                          child: Text("Remove"),
+                          child: Text(context.l10n!.remove),
                           onTap: () async {
                             await updateRemote(
                                 toast,
+                                processingText,
                                 ref,
                                 TrackUpdate(
                                     recordId: record.id!, unbind: true));
@@ -106,18 +108,19 @@ class TrackerStatusWidget extends ConsumerWidget {
                   Expanded(
                     child: TrackButtonWidget(
                       text: statusTextToLocale(
-                          tracker.statusTextMap?[record.status]),
+                          tracker.statusTextMap?[record.status], context),
                       onPressed: () => showDialog(
                         context: context,
                         builder: (context) => RadioListConfirmPopup<int>(
                           optionList: tracker.statusList ?? [],
                           optionDisplayName: (value) => statusTextToLocale(
-                              tracker.statusTextMap?[value]),
-                          title: "Status",
+                              tracker.statusTextMap?[value], context),
+                          title: context.l10n!.trackingStatus,
                           value: record.status ?? 0,
                           onConfirm: (value) async {
                             await updateRemote(
                                 toast,
+                                processingText,
                                 ref,
                                 TrackUpdate(
                                     recordId: record.id!, status: value));
@@ -136,7 +139,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                       onPressed: () => showDialog(
                         context: context,
                         builder: (context) => NumberPickerPopup(
-                          title: "Chapter",
+                          title: context.l10n!.trackingChapter,
                           minValue: 0,
                           maxValue: record.totalChapters.isGreaterThan(0)
                               ? record.totalChapters!
@@ -145,6 +148,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                           onConfirm: (value) async {
                             await updateRemote(
                                 toast,
+                                processingText,
                                 ref,
                                 TrackUpdate(
                                     recordId: record.id!,
@@ -163,11 +167,12 @@ class TrackerStatusWidget extends ConsumerWidget {
                         context: context,
                         builder: (context) => RadioListConfirmPopup<String>(
                           optionList: tracker.scoreList ?? [],
-                          title: "Score",
+                          title: context.l10n!.trackingScore,
                           value: record.scoreString ?? "",
                           onConfirm: (value) async {
                             await updateRemote(
                                 toast,
+                                processingText,
                                 ref,
                                 TrackUpdate(
                                     recordId: record.id!, scoreString: value));
@@ -189,10 +194,10 @@ class TrackerStatusWidget extends ConsumerWidget {
                           bottomLeft: Radius.circular(20)),
                       text: record.startDate != null && record.startDate != 0
                           ? record.startDate.toDateString
-                          : "Start date",
+                          : context.l10n!.trackingStartDate,
                       onPressed: () async {
                         DateTime? newDate = await showDatePicker(
-                            helpText: "Start date",
+                            helpText: context.l10n!.trackingStartDate,
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1900),
@@ -200,6 +205,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                         if (newDate == null) return;
                         await updateRemote(
                             toast,
+                            processingText,
                             ref,
                             TrackUpdate(
                                 recordId: record.id!,
@@ -214,10 +220,10 @@ class TrackerStatusWidget extends ConsumerWidget {
                           bottomRight: Radius.circular(20)),
                       text: record.finishDate != null && record.finishDate != 0
                           ? record.finishDate.toDateString
-                          : "Finish date",
+                          : context.l10n!.trackingFinishDate,
                       onPressed: () async {
                         DateTime? newDate = await showDatePicker(
-                            helpText: "Finish date",
+                            helpText: context.l10n!.trackingFinishDate,
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1900),
@@ -225,6 +231,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                         if (newDate == null) return;
                         await updateRemote(
                             toast,
+                            processingText,
                             ref,
                             TrackUpdate(
                                 recordId: record.id!,
@@ -238,8 +245,8 @@ class TrackerStatusWidget extends ConsumerWidget {
   }
 
   Future<void> updateRemote(
-      Toast toast, WidgetRef ref, TrackUpdate trackUpdate) async {
-    toast.show("Processing...", gravity: ftoast.ToastGravity.CENTER);
+      Toast toast, String text, WidgetRef ref, TrackUpdate trackUpdate) async {
+    toast.show(text, gravity: ftoast.ToastGravity.CENTER);
     (await AsyncValue.guard(
       () async {
         await ref.read(trackingRepositoryProvider).update(trackUpdate);
@@ -250,19 +257,19 @@ class TrackerStatusWidget extends ConsumerWidget {
         .showToastOnError(toast);
   }
 
-  String statusTextToLocale(String? statusText) {
+  String statusTextToLocale(String? statusText, BuildContext context) {
     if (statusText == "reading") {
-      return "Reading";
+      return context.l10n!.trackingStatusReading;
     } else if (statusText == "plan_to_read") {
-      return "Plan to read";
+      return context.l10n!.trackingStatusPlanToRead;
     } else if (statusText == "completed") {
-      return "Completed";
+      return context.l10n!.trackingStatusCompleted;
     } else if (statusText == "on_hold") {
-      return "On hold";
+      return context.l10n!.trackingStatusOnHold;
     } else if (statusText == "dropped") {
-      return "Dropped";
+      return context.l10n!.trackingStatusDropped;
     } else if (statusText == "repeating") {
-      return "Rereading";
+      return context.l10n!.trackingStatusRereading;
     }
     return "";
   }
@@ -330,7 +337,7 @@ class RadioListConfirmPopup<T> extends HookConsumerWidget {
           onPressed: () {
             onConfirm(v.value);
           },
-          child: Text("OK"),
+          child: Text(context.l10n!.ok),
         )
       ],
     );
@@ -383,7 +390,7 @@ class NumberPickerPopup extends HookConsumerWidget {
           onPressed: () {
             onConfirm(v.value);
           },
-          child: Text("OK"),
+          child: Text(context.l10n!.ok),
         )
       ],
     );

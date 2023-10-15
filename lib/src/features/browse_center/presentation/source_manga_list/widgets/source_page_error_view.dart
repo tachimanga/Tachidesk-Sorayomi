@@ -29,7 +29,6 @@ class SourcePageErrorView extends ConsumerWidget {
   final String? message;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final magic = ref.watch(getMagicProvider);
@@ -51,7 +50,6 @@ class SourcePageErrorView extends ConsumerWidget {
           if (source?.baseUrl?.isNotEmpty ?? false) ...[
             TextButton(
               onPressed: () {
-                toast.show("Loading...", gravity: ToastGravity.CENTER);
                 context.push(Routes.getWebView(source?.baseUrl ?? ""));
                 final pkgName = source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
                 pipe.invokeMethod("LogEvent", "BYPASS_$pkgName");

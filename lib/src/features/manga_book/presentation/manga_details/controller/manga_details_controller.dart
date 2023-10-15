@@ -146,8 +146,8 @@ Chapter? firstUnreadInFilteredChapterList(
   FirstUnreadInFilteredChapterListRef ref, {
   required String mangaId,
 }) {
-  // final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
-  //     DBKeys.chapterSortDirection.initial;
+  final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
+      DBKeys.chapterSortDirection.initial;
   final filteredList = ref
       .watch(mangaChapterListWithFilterProvider(mangaId: mangaId))
       .valueOrNull;
@@ -156,7 +156,8 @@ Chapter? firstUnreadInFilteredChapterList(
   } else {
     var maxLastPageRead = -1;
     Chapter? lastReadChapter;
-    for (final chapter in filteredList) {
+    final list = isAscSorted ? filteredList : filteredList.reversed;
+    for (final chapter in list) {
       final curr = chapter.lastReadAt ?? 0;
       if (curr > maxLastPageRead) {
         maxLastPageRead = curr;

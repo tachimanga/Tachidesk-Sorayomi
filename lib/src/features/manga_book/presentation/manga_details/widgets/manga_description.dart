@@ -37,7 +37,6 @@ class MangaDescription extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(context.isTablet);
-    final toast = ref.read(toastProvider(context));
     final trackerAvailable = manga.trackers?.isNotEmpty == true;
     final trackerCount = manga.trackers?.where((t) => t.record != null).length;
 
@@ -101,22 +100,16 @@ class MangaDescription extends HookConsumerWidget {
                             padding: EdgeInsets.zero),
                     label: trackerCount != null && trackerCount > 0
                         ? (trackerCount == 1
-                            ? const Text("1 tracker")
-                            : Text("$trackerCount trackers"))
-                        : const Text("Tracking"),
+                            ? Text(context.l10n!.oneTracker)
+                            : Text(context.l10n!.nTracker(trackerCount)))
+                        : Text(context.l10n!.tracking),
                   ),
                 ),
               if (manga.realUrl.isNotBlank)
                 Expanded(
                     child: TextButton.icon(
-                  onPressed: () async {
-                    toast.show("Loading...", gravity: ToastGravity.CENTER);
+                  onPressed: () {
                     context.push(Routes.getWebView(manga.realUrl ?? ""));
-                    // launchUrlInWeb(
-                    //   context,
-                    //   (manga.realUrl ?? ""),
-                    //   ref.read(toastProvider(context)),
-                    // );
                   },
                   icon: const Icon(Icons.public),
                   style: TextButton.styleFrom(

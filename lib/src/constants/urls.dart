@@ -20,6 +20,9 @@ enum AppUrls {
   faqUrl(url: "https://tachimanga.github.io/help/faq/"),
   addRepo(url: "https://tachimanga.github.io/help/guides/adding-repos.html"),
   findAnswer(url: "https://tachimanga.github.io/help/guides/find-answer.html"),
+  trackingHelp(url: "https://tachimanga.github.io/help/guides/tracking.html"),
+  downloadHelp(url: "https://tachimanga.github.io/help/guides/downloads.html"),
+  appstore(url: "https://apps.apple.com/us/app/tachimanga/id6447486175"),
   sorayomiLatestReleaseApiUrl(
     url:
         "https://api.github.com/repos/Suwayomi/Tachidesk-Sorayomi/releases/latest",

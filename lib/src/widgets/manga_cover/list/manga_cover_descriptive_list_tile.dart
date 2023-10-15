@@ -134,6 +134,18 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
                               manga: manga,
                               showCountBadges: showCountBadges,
                             ),
+                    if (onTitleClicked != null) ...[
+                      TextButton.icon(
+                        onPressed: () {
+                          onTitleClicked!(manga.title);
+                        },
+                        icon: const Icon(Icons.search),
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.grey,
+                            padding: EdgeInsets.zero),
+                        label: Text(context.l10n!.globalSearch),
+                      )
+                    ]
                   ],
                 ),
               ),

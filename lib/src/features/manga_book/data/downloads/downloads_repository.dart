@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,6 +19,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/storage/dio/dio_client.dart';
 import '../../domain/downloads/downloads_model.dart';
 import '../../domain/downloads_queue/downloads_queue_model.dart';
+import '../../domain/manga/manga_model.dart';
 
 part 'downloads_repository.g.dart';
 
@@ -60,6 +62,18 @@ class DownloadsRepository {
       second: channel.sink.close,
     );
   }
+
+  Future<List<Manga>?> getDownloadedMangaList({
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.get<List<Manga>, Manga>(
+        DownloadedUrl.list,
+        decoder: (e) => e is Map<String, dynamic> ? Manga.fromJson(e) : Manga(),
+      ))
+          .data;
+
+  Future<void> batchDeleteDownloadedManga(List<int> mangaIds) =>
+      dioClient.delete(DownloadedUrl.batchDelete, data: jsonEncode({'mangaIds': mangaIds}));
 }
 
 @riverpod

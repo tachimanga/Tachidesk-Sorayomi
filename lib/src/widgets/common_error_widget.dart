@@ -4,7 +4,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,21 +15,26 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../constants/urls.dart';
 import '../global_providers/global_providers.dart';
+import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
 import '../utils/misc/toast/toast.dart';
 import 'emoticons.dart';
 
-class CommonErrorWidget extends ConsumerWidget {
+class CommonErrorWidget extends HookConsumerWidget {
   const CommonErrorWidget({
     super.key,
     this.refresh,
     this.showGenericError = false,
+    this.src,
+    this.url,
     required this.error,
   });
   final VoidCallback? refresh;
   final bool showGenericError;
   final Object error;
+  final String? src;
+  final String? url;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +43,7 @@ class CommonErrorWidget extends ConsumerWidget {
     final message = showGenericError
         ? context.l10n!.errorSomethingWentWrong
         : error.toString();
+    final enableRefresh = useState(true);
 
     return Emoticons(
       text: message,
@@ -42,12 +51,31 @@ class CommonErrorWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(
-            onPressed: refresh,
+            onPressed: enableRefresh.value
+                ? () {
+                    enableRefresh.value = false;
+                    if (refresh != null) {
+                      refresh!();
+                    }
+                    Timer(const Duration(milliseconds: 500), () {
+                      enableRefresh.value = true;
+                    });
+                  }
+                : null,
             child: Column(children: [
               const Icon(Icons.refresh_rounded),
               Text(context.l10n!.refresh)
             ]),
           ),
+          if (url?.isNotEmpty ?? false) ...[
+            TextButton(
+              onPressed: () {
+                context.push(Routes.getWebView(url ?? ""));
+              },
+              child:
+                  Column(children: [const Icon(Icons.public), Text("WebView")]),
+            )
+          ],
           if (magic.b5) ...[
             TextButton(
               onPressed: () {
@@ -55,7 +83,7 @@ class CommonErrorWidget extends ConsumerWidget {
                     AppUrls.findAnswer.url;
                 launchUrlInWeb(
                   context,
-                  "$url?src=common&err=$message",
+                  "$url?src=${src ?? 'common'}&err=$message",
                   ref.read(toastProvider(context)),
                 );
               },

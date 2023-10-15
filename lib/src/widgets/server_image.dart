@@ -34,6 +34,8 @@ class ServerImage extends ConsumerWidget {
     this.reloadButton = false,
     this.progressIndicatorBuilder,
     this.wrapper,
+    this.memCacheWidth,
+    this.memCacheHeight,
   });
 
   final String imageUrl;
@@ -45,6 +47,13 @@ class ServerImage extends ConsumerWidget {
   final Widget Function(BuildContext, String, DownloadProgress)?
       progressIndicatorBuilder;
   final Widget Function(Widget child)? wrapper;
+
+  /// Will resize the image in memory to have a certain width using [ResizeImage]
+  final int? memCacheWidth;
+
+  /// Will resize the image in memory to have a certain height using [ResizeImage]
+  final int? memCacheHeight;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final baseUrl = ref.watch(serverUrlProvider);

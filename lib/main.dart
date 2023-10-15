@@ -35,6 +35,10 @@ Future<void> main() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   final proxy = await SystemProxy.getProxySettings();
 
+  // imageCache
+  PaintingBinding.instance.imageCache.maximumSize = 100;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 30 << 20; // 30 MiB;
+
   runAppBlock() =>
       runApp(
         ProviderScope(

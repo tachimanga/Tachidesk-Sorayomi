@@ -16,7 +16,6 @@ class Chapter with _$Chapter {
   factory Chapter({
     int? id,
     bool? bookmarked,
-    int? chapterCount,
     double? chapterNumber,
     bool? downloaded,
     int? fetchedAt,
@@ -31,7 +30,6 @@ class Chapter with _$Chapter {
     String? scanlator,
     int? uploadDate,
     String? url,
-    Map<String, String>? meta,
     Map<int, ImgData>? pageData,
     // bool? fromCache,
   }) = _Chapter;
