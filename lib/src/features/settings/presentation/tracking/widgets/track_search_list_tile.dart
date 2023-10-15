@@ -36,7 +36,7 @@ class TrackSearchListTile extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
       child: InkWell(
         onTap: () async {
-          toast.show("Processing...",
+          toast.show(context.l10n!.processing,
               gravity: ToastGravity.CENTER,
               toastDuration: const Duration(seconds: 3));
           (await AsyncValue.guard(

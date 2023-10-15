@@ -8,9 +8,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/app_sizes.dart';
+import '../../../global_providers/global_providers.dart';
+import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/misc/toast/toast.dart';
 import '../../../widgets/custom_circular_progress_indicator.dart';
@@ -71,6 +74,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = useState(false);
 
+    final pipe = ref.watch(getMagicPipeProvider);
     final toast = ref.watch(toastProvider(context));
     final download = chapter.id.isNull
         ? null
@@ -81,7 +85,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
       }
       return;
     }, [download?.state]);
-
+    
     if (isLoading.value) {
       return Padding(
         padding: KEdgeInsets.h8.size,
@@ -91,8 +95,41 @@ class DownloadStatusIcon extends HookConsumerWidget {
       if (download != null) {
         return download.state == "Error"
             ? IconButton(
-                onPressed: () =>
-                    toggleChapterToQueue(toast, ref, isError: true),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text(context.l10n!.downloadFailed),
+                        content: Text(
+                            '${download.error != null ? "${context.l10n!.errorMessageFrom(download.error ?? "")}\n" : ""}${context.l10n!.downloadTip}'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => context.pop(),
+                            child: Text(context.l10n!.close),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.pop();
+                              context.push(Routes.getReader(
+                                "$mangaId",
+                                "${chapter.index}",
+                              ));
+                            },
+                            child: Text(context.l10n!.open),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.pop();
+                              toggleChapterToQueue(toast, ref, isError: true);
+                            },
+                            child: Text(context.l10n!.retry),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
                 icon: const Icon(Icons.replay_rounded),
               )
             : IconButton(
@@ -124,6 +161,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
           return IconButton(
             icon: const Icon(Icons.download_for_offline_outlined),
             onPressed: () {
+              pipe.invokeMethod("LogEvent", "DOWN_ADD_CHAPTER");
               toggleChapterToQueue(toast, ref, isAdd: true);
             },
           );

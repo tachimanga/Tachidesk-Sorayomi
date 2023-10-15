@@ -15,6 +15,7 @@ import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
 import 'chapter_list_tile.dart';
 import 'manga_description.dart';
+import 'manga_details_no_chapter_view.dart';
 
 class SmallScreenMangaDetails extends ConsumerWidget {
   const SmallScreenMangaDetails({
@@ -88,17 +89,14 @@ class SmallScreenMangaDetails extends ConsumerWidget {
                 );
               } else {
                 return SliverToBoxAdapter(
-                  child: Emoticons(
-                    text: context.l10n!.noChaptersFound,
-                    button: TextButton(
-                      onPressed: () => onDescriptionRefresh(true),
-                      child: Text(context.l10n!.refresh),
-                    ),
-                  ),
+                  child: MangaDetailsNoChapterErrorView(
+                    manga: manga, refresh: () => onListRefresh(true)),
                 );
               }
             },
             refresh: () => onRefresh(false),
+            errorSource: "manga-details",
+            webViewUrl: manga.realUrl,
             wrapper: (child) => SliverToBoxAdapter(
               child: SizedBox(
                 height: context.height * .5,

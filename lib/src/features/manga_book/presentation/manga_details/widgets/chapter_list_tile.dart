@@ -76,6 +76,12 @@ class ChapterListTile extends StatelessWidget {
                       style: const TextStyle(color: Colors.grey),
                       overflow: TextOverflow.ellipsis,
                     ),
+                  if (chapter.scanlator.isNotBlank == true)
+                    Text(
+                      " • ${chapter.scanlator}",
+                      style: const TextStyle(color: Colors.grey),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                 ],
               )
             : null,

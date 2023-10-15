@@ -45,7 +45,7 @@ class TrackerAddWidget extends ConsumerWidget {
             size: const Size.square(48),
           ),
         ),
-        title: Text("Add tracking"),
+        title: Text(context.l10n!.addTracking),
         onTap: () async {
           ref.watch(trackSearchQueryProvider);
           ref.read(trackSearchQueryProvider.notifier).update(manga.title ?? "");

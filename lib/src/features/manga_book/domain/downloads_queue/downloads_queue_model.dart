@@ -12,6 +12,7 @@ import '../manga/manga_model.dart';
 part 'downloads_queue_model.freezed.dart';
 part 'downloads_queue_model.g.dart';
 
+// DownloadChapter
 @freezed
 class DownloadsQueue with _$DownloadsQueue {
   factory DownloadsQueue({
@@ -21,6 +22,7 @@ class DownloadsQueue with _$DownloadsQueue {
     int? mangaId,
     double? progress,
     String? state,
+    String? error,
     int? tries,
   }) = _DownloadsQueue;
 

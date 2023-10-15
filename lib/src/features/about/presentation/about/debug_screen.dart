@@ -99,6 +99,12 @@ class DebugScreen extends HookConsumerWidget {
           },
           value: sourceDirect.value,
         ),
+        ListTile(
+            title: Text("purchase"),
+            leading: const Icon(Icons.star_rounded),
+            onTap: () {
+              context.push(Routes.purchase);
+            }),
         const ServerUrlTile(),
       ]),
     );

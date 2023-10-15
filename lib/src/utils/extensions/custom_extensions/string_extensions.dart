@@ -95,4 +95,10 @@ extension StringExtensions on String? {
     if (isBlank) return null;
     return this!.replaceFirst(RegExp('http', caseSensitive: false), 'ws');
   }
+
+  String? withPrefix(String prefix) {
+    if (isNull) return null;
+    if (isBlank) return null;
+    return "$prefix$this";
+  }
 }

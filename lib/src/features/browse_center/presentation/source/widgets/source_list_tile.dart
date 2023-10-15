@@ -47,12 +47,19 @@ class SourceListTile extends ConsumerWidget {
         spacing: 0, // space between two icons
         children: [
           if (source.isConfigurable.ifNull()) ...[
-            TextButton(
-              onPressed: () async {
-                context.push(Routes.getSourcePref(source.id!));
-              },
-              child: Text(context.l10n!.settings),
-            )
+            ['fr', 'pt', 'uk'].contains(context.currentLocale.languageCode)
+                ? IconButton(
+                    icon: const Icon(Icons.settings),
+                    onPressed: () {
+                      context.push(Routes.getSourcePref(source.id!));
+                    },
+                  )
+                : TextButton(
+                    onPressed: () async {
+                      context.push(Routes.getSourcePref(source.id!));
+                    },
+                    child: Text(context.l10n!.settings),
+                  )
           ],
           if (source.supportsLatest.ifNull()) ...[
             TextButton(

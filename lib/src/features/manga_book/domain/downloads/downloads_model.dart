@@ -11,6 +11,7 @@ import '../downloads_queue/downloads_queue_model.dart';
 part 'downloads_model.freezed.dart';
 part 'downloads_model.g.dart';
 
+// DownloadStatus
 @freezed
 class Downloads with _$Downloads {
   factory Downloads({

@@ -100,12 +100,27 @@ class DownloadProgressListTile extends HookConsumerWidget {
                         style: context.textTheme.labelLarge,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      subtitle: Text(
-                        download.chapter?.name ??
-                            download.chapter?.chapterNumber.toString() ??
-                            "",
-                        overflow: TextOverflow.ellipsis,
-                        style: context.textTheme.labelSmall,
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            download.chapter?.name ??
+                                download.chapter?.chapterNumber.toString() ??
+                                "",
+                            overflow: TextOverflow.ellipsis,
+                            style: context.textTheme.labelSmall,
+                          ),
+                          if (download.error.isNotBlank == true) ...[
+                            const SizedBox(height: 3),
+                            Text(
+                              context.l10n!.errorMessageFrom(download.error ?? ""),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.textTheme.labelSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ]
+                        ],
                       ),
                       trailing: status.isNull
                           ? null

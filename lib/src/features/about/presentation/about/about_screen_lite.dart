@@ -44,7 +44,7 @@ class AboutScreenLite extends HookConsumerWidget {
           ClipboardListTile(
             title: "Credit",
             value:
-                "This app is based on the following awesome projects: OpenJDK, Tachidesk-Server, Tachidesk-Sorayomi, Tachiyomi.",
+                "This app is based on the following awesome projects: Tachidesk-Server, Tachidesk-Sorayomi, Tachiyomi-Extensions.",
           ),
           const Divider(),
           const FileLogTile(),

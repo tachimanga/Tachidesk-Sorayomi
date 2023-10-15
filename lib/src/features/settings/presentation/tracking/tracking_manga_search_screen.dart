@@ -55,7 +55,7 @@ class TrackingMangaSearchScreen extends HookConsumerWidget {
         (data) {
           if (data.isBlank) {
             return Emoticons(
-              text: "no manga found",
+              text: context.l10n!.noMangaFound,
               button: TextButton(
                 onPressed: refresh,
                 child: Text(context.l10n!.refresh),
