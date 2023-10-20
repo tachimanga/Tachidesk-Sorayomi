@@ -14,10 +14,13 @@ class PageNumberSlider extends StatelessWidget {
     required this.currentValue,
     required this.maxValue,
     required this.onChanged,
+    this.reverse = false,
   });
   final int currentValue;
   final int maxValue;
   final ValueChanged<int> onChanged;
+  final bool reverse;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -28,19 +31,36 @@ class PageNumberSlider extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
-          children: [
-            Text("${currentValue + 1}"),
-            Expanded(
-              child: Slider(
-                value: min(currentValue.toDouble(), maxValue.toDouble()),
-                min: 0,
-                max: maxValue.toDouble() - 1,
-                divisions: max(maxValue - 1, 1),
-                onChanged: (val) => onChanged(val.toInt()),
-              ),
-            ),
-            Text("$maxValue"),
-          ],
+          children: reverse == false
+              ? [
+                  Text("${currentValue + 1}"),
+                  Expanded(
+                    child: Slider(
+                      value:
+                          min(currentValue.toDouble(), maxValue.toDouble() - 1),
+                      min: 0,
+                      max: maxValue.toDouble() - 1,
+                      divisions: max(maxValue - 1, 1),
+                      onChanged: (val) => onChanged(val.toInt()),
+                    ),
+                  ),
+                  Text("$maxValue"),
+                ]
+              : [
+                  Text("$maxValue"),
+                  Expanded(
+                    child: Slider(
+                      value: min(maxValue - 1 - currentValue.toDouble(),
+                          maxValue.toDouble() - 1),
+                      min: 0,
+                      max: maxValue.toDouble() - 1,
+                      divisions: max(maxValue - 1, 1),
+                      onChanged: (val) =>
+                          onChanged((maxValue - 1 - val).toInt()),
+                    ),
+                  ),
+                  Text("${currentValue + 1}"),
+                ],
         ),
       ),
     );

@@ -26,7 +26,9 @@ import '../features/manga_book/presentation/downloaded/downloaded_screen.dart';
 import '../features/manga_book/presentation/downloads/downloads_screen.dart';
 import '../features/manga_book/presentation/history/history_screen.dart';
 import '../features/manga_book/presentation/manga_details/manga_details_screen.dart';
+import '../features/manga_book/presentation/reader/controller/reader_controller_v2.dart';
 import '../features/manga_book/presentation/reader/reader_screen.dart';
+import '../features/manga_book/presentation/reader/reader_screen_v2.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
 import '../features/settings/presentation/appearance/appearance_screen.dart';
 import '../features/settings/presentation/backup/backup_screen.dart';
@@ -103,7 +105,8 @@ RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 @riverpod
 GoRouter routerConfig(ref) {
-  var pipe = ref.watch(getMagicPipeProvider);
+  final pipe = ref.watch(getMagicPipeProvider);
+  final FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(channel: pipe);
   return GoRouter(
     debugLogDiagnostics: true,
     initialLocation: Routes.browse,
@@ -192,10 +195,18 @@ GoRouter routerConfig(ref) {
       GoRoute(
         path: Routes.reader,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => ReaderScreen(
-          mangaId: state.params['mangaId'] ?? '',
-          chapterIndex: state.params['chapterIndex'] ?? '',
-        ),
+        builder: (context, state) {
+          if (ref.read(useReader2Provider) == true) {
+            return ReaderScreen2(
+              mangaId: state.params['mangaId'] ?? '',
+              initChapterIndex: state.params['chapterIndex'] ?? '',
+            );
+          }
+          return ReaderScreen(
+            mangaId: state.params['mangaId'] ?? '',
+            chapterIndex: state.params['chapterIndex'] ?? '',
+          );
+        },
       ),
       GoRoute(
         path: Routes.mangaTrackSearch,

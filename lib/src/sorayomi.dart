@@ -55,14 +55,14 @@ class Sorayomi extends ConsumerWidget {
 
   Locale? decideAppLocale(WidgetRef ref) {
     final userSettingLocale = ref.watch(l10nProvider);
-    print('userSettingLocale $userSettingLocale');
+    log('userSettingLocale $userSettingLocale');
     if (userSettingLocale != null) {
       return userSettingLocale;
     }
 
     // Returns the list of locales that user defined in the system settings.
     final List<Locale> systemLocales = WidgetsBinding.instance.window.locales;
-    print("systemLocales $systemLocales");
+    log("systemLocales $systemLocales");
     if (systemLocales.isEmpty) {
       return const Locale('en');
     }
@@ -74,10 +74,10 @@ class Sorayomi extends ConsumerWidget {
       if (locale.languageCode == systemLocale.languageCode) {
         score += 10;
       }
-      if (locale.countryCode == systemLocale.countryCode) {
+      if (locale.countryCode != null && locale.countryCode == systemLocale.countryCode) {
         score += 1;
       }
-      if (locale.scriptCode == systemLocale.scriptCode) {
+      if (locale.scriptCode != null && locale.scriptCode == systemLocale.scriptCode) {
         score += 1;
       }
       if (score > maxScore) {
@@ -85,7 +85,7 @@ class Sorayomi extends ConsumerWidget {
         matchLocale = locale;
       }
     }
-    print("matchLocale $matchLocale");
+    log("matchLocale $matchLocale");
     return matchLocale ?? const Locale('en');
   }
 

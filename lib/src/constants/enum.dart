@@ -52,6 +52,13 @@ enum ReaderMode {
         return context.l10n!.readerModeWebtoon;
     }
   }
+
+  String toTipText(BuildContext context) {
+    if (this == ReaderMode.defaultReader) {
+      return ReaderMode.webtoon.toLocale(context);
+    }
+    return toLocale(context);
+  }
 }
 
 enum ReaderNavigationLayout {

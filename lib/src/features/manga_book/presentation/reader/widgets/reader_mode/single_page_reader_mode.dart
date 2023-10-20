@@ -56,6 +56,7 @@ class SinglePageReaderMode extends HookWidget {
       chapter: chapter,
       manga: manga,
       currentIndex: currentIndex.value,
+      reverse: reverse,
       onChanged: (index) => scrollController.jumpToPage(index),
       onPrevious: () => scrollController.previousPage(
         duration: kDuration,
@@ -69,6 +70,7 @@ class SinglePageReaderMode extends HookWidget {
         scrollDirection: scrollDirection,
         reverse: reverse,
         controller: scrollController,
+        allowImplicitScrolling: true,
         itemBuilder: (BuildContext context, int index) {
           final image = ServerImage(
             fit: BoxFit.contain,
