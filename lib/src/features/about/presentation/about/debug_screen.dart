@@ -27,6 +27,7 @@ import '../../../../utils/http_proxy.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
+import '../../../manga_book/presentation/reader/controller/reader_controller_v2.dart';
 import '../../../settings/widgets/server_url_tile/server_url_tile.dart';
 import '../../data/about_repository.dart';
 import '../../domain/about/about_model.dart';
@@ -46,6 +47,8 @@ class DebugScreen extends HookConsumerWidget {
     final settingsRepository = ref.watch(settingsRepositoryProvider);
     final javaUseNativeNet = ref.watch(javaUseNativeNetProvider).ifNull(false);
     final sourceDirect = useState(false);
+    final pipe = ref.watch(getMagicPipeProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Debug"),
@@ -100,12 +103,25 @@ class DebugScreen extends HookConsumerWidget {
           value: sourceDirect.value,
         ),
         ListTile(
+            title: Text("crash"),
+            leading: const Icon(Icons.bug_report),
+            onTap: () {
+              pipe.invokeMethod("LogEvent", -1);
+            }),
+        ListTile(
             title: Text("purchase"),
             leading: const Icon(Icons.star_rounded),
             onTap: () {
               context.push(Routes.purchase);
             }),
         const ServerUrlTile(),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("enable ReaderV2"),
+          onChanged: ref.read(useReader2Provider.notifier).update,
+          value: ref.watch(useReader2Provider).ifNull(true),
+        ),
       ]),
     );
   }

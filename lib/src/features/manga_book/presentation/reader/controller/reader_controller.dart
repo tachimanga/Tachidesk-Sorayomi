@@ -18,6 +18,7 @@ import '../../../../../utils/log.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
+import 'reader_controller_v2.dart';
 
 part 'reader_controller.g.dart';
 
@@ -34,15 +35,44 @@ class ChapterWithId extends _$ChapterWithId {
           mangaId: mangaId,
           chapterIndex: chapterIndex,
         );
-    //ref.keepAlive();
+    updateReaderListState(result);
     return result;
   }
 
   Future<void> toggleBookmarked() async {
-    final result = state.copyWithData((chapter) => chapter?.copyWith(
-        bookmarked: chapter.bookmarked != null ? !chapter.bookmarked! : null));
-    //ref.keepAlive();
+    final chapter = state.valueOrNull;
+    if (chapter != null) {
+      state = AsyncValue.data(chapter.copyWith(
+          bookmarked: chapter.bookmarked != null ? !chapter.bookmarked! : null));
+      updateReaderListState(chapter);
+    }
+  }
+
+  Future<void> loadChapter({
+    required String mangaId,
+    required String chapterIndex,
+  }) async {
+    final token = CancelToken();
+    ref.onDispose(token.cancel);
+    state = const AsyncValue.loading();
+    final result = await AsyncValue.guard(
+            () => ref.watch(mangaBookRepositoryProvider).getChapter(
+          mangaId: mangaId,
+          chapterIndex: chapterIndex,
+        ));
+
+    updateReaderListState(result.valueOrNull, true);
     state = result;
+  }
+
+  void updateReaderListState(Chapter? chapter, [bool reset=false]) {
+    if (ref.read(useReader2Provider) != true) {
+      return;
+    }
+    if (chapter != null) {
+      final listProvider = readerListStateWithMangeIdProvider(mangaId: mangaId);
+      ref.read(listProvider.notifier).upsertChapter(chapter, reset);
+    }
   }
 }
 

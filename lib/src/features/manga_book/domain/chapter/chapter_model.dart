@@ -19,6 +19,7 @@ class Chapter with _$Chapter {
     double? chapterNumber,
     bool? downloaded,
     int? fetchedAt,
+    // val index: Int, this chapter's index, starts with 1
     int? index,
     int? lastPageRead,
     int? lastReadAt,

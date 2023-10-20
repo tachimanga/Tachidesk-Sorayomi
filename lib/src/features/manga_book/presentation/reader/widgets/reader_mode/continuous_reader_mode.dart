@@ -77,6 +77,7 @@ class ContinuousReaderMode extends HookWidget {
       chapter: chapter,
       manga: manga,
       currentIndex: currentIndex.value,
+      reverse: reverse,
       onChanged: (index) => scrollController.jumpTo(index: index),
       onPrevious: () {
         final ItemPosition itemPosition =

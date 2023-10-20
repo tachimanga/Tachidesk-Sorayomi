@@ -51,7 +51,7 @@ class CommonErrorWidget extends HookConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(
-            onPressed: enableRefresh.value
+            onPressed: refresh != null && enableRefresh.value
                 ? () {
                     enableRefresh.value = false;
                     if (refresh != null) {
