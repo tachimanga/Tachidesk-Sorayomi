@@ -39,7 +39,7 @@ class ServerApiUrl extends _$ServerApiUrl with SharedPreferenceClientMixin<Strin
   @override
   String? build() => initialize(
     ref,
-    key: DBKeys.serverApiUrl.name,
+    key: "config.serverApiUrl",
     initial: DBKeys.serverApiUrl.initial,
   );
 }

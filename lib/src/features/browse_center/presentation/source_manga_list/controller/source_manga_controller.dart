@@ -11,6 +11,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../data/source_repository/source_repository.dart';
 import '../../../domain/filter/filter_model.dart';
@@ -30,46 +31,64 @@ FutureOr<Source?> source(SourceRef ref, String sourceId) async {
 }
 
 @riverpod
-Future<List<Filter>?> baseSourceMangaFilterList(
-  BaseSourceMangaFilterListRef ref,
-  String sourceId,
-) async {
-  final token = CancelToken();
-  ref.onDispose(token.cancel);
-  final result = await ref
-      .watch(sourceRepositoryProvider)
-      .getFilterList(sourceId: sourceId);
-  ref.keepAlive();
-  return result;
+class BaseSourceMangaFilterWithId extends _$BaseSourceMangaFilterWithId {
+
+  @override
+  Future<List<Filter>?> build(String sourceId) async {
+    final result = await ref
+        .watch(sourceRepositoryProvider)
+        .getFilterList(sourceId: sourceId);
+    ref.keepAlive();
+    return result;
+  }
+
+  Future<List<Filter>?> reset() async {
+    state = const AsyncValue.loading();
+    final result = await AsyncValue.guard(
+        () => ref.watch(sourceRepositoryProvider).getFilterList(
+              sourceId: sourceId,
+              reset: true,
+            ));
+    state = result;
+    return result.valueOrNull;
+  }
 }
 
 @riverpod
 class SourceMangaFilterList extends _$SourceMangaFilterList {
+
   @override
-  AsyncValue<List<Filter>?> build(String sourceId, {List<Filter>? filter}) {
-    return filter != null
-        ? AsyncData(filter)
-        : ref.watch(baseSourceMangaFilterListProvider(sourceId));
+  AsyncValue<List<Filter>?> build(String sourceId) {
+    final init = ref.watch(baseSourceMangaFilterWithIdProvider(sourceId));
+    log("[Filter]FilterList for $sourceId build, value: $init");
+    ref.onDispose(() {
+      log("[Filter]FilterList for $sourceId dispose");
+    });
+    return init;
   }
 
   void updateFilter(List<Filter>? filter) =>
       state = state.copyWithData((p0) => filter);
 
-  Future<void> reset() async =>
-      state = ref.read(baseSourceMangaFilterListProvider(sourceId));
+  Future<void> reset() async {
+    final provider = baseSourceMangaFilterWithIdProvider(sourceId);
+    await ref.read(provider.notifier).reset();
+  }
 
   List<Map<String, dynamic>> get getAppliedFilter {
     final baseFilters = Filter.filtersToJson(
-      ref.read(baseSourceMangaFilterListProvider(sourceId)).valueOrNull ?? [],
+      ref.read(baseSourceMangaFilterWithIdProvider(sourceId)).valueOrNull ?? [],
     );
     final currentFilters = Filter.filtersToJson(state.valueOrNull ?? []);
     if (baseFilters.length != currentFilters.length) return currentFilters;
     const equality = DeepCollectionEquality();
-    return [
+    final filters = [
       for (int i = 0; i < baseFilters.length; i++)
         if (!equality.equals(currentFilters[i], baseFilters[i]))
           currentFilters[i],
     ];
+    log("[Filter]getAppliedFilter $filters");
+    return filters;
   }
 }
 

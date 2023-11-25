@@ -30,6 +30,16 @@ class UseReader2 extends _$UseReader2 with SharedPreferenceClientMixin<bool> {
   );
 }
 
+@riverpod
+class DownscaleImage extends _$DownscaleImage with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: "config.downscaleImage",
+    initial: false,
+  );
+}
+
 class ReaderPageData {
   final int chapterIndex;
   final int pageIndex;

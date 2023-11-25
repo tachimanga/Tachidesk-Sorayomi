@@ -49,10 +49,6 @@
   "@authTypeBasic": {
     "description": "Radio button text for the Basic Authentication type"
   },
-  "restoring": "正在还原",
-  "@restoring": {
-    "description": "Toast Text to show that the backup is restoring"
-  },
   "chapterNumber": "第 {number} 章",
   "@chapterNumber": {
     "description": "Text title for Chapter name in chapter list",
@@ -177,10 +173,6 @@
   "@delete": {
     "description": "Text for delete button"
   },
-  "createBackupDescription": "可用于还原当前书架数据",
-  "@createBackupDescription": {
-    "description": "Button text description to create backup"
-  },
   "deleteCategoryDescription": "此分类下的漫画将迁移至默认分类！",
   "@deleteCategoryDescription": {
     "description": "Popup description when deleting Category"
@@ -189,7 +181,7 @@
   "@deleteCategoryTitle": {
     "description": "Popup title when deleting Category"
   },
-  "discord": "DIscord",
+  "discord": "Discord",
   "@discord": {
     "description": "Discord app title"
   },
@@ -483,14 +475,6 @@
   "@readerPadding": {
     "description": "Slider title text for Reader Padding"
   },
-  "restoreBackupTitle": "还原备份",
-  "@restoreBackupTitle": {
-    "description": "Button text to create backup"
-  },
-  "restored": "完成备份恢复！",
-  "@restored": {
-    "description": "Toast Text to show that the backup has been restored"
-  },
   "resume": "继续",
   "@resume": {
     "description": "Button Text to resume Chapter reading/downloading"
@@ -619,10 +603,6 @@
   "@badges": {
     "description": "Checkbox Group title to enable Badges on manga Cover in Library Screen"
   },
-  "createBackupTitle": "创建备份",
-  "@createBackupTitle": {
-    "description": "Button text to create backup"
-  },
   "checkForServerUpdates": "检查服务更新",
   "@checkForServerUpdates": {
     "description": "Button text to check for Server updates"
@@ -727,10 +707,6 @@
   "@serverVersion": {
     "description": "Text title for the current version of the Server in About screen"
   },
-  "restoreBackupDescription": "从备份文件中还原",
-  "@restoreBackupDescription": {
-    "description": "Button text description to create backup"
-  },
   "source": "图源",
   "@source": {
     "description": "Screen title and Button text of source screen"
@@ -805,5 +781,39 @@
   "trackingChapter": "章节",
   "trackingScore": "评分",
   "trackingStartDate": "开始日期",
-  "trackingFinishDate": "完成日期"
+  "trackingFinishDate": "完成日期",
+  "operationFailTip": "操作失败，请重试。",
+  "createBackupTitle": "创建备份",
+  "createBackupDescription": "可用于恢复当前库。",
+  "backupCreated": "备份已创建！",
+  "restoreBackupTitle": "恢复备份",
+  "restoreBackupDescription": "从备份文件恢复库",
+  "restoring": "正在恢复备份",
+  "restored": "备份已恢复！",
+  "importBackupTitle": "导入 Tachiyomi 备份",
+  "importBackupDescription": "从 Tachiyomi 备份文件导入",
+  "autoBackupSectionTitle": "自动备份",
+  "autoBackupFrequency": "备份频率",
+  "autoBackupLimit": "最大备份数量",
+  "backupsSectionTitle": "备份",
+  "restoreBackup": "恢复",
+  "exportBackup": "导出",
+  "backupNamePrefixNormal": "备份",
+  "backupNamePrefixAuto": "自动备份",
+  "backupNamePrefixSchedule": "定时备份",
+  "restoreConfirmTitle": "恢复至此备份？",
+  "restoreConfirmContent": "当前的数据将会被删除，并被此备份的数据替换。",
+  "importConfirmTitle": "导入 Tachiyomi 备份？",
+  "importConfirmContent": "将 Tachiyomi 的库与本地库合并；现有的本地数据不会被删除或替换。",
+  "autoBackupTip": "在恢复备份之前，自动创建一个备份。",
+  "autoBackupTipForImport": "在导入备份之前，自动创建一个备份。",
+  "imported": "备份已导入！",
+  "restoreSuccessTip": "备份恢复成功。更改将在重新启动应用程序后生效。",
+  "importSuccessTip": "备份导入成功。更改将在重新启动应用程序后生效。",
+  "invalidBackup": "无效的备份文件",
+  "invalidBackupVersion": "请使用最新版本的应用程序来恢复备份。",
+  "autoBackupFailTip": "在恢复之前自动备份失败。请取消自动备份，然后重试。",
+  "restartApp": "重启应用",
+  "confirm": "确认",
+  "dummy": "dummy"
 }

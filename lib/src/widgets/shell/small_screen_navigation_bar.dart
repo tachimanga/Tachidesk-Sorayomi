@@ -11,9 +11,14 @@ import 'package:go_router/go_router.dart';
 import '../../constants/navigation_bar_data.dart';
 
 class SmallScreenNavigationBar extends StatelessWidget {
-  const SmallScreenNavigationBar({super.key, required this.selectedScreen});
+  const SmallScreenNavigationBar({
+    super.key,
+    required this.selectedScreen,
+    required this.onDestinationSelected,
+  });
 
   final String selectedScreen;
+  final ValueChanged<String> onDestinationSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +30,11 @@ class SmallScreenNavigationBar extends StatelessWidget {
       ),
       child: NavigationBar(
         selectedIndex: NavigationBarData.indexWherePathOrZero(selectedScreen),
-        onDestinationSelected: (value) =>
-            context.go(NavigationBarData.navList[value].path),
+        onDestinationSelected: (value) {
+          final target = NavigationBarData.navList[value].path;
+          context.go(target);
+          onDestinationSelected(target);
+        },
         destinations: NavigationBarData.navList
             .map<NavigationDestination>(
               (e) => NavigationDestination(

@@ -206,6 +206,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                 )
               : null,
           floatingActionButton: firstUnreadChapter != null
+              && selectedChapters.value.isEmpty
               ? FloatingActionButton.extended(
                   label: Text(
                     data?.lastChapterRead?.index != null
@@ -252,6 +253,8 @@ class MangaDetailsScreen extends HookConsumerWidget {
                 ),
         ),
         refresh: refresh,
+        errorSource: "manga-details",
+        webViewUrl: manga.valueOrNull?.realUrl,
         wrapper: (body) => Scaffold(
           appBar: AppBar(
             title: Text(mangaBasic?.title ?? context.l10n!.manga),

@@ -10,7 +10,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 
+import '../../../../global_providers/global_providers.dart';
+import '../../../../global_providers/preference_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/search_field.dart';
@@ -25,12 +28,22 @@ class LibraryScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
+    final pipe = ref.watch(getMagicPipeProvider);
     final toast = ref.watch(toastProvider(context));
     final categoryList = ref.watch(categoryControllerProvider);
     final showSearch = useState(false);
 
     useEffect(() {
       categoryList.showToastOnError(toast, withMicrotask: true);
+      if (categoryList.valueOrNull?.isNotEmpty == true
+          && magic.b8
+          && ref.read(markNeedAskRateProvider) == true) {
+        Future(() {
+          ref.read(markNeedAskRateProvider.notifier).update(false);
+        });
+        pipe.invokeMethod("ASK_RATE");
+      }
       return;
     }, [categoryList]);
 

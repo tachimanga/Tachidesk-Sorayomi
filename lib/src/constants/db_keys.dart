@@ -45,7 +45,12 @@ enum DBKeys {
   gridMangaCoverWidth(192.0),
   purchaseDone(false),
   purchaseExpireMs(0),
+  purchaseToken(null),
   serverApiUrl('https://api.tachiyomi.workers.dev'),
+  autoBackup(true),
+  markNeedAskRate(false),
+  initLocation(null),
+  scrollAnimation(false),
   ;
 
   const DBKeys(this.initial);

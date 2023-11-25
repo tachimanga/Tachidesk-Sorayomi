@@ -4,13 +4,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
@@ -27,9 +25,8 @@ import '../../domain/chapter_patch/chapter_put_model.dart';
 import '../manga_details/controller/manga_details_controller.dart';
 import 'controller/reader_controller.dart';
 import 'controller/reader_controller_v2.dart';
-import 'widgets/reader_mode/continuous_reader_mode.dart';
 import 'widgets/reader_mode/continuous_reader_mode_v2.dart';
-import 'widgets/reader_mode/single_page_reader_mode.dart';
+import 'widgets/reader_mode/single_page_reader_mode_v2.dart';
 
 class ReaderScreen2 extends HookConsumerWidget {
   const ReaderScreen2({
@@ -57,23 +54,24 @@ class ReaderScreen2 extends HookConsumerWidget {
     final manga = ref.watch(mangaProvider);
     final chapter = ref.watch(chapterProviderWithIndex);
     final defaultReaderMode = ref.watch(readerModeKeyProvider);
-    logger.log("[Reader2] ReaderScreen2.chapter ${chapter.valueOrNull?.name}, index:${chapter.valueOrNull?.index}");
+    //logger.log("[Reader2] ReaderScreen2.chapter ${chapter.valueOrNull?.name}, index:${chapter.valueOrNull?.index}");
 
     final debounce = useRef<Timer?>(null);
     final onPageChanged2 = useCallback<AsyncValueSetter<ReaderPageData>>(
       (ReaderPageData currentPage) async {
         final currChapter = readerListData.chapterList.firstWhereOrNull(
             (element) => element.index == currentPage.chapterIndex);
-        logger.log("[Reader2] onPageChanged currChapter:${currChapter?.name}");
+        logger.log("[Reader2] onPageChanged currChapter:${currChapter?.name}, "
+            "currentPage:${currentPage.pageIndex}");
         if (currChapter == null) {
-          logger.log("[Reader2] currChapter is null");
+          //logger.log("[Reader2] currChapter is null");
           return;
         }
 
         if (currChapter.read == true ||
             currentPage.pageIndex <=
                 currChapter.lastPageRead.ifNullOrNegative(0)) {
-          logger.log("[Reader2] no need update");
+          //logger.log("[Reader2] no need update");
           return;
         }
 
@@ -81,8 +79,8 @@ class ReaderScreen2 extends HookConsumerWidget {
           final isReadingCompeted = currChapter.read == true ||
               currentPage.pageIndex + 1 >=
                   currChapter.pageCount.ifNullOrNegative(0);
-          logger.log("[Reader2] updateLastRead "
-              "isRead:$isReadingCompeted index:${currentPage.pageIndex}");
+          // logger.log("[Reader2] updateLastRead "
+          //     "isRead:$isReadingCompeted index:${currentPage.pageIndex}");
           await AsyncValue.guard(
             () => ref.read(mangaBookRepositoryProvider).putChapter(
                   mangaId: mangaId,
@@ -108,18 +106,6 @@ class ReaderScreen2 extends HookConsumerWidget {
         return;
       },
       [readerListData],
-    );
-
-    final onPageChanged = useCallback<AsyncValueSetter<int>>(
-      (int currentPage) async {
-        final chapterIndex = chapter.valueOrNull?.index;
-        if (chapterIndex != null) {
-          final page = ReaderPageData(chapterIndex, currentPage, null);
-          onPageChanged2(page);
-        }
-        return;
-      },
-      [chapter],
     );
 
     useRouteObserver(routeObserver, didPop: () {
@@ -153,17 +139,21 @@ class ReaderScreen2 extends HookConsumerWidget {
                           }
                           switch (data.meta?.readerMode ?? defaultReaderMode) {
                             case ReaderMode.singleVertical:
-                              return SinglePageReaderMode(
-                                chapter: chapterData,
+                              return SinglePageReaderMode2(
                                 manga: data,
-                                onPageChanged: onPageChanged,
+                                initChapterIndexState: initChapterIndexState,
+                                initChapter: chapterData,
+                                readerListData: readerListData,
+                                onPageChanged: onPageChanged2,
                                 scrollDirection: Axis.vertical,
                               );
                             case ReaderMode.singleHorizontalRTL:
-                              return SinglePageReaderMode(
-                                chapter: chapterData,
+                              return SinglePageReaderMode2(
                                 manga: data,
-                                onPageChanged: onPageChanged,
+                                initChapterIndexState: initChapterIndexState,
+                                initChapter: chapterData,
+                                readerListData: readerListData,
+                                onPageChanged: onPageChanged2,
                                 reverse: true,
                               );
                             case ReaderMode.continuousHorizontalLTR:
@@ -186,10 +176,12 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 reverse: true,
                               );
                             case ReaderMode.singleHorizontalLTR:
-                              return SinglePageReaderMode(
-                                chapter: chapterData,
+                              return SinglePageReaderMode2(
                                 manga: data,
-                                onPageChanged: onPageChanged,
+                                initChapterIndexState: initChapterIndexState,
+                                initChapter: chapterData,
+                                readerListData: readerListData,
+                                onPageChanged: onPageChanged2,
                               );
                             case ReaderMode.continuousVertical:
                               return ContinuousReaderMode2(

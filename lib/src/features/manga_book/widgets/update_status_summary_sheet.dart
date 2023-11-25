@@ -38,25 +38,25 @@ class UpdateStatusSummaryDialog extends ConsumerWidget {
           onRefresh: () => ref.refresh(updateSummaryProvider.future),
           child: ListView(
             children: [
-              if ((data?.running).isNotBlank)
+              if ((data?.statusMap?.running).isNotBlank)
                 UpdateStatusExpansionTile(
-                  mangas: data!.running!,
+                  mangas: data!.statusMap!.running!,
                   title: context.l10n!.running,
                   initiallyExpanded: true,
                 ),
-              if ((data?.pending).isNotBlank)
+              if ((data?.statusMap?.pending).isNotBlank)
                 UpdateStatusExpansionTile(
-                  mangas: data!.pending!,
+                  mangas: data!.statusMap!.pending!,
                   title: context.l10n!.pending,
                 ),
-              if ((data?.completed).isNotBlank)
+              if ((data?.statusMap?.completed).isNotBlank)
                 UpdateStatusExpansionTile(
-                  mangas: data!.completed!,
+                  mangas: data!.statusMap!.completed!,
                   title: context.l10n!.completed,
                 ),
-              if ((data?.failed).isNotBlank)
+              if ((data?.statusMap?.failed).isNotBlank)
                 UpdateStatusExpansionTile(
-                  mangas: data!.failed!,
+                  mangas: data!.statusMap!.failed!,
                   title: context.l10n!.failed,
                   initiallyExpanded: true,
                 ),

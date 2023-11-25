@@ -13,6 +13,7 @@ import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
+import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../data/settings_repository/settings_repository.dart';
 import 'webview_provider.dart';
 
@@ -36,6 +37,8 @@ class WebViewScreen extends HookConsumerWidget {
       };
     }, []);
 
+    final loadingState = useState(false);
+
     final controller = useMemoized(() {
       if (url == null) {
         return null;
@@ -44,6 +47,26 @@ class WebViewScreen extends HookConsumerWidget {
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(backgroundColor)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onProgress: (int progress) {
+              // Update loading bar.
+              //debugPrint('WebView is loading (progress : $progress%)');
+              loadingState.value = progress < 99;
+            },
+            onPageStarted: (String url) {
+              //debugPrint('Page started loading: $url');
+              loadingState.value = true;
+            },
+            onPageFinished: (String url) {
+              //debugPrint('Page finished loading: $url');
+              loadingState.value = false;
+            },
+            onWebResourceError: (WebResourceError error) {
+              toast.showError(error.description);
+            },
+          ),
+        )
         // ..setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/115.0.5790.160 Mobile/15E148 Safari/604.1")
         ..loadRequest(Uri.parse(url!));
       return controller;
@@ -61,11 +84,27 @@ class WebViewScreen extends HookConsumerWidget {
       } catch (e) {
         log("uploadCookies err $e");
       }
+      // if (context.mounted && json is String && json.contains("cf_clearance=")) {
+      //   final snackBar = SnackBar(
+      //     content: Text("cf_clearance detected, please click the retry button."),
+      //   );
+      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      // }
     });
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n!.browse),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (loadingState.value) ...[
+              MiniCircularProgressIndicator(
+                color: context.iconColor,
+              )
+            ],
+            Text(context.l10n!.browse)
+          ],
+        ) ,
         actions: [
           IconButton(
             onPressed: () => launchUrlInWeb(context, url ?? "", toast),

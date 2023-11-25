@@ -31,9 +31,12 @@ class BrowseScreen extends HookConsumerWidget {
     useListenable(tabController);
     final key = useMemoized(() => GlobalKey());
     final showSearch = useState(false);
-
-    var magic = ref.watch(getMagicProvider);
-    var pipe = ref.watch(getMagicPipeProvider);
+    final magic = ref.watch(getMagicProvider);
+    final extensionUpdate = ref.watch(extensionUpdateProvider);
+    final extensionUpdateCount =
+        extensionUpdate.valueOrNull?.isGreaterThan(0) == true
+            ? extensionUpdate.value!
+            : 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +74,18 @@ class BrowseScreen extends HookConsumerWidget {
                 controller: tabController,
                 tabs: [
                   Tab(text: context.l10n!.sources),
-                  Tab(text: context.l10n!.extensions),
+                  Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Tab(text: context.l10n!.extensions),
+                        if (extensionUpdateCount > 0) ...[
+                          const SizedBox(width: 2),
+                          Badge(label: Text("$extensionUpdateCount"))
+                        ]
+                      ],
+                    ),
+                  )
                 ],
               ),
               if (showSearch.value)
@@ -105,7 +119,7 @@ class BrowseScreen extends HookConsumerWidget {
         controller: tabController,
         children: [
           const SourceScreen(),
-          const ExtensionScreen()
+          const ExtensionScreen(),
         ],
       ),
     );

@@ -17,8 +17,10 @@ import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../utils/purchase.dart';
 import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
 import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/tracking/widgets/tracker_setting_widget.dart';
 import '../../../domain/manga/manga_model.dart';
 
@@ -39,6 +41,11 @@ class MangaDescription extends HookConsumerWidget {
     final isExpanded = useState(context.isTablet);
     final trackerAvailable = manga.trackers?.isNotEmpty == true;
     final trackerCount = manga.trackers?.where((t) => t.record != null).length;
+
+    final toast = ref.read(toastProvider(context));
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final testflightFlag = ref.watch(testflightFlagProvider);
+    final freeTrialFlag = ref.watch(freeTrialFlagProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,18 +84,35 @@ class MangaDescription extends HookConsumerWidget {
                 primaryLabel: Text(context.l10n!.inLibrary),
                 secondaryLabel: Text(context.l10n!.addToLibrary),
               )),
-              if (trackerAvailable)
                 Expanded(
                   child: TextButton.icon(
-                    onPressed: () {
+                    onPressed: () async {
+                      final purchase = await checkPurchase(
+                          purchaseGate,
+                          testflightFlag,
+                          freeTrialFlag,
+                          context,
+                          toast);
+                      if (!purchase) {
+                        return;
+                      }
+                      if (context.mounted && !trackerAvailable) {
+                        await context.push(Routes.mangaTrackSetting);
+                        refresh();
+                        return;
+                      }
                       refresh();
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: context.theme.cardColor,
-                        clipBehavior: Clip.hardEdge,
-                        builder: (context) => TrackerSettingWidget(
-                            mangaId: manga.id.toString(), refresh: refresh),
-                      );
+                      if (context.mounted) {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: context.theme.cardColor,
+                          clipBehavior: Clip.hardEdge,
+                          builder: (context) =>
+                              TrackerSettingWidget(
+                                  mangaId: manga.id.toString(),
+                                  refresh: refresh),
+                        );
+                      }
                     },
                     icon: trackerCount != null && trackerCount > 0
                         ? const Icon(Icons.done_rounded)

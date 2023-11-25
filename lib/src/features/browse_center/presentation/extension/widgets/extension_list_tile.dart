@@ -7,10 +7,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/server_image.dart';
@@ -35,8 +37,14 @@ class ExtensionListTile extends HookConsumerWidget {
     final repository = ref.watch(extensionRepositoryProvider);
     final magicPipe = ref.watch(getMagicPipeProvider);
     final isLoading = useState(false);
+    final toast = ref.read(toastProvider(context));
+    final magic = ref.watch(getMagicProvider);
+
     return ListTile(
       key: key,
+      onTap: magic.b7 == true && extension.installed == true
+          ? () => context.push(Routes.getExtensionInfo(extension.pkgName))
+          : null,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: ServerImageWithCpi(
@@ -95,7 +103,13 @@ class ExtensionListTile extends HookConsumerWidget {
       trailing: extension.obsolete.ifNull()
           ? OutlinedButton(
               onPressed: extension.installed.ifNull()
-                  ? () => repository.uninstallExtension(extension.pkgName!)
+                  ? () async {
+                      (await AsyncValue.guard(() async {
+                        await repository.uninstallExtension(extension.pkgName!);
+                        await refresh();
+                      }))
+                          .showToastOnError(toast);
+                    }
                   : null,
               child: Text(
                 context.l10n!.obsolete,
@@ -125,9 +139,7 @@ class ExtensionListTile extends HookConsumerWidget {
                                 await refresh();
                               },
                             ))
-                                .showToastOnError(
-                              ref.read(toastProvider(context)),
-                            );
+                                .showToastOnError(toast);
                             isLoading.value = false;
                           } catch (e) {
                             //
@@ -153,6 +165,8 @@ class ExtensionListTile extends HookConsumerWidget {
                               if (extension.pkgName.isBlank) {
                                 throw context.l10n!.errorExtension;
                               }
+                              final pkgName = extension.pkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
+                              magicPipe.invokeMethod("LogEvent", "ADD_$pkgName");
                               await repository
                                   .installExtension(extension.pkgName!);
                               if (extension.lang?.code != null) {

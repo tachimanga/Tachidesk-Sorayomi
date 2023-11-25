@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../global_providers/global_providers.dart';
@@ -22,6 +23,8 @@ import 'reader_controller_v2.dart';
 
 part 'reader_controller.g.dart';
 
+List<KeepAliveLink> chapterAliveLinkList = [];
+
 @riverpod
 class ChapterWithId extends _$ChapterWithId {
   @override
@@ -29,8 +32,8 @@ class ChapterWithId extends _$ChapterWithId {
     required String mangaId,
     required String chapterIndex,
   }) async {
-    final token = CancelToken();
-    ref.onDispose(token.cancel);
+    log('[Reader2] ChapterWithId. $mangaId#$chapterIndex create');
+    ref.onDispose(() => log('[Reader2] ChapterWithId. $mangaId#$chapterIndex dispose'));
     final result = await ref.watch(mangaBookRepositoryProvider).getChapter(
           mangaId: mangaId,
           chapterIndex: chapterIndex,
@@ -42,16 +45,19 @@ class ChapterWithId extends _$ChapterWithId {
   Future<void> toggleBookmarked() async {
     final chapter = state.valueOrNull;
     if (chapter != null) {
-      state = AsyncValue.data(chapter.copyWith(
-          bookmarked: chapter.bookmarked != null ? !chapter.bookmarked! : null));
-      updateReaderListState(chapter);
+      final update = chapter.copyWith(
+          bookmarked: chapter.bookmarked != null ? !chapter.bookmarked! : null);
+      state = AsyncValue.data(update);
+      updateReaderListState(update);
     }
   }
 
   Future<void> loadChapter({
     required String mangaId,
     required String chapterIndex,
+    required bool nextPage,
   }) async {
+    log('[Reader2] loadChapter nextPage:$nextPage');
     final token = CancelToken();
     ref.onDispose(token.cancel);
     state = const AsyncValue.loading();
@@ -61,7 +67,7 @@ class ChapterWithId extends _$ChapterWithId {
           chapterIndex: chapterIndex,
         ));
 
-    updateReaderListState(result.valueOrNull, true);
+    updateReaderListState(result.valueOrNull, nextPage);
     state = result;
   }
 
@@ -72,6 +78,17 @@ class ChapterWithId extends _$ChapterWithId {
     if (chapter != null) {
       final listProvider = readerListStateWithMangeIdProvider(mangaId: mangaId);
       ref.read(listProvider.notifier).upsertChapter(chapter, reset);
+    }
+  }
+
+  void keepAlive() {
+    final link = ref.keepAlive();
+    chapterAliveLinkList.add(link);
+
+    if (chapterAliveLinkList.length > 1) {
+      //log('[AD_V2] close link.');
+      final e = chapterAliveLinkList.removeAt(0);
+      e.close();
     }
   }
 }

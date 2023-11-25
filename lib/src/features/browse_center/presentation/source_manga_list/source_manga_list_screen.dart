@@ -25,6 +25,7 @@ import '../../data/source_repository/source_repository.dart';
 import '../../domain/filter/filter_model.dart';
 import 'controller/source_manga_controller.dart';
 import 'widgets/install_manga_file.dart';
+import 'widgets/show_source_manga_filter.dart';
 import 'widgets/source_manga_display_icon_popup.dart';
 import 'widgets/source_manga_display_view.dart';
 import 'widgets/source_manga_filter.dart';
@@ -36,12 +37,10 @@ class SourceMangaListScreen extends HookConsumerWidget {
     required this.sourceId,
     required this.sourceType,
     this.initialQuery,
-    this.initialFilter,
   });
   final String sourceId;
   final SourceType sourceType;
   final String? initialQuery;
-  final List<Filter>? initialFilter;
 
   void _fetchPage(
     SourceRepository repository,
@@ -81,40 +80,11 @@ class SourceMangaListScreen extends HookConsumerWidget {
     );
   }
 
-  Widget filterWidget(
-    WidgetRef ref,
-    SourceMangaFilterListProvider provider,
-    List<Filter>? filterList,
-    PagingController<int, Manga> controller,
-    BuildContext context,
-  ) {
-    return filterList == null
-        ? const SizedBox.shrink()
-        : SourceMangaFilter(
-            initialFilters: filterList,
-            sourceId: sourceId,
-            onReset: () => ref.read(provider.notifier).reset(),
-            onSubmitted: (value) {
-              if (sourceType == SourceType.filter) {
-                context.pop();
-                ref.read(provider.notifier).updateFilter(value);
-                controller.refresh();
-              } else {
-                context.pushReplacement(
-                  Routes.getSourceManga(sourceId, SourceType.filter),
-                  extra: value,
-                );
-              }
-            },
-          );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sourceRepository = ref.watch(sourceRepositoryProvider);
-    final filtersProvider =
-        sourceMangaFilterListProvider(sourceId, filter: initialFilter);
-    final filterList = ref.watch(filtersProvider);
+    final filtersProvider = sourceMangaFilterListProvider(sourceId);
+    final _ = ref.watch(filtersProvider);
     final source = ref.watch(sourceProvider(sourceId));
 
     final query = useState(initialQuery);
@@ -141,9 +111,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
           title: Text(data?.displayName ?? context.l10n!.source),
           actions: [
             if (sourceId == "0") ...[
-              InstallMangaFile(
-                  onSuccess: () => controller.refresh()
-              ),
+              InstallMangaFile(onSuccess: () => controller.refresh()),
             ],
             IconButton(
               onPressed: () => showSearch.value = true,
@@ -195,13 +163,10 @@ class SourceMangaListScreen extends HookConsumerWidget {
                               ? Scaffold.of(context).openEndDrawer()
                               : showModalBottomSheet(
                                   context: context,
-                                  builder: (context) => filterWidget(
-                                    ref,
-                                    filtersProvider,
-                                    filterList.valueOrNull,
-                                    controller,
-                                    context,
-                                  ),
+                                  builder: (context) => ShowSourceMangaFilter(
+                                      sourceType: sourceType,
+                                      sourceId: sourceId,
+                                      controller: controller),
                                 );
                         },
                       ),
@@ -215,6 +180,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
                     child: SearchField(
                       initialText: query.value,
                       onClose: () => showSearch.value = false,
+                      autofocus: initialQuery.isBlank,
                       onSubmitted: (val) {
                         if (sourceType == SourceType.filter) {
                           query.value = val;
@@ -239,13 +205,10 @@ class SourceMangaListScreen extends HookConsumerWidget {
         endDrawer: Drawer(
           width: kDrawerWidth,
           child: Builder(
-            builder: (context) => filterWidget(
-              ref,
-              filtersProvider,
-              filterList.valueOrNull,
-              controller,
-              context,
-            ),
+            builder: (context) => ShowSourceMangaFilter(
+                sourceType: sourceType,
+                sourceId: sourceId,
+                controller: controller),
           ),
         ),
         body: RefreshIndicator(

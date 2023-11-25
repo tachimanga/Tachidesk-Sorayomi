@@ -31,6 +31,7 @@ class ExtensionTag with _$ExtensionTag {
     List<Tag>? tagList,
     String? suffix,
     bool? direct,
+    bool? top,
   }) = _ExtensionTag;
 
   factory ExtensionTag.fromJson(Map<String, dynamic> json) =>

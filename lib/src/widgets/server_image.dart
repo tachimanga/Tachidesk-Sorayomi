@@ -15,6 +15,7 @@ import '../constants/urls.dart';
 import '../features/manga_book/domain/img/image_error_widget.dart';
 import '../features/manga_book/domain/img/image_model.dart';
 import '../features/manga_book/domain/img/unique_key_provider.dart';
+import '../features/manga_book/presentation/reader/controller/reader_controller_v2.dart';
 import '../features/settings/presentation/server/widget/credential_popup/credentials_popup.dart';
 import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../global_providers/global_providers.dart';
@@ -61,6 +62,7 @@ class ServerImage extends ConsumerWidget {
     final basicToken = ref.watch(credentialsProvider);
     final magic = ref.watch(getMagicProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
+    final downscaleImage = ref.watch(downscaleImageProvider);
 
     var baseApi =
         "${Endpoints.baseApi(baseUrl: baseUrl, appendApiToUrl: appendApiToUrl)}"
@@ -121,6 +123,8 @@ class ServerImage extends ConsumerWidget {
       // : {"User-Agent": userAgent},
       width: size?.width,
       fit: fit ?? BoxFit.cover,
+      memCacheWidth: downscaleImage == true ? memCacheWidth : null,
+      memCacheHeight: downscaleImage == true ? memCacheHeight : null,
       imageRenderMethodForWeb: authType == AuthType.basic && basicToken != null
           ? ImageRenderMethodForWeb.HttpGet
           : ImageRenderMethodForWeb.HtmlImage,

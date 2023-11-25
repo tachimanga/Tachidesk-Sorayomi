@@ -16,19 +16,14 @@ part 'update_status_model.g.dart';
 class UpdateStatus with _$UpdateStatus {
   UpdateStatus._();
   factory UpdateStatus({
-    @JsonKey(name: "PENDING") List<Manga>? pending,
-    @JsonKey(name: "RUNNING") List<Manga>? running,
-    @JsonKey(name: "COMPLETE") List<Manga>? completed,
-    @JsonKey(name: "FAILED") List<Manga>? failed,
+    UpdateStatusMap? statusMap,
+    bool? running,
+    int? numberOfJobs,
   }) = _UpdateStatus;
 
-  int get total =>
-      (pending?.length ?? 0) +
-      (running?.length ?? 0) +
-      (completed?.length ?? 0) +
-      (failed?.length ?? 0);
+  int get total => numberOfJobs ?? 0;
 
-  int get updateChecked => (completed?.length ?? 0) + (failed?.length ?? 0);
+  int get updateChecked => (statusMap?.completed?.length ?? 0) + (statusMap?.failed?.length ?? 0);
 
   bool get isUpdateCompleted => total == updateChecked;
 
@@ -36,4 +31,17 @@ class UpdateStatus with _$UpdateStatus {
 
   factory UpdateStatus.fromJson(Map<String, dynamic> json) =>
       _$UpdateStatusFromJson(json);
+}
+
+@freezed
+class UpdateStatusMap with _$UpdateStatusMap {
+  factory UpdateStatusMap({
+    @JsonKey(name: "PENDING") List<Manga>? pending,
+    @JsonKey(name: "RUNNING") List<Manga>? running,
+    @JsonKey(name: "COMPLETE") List<Manga>? completed,
+    @JsonKey(name: "FAILED") List<Manga>? failed,
+  }) = _UpdateStatusMap;
+
+  factory UpdateStatusMap.fromJson(Map<String, dynamic> json) =>
+      _$UpdateStatusMapFromJson(json);
 }
