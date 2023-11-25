@@ -17,11 +17,15 @@ import '../../../../../../constants/endpoints.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart' as logger;
 import '../../../../../../widgets/server_image.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
+import '../../controller/ad_controller.dart';
+import '../../controller/reader_controller.dart';
 import '../../controller/reader_controller_v2.dart';
 import '../chapter_loading_widget.dart';
 import '../chapter_separator.dart';
+import '../interactive_wrapper.dart';
 import '../reader_wrapper.dart';
 
 class ContinuousReaderMode2 extends HookConsumerWidget {
@@ -57,8 +61,8 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
         : (initChapter.lastPageRead).ifNullOrNegative(0);
     final currentIndex = useState(initIndex);
     final currChapter = useState(initChapter);
-    logger.log("[Reader2] ContinuousReaderMode2 currChapter.state ${currChapter.value.name} "
-        "initChapter: ${initChapter.name}");
+    // logger.log("[Reader2] ContinuousReaderMode2 currChapter.state ${currChapter.value.name} "
+    //     "initChapter: ${initChapter.name}");
     final currPage = useState(readerListData.pageList[initIndex]);
 
     final scrollController = useMemoized(() => ItemScrollController());
@@ -69,8 +73,8 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
       currPage.value = page;
       currChapter.value = pageChapter;
-      logger.log("[Reader2] curr page ${page.pageIndex} "
-          "curr chapter: ${pageChapter.index}");
+      // logger.log("[Reader2] curr page ${page.pageIndex} "
+      //     "curr chapter: ${pageChapter.index}");
       if (onPageChanged != null) onPageChanged!(currPage.value);
       return;
     }, [currentIndex.value]);
@@ -108,6 +112,22 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       return () => positionsListener.itemPositions.removeListener(listener);
     }, []);
 
+    useEffect(() {
+      return () {
+        if (bannerAdAliveLinkList.isNotEmpty) {
+          final e = bannerAdAliveLinkList.removeAt(0);
+          e.close();
+        }
+        if (chapterAliveLinkList.isNotEmpty) {
+          final e = chapterAliveLinkList.removeAt(0);
+          e.close();
+        }
+      };
+    }, []);
+
+    final isAnimationEnabled =
+    ref.read(readerScrollAnimationProvider).ifNull(false);
+
     final pointCount = useState(0);
     final windowPadding =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
@@ -125,12 +145,19 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       onPrevious: () {
         final ItemPosition itemPosition =
             positionsListener.itemPositions.value.toList().first;
-        scrollController.scrollTo(
-          index: itemPosition.index,
-          duration: kDuration,
-          curve: kCurve,
-          alignment: itemPosition.itemLeadingEdge + .8,
-        );
+        if (isAnimationEnabled) {
+          scrollController.scrollTo(
+            index: itemPosition.index,
+            duration: kDuration,
+            curve: kCurve,
+            alignment: itemPosition.itemLeadingEdge + .8,
+          );
+        } else {
+          scrollController.jumpTo(
+            index: itemPosition.index,
+            alignment: itemPosition.itemLeadingEdge + .8,
+          );
+        }
       },
       onNext: () {
         ItemPosition itemPosition = positionsListener.itemPositions.value.first;
@@ -143,12 +170,19 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
           index = itemPosition.index + 1;
           alignment = 0;
         }
-        scrollController.scrollTo(
-          index: index,
-          duration: kDuration,
-          curve: kCurve,
-          alignment: alignment,
-        );
+        if (isAnimationEnabled) {
+          scrollController.scrollTo(
+            index: index,
+            duration: kDuration,
+            curve: kCurve,
+            alignment: alignment,
+          );
+        } else {
+          scrollController.jumpTo(
+            index: index,
+            alignment: alignment,
+          );
+        }
       },
       child: Listener(
           onPointerDown: (event) {
@@ -160,8 +194,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
           onPointerCancel: (_) {
             pointCount.value = pointCount.value - 1;
           },
-          child: InteractiveViewer(
-            maxScale: 8,
+          child: InteractiveWrapper(
             child: ScrollablePositionedList.separated(
               physics: pointCount.value == 2
                   ? const NeverScrollableScrollPhysics()
@@ -205,10 +238,10 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                     child: child,
                   ),
                   memCacheWidth: scrollDirection == Axis.vertical
-                      ? context.width.toInt()
+                      ? (context.width * context.devicePixelRatio).toInt()
                       : null,
                   memCacheHeight: scrollDirection != Axis.vertical
-                      ? context.height.toInt()
+                      ? (context.height * context.devicePixelRatio).toInt()
                       : null,
                 );
                 if (page.pageIndex == 0 ||
@@ -230,7 +263,10 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
 
                   final chapterLoading = ChapterLoadingWidget(
                       mangaId: "${pageChapter.mangaId}",
-                      lastChapterIndex: "${pageChapter.index}");
+                      lastChapterIndex: "${pageChapter.index}",
+                      scrollDirection: scrollDirection,
+                      singlePageMode: false,
+                  );
 
                   if (scrollDirection == Axis.horizontal) {
                     if (reverse == false) {

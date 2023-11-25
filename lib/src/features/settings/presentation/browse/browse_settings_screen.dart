@@ -33,13 +33,26 @@ class BrowseSettingsScreen extends HookConsumerWidget {
     var magic = ref.watch(getMagicProvider);
     showImportRepoIfNeeded(context, ref);
     bool alwaysShow = repoName != null && repoUrl != null;
+    final repoUrlSetting = ref.watch(repoUrlProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
+    final toast = ref.read(toastProvider(context));
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n!.extensions)),
+      appBar: AppBar(
+        title: Text(context.l10n!.extensions),
+        actions: magic.b7 == true
+            ? [
+                IconButton(
+                  onPressed: () =>
+                      launchUrlInWeb(context, AppUrls.extensionHelp.url, toast),
+                  icon: const Icon(Icons.help_rounded),
+                ),
+              ]
+            : null,
+      ),
       body: ListView(
         children: [
-          if (magic.a9 || alwaysShow) ...[
+          if (magic.a9 || alwaysShow || repoUrlSetting.isNotBlank) ...[
             const RepoUrlTile(),
             ListTile(
               subtitle: Text("To set external repositories, you need to agree to the following agreement:\n"

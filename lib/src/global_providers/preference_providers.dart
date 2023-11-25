@@ -52,3 +52,34 @@ class JavaUseNativeNet extends _$JavaUseNativeNet with SharedPreferenceClientMix
     initial: false,
   );
 }
+
+@riverpod
+class DisableStopSocketV2 extends _$DisableStopSocketV2 with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() => initialize(
+    ref,
+    key: "config.disableStopSocketV2",
+    initial: "",
+  );
+}
+
+@riverpod
+class MarkNeedAskRate extends _$MarkNeedAskRate with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: DBKeys.markNeedAskRate.name,
+    initial: DBKeys.markNeedAskRate.initial,
+  );
+}
+
+@riverpod
+class InitLocation extends _$InitLocation with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() => initialize(
+    ref,
+    key: DBKeys.initLocation.name,
+    initial: DBKeys.initLocation.initial,
+  );
+}
+

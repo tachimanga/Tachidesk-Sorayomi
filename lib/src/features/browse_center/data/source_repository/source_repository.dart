@@ -96,9 +96,13 @@ class SourceRepository {
 
   Future<List<Filter>?> getFilterList({
     required String sourceId,
+    bool? reset,
   }) async =>
       (await dioClient.get<List<Filter>, Filter>(
         SourceUrl.filters(sourceId),
+        queryParameters: {
+          "reset": reset,
+        },
         decoder: (e) =>
             e is Map<String, dynamic> ? Filter.fromJson(e) : Filter(),
       ))

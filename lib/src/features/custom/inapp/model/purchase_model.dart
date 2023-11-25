@@ -15,6 +15,7 @@ class VerifyResult with _$VerifyResult {
     bool? valid,
     int? expire,
     String? msg,
+    String? token,
   }) = _VerifyResult;
 
   factory VerifyResult.fromJson(Map<String, dynamic> json) => _$VerifyResultFromJson(json);

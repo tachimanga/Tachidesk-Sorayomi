@@ -14,9 +14,14 @@ import '../../routes/router_config.dart';
 import '../../utils/extensions/custom_extensions.dart';
 
 class BigScreenNavigationBar extends StatelessWidget {
-  const BigScreenNavigationBar({super.key, required this.selectedScreen});
+  const BigScreenNavigationBar({
+    super.key,
+    required this.selectedScreen,
+    required this.onDestinationSelected,
+  });
 
   final String selectedScreen;
+  final ValueChanged<String> onDestinationSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +61,11 @@ class BigScreenNavigationBar extends StatelessWidget {
           )
           .toList(),
       selectedIndex: NavigationBarData.indexWherePathOrZero(selectedScreen),
-      onDestinationSelected: (value) =>
-          context.go(NavigationBarData.navList[value].path),
+      onDestinationSelected: (value) {
+        final target = NavigationBarData.navList[value].path;
+        context.go(target);
+        onDestinationSelected(target);
+      },
     );
   }
 }

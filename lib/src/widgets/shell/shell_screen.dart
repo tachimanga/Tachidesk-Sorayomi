@@ -15,7 +15,11 @@ import '../../features/about/data/about_repository.dart';
 import '../../features/about/presentation/about/controllers/about_controller.dart';
 import '../../features/about/presentation/about/widget/app_update_dialog.dart';
 
+import '../../features/manga_book/data/downloads/downloads_repository.dart';
+import '../../features/manga_book/data/updates/updates_repository.dart';
+import '../../global_providers/preference_providers.dart';
 import '../../utils/extensions/custom_extensions.dart';
+import '../../utils/log.dart';
 import '../../utils/misc/toast/toast.dart';
 import 'big_screen_navigation_bar.dart';
 import 'small_screen_navigation_bar.dart';
@@ -66,12 +70,25 @@ class ShellScreen extends HookConsumerWidget {
       return;
     }, []);
      */
+
+    useOnAppLifecycleStateChange((pref, state) {
+      log("useOnAppLifecycleStateChange pref:$pref curr:$state");
+      if (state == AppLifecycleState.resumed) {
+        ref.invalidate(downloadsSocketProvider);
+        ref.invalidate(updatesSocketProvider);
+      }
+    });
+
     return context.isTablet
         ? Scaffold(
             body: Row(
               children: [
                 BigScreenNavigationBar(
                   selectedScreen: GoRouter.of(context).location,
+                  onDestinationSelected: (value) {
+                    log("[initLocation]onDestinationSelected $value");
+                    ref.read(initLocationProvider.notifier).update(value);
+                  },
                 ),
                 Expanded(child: child),
               ],
@@ -83,6 +100,10 @@ class ShellScreen extends HookConsumerWidget {
                 FloatingActionButtonLocation.centerFloat,
             bottomNavigationBar: SmallScreenNavigationBar(
               selectedScreen: GoRouter.of(context).location,
+              onDestinationSelected: (value) {
+                log("[initLocation]onDestinationSelected $value");
+                ref.read(initLocationProvider.notifier).update(value);
+              },
             ),
           );
   }

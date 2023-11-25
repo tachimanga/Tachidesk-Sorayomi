@@ -17,7 +17,9 @@ import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../utils/purchase.dart';
 import '../../../../../widgets/server_image.dart';
+import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../data/tracking/tracking_repository.dart';
 import '../../../domain/tracking/tracking_model.dart';
 
@@ -35,6 +37,11 @@ class TrackerListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
+
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final testflightFlag = ref.watch(testflightFlagProvider);
+    final freeTrialFlag = ref.watch(freeTrialFlagProvider);
+
     return ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -92,8 +99,17 @@ class TrackerListTile extends ConsumerWidget {
                 );
               });
         } else {
+          final processing = context.l10n!.processing;
+          final purchase = await checkPurchase(
+              purchaseGate,
+              testflightFlag,
+              freeTrialFlag,
+              context,
+              toast);
+          if (!purchase) {
+            return;
+          }
           try {
-            final processing = context.l10n!.processing;
             pipe.invokeMethod("LogEvent", "SET_TRACKER");
             final uri = await FlutterWebAuth2.authenticate(
                 url: tracker.authUrl ?? "", callbackUrlScheme: "tachimange");

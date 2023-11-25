@@ -64,7 +64,7 @@ class UpdatesRepository {
         UpdateUrl.summary,
         cancelToken: cancelToken,
         decoder: (e) => e is Map<String, dynamic>
-            ? UpdateStatus.fromJson(e["statusMap"])
+            ? UpdateStatus.fromJson(e)
             : null,
       ))
           .data;
@@ -75,7 +75,7 @@ class UpdatesRepository {
     return Pair<Stream<UpdateStatus>, AsyncCallback>(
       first: channel.stream.asyncMap<UpdateStatus>((event) =>
           compute<String, UpdateStatus>(
-              (s) => UpdateStatus.fromJson({...?json.decode(s)["statusMap"]}),
+              (s) => UpdateStatus.fromJson(json.decode(s)),
               event)),
       second: channel.sink.close,
     );

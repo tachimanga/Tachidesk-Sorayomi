@@ -123,14 +123,6 @@
       }
     }
   },
-  "createBackupDescription": "النسخ الاحتياطي لمكتبة Tachidesk",
-  "@createBackupDescription": {
-    "description": "Button text description to create backup"
-  },
-  "createBackupTitle": "إنشاء نسخة احتياطية",
-  "@createBackupTitle": {
-    "description": "Button text to create backup"
-  },
   "current": "الحالي",
   "@current": {
     "description": "Text to show the currently reading chapter in Reader Screen"
@@ -501,10 +493,6 @@
   "@reset": {
     "description": "Button text of reset button in source filters"
   },
-  "restoring": "جاري استعادة النسخة الاحتياطية",
-  "@restoring": {
-    "description": "Toast Text to show that the backup is restoring"
-  },
   "resume": "استأنف",
   "@resume": {
     "description": "Button Text to resume Chapter reading/downloading"
@@ -512,10 +500,6 @@
   "retry": "أعد المحاولة",
   "@retry": {
     "description": "Retry Button Text"
-  },
-  "restored": "تمت استعادة النسخة الاحتياطية!",
-  "@restored": {
-    "description": "Toast Text to show that the backup has been restored"
   },
   "serverVersion": "إصدار السيرفر",
   "@serverVersion": {
@@ -769,14 +753,6 @@
   "@whatsNew": {
     "description": "Button text to open whats new page of app in web"
   },
-  "restoreBackupDescription": "استعادة Tachidesk من النسخة الاحتياطية",
-  "@restoreBackupDescription": {
-    "description": "Button text description to create backup"
-  },
-  "restoreBackupTitle": "استعادة النسخة الاحتياطية",
-  "@restoreBackupTitle": {
-    "description": "Button text to create backup"
-  },
   "readerPadding": "ملاءمة القارىء",
   "@readerPadding": {
     "description": "Slider title text for Reader Padding"
@@ -882,5 +858,39 @@
   "trackingChapter": "الفصل",
   "trackingScore": "التقييم",
   "trackingStartDate": "تاريخ البدء",
-  "trackingFinishDate": "تاريخ الانتهاء"
+  "trackingFinishDate": "تاريخ الانتهاء",
+  "operationFailTip": "عملية فشلت. يرجى إعادة المحاولة.",
+  "createBackupTitle": "إنشاء نسخة احتياطية",
+  "createBackupDescription": "يمكن استخدامها لاستعادة المكتبة الحالية.",
+  "backupCreated": "تم إنشاء النسخة الاحتياطية!",
+  "restoreBackupTitle": "استعادة النسخة الاحتياطية",
+  "restoreBackupDescription": "استعادة المكتبة من ملف النسخ الاحتياطية",
+  "restoring": "جارٍ استعادة النسخة الاحتياطية",
+  "restored": "تم استعادة النسخة الاحتياطية!",
+  "importBackupTitle": "استيراد نسخة احتياطية Tachiyomi",
+  "importBackupDescription": "استيراد المكتبة من ملف النسخ الاحتياطية الخاص بـ Tachiyomi",
+  "autoBackupSectionTitle": "نسخ احتياطية تلقائية",
+  "autoBackupFrequency": "تكرار النسخ الاحتياطي",
+  "autoBackupLimit": "حد النسخ الاحتياطية الأقصى",
+  "backupsSectionTitle": "النسخ الاحتياطية",
+  "restoreBackup": "استعادة",
+  "exportBackup": "تصدير",
+  "backupNamePrefixNormal": "نسخة احتياطية",
+  "backupNamePrefixAuto": "نسخة احتياطية تلقائية",
+  "backupNamePrefixSchedule": "نسخة احتياطية مجدولة",
+  "restoreConfirmTitle": "استعادة إلى هذه النسخة الاحتياطية؟",
+  "restoreConfirmContent": "سيتم إزالة جميع البيانات الحالية واستبدالها بالبيانات من هذه النسخة الاحتياطية.",
+  "importConfirmTitle": "استيراد نسخة احتياطية Tachiyomi؟",
+  "importConfirmContent": "دمج مكتبة Tachiyomi بالمكتبة المحلية. لن يتم إزالة البيانات المحلية الحالية أو استبدالها.",
+  "autoBackupTip": "قبل استعادة النسخة الاحتياطية، قم بإنشاء نسخة احتياطية تلقائيًا.",
+  "autoBackupTipForImport": "قبل استيراد النسخة الاحتياطية، قم بإنشاء نسخة احتياطية تلقائيًا.",
+  "imported": "تم استيراد النسخة الاحتياطية!",
+  "restoreSuccessTip": "تمت استعادة النسخ الاحتياطية بنجاح. ستتم العملية بعد إعادة تشغيل التطبيق.",
+  "importSuccessTip": "تم استيراد النسخ الاحتياطية بنجاح. ستتم العملية بعد إعادة تشغيل التطبيق.",
+  "invalidBackup": "ملف نسخة احتياطية غير صالح",
+  "invalidBackupVersion": "يرجى استخدام أحدث إصدار من التطبيق لاستعادة النسخة الاحتياطية.",
+  "autoBackupFailTip": "فشل في إنشاء النسخة الاحتياطية التلقائية قبل الاستعادة. يرجى إلغاء النسخ الاحتياطية التلقائية والمحاولة مرة أخرى.",
+  "restartApp": "إعادة تشغيل التطبيق",
+  "confirm": "تأكيد",
+  "dummy": "dummy"
 }

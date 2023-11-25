@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../utils/extensions/custom_extensions.dart';
+import '../../../widgets/custom_circular_progress_indicator.dart';
 import '../data/updates/updates_repository.dart';
 import 'update_status_summary_sheet.dart';
 
@@ -19,8 +20,11 @@ class UpdateStatusFab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final updateStatus = ref.watch(updatesSocketProvider);
     final showStatus = (updateStatus.valueOrNull?.showUpdateStatus).ifNull();
+    final running = updateStatus.valueOrNull?.running == true;
     return FloatingActionButton.extended(
-      icon: showStatus ? null : const Icon(Icons.refresh),
+      icon: showStatus || running
+          ? MiniCircularProgressIndicator(color: context.iconColor)
+          : const Icon(Icons.refresh),
       onPressed: () => showStatus
           ? showUpdateStatusSummaryBottomSheet(context)
           : ref.read(updatesRepositoryProvider).fetchUpdates(),

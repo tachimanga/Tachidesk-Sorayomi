@@ -111,10 +111,6 @@
       }
     }
   },
-  "createBackupDescription": "Sauvegarder la bibliothèque en tant que sauvegarde Tachidesk",
-  "@createBackupDescription": {
-    "description": "Button text description to create backup"
-  },
   "current": "En cours",
   "@current": {
     "description": "Text to show the currently reading chapter in Reader Screen"
@@ -433,22 +429,6 @@
   "@reset": {
     "description": "Button text of reset button in source filters"
   },
-  "restoreBackupDescription": "Restaurer Tachidesk à partir d'une sauvegarde",
-  "@restoreBackupDescription": {
-    "description": "Button text description to create backup"
-  },
-  "restoreBackupTitle": "Restaurer la sauvegarde",
-  "@restoreBackupTitle": {
-    "description": "Button text to create backup"
-  },
-  "restored": "La sauvegarde a été restaurée !",
-  "@restored": {
-    "description": "Toast Text to show that the backup has been restored"
-  },
-  "restoring": "Restauration de la sauvegarde",
-  "@restoring": {
-    "description": "Toast Text to show that the backup is restoring"
-  },
   "versionAvailable": "Version {version} disponible pour l'application {app} !",
   "@versionAvailable": {
     "description": "Text to show that there is an update to App/Server",
@@ -482,10 +462,6 @@
   "appLanguage": "Langue de l'application",
   "@appLanguage": {
     "description": "Popup title and Button text to change App Language"
-  },
-  "createBackupTitle": "Créer une sauvegarde",
-  "@createBackupTitle": {
-    "description": "Button text to create backup"
   },
   "credentials": "Identifiants",
   "@credentials": {
@@ -870,5 +846,39 @@
   "trackingChapter": "Chapitre",
   "trackingScore": "Score",
   "trackingStartDate": "Date de début",
-  "trackingFinishDate": "Date de fin"
+  "trackingFinishDate": "Date de fin",
+  "operationFailTip": "Échec de l'opération. Veuillez réessayer.",
+  "createBackupTitle": "Créer une sauvegarde",
+  "createBackupDescription": "Peut être utilisé pour restaurer la bibliothèque actuelle.",
+  "backupCreated": "Sauvegarde créée !",
+  "restoreBackupTitle": "Restaurer la sauvegarde",
+  "restoreBackupDescription": "Restaurer la bibliothèque depuis le fichier de sauvegarde",
+  "restoring": "Restauration de la sauvegarde",
+  "restored": "Sauvegarde restaurée !",
+  "importBackupTitle": "Importer la sauvegarde Tachiyomi",
+  "importBackupDescription": "Importer la bibliothèque depuis le fichier de sauvegarde Tachiyomi",
+  "autoBackupSectionTitle": "Sauvegardes automatiques",
+  "autoBackupFrequency": "Fréquence de sauvegarde",
+  "autoBackupLimit": "Nombre maximum de sauvegardes",
+  "backupsSectionTitle": "Sauvegardes",
+  "restoreBackup": "Restaurer",
+  "exportBackup": "Exporter",
+  "backupNamePrefixNormal": "Sauvegarde",
+  "backupNamePrefixAuto": "Sauvegarde automatisée",
+  "backupNamePrefixSchedule": "Sauvegarde planifiée",
+  "restoreConfirmTitle": "Restaurer cette sauvegarde ?",
+  "restoreConfirmContent": "Toutes les données actuelles seront supprimées et remplacées par les données de cette sauvegarde.",
+  "importConfirmTitle": "Importer la sauvegarde Tachiyomi ?",
+  "importConfirmContent": "Fusionner la bibliothèque de Tachiyomi avec la bibliothèque locale ; les données locales existantes ne seront PAS supprimées ou remplacées.",
+  "autoBackupTip": "Avant de restaurer la sauvegarde, créer automatiquement une sauvegarde.",
+  "autoBackupTipForImport": "Avant d'importer la sauvegarde, créer automatiquement une sauvegarde.",
+  "imported": "Sauvegarde importée !",
+  "restoreSuccessTip": "Restauration de sauvegarde réussie. Les modifications prendront effet après le redémarrage de l'application.",
+  "importSuccessTip": "Importation de sauvegarde réussie. Les modifications prendront effet après le redémarrage de l'application.",
+  "invalidBackup": "Fichier de sauvegarde invalide",
+  "invalidBackupVersion": "Veuillez utiliser la dernière version de l'application pour restaurer la sauvegarde.",
+  "autoBackupFailTip": "Échec de la création de la sauvegarde automatique avant la restauration. Veuillez annuler la sauvegarde automatique et réessayer.",
+  "restartApp": "Redémarrer l'application",
+  "confirm": "Confirmer",
+  "dummy": "dummy"
 }

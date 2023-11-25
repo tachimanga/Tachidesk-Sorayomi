@@ -1,4 +1,5 @@
 // Copyright (c) 2022 Contributors to the Suwayomi project
+// Copyright (c) 2022 Contributors to the Suwayomi project
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,11 +10,14 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants/enum.dart';
+import '../constants/navigation_bar_data.dart';
 import '../features/about/presentation/about/about_screen.dart';
 import '../features/about/presentation/about/about_screen_lite.dart';
+import '../features/about/presentation/about/debug_keyboard_screen.dart';
 import '../features/about/presentation/about/debug_screen.dart';
 import '../features/browse_center/domain/filter/filter_model.dart';
 import '../features/browse_center/presentation/browse/browse_screen.dart';
+import '../features/browse_center/presentation/extension/extension_info_screen.dart';
 import '../features/browse_center/presentation/global_search/global_search_screen.dart';
 import '../features/browse_center/presentation/source_manga_list/source_manga_list_screen.dart';
 import '../features/browse_center/presentation/source_preference/source_preference_screen.dart';
@@ -32,6 +36,7 @@ import '../features/manga_book/presentation/reader/reader_screen_v2.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
 import '../features/settings/presentation/appearance/appearance_screen.dart';
 import '../features/settings/presentation/backup/backup_screen.dart';
+import '../features/settings/presentation/backup2/backup_screen_v2.dart';
 import '../features/settings/presentation/browse/browse_settings_screen.dart';
 import '../features/settings/presentation/general/general_screen.dart';
 import '../features/settings/presentation/library/library_settings_screen.dart';
@@ -44,7 +49,9 @@ import '../features/settings/presentation/tracking/tracker_settings_screen.dart'
 import '../features/settings/presentation/tracking/tracking_manga_search_screen.dart';
 import '../firebase/observer.dart';
 import '../global_providers/global_providers.dart';
+import '../global_providers/preference_providers.dart';
 import '../utils/extensions/custom_extensions.dart';
+import '../utils/log.dart';
 import '../widgets/shell/shell_screen.dart';
 
 part 'router_config.g.dart';
@@ -81,10 +88,13 @@ abstract class Routes {
   static const serverSettings = 'server';
   static const editCategories = 'edit-categories';
   static const extensions = '/extensions';
+  static const extensionInfo = '/extension/:pkgName';
+  static getExtensionInfo(String? pkgName) => '/extension/$pkgName';
   static const manga = '/manga/:mangaId';
   static getManga(int mangaId, {int? categoryId}) =>
       '/manga/$mangaId${categoryId.isNull ? '' : "?categoryId=$categoryId"}';
   static const mangaTrackSearch = '/track/search/:trackerId/:mangaId';
+  static const mangaTrackSetting = '/track/setting';
   static getMangaTrackSearch(int trackerId, int mangaId) => '/track/search/$trackerId/$mangaId';
   static const sourceManga = '/source/:sourceId/:sourceType';
   static getSourceManga(String sourceId, SourceType sourceType,
@@ -106,10 +116,17 @@ RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 @riverpod
 GoRouter routerConfig(ref) {
   final pipe = ref.watch(getMagicPipeProvider);
+  final initLocationConfig = ref.read(initLocationProvider);
+  final initLocation = NavigationBarData.navList
+      .map((e) => e.path)
+      .where((path) => initLocationConfig == path)
+      .firstOrNull;
+  log("[initLocation]config: $initLocationConfig match: $initLocation");
+
   final FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(channel: pipe);
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: Routes.browse,
+    initialLocation: initLocation ?? Routes.browse,
     navigatorKey: _rootNavigatorKey,
     observers: [observer, routeObserver],
     routes: [
@@ -169,9 +186,6 @@ GoRouter routerConfig(ref) {
           key: ValueKey(state.params['sourceId'] ?? "0"),
           sourceId: state.params['sourceId'] ?? "0",
           initialQuery: state.queryParams['query'],
-          initialFilter: (state.extra is List<Filter>?)
-              ? (state.extra as List<Filter>?)
-              : null,
           sourceType: SourceType.values.firstWhere(
             (element) => element.name.query(state.params['sourceType']),
             orElse: () => SourceType.popular,
@@ -184,6 +198,14 @@ GoRouter routerConfig(ref) {
         builder: (context, state) => SourcePreferenceScreen(
           key: ValueKey(state.params['sourceId'] ?? "0"),
           sourceId: state.params['sourceId'] ?? "",
+        ),
+      ),
+      GoRoute(
+        path: Routes.extensionInfo,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => ExtensionInfoScreen(
+          key: ValueKey(state.params['pkgName'] ?? "0"),
+          pkgName: state.params['pkgName'] ?? "",
         ),
       ),
       GoRoute(
@@ -216,6 +238,11 @@ GoRouter routerConfig(ref) {
           trackerId: int.parse(state.params['trackerId'] ?? ""),
           mangaId: int.parse(state.params['mangaId'] ?? ""),
         ),
+      ),
+      GoRoute(
+        path: Routes.mangaTrackSetting,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => TrackerSettingsScreen(),
       ),
       GoRoute(
         path: Routes.settings,
@@ -256,6 +283,10 @@ GoRouter routerConfig(ref) {
             builder: (context, state) => const DebugScreen(),
           ),
           GoRoute(
+            path: 's-keyboard',
+            builder: (context, state) => const DebugKeyboardScreen(),
+          ),
+          GoRoute(
             path: Routes.browseSettings,
             builder: (context, state) => BrowseSettingsScreen(
               repoName: state.queryParams['name'],
@@ -264,7 +295,7 @@ GoRouter routerConfig(ref) {
           ),
           GoRoute(
             path: Routes.backup,
-            builder: (context, state) => const BackupScreen(),
+            builder: (context, state) => const BackupScreenV2(),
           ),
           GoRoute(
             path: Routes.downloads,

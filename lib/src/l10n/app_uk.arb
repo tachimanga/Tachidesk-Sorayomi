@@ -81,10 +81,6 @@
       }
     }
   },
-  "createBackupDescription": "Резервна копія бібліотеки як резервна копія Tachidesk",
-  "@createBackupDescription": {
-    "description": "Button text description to create backup"
-  },
   "credentials": "Облікові дані",
   "@credentials": {
     "description": "Popup title and Button text to enter Authentication credentials"
@@ -401,18 +397,6 @@
   "@reset": {
     "description": "Button text of reset button in source filters"
   },
-  "restoreBackupDescription": "Відновити Tachidesk з резервної копії",
-  "@restoreBackupDescription": {
-    "description": "Button text description to create backup"
-  },
-  "restored": "Резервну копію відновлено!",
-  "@restored": {
-    "description": "Toast Text to show that the backup has been restored"
-  },
-  "restoring": "Відновлення резервної копії",
-  "@restoring": {
-    "description": "Toast Text to show that the backup is restoring"
-  },
   "resume": "Відновити",
   "@resume": {
     "description": "Button Text to resume Chapter reading/downloading"
@@ -558,10 +542,6 @@
   "completed": "Завершено",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
-  },
-  "createBackupTitle": "Створити резервну копію",
-  "@createBackupTitle": {
-    "description": "Button text to create backup"
   },
   "missingExtension": "Відсутні розширення",
   "@missingExtension": {
@@ -712,10 +692,6 @@
   "quickSearchSourceManga": "Пошук манґи \"M\" у джерелі \"S\"",
   "@quickSearchSourceManga": {
     "description": "Quick Open Hint text for searching Manga M in Source S with prefill '@S/M'"
-  },
-  "restoreBackupTitle": "Відновити резервну копію",
-  "@restoreBackupTitle": {
-    "description": "Button text to create backup"
   },
   "pending": "В очікуванні",
   "@pending": {
@@ -890,5 +866,39 @@
   "trackingChapter": "Глава",
   "trackingScore": "Оцінка",
   "trackingStartDate": "Дата початку",
-  "trackingFinishDate": "Дата завершення"
+  "trackingFinishDate": "Дата завершення",
+  "operationFailTip": "Операція не вдалася. Спробуйте ще раз.",
+  "createBackupTitle": "Створити резервну копію",
+  "createBackupDescription": "Можна використовувати для відновлення поточної бібліотеки.",
+  "backupCreated": "Резервна копія створена!",
+  "restoreBackupTitle": "Відновити резервну копію",
+  "restoreBackupDescription": "Відновити бібліотеку з файлу резервної копії",
+  "restoring": "Відновлення резервної копії",
+  "restored": "Резервна копія успішно відновлена!",
+  "importBackupTitle": "Імпорт резервної копії Tachiyomi",
+  "importBackupDescription": "Імпортувати бібліотеку з файлу резервної копії Tachiyomi",
+  "autoBackupSectionTitle": "Автоматичні резервні копії",
+  "autoBackupFrequency": "Частота резервного копіювання",
+  "autoBackupLimit": "Максимальна кількість резервних копій",
+  "backupsSectionTitle": "Резервні копії",
+  "restoreBackup": "Відновити",
+  "exportBackup": "Експортувати",
+  "backupNamePrefixNormal": "Резервна копія",
+  "backupNamePrefixAuto": "Автоматична резервна копія",
+  "backupNamePrefixSchedule": "Запланована резервна копія",
+  "restoreConfirmTitle": "Відновити до цієї резервної копії?",
+  "restoreConfirmContent": "Всі поточні дані будуть видалені і замінені даними з цієї резервної копії.",
+  "importConfirmTitle": "Імпортувати резервну копію Tachiyomi?",
+  "importConfirmContent": "Об'єднати бібліотеку Tachiyomi з локальною бібліотекою; існуючі локальні дані НЕ будуть видалені або замінені.",
+  "autoBackupTip": "Перед відновленням резервної копії автоматично створити резервну копію.",
+  "autoBackupTipForImport": "Перед імпортом резервної копії автоматично створити резервну копію.",
+  "imported": "Резервна копія імпортована!",
+  "restoreSuccessTip": "Резервна копія успішно відновлена. Зміни набудуть чинності після перезапуску додатка.",
+  "importSuccessTip": "Резервна копія успішно імпортована. Зміни набудуть чинності після перезапуску додатка.",
+  "invalidBackup": "Недійсний файл резервної копії",
+  "invalidBackupVersion": "Будь ласка, використовуйте останню версію програми для відновлення резервної копії.",
+  "autoBackupFailTip": "Не вдалося створити автоматичну резервну копію перед відновленням. Скасуйте автоматичну резервну копію й спробуйте ще раз.",
+  "restartApp": "Перезапустити програму",
+  "confirm": "Підтвердити",
+  "dummy": "dummy"
 }

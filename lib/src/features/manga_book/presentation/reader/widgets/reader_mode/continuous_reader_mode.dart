@@ -161,8 +161,12 @@ class ContinuousReaderMode extends HookWidget {
                     : null,
                 child: child,
               ),
-              memCacheWidth: scrollDirection == Axis.vertical ? context.width.toInt() : null,
-              memCacheHeight: scrollDirection != Axis.vertical ? context.height.toInt() : null,
+              memCacheWidth: scrollDirection == Axis.vertical
+                  ? (context.width * context.devicePixelRatio).toInt()
+                  : null,
+              memCacheHeight: scrollDirection != Axis.vertical
+                  ? (context.height * context.devicePixelRatio).toInt()
+                  : null,
             );
             if (index == 0 || index == (chapter.pageCount ?? 1) - 1) {
               final separator = SizedBox(

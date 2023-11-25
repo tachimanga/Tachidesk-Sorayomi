@@ -68,7 +68,8 @@ class UpdatesScreen extends HookConsumerWidget {
     }, []);
     final selectedChapters = useState<Map<int, Chapter>>({});
     return Scaffold(
-      floatingActionButton: const UpdateStatusFab(),
+      floatingActionButton:
+          selectedChapters.value.isEmpty ? const UpdateStatusFab() : null,
       appBar: selectedChapters.value.isNotEmpty
           ? AppBar(
               leading: IconButton(

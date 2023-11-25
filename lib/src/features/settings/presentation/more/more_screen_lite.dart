@@ -24,6 +24,7 @@ import '../../../about/presentation/about/widget/media_launch_button.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../widgets/server_url_tile/server_url_tile.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
+import '../browse/widgets/repo_setting/repo_url_tile.dart';
 import 'purchase_cell.dart';
 
 class MoreScreenLite extends HookConsumerWidget {
@@ -45,9 +46,7 @@ class MoreScreenLite extends HookConsumerWidget {
         "Tachimanga (Tachiyomi port for iOS) is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
-    final purchaseGate = ref.watch(purchaseGateProvider);
-    final testflightFlag = ref.watch(testflightFlagProvider);
-    final freeTrialFlag = ref.watch(freeTrialFlagProvider);
+    final repoUrlSetting = ref.watch(repoUrlProvider);
 
     final debugCount = useState(0);
     return Scaffold(
@@ -96,15 +95,10 @@ class MoreScreenLite extends HookConsumerWidget {
           ListTile(
             title: TextPremium(text: context.l10n!.tracking),
             leading: const Icon(Icons.sync_rounded),
-            onTap: () => checkPurchaseAndGo(
-                purchaseGate,
-                testflightFlag,
-                freeTrialFlag,
-                context,
-                toast,
-                [Routes.settings, Routes.trackingSettings].toPath),
+            onTap: () =>
+                context.push([Routes.settings, Routes.trackingSettings].toPath),
           ),
-          if (magic.a8 || magic.a9) ...[
+          if (magic.a8 || magic.a9 || repoUrlSetting.isNotBlank) ...[
             ListTile(
               title: Text(context.l10n!.extensions),
               leading: const Icon(Icons.explore_rounded),
@@ -112,6 +106,11 @@ class MoreScreenLite extends HookConsumerWidget {
                   context.push([Routes.settings, Routes.browseSettings].toPath),
             ),
           ],
+          ListTile(
+            title: Text(context.l10n!.backup),
+            leading: const Icon(Icons.settings_backup_restore_rounded),
+            onTap: () => context.push([Routes.settings, Routes.backup].toPath),
+          ),
           ListTile(
             title: Text(context.l10n!.downloads),
             leading: const Icon(Icons.download_outlined),
@@ -187,83 +186,6 @@ class MoreScreenLite extends HookConsumerWidget {
     );
   }
 
-  void checkPurchaseAndGo(bool purchaseGate, bool testflightFlag,
-      bool freeTrialFlag, BuildContext context, Toast toast, String path) {
-    if (purchaseGate) {
-      context.push(path);
-    }
-    else {
-      if (testflightFlag) {
-        processTestflight(
-            purchaseGate, testflightFlag, freeTrialFlag, context, toast, path);
-      }
-      else {
-        context.push(Routes.purchase);
-      }
-    }
-  }
-
-  void processTestflight(bool purchaseGate, bool testflightFlag,
-      bool freeTrialFlag, BuildContext context, Toast toast, String path) {
-    if (freeTrialFlag) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('This is a Premium Feature'),
-            content: const Text(
-                'Please install the App Store one to complete the purchase and then switch back to the TestFlight one. '
-                'Alternatively, you can enjoy a free trial for 30 days.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  context.push(path);
-                  context.pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('This is a Premium Feature'),
-            content: const Text(
-                'Please install the App Store one to complete the purchase and then switch back to the TestFlight one.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  launchUrlInWeb(
-                    context,
-                    AppUrls.appstore.url,
-                    toast,
-                  );
-                  context.pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
 }
 
 class TextPremium extends ConsumerWidget {

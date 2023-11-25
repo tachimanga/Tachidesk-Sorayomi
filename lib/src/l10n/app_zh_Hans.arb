@@ -189,7 +189,7 @@
   "@deleteCategoryTitle": {
     "description": "Popup title when deleting Category"
   },
-  "discord": "DIscord",
+  "discord": "Discord",
   "@discord": {
     "description": "Discord app title"
   },

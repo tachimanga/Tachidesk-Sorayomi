@@ -271,7 +271,7 @@ class ReaderWrapper extends HookConsumerWidget {
                                 ? () {
                                     if (initChapterIndexState != null) {
                                       loadPrevOrNextChapter(ref,
-                                          prevNextChapterPair!.second!);
+                                          prevNextChapterPair!.second!, reverse);
                                       return;
                                     }
                                     context.pushReplacement(
@@ -303,7 +303,7 @@ class ReaderWrapper extends HookConsumerWidget {
                                 ? () {
                                     if (initChapterIndexState != null) {
                                       loadPrevOrNextChapter(ref,
-                                          prevNextChapterPair!.first!);
+                                          prevNextChapterPair!.first!, !reverse);
                                       return;
                                     }
                                     context.pushReplacement(
@@ -441,7 +441,7 @@ class ReaderWrapper extends HookConsumerWidget {
     );
   }
 
-  void loadPrevOrNextChapter(WidgetRef ref, Chapter chapter) {
+  void loadPrevOrNextChapter(WidgetRef ref, Chapter chapter, bool nextPage) {
     final initChapterIndex = initChapterIndexState!.value;
     initChapterIndexState!.value = initChapterIndex;
     final provider = chapterWithIdProvider(mangaId: "${manga.id}",
@@ -449,6 +449,7 @@ class ReaderWrapper extends HookConsumerWidget {
     ref.read(provider.notifier).loadChapter(
       mangaId: "${chapter.mangaId}",
       chapterIndex: "${chapter.index}",
+      nextPage: nextPage,
     );
   }
 }

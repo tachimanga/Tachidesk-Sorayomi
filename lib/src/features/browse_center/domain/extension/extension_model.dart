@@ -18,6 +18,8 @@ class Extension with _$Extension {
   factory Extension({
     String? apkName,
     bool? hasUpdate,
+    bool? hasReadme,
+    bool? hasChangelog,
     String? iconUrl,
     bool? installed,
     bool? isNsfw,
@@ -29,6 +31,7 @@ class Extension with _$Extension {
     String? name,
     bool? obsolete,
     String? pkgName,
+    String? pkgFactory,
     int? versionCode,
     String? versionName,
     List<Tag>? tagList,

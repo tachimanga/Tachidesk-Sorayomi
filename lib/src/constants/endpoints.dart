@@ -114,6 +114,11 @@ abstract class BackupUrl {
   static const String _backup = "/backup";
 }
 
+abstract class ImportUrl {
+  static String import = "/import/file";
+  static String update = "/import";
+}
+
 abstract class SourceUrl {
   static String sourceList = "$_source/list";
 
