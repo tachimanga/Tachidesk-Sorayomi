@@ -1,5 +1,5 @@
-project_id_env: 636214
-api_token_env: 37f8679ad716d0dcb7ad6bf494b8a39b8b13323f0adac0ee5a2675291361c826c146d8b9a40590fa
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
 
 files:
   - source: /lib/l10n/arb/app_en.arb
