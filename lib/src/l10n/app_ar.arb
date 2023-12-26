@@ -123,9 +123,6 @@
     "@deleteCategoryTitle": {
         "description": "Popup title when deleting Category"
     },
-    "@discord": {
-        "description": "Discord app title"
-    },
     "@display": {
         "description": "Text for Display tab in Library screen drawer"
     },
@@ -203,9 +200,6 @@
     },
     "@general": {
         "description": "Screen title and Button text of General setting screen"
-    },
-    "@gitHub": {
-        "description": "GitHub app title"
     },
     "@globalSearch": {
         "description": "Screen title of Global Search screen"
@@ -294,19 +288,6 @@
     "@moveToTop": {
         "description": "Button text to move download/category to the top of list"
     },
-    "@nameCountDisplay": {
-        "description": "Text pattern to display an name and count in a string",
-        "placeholders": {
-            "name": {
-                "example": "Downloaded",
-                "type": "String"
-            },
-            "count": {
-                "example": "22",
-                "type": "int"
-            }
-        }
-    },
     "@newUpdateAvailable": {
         "description": "Popup title to show that the App/Server has and update"
     },
@@ -351,9 +332,6 @@
     },
     "@nsfw": {
         "description": "Switch text to show/hide the nsfw extensions"
-    },
-    "@nsfw18": {
-        "description": "18+ tag Text to show in extensions list"
     },
     "@nsfwInfo": {
         "description": "Hint text to show that the nsfw switch cannot prevent incorrectly flagged extensions from surfacing"
@@ -447,9 +425,6 @@
     },
     "@readerPadding": {
         "description": "Slider title text for Reader Padding"
-    },
-    "@reddit": {
-        "description": "Reddit app title"
     },
     "@refresh": {
         "description": "Refresh button text"
@@ -625,7 +600,6 @@
     "delete": "حذف",
     "deleteCategoryDescription": "سيؤدي إلى دمج جميع المانجا في هذه الفئة إلى الافتراضية!",
     "deleteCategoryTitle": "هل أنت متأكد؟",
-    "discord": "Discord",
     "display": "العرض",
     "displayMode": "وضع العرض",
     "displayModeDescriptiveList": "قائمة وصفية",
@@ -650,7 +624,6 @@
     "filter": "فرز",
     "finished": "النهاية",
     "general": "عام",
-    "gitHub": "GitHub",
     "globalSearch": "البحث",
     "globalUpdate": "تحديث الكل",
     "help": "مساعدة",
@@ -680,7 +653,6 @@
     "more": "أكثر",
     "moveToBottom": "الانتقال إلى أسفل",
     "moveToTop": "الانتقال إلى الأعلى",
-    "nameCountDisplay": "{name}: {count}",
     "newUpdateAvailable": "تحديث جديد متاح",
     "noCategoriesFound": "ليس لديك أي فئات. \n(نصيحة: اضغط على زر علامة الزائد لإنشاء فئة لتنظيم مكتبتك)",
     "noCategoriesFoundAlt": "ليس لديك أي فئات.\nقم بإنشاء فئة في الإعدادات لتنظيم مكتبتك",
@@ -694,7 +666,6 @@
     "noUpdatesAvailable": "أنت تستخدم أحدث إصدار",
     "noUpdatesFound": "لم يتم العثور على تحديثات",
     "nsfw": "إظهار إضافات ومصادر NSFW",
-    "nsfw18": "18+",
     "nsfwInfo": "هذا لا يمنع الإضافات غير الرسمية أو التي يحتمل أن يتم وضع علامة عليها بشكل غير صحيح من الظهور على محتوى NSFW (18+) داخل التطبيق",
     "numSelected": "المحددة {num}",
     "obsolete": "قديمة",
@@ -722,7 +693,6 @@
     "readerNavigationLayoutRightAndLeft": "يمينا و يسارا",
     "readerPadding": "ملاءمة القارىء",
     "readerMagnifierSize": "حجم التكبير",
-    "reddit": "Reddit",
     "refresh": "تحديث",
     "reset": "إعادة ضبط",
     "resume": "استأنف",
@@ -806,10 +776,6 @@
         "description": ""
     },
     "externalRepositoryUrlShort": "عنوان مستودع التمديدات",
-    "@copyRightClaim": {
-        "description": ""
-    },
-    "copyRightClaim": "Copyright claim",
     "@history": {
         "description": ""
     },
@@ -826,14 +792,6 @@
         "description": ""
     },
     "clearCache": "تنظيف الملفات المؤقتة",
-    "@termsUrl": {
-        "description": ""
-    },
-    "termsUrl": "Terms of Use",
-    "@privacyUrl": {
-        "description": ""
-    },
-    "privacyUrl": "Privacy Policy",
     "recentlyDownloaded": "تم التنزيل مؤخراً",
     "oneTracker": "متتبّع واحد",
     "nTracker": "متتبعان",
@@ -893,7 +851,5 @@
     "autoBackupFailTip": "فشل في إنشاء النسخة الاحتياطية التلقائية قبل الاستعادة. يرجى إلغاء النسخ الاحتياطية التلقائية والمحاولة مرة أخرى.",
     "restartApp": "إعادة تشغيل التطبيق",
     "confirm": "تأكيد",
-    "noNextChapter": "There's no next chapter",
-    "readerScrollAnimation": "مؤثرات الانتقال بين الصفحات",
-    "dummy": "dummy"
+    "readerScrollAnimation": "مؤثرات الانتقال بين الصفحات"
 }
