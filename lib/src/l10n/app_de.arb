@@ -1,7 +1,3 @@
 {
-    "@@locale": "de",
-    "@library": {
-        "description": "Screen title and Button text of Library and Library Settings screen"
-    },
-    "library": "Bibltiotek"
+    "@@locale": "de"
 }
