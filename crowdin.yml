@@ -1,3 +1,4 @@
 files:
   - source: /lib/src/l10n/app_en.arb
     translation: /lib/src/l10n/app_%two_letters_code%.arb
+    multilingual: 1
