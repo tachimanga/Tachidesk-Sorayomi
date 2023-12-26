@@ -1,4 +1,6 @@
+project_id_env: 636214
+api_token_env: 37f8679ad716d0dcb7ad6bf494b8a39b8b13323f0adac0ee5a2675291361c826c146d8b9a40590fa
+
 files:
-  - source: /lib/src/l10n/app_en.arb
-    translation: /lib/src/l10n/app_%two_letters_code%.arb
-    multilingual: 1
+  - source: /lib/l10n/arb/app_en.arb
+    translation: /lib/l10n/arb/app_%two_letters_code%.arb
