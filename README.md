@@ -162,11 +162,11 @@ Find other dependencies in [pubspec.yaml](pubspec.yaml)
 - CI-CD for `Tachidesk-Sorayomi` is developed by [@mahor1221](https://github.com/mahor1221) and contributors.
 
 ## Translation
-Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/suwayomi/tachidesk-sorayomi/)
+Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/tachimanga-intl/app/)
 
 <details><summary>Translation Progress</summary>
-<a href="https://hosted.weblate.org/engage/suwayomi/">
-<img src="https://hosted.weblate.org/widgets/suwayomi/-/tachidesk-sorayomi/multi-auto.svg" alt="Translation status" />
+<a href="https://hosted.weblate.org/engage/tachimanga-intl/">
+<img src="https://hosted.weblate.org/widgets/tachimanga-intl/-/app/multi-auto.svg" alt="Translation status" />
 </a>
 </details>
 
