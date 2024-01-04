@@ -9,12 +9,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'constants/app_themes/color_schemas/default_theme.dart';
+import 'constants/enum.dart';
 import 'constants/navigation_bar_data.dart';
+import 'features/about/presentation/about/widget/file_log_tile.dart';
 import 'features/custom/inapp/purchase_providers.dart';
+import 'features/settings/presentation/appearance/constants/theme_define.dart';
+import 'features/settings/presentation/appearance/controller/theme_controller.dart';
+import 'features/settings/presentation/backup2/controller/auto_backup_controller.dart';
 import 'features/settings/widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'global_providers/global_providers.dart';
 import 'global_providers/preference_providers.dart';
@@ -23,26 +29,34 @@ import 'utils/extensions/custom_extensions.dart';
 import 'utils/http_proxy.dart';
 import 'utils/log.dart';
 
-class Sorayomi extends ConsumerWidget {
+class Sorayomi extends HookConsumerWidget {
   const Sorayomi({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final routes = ref.watch(routerConfigProvider);
     final themeMode = ref.watch(themeModeKeyProvider);
     final appLocale = decideAppLocale(ref);
+    final appThemeData = ref.watch(themeSchemeColorProvider);
 
     final pipe = ref.watch(getMagicPipeProvider);
     setupHandler(pipe, routes, ref);
 
     setupProxy(ref);
 
+    setupLog(ref);
+
+    useEffect(() {
+      resetPremiumSwitch(ref);
+      return;
+    }, []);
+
     return MaterialApp.router(
+      // showPerformanceOverlay: true,
       onGenerateTitle: (context) => context.l10n!.appTitle,
       debugShowCheckedModeBanner: false,
-      theme: defaultTheme.light,
-      darkTheme: defaultTheme.dark,
+      theme: appThemeData.light,
+      darkTheme: appThemeData.dark,
       themeMode: themeMode ?? ThemeMode.system,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -95,7 +109,6 @@ class Sorayomi extends ConsumerWidget {
       if (call.method == 'UPDATE_MAGIC') {
         await ref.read(sharedPreferencesProvider).reload();
         log("reload sharedPreferences succ");
-        ref.read(magicAdUnitIdProvider.notifier).update(call.arguments);
       }
       if (call.method == 'OPENURL') {
         final uri = Uri.parse(call.arguments);
@@ -130,5 +143,41 @@ class Sorayomi extends ConsumerWidget {
     final proxy = ref.read(systemProxyProvider);
     final useSystemProxy = ref.read(useSystemProxyProvider);
     configHttpClient(proxy, useSystemProxy);
+  }
+
+  void setupLog(WidgetRef ref) {
+    if (ref.read(fileLogProvider) == true) {
+      logToNativeEnabled = true;
+    }
+  }
+
+  void resetPremiumSwitch(WidgetRef ref) {
+    final purchaseGate = ref.read(purchaseGateProvider);
+    final testflightFlag = ref.read(testflightFlagProvider);
+    if (purchaseGate || testflightFlag) {
+      return;
+    }
+    if (ref.read(themeKeyProvider) != ThemeDefine.defaultSchemeKey) {
+      log("reset themeKeyProvider");
+      Future(() {
+        ref
+            .read(themeKeyProvider.notifier)
+            .update(ThemeDefine.defaultSchemeKey);
+      });
+    }
+    if (ref.read(themePureBlackProvider) == true) {
+      log("reset themePureBlackProvider");
+      Future(() {
+        ref.read(themePureBlackProvider.notifier).update(false);
+      });
+    }
+    if (ref.read(autoBackupFrequencyProvider) != FrequencyEnum.off) {
+      log("reset autoBackupFrequencyProvider");
+      Future(() {
+        ref
+            .read(autoBackupFrequencyProvider.notifier)
+            .update(FrequencyEnum.off);
+      });
+    }
   }
 }

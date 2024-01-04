@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../../../../utils/extensions/custom_extensions.dart';
+
 class RightAndLeftLayout extends StatelessWidget {
   const RightAndLeftLayout({
     super.key,
@@ -13,11 +15,18 @@ class RightAndLeftLayout extends StatelessWidget {
     this.onRightTap,
     this.leftColor,
     this.rightColor,
+    this.leftText,
+    this.rightText,
+    this.menuText,
   });
   final VoidCallback? onLeftTap;
   final VoidCallback? onRightTap;
   final Color? leftColor;
   final Color? rightColor;
+  final Widget? leftText;
+  final Widget? rightText;
+  final Widget? menuText;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,15 +36,31 @@ class RightAndLeftLayout extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: onLeftTap,
-            child: Container(color: leftColor),
+            child: Container(
+              color: leftColor,
+              child: Center(
+                child: leftText,
+              ),
+            ),
           ),
         ),
-        const Expanded(child: SizedBox.expand()),
+        Expanded(
+          child: SizedBox.expand(
+            child: Center(
+              child: menuText,
+            ),
+          ),
+        ),
         Expanded(
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: onRightTap,
-            child: Container(color: rightColor),
+            child: Container(
+              color: rightColor,
+              child: Center(
+                child: rightText,
+              ),
+            ),
           ),
         ),
       ],

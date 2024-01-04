@@ -36,8 +36,24 @@ Future<List<Extension>?> extension(ExtensionRef ref) async {
 }
 
 @riverpod
+Future<int?> extensionUpdate(ExtensionUpdateRef ref) async {
+  final extensionMapData = ref.watch(extensionMapFilteredProvider);
+  final extensionMap = {...?extensionMapData.valueOrNull};
+  final count = extensionMap["update"]?.length ?? 0;
+  ref.keepAlive();
+  return count;
+}
+
+@riverpod
 String repoParam(RepoParamRef ref) {
   return "";
+}
+
+@riverpod
+bool emptyRepo(EmptyRepoRef ref) {
+  final magic = ref.watch(getMagicProvider);
+  final repo = ref.watch(repoParamProvider);
+  return magic.b4 && repo == "DEFAULT";
 }
 
 @riverpod
@@ -45,10 +61,10 @@ Future<Map<String, ExtensionTag>> extensionTag(ExtensionTagRef ref) async {
   final token = CancelToken();
   ref.onDispose(token.cancel);
 
-  final magic = ref.watch(getMagicProvider);
+  final repo = ref.watch(repoParamProvider);
   final dioClient = ref.watch(dioClientKeyProvider);
   ExtensionTagData? result = ExtensionTagData();
-  if (magic.a0) {
+  if (repo != "DEFAULT") {
     try {
       result = (await dioClient.get<ExtensionTagData, ExtensionTagData>(
         "https://mangacrushteam.github.io/repo_tag.json",
@@ -91,6 +107,7 @@ AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
         final ee = e.copyWith(
           name: (e.name ?? "") + (extensionTag.suffix ?? ""),
           tagList: extensionTag.tagList,
+          isNsfw: extensionTag.top == true ? false : e.isNsfw
         );
         extensionList.add(ee);
       }
@@ -120,9 +137,10 @@ AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
         );
       }
     } else {
+      final extensionTag = extensionTagMap[e.pkgName];
       extensionMap.update(
         e.lang?.code?.toLowerCase() ?? "other",
-        (value) => [...value, e],
+        (value) => extensionTag?.top == true ? [e, ...value] : [...value, e],
         ifAbsent: () => [e],
       );
     }

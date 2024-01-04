@@ -43,6 +43,7 @@ const customLanguageList = [
   },
   {"code": 'installed', "name": 'Installed', "nativeName": 'Installed'},
   {"code": "lastUsed", "name": "Last Used", "nativeName": "Last Used"},
+  {"code": "pinned", "name": "Pinned", "nativeName": "Pinned"},
   {
     "code": 'update',
     "name": 'Updates pending',
@@ -79,8 +80,8 @@ const languageList = [
   {"code": 'hi', "name": 'Hindi', "nativeName": 'हिन्दी'},
   {"code": 'th', "name": 'Thai', "nativeName": 'ไทย'},
   {"code": 'zh', "name": 'Chinese', "nativeName": '中文'},
-  {"code": 'zh-hans', "name": 'Chinese', "nativeName": '中文 (HANS)'},
-  {"code": 'zh-hant', "name": 'Chinese', "nativeName": '中文 (HANT)'},
+  {"code": 'zh-hans', "name": 'Chinese', "nativeName": '简体中文'},
+  {"code": 'zh-hant', "name": 'Chinese', "nativeName": '繁體中文'},
   {"code": 'zh-rhk', "name": 'Chinese', "nativeName": '中文 (RHK)'},
   {"code": 'zh-rtw', "name": 'Chinese', "nativeName": '中文 (RTW)'},
   {"code": 'ja', "name": 'Japanese', "nativeName": '日本語'},

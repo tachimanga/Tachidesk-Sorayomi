@@ -80,7 +80,7 @@ class MangaBookRepository {
   }) async =>
       (await dioClient.patch<Chapter, Chapter?>(
         MangaUrl.meta(mangaId),
-        data: FormData.fromMap({"key": key, "value": value.toString()}),
+        data: FormData.fromMap({"key": key, "value": value?.toString()}),
         cancelToken: cancelToken,
       ));
 
@@ -113,6 +113,12 @@ class MangaBookRepository {
       dioClient.get(MangaUrl.categoryId(mangaId, categoryId));
   Future<void> removeMangaFromCategory(String mangaId, String categoryId) =>
       dioClient.delete(MangaUrl.categoryId(mangaId, categoryId));
+  Future<void> updateMangaCategory(
+          String mangaId, List<String> categoryIdList) =>
+      dioClient.post(
+        MangaUrl.updateCategory(mangaId),
+        data: {"categoryIdList": categoryIdList},
+      );
 
   //  History
   Future<List<Manga>?> getMangasFromHistory({

@@ -47,12 +47,6 @@ class BigScreenMangaDetails extends ConsumerWidget {
             child: SingleChildScrollView(
               child: MangaDescription(
                 manga: manga,
-                removeMangaFromLibrary: (() => ref
-                    .read(mangaBookRepositoryProvider)
-                    .removeMangaFromLibrary(mangaId)),
-                addMangaToLibrary: (() => ref
-                    .read(mangaBookRepositoryProvider)
-                    .addMangaToLibrary(mangaId)),
                 refresh: () => onDescriptionRefresh(false),
               ),
             ),

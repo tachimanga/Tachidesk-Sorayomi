@@ -15,6 +15,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/pop_button.dart';
+import 'widgets/bypass_setting/bypass_switch.dart';
 import 'widgets/repo_setting/repo_url_tile.dart';
 import 'widgets/show_nsfw_switch/show_nsfw_switch.dart';
 

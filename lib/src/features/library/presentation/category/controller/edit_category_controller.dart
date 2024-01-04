@@ -57,4 +57,10 @@ class CategoryController extends _$CategoryController {
       return loadCategories(ref);
     });
   }
+
+  Future<void> reloadCategories() async {
+    state = await AsyncValue.guard(() async {
+      return loadCategories(ref);
+    });
+  }
 }

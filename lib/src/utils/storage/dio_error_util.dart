@@ -5,6 +5,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+
+import '../extensions/custom_extensions.dart';
 
 class DioErrorUtil {
   // general methods:------------------------------------------------------------
@@ -54,5 +57,14 @@ class DioErrorUtil {
       errorDescription = "Unexpected error occurred";
     }
     return errorDescription;
+  }
+
+  static String localizeErrorMessage(String msg, BuildContext context) {
+    if (msg == "Blocked by Cloudflare" ||
+        msg == "Receive timeout" ||
+        msg.startsWith("HTTP error ")) {
+      return context.l10n!.checkInWebView(msg);
+    }
+    return msg;
   }
 }

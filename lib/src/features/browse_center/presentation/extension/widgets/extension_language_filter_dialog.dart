@@ -50,7 +50,7 @@ class ExtensionLanguageFilterDialog extends ConsumerWidget {
                 }
               },
               title: Text(
-                language?.nativeName ?? language?.name ?? languageCodes[index],
+                language?.localizedDisplayName(context) ?? languageCodes[index],
               ),
               subtitle: Text(language?.name ?? languageCodes[index]),
             );

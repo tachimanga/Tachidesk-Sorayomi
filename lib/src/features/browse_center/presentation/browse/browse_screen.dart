@@ -11,14 +11,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 
+import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/launch_url_in_web.dart';
+import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/search_field.dart';
 import '../extension/controller/extension_controller.dart';
 import '../extension/extension_screen.dart';
 import '../extension/widgets/extension_language_filter_dialog.dart';
 import '../extension/widgets/install_extension_file.dart';
+import '../source/controller/source_query_controller.dart';
 import '../source/source_screen.dart';
 import '../source/widgets/source_language_filter.dart';
 
@@ -37,33 +41,52 @@ class BrowseScreen extends HookConsumerWidget {
         extensionUpdate.valueOrNull?.isGreaterThan(0) == true
             ? extensionUpdate.value!
             : 0;
+    final emptyRepo = ref.watch(emptyRepoProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    final toast = ref.watch(toastProvider(context));
 
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.browse),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () => showSearch.value = true,
-            icon: Icon(
-              tabController.index == 0
-                  ? Icons.travel_explore_rounded
-                  : Icons.search_rounded,
-            ),
-          ),
-          if (tabController.index == 1 && magic.a6 == true) ...[
-            const InstallExtensionFile(),
-          ],
-          IconButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => tabController.index == 0
-                  ? const SourceLanguageFilter()
-                  : const ExtensionLanguageFilterDialog(),
-            ),
-            icon: const Icon(Icons.translate_rounded),
-          ),
-        ],
+        actions: emptyRepo
+            ? [
+                IconButton(
+                  onPressed: () => launchUrlInWeb(
+                    context,
+                    userDefaults.getString("config.helpUrl") ??
+                        AppUrls.addRepo.url,
+                    toast,
+                  ),
+                  icon: const Icon(Icons.help),
+                ),
+              ]
+            : [
+                IconButton(
+                  onPressed: () => showSearch.value = true,
+                  icon: const Icon(Icons.search_rounded),
+                ),
+                if (tabController.index == 1 && magic.a6 == true) ...[
+                  const InstallExtensionFile(),
+                ],
+                if (tabController.index == 0 && magic.b7 == true) ...[
+                  IconButton(
+                    onPressed: () {
+                      context.push(Routes.getGlobalSearch(""));
+                    },
+                    icon: const Icon(Icons.travel_explore_rounded),
+                  ),
+                ],
+                IconButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => tabController.index == 0
+                        ? const SourceLanguageFilter()
+                        : const ExtensionLanguageFilterDialog(),
+                  ),
+                  icon: const Icon(Icons.translate_rounded),
+                ),
+              ],
         bottom: PreferredSize(
           preferredSize: kCalculateAppBarBottomSize([true, showSearch.value]),
           child: Column(
@@ -94,8 +117,14 @@ class BrowseScreen extends HookConsumerWidget {
                   child: tabController.index == 0
                       ? SearchField(
                           key: const ValueKey(0),
+                          onChanged: (val) => ref
+                              .read(sourceQueryProvider.notifier)
+                              .update(val),
                           onSubmitted: (value) {
                             if (value.isNotBlank) {
+                              ref
+                                  .read(sourceQueryProvider.notifier)
+                                  .update(null);
                               context.push(Routes.getGlobalSearch(value));
                             }
                           },
@@ -117,9 +146,9 @@ class BrowseScreen extends HookConsumerWidget {
       body: TabBarView(
         key: key,
         controller: tabController,
-        children: [
-          const SourceScreen(),
-          const ExtensionScreen(),
+        children: const [
+          SourceScreen(),
+          ExtensionScreen(),
         ],
       ),
     );

@@ -27,8 +27,9 @@ class QuickSearchResult {
 Queue rateLimitQueue(
   ref, {
   String? query,
+  bool? pin,
 }) {
-  //print("SEARCH rateLimitQueue $query");
+  //print("SEARCH rateLimitQueue $query pin:$pin");
   final queue = Queue(
     parallel: 5,
   );
@@ -44,8 +45,9 @@ Future<List<Manga>> sourceQuickSearchMangaList(
   SourceQuickSearchMangaListRef ref,
   String sourceId, {
   String? query,
+  bool? pin,
 }) async {
-  final queue = ref.watch(rateLimitQueueProvider(query: query));
+  final queue = ref.watch(rateLimitQueueProvider(query: query, pin: pin));
   final sourceRepository = ref.watch(sourceRepositoryProvider);
   final mangaPage = await queue.add(() {
     //print("SEARCH send $sourceId");
@@ -63,8 +65,12 @@ Future<List<Manga>> sourceQuickSearchMangaList(
 @riverpod
 AsyncValue<List<QuickSearchResult>> quickSearchResults(
     QuickSearchResultsRef ref,
-    {String? query}) {
-  //print("SEARCH quickSearchResults $query");
+    {String? query,
+    bool? pin}) {
+  if (query.isBlank == true) {
+    return const AsyncValue.data([]);
+  }
+  //print("SEARCH quickSearchResults $query pin:$pin");
   final sourceMapData = ref.watch(sourceMapFilteredProvider);
 
   final sourceMap = {...?sourceMapData.valueOrNull}..remove("lastUsed");
@@ -74,15 +80,23 @@ AsyncValue<List<QuickSearchResult>> quickSearchResults(
   );
   final List<QuickSearchResult> sourceMangaListPairList = [];
 
+  final onlySearchPinSource = ref.watch(onlySearchPinSourceProvider);
+  final pinSourceIdList = ref.watch(pinSourceIdListProvider);
+  final pinSourceIdSet = {...?pinSourceIdList};
+
   for (Source source in sourceList) {
     if (source.id.isNotBlank) {
+      if (onlySearchPinSource == true && !pinSourceIdSet.contains(source.id!)) {
+        continue;
+      }
       final mangaList = ref.watch(
-        sourceQuickSearchMangaListProvider(source.id!, query: query),
+        sourceQuickSearchMangaListProvider(source.id!, query: query, pin: pin),
       );
       sourceMangaListPairList.add(QuickSearchResult(source, mangaList));
     }
   }
 
+  // print("Search sourceMangaListPairList ${sourceMangaListPairList.length}");
   // ref.onDispose(() {
   //   print("SEARCH quickSearchResults ondispose");
   // });

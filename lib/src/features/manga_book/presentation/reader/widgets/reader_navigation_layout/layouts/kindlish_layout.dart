@@ -13,17 +13,30 @@ class KindlishLayout extends StatelessWidget {
     this.onRightTap,
     this.leftColor,
     this.rightColor,
+    this.leftText,
+    this.rightText,
+    this.menuText,
   });
   final VoidCallback? onLeftTap;
   final VoidCallback? onRightTap;
   final Color? leftColor;
   final Color? rightColor;
+  final Widget? leftText;
+  final Widget? rightText;
+  final Widget? menuText;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const Expanded(child: SizedBox.expand()),
+        Expanded(
+          child: SizedBox.expand(
+            child: Center(
+              child: menuText,
+            ),
+          ),
+        ),
         Expanded(
           flex: 2,
           child: Row(
@@ -32,7 +45,12 @@ class KindlishLayout extends StatelessWidget {
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: onLeftTap,
-                  child: Container(color: leftColor),
+                  child: Container(
+                    color: leftColor,
+                    child: Center(
+                      child: leftText,
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -40,7 +58,12 @@ class KindlishLayout extends StatelessWidget {
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: onRightTap,
-                  child: Container(color: rightColor),
+                  child: Container(
+                    color: rightColor,
+                    child: Center(
+                      child: rightText,
+                    ),
+                  ),
                 ),
               )
             ],

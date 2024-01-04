@@ -23,19 +23,17 @@ import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_til
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/tracking/widgets/tracker_setting_widget.dart';
 import '../../../domain/manga/manga_model.dart';
+import 'manga_add_library_button.dart';
+import 'manga_genre_chip.dart';
 
 class MangaDescription extends HookConsumerWidget {
   const MangaDescription({
     super.key,
     required this.manga,
-    required this.removeMangaFromLibrary,
-    required this.addMangaToLibrary,
     required this.refresh,
   });
   final Manga manga;
   final AsyncCallback refresh;
-  final AsyncCallback removeMangaFromLibrary;
-  final AsyncCallback addMangaToLibrary;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(context.isTablet);
@@ -53,6 +51,9 @@ class MangaDescription extends HookConsumerWidget {
         MangaCoverDescriptiveListTile(
           manga: manga,
           showBadges: false,
+          enableCoverPopup: true,
+          enableTitleCopy: true,
+          enableSourceEntrance: true,
           onTitleClicked: (query) =>
               context.push(Routes.getGlobalSearch(query)),
         ),
@@ -60,30 +61,9 @@ class MangaDescription extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Expanded(
-                  child: AsyncTextButtonIcon(
-                onPressed: () async {
-                  final val = await AsyncValue.guard(() async {
-                    if (manga.inLibrary.ifNull()) {
-                      await removeMangaFromLibrary();
-                    } else {
-                      await addMangaToLibrary();
-                    }
-                    await refresh();
-                  });
-                  if (context.mounted) {
-                    val.showToastOnError(ref.read(toastProvider(context)));
-                  }
-                },
-                isPrimary: manga.inLibrary.ifNull(),
-                primaryIcon: const Icon(Icons.favorite_rounded),
-                primaryStyle: TextButton.styleFrom(padding: EdgeInsets.zero),
-                secondaryIcon: const Icon(Icons.favorite_border_outlined),
-                secondaryStyle: TextButton.styleFrom(
-                    foregroundColor: Colors.grey, padding: EdgeInsets.zero),
-                primaryLabel: Text(context.l10n!.inLibrary),
-                secondaryLabel: Text(context.l10n!.addToLibrary),
-              )),
+                Expanded(
+                  child: MangaAddLibraryButton(manga: manga, refresh: refresh),
+                ),
                 Expanded(
                   child: TextButton.icon(
                     onPressed: () async {
@@ -159,15 +139,15 @@ class MangaDescription extends HookConsumerWidget {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: context.theme.canvasColor.withOpacity(.7),
+                          color: context.theme.scaffoldBackgroundColor.withOpacity(.7),
                         ),
                       ],
                       gradient: LinearGradient(
                         colors: [
-                          context.theme.canvasColor.withOpacity(0),
-                          context.theme.canvasColor.withOpacity(.3),
-                          context.theme.canvasColor.withOpacity(.5),
-                          context.theme.canvasColor.withOpacity(.6),
+                          context.theme.scaffoldBackgroundColor.withOpacity(0),
+                          context.theme.scaffoldBackgroundColor.withOpacity(.3),
+                          context.theme.scaffoldBackgroundColor.withOpacity(.5),
+                          context.theme.scaffoldBackgroundColor.withOpacity(.6),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -196,7 +176,7 @@ class MangaDescription extends HookConsumerWidget {
               children: [
                 ...?manga.genre
                     ?.map<Widget>(
-                      (e) => Chip(label: Text(e)),
+                      (e) => MangaGenreChip(manga: manga, genre: e),
                     )
                     .toList()
               ],
@@ -213,7 +193,7 @@ class MangaDescription extends HookConsumerWidget {
                       ?.map<Widget>(
                         (e) => Padding(
                           padding: KEdgeInsets.h4.size,
-                          child: Chip(label: Text(e)),
+                          child: MangaGenreChip(manga: manga, genre: e),
                         ),
                       )
                       .toList()

@@ -10,10 +10,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/language_list.dart';
 
+import '../../../../constants/urls.dart';
+import '../../../../global_providers/global_providers.dart';
 import '../../../../global_providers/locale_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../extension/controller/extension_controller.dart';
 import 'controller/source_controller.dart';
 import 'widgets/source_list_tile.dart';
 
@@ -22,12 +26,20 @@ class SourceScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
     final sourceMapData = ref.watch(sourceMapFilteredProvider);
     final sourceMap = {...?sourceMapData.valueOrNull};
     final localSource = sourceMap.remove("localsourcelang");
     final lastUsed = sourceMap.remove("lastUsed");
 
-    final preferLocales = ref.watch(sysPreferLocalesProvider) + ['all', 'en'];
+    final emptyRepo = ref.watch(emptyRepoProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+
+    final pinSourceIdList = ref.watch(pinSourceIdListProvider);
+    final pinSourceIdSet = {...?pinSourceIdList};
+
+    final preferLocales =
+        ['pinned'] + ref.watch(sysPreferLocalesProvider) + ['all', 'en'];
     final sourceMapKeys = [];
     if (sourceMap.isNotEmpty) {
       final left = [...sourceMap.keys];
@@ -75,22 +87,26 @@ class SourceScreen extends HookConsumerWidget {
               if (lastUsed.isNotBlank) ...[
                 SliverToBoxAdapter(
                   child: ListTile(
-                    title: Text(languageMap["lastUsed"]?.displayName ?? ""),
+                    title: Text(languageMap["lastUsed"]?.localizedDisplayName(context) ?? ""),
                   ),
                 ),
                 SliverToBoxAdapter(
-                    child: SourceListTile(source: lastUsed!.first))
+                    child: SourceListTile(
+                  source: lastUsed!.first,
+                  pinSourceIdSet: pinSourceIdSet,
+                ))
               ],
               for (final k in sourceMapKeys) ...[
                 if (sourceMap[k].isNotBlank) ...[
                   SliverToBoxAdapter(
                     child:
-                        ListTile(title: Text(languageMap[k]?.displayName ?? k)),
+                        ListTile(title: Text(languageMap[k]?.localizedDisplayName(context) ?? k)),
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) => SourceListTile(
                         source: sourceMap[k]![index],
+                        pinSourceIdSet: pinSourceIdSet,
                       ),
                       childCount: sourceMap[k]?.length,
                     ),
@@ -101,13 +117,28 @@ class SourceScreen extends HookConsumerWidget {
                 SliverToBoxAdapter(
                   child: ListTile(
                     title:
-                        Text(languageMap["localsourcelang"]?.displayName ?? ""),
+                        Text(languageMap["localsourcelang"]?.localizedDisplayName(context) ?? ""),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: SourceListTile(source: localSource!.first),
+                  child: SourceListTile(
+                    source: localSource!.first,
+                    pinSourceIdSet: pinSourceIdSet,
+                  ),
                 )
               ],
+              if (magic.b9 && emptyRepo) ...[
+                SliverToBoxAdapter(
+                    child: TextButton.icon(
+                        onPressed: () => launchUrlInWeb(
+                              context,
+                              userDefaults.getString("config.helpUrl") ??
+                                  AppUrls.addRepo.url,
+                              ref.read(toastProvider(context)),
+                            ),
+                        icon: const Icon(Icons.help_rounded),
+                        label: Text(context.l10n!.help))),
+              ]
             ],
           ),
         );

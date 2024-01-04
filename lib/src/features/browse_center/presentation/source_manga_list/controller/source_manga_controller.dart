@@ -60,7 +60,8 @@ class SourceMangaFilterList extends _$SourceMangaFilterList {
   @override
   AsyncValue<List<Filter>?> build(String sourceId) {
     final init = ref.watch(baseSourceMangaFilterWithIdProvider(sourceId));
-    log("[Filter]FilterList for $sourceId build, value: $init");
+    //log("[Filter]FilterList for $sourceId build, value: $init");
+    log("[Filter]FilterList for $sourceId build");
     ref.onDispose(() {
       log("[Filter]FilterList for $sourceId dispose");
     });
@@ -70,9 +71,9 @@ class SourceMangaFilterList extends _$SourceMangaFilterList {
   void updateFilter(List<Filter>? filter) =>
       state = state.copyWithData((p0) => filter);
 
-  Future<void> reset() async {
+  Future<List<Filter>?> reset() async {
     final provider = baseSourceMangaFilterWithIdProvider(sourceId);
-    await ref.read(provider.notifier).reset();
+    return await ref.read(provider.notifier).reset();
   }
 
   List<Map<String, dynamic>> get getAppliedFilter {

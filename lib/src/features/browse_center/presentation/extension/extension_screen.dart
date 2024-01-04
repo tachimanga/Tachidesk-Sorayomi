@@ -74,8 +74,7 @@ class ExtensionScreen extends HookConsumerWidget {
       //print("after $extensionMapKeys");
     }
 
-    final magic = ref.watch(getMagicProvider);
-    final repo = ref.watch(repoParamProvider);
+    final emptyRepo = ref.watch(emptyRepoProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
 
     refresh() => ref.refresh(extensionProvider.future);
@@ -109,14 +108,14 @@ class ExtensionScreen extends HookConsumerWidget {
                   if (update.isNotBlank)
                     ...extensionSet(
                       key: const ValueKey("update"),
-                      title: languageMap["update"]?.displayName ?? "",
+                      title: languageMap["update"]?.localizedDisplayName(context) ?? "",
                       extensions: update,
                       refresh: refresh,
                     ),
                   if (installed.isNotBlank)
                     ...extensionSet(
                       key: const ValueKey("installed"),
-                      title: languageMap["installed"]?.displayName ?? "",
+                      title: languageMap["installed"]?.localizedDisplayName(context) ?? "",
                       extensions: installed,
                       refresh: refresh,
                     ),
@@ -132,11 +131,11 @@ class ExtensionScreen extends HookConsumerWidget {
                   for (final k in extensionMapKeys)
                     ...extensionSet(
                       key: ValueKey(k),
-                      title: languageMap[k]?.displayName ?? k,
+                      title: languageMap[k]?.localizedDisplayName(context) ?? k,
                       extensions: extensionMap[k],
                       refresh: refresh,
                     ),
-                  if (magic.b4 && repo == "DEFAULT") ...[
+                  if (emptyRepo) ...[
                     SliverToBoxAdapter(
                         child: TextButton.icon(
                             onPressed: () => launchUrlInWeb(

@@ -71,12 +71,6 @@ int uploadCookiesOnDispose(UploadCookiesOnDisposeRef ref) {
     log("uploadCookies dispose");
     final json = await pipe.invokeMethod("GetCookies");
     log("GetCookies $json");
-    try {
-      final result = await settingsRepository.uploadSettings(json: json);
-      log("uploadCookies succ");
-    } catch (e) {
-      log("uploadCookies err $e");
-    }
   });
   return 0;
 }

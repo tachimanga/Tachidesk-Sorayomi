@@ -22,6 +22,7 @@ import '../../controller/reader_controller.dart';
 import '../../controller/reader_controller_v2.dart';
 import '../chapter_loading_widget.dart';
 import '../interactive_wrapper.dart';
+import '../page_action_widget.dart';
 import '../reader_wrapper.dart';
 
 class SinglePageReaderMode2 extends HookConsumerWidget {
@@ -115,8 +116,9 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     final pagingEnabled = useState(true);
     final pointCount = useState(0);
     final isAnimationEnabled =
-    ref.read(readerScrollAnimationProvider).ifNull(false);
-
+        ref.read(readerScrollAnimationProvider).ifNull(false);
+    final windowPadding =
+        MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
     return ReaderWrapper(
       scrollDirection: scrollDirection,
       chapter: currChapter.value,
@@ -147,7 +149,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
         child: PageView.builder(
           scrollDirection: scrollDirection,
           physics: pagingEnabled.value && pointCount.value != 2
-              ? const PageScrollPhysics()
+              ? const CustomPageViewScrollPhysics()
               : const NeverScrollableScrollPhysics(),
           reverse: reverse,
           controller: scrollController,
@@ -169,21 +171,41 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
             }
 
             final page = readerListData.pageList[index];
-            final image = ServerImage(
+            final imageUrl = MangaUrl.chapterPageWithIndex(
+              chapterIndex: "${page.chapterIndex}",
+              mangaId: "${manga.id}",
+              pageIndex: "${page.pageIndex}",
+            );
+            final serverImage = ServerImage(
               fit: BoxFit.contain,
               size: Size.fromHeight(context.height),
               appendApiToUrl: true,
-              imageUrl: MangaUrl.chapterPageWithIndex(
-                chapterIndex: "${page.chapterIndex}",
-                mangaId: "${manga.id}",
-                pageIndex: "${page.pageIndex}",
-              ),
+              imageUrl: imageUrl,
               imageData: page.imageData,
               reloadButton: true,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   CenterCircularProgressIndicator(
                 value: downloadProgress.progress,
               ),
+            );
+
+            final image = GestureDetector(
+              onLongPress: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: context.theme.cardColor,
+                  builder: (context) => Padding(
+                    padding: EdgeInsets.only(bottom: windowPadding.bottom),
+                    child: PageActionWidget(
+                      manga: manga,
+                      chapter: currChapter.value,
+                      imageUrl: imageUrl,
+                      imageData: page.imageData,
+                    ),
+                  ),
+                );
+              },
+              child: serverImage,
             );
 
             return InteractiveWrapper(
@@ -198,4 +220,21 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       ),
     );
   }
+}
+
+class CustomPageViewScrollPhysics extends ScrollPhysics {
+  const CustomPageViewScrollPhysics({ScrollPhysics? parent})
+      : super(parent: parent);
+
+  @override
+  CustomPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return CustomPageViewScrollPhysics(parent: buildParent(ancestor)!);
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+    mass: 50,
+    stiffness: 100,
+    damping: 0.8,
+  );
 }

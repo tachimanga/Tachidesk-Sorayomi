@@ -17,14 +17,20 @@ import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 
+import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../../widgets/radio_list_popup.dart';
+import '../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
+import '../../../../settings/presentation/reader/widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_padding_slider/reader_padding_slider.dart';
+import '../../../../settings/presentation/reader/widgets/show_status_bar_tile/show_status_bar_tile.dart';
+import '../../../../settings/presentation/share/controller/share_controller.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/chapter_patch/chapter_put_model.dart';
@@ -71,6 +77,7 @@ class ReaderWrapper extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
+    final pipe = ref.watch(getMagicPipeProvider);
 
     final chapterPair = ref.watch(
       getPreviousAndNextChaptersProvider(
@@ -99,24 +106,35 @@ class ReaderWrapper extends HookConsumerWidget {
       };
     }, []);
 
-    useEffect(() {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: visibility.value ? SystemUiOverlay.values : [SystemUiOverlay.bottom]
-      );
-      return;
-    }, [visibility.value]);
+    final showStatusBar = ref.watch(showStatusBarModeProvider);
+    if (showStatusBar != true) {
+      useEffect(() {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+            overlays: visibility.value ? SystemUiOverlay.values : [SystemUiOverlay.bottom]
+        );
+        return;
+      }, [visibility.value]);
 
-    useEffect(() {
-      return () {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-      };
-    }, []);
+      useEffect(() {
+        return () {
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+        };
+      }, []);
+    }
 
     final mangaReaderPadding = ref.watch(readerPaddingWithMangaIdProvider(mangaId: manga.id.toString()));
+    final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider);
+    final tapDelay = doubleTapZoomIn == true ? 500 : 300;
 
+    final globeLayout = ref.watch(readerNavigationLayoutKeyProvider) ?? ReaderNavigationLayout.disabled;
+    final mangaReaderNavigationLayout = manga.meta?.readerNavigationLayout ?? ReaderNavigationLayout.defaultNavigation;
+    final effectNavigationLayout = mangaReaderNavigationLayout == ReaderNavigationLayout.defaultNavigation
+        ? globeLayout : mangaReaderNavigationLayout;
+
+    final globeReaderMode = ref.watch(readerModeKeyProvider) ?? ReaderMode.webtoon;
     final mangaReaderMode = manga.meta?.readerMode ?? ReaderMode.defaultReader;
-    final mangaReaderNavigationLayout = manga.meta?.readerNavigationLayout ??
-        ReaderNavigationLayout.defaultNavigation;
+    final effectReaderMode = mangaReaderMode == ReaderMode.defaultReader
+        ? globeReaderMode : mangaReaderMode;
 
     final showReaderModePopup = useCallback(
       () => showDialog(
@@ -236,10 +254,29 @@ class ReaderWrapper extends HookConsumerWidget {
                 ),
                 elevation: 0,
                 backgroundColor: Colors.black.withOpacity(.7),
-                actions: [
-                  chapter.realUrl.isBlank
-                      ? const SizedBox.shrink()
-                      : IconButton(
+                actions: chapter.realUrl.isNotBlank ? [
+                  AsyncIconButton(
+                    onPressed: () async {
+                      if (!context.mounted) {
+                        return;
+                      }
+                      final text = context.l10n!.chapterShareText(
+                          manga.author ?? "",
+                          chapter.name ?? "",
+                          chapter.realUrl ?? "",
+                          manga.title ?? "");
+                      pipe.invokeMethod(
+                          "LogEvent", "SHARE:SHARE_CHAPTER");
+                      (await AsyncValue.guard(() async {
+                        await ref.read(shareActionProvider).shareText(
+                          text,
+                        );
+                      }))
+                          .showToastOnError(toast);
+                    },
+                    icon: const Icon(Icons.share_outlined),
+                  ),
+                  IconButton(
                           onPressed: () async {
                             launchUrlInWeb(
                               context,
@@ -249,7 +286,7 @@ class ReaderWrapper extends HookConsumerWidget {
                           },
                           icon: const Icon(Icons.public),
                         )
-                ],
+                ] : null,
               )
             : null,
         extendBodyBehindAppBar: true,
@@ -420,7 +457,7 @@ class ReaderWrapper extends HookConsumerWidget {
                         final now = DateTime.now().millisecondsSinceEpoch;
                         final diff = now - lastScrollTimestamp;
                         //print('ContinuousReaderMode toggleVisibility diff:$diff');
-                        if (diff > 300) {
+                        if (diff > tapDelay) {
                           //print('ContinuousReaderMode toggleVisibility yes');
                           visibility.value = !visibility.value;
                         }
@@ -429,7 +466,8 @@ class ReaderWrapper extends HookConsumerWidget {
                       mangaReaderPadding: mangaReaderPadding,
                       onNext: onNext,
                       onPrevious: onPrevious,
-                      mangaReaderNavigationLayout: mangaReaderNavigationLayout,
+                      mangaReaderNavigationLayout: effectNavigationLayout,
+                      readerMode: effectReaderMode,
                       child: child,
                     ),
                   ),
@@ -464,6 +502,7 @@ class ReaderView extends HookWidget {
     required this.onNext,
     required this.onPrevious,
     required this.mangaReaderNavigationLayout,
+    required this.readerMode,
   });
 
   final VoidCallback toggleVisibility;
@@ -473,6 +512,7 @@ class ReaderView extends HookWidget {
   final VoidCallback onNext;
   final VoidCallback onPrevious;
   final ReaderNavigationLayout mangaReaderNavigationLayout;
+  final ReaderMode readerMode;
 
   @override
   Widget build(BuildContext context) {
@@ -495,6 +535,7 @@ class ReaderView extends HookWidget {
           onNext: onNext,
           onPrevious: onPrevious,
           navigationLayout: mangaReaderNavigationLayout,
+          readerMode: readerMode,
         ),
       ],
     );

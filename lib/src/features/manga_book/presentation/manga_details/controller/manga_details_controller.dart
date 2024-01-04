@@ -93,6 +93,43 @@ class MangaChapterList extends _$MangaChapterList {
 }
 
 @riverpod
+Set<String> mangaScanlatorList(MangaScanlatorListRef ref,
+    {required String mangaId}) {
+  final chapterList = ref.watch(mangaChapterListProvider(mangaId: mangaId));
+  final scanlatorList = <String>{};
+  chapterList.whenData((data) {
+    if (data == null) return;
+    for (final chapter in data) {
+      if (chapter.scanlator.isNotBlank) {
+        scanlatorList.add(chapter.scanlator!);
+      }
+    }
+  });
+  return scanlatorList;
+}
+
+@riverpod
+class MangaChapterFilterScanlator extends _$MangaChapterFilterScanlator {
+  @override
+  String build({required String mangaId}) {
+    final manga = ref.watch(mangaWithIdProvider(mangaId: mangaId));
+    return manga.valueOrNull?.meta?.scanlator ?? MangaMetaKeys.scanlator.key;
+  }
+
+  void update(String? scanlator) async {
+    await AsyncValue.guard(
+          () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
+        mangaId: mangaId,
+        key: MangaMetaKeys.scanlator.key,
+        value: scanlator ?? MangaMetaKeys.scanlator.key,
+      ),
+    );
+    ref.invalidate(mangaWithIdProvider(mangaId: mangaId));
+    state = scanlator ?? MangaMetaKeys.scanlator.key;
+  }
+}
+
+@riverpod
 AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   MangaChapterListWithFilterRef ref, {
   required String mangaId,
@@ -105,6 +142,8 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   final sortedBy = ref.watch(mangaChapterSortProvider);
   final sortedDirection =
       ref.watch(mangaChapterSortDirectionProvider).ifNull(true);
+  final chapterFilterScanlator =
+  ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
 
   bool applyChapterFilter(Chapter chapter) {
     if (chapterFilterUnread != null &&
@@ -119,6 +158,11 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
 
     if (chapterFilterBookmark != null &&
         (chapterFilterBookmark ^ (chapter.bookmarked.ifNull()))) {
+      return false;
+    }
+
+    if (chapterFilterScanlator != MangaMetaKeys.scanlator.key &&
+        chapter.scanlator != chapterFilterScanlator) {
       return false;
     }
     return true;

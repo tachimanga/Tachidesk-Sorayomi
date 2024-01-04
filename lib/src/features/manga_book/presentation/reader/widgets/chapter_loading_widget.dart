@@ -53,6 +53,7 @@ class ChapterLoadingWidget extends HookConsumerWidget {
     final prevNextChapterPair = ref.watch(prevNextChapterProvider);
 
     final screenWidth = MediaQuery.of(context).size.width;
+
     final bannerAd = singlePageMode
         ? AsyncData(BannerAdData())
         : ref.watch(bannerAdWithKeyProvider(

@@ -26,7 +26,7 @@ class FileLogTile extends HookConsumerWidget {
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.switch_left_rounded),
-      title: const Text('Enable log'),
+      title: Text(context.l10n!.enableLog),
       onChanged: ref.read(fileLogProvider.notifier).update,
       value: ref.watch(fileLogProvider).ifNull(),
     );
@@ -39,7 +39,7 @@ class FileLogExport extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pipe = ref.watch(getMagicPipeProvider);
     return ListTile(
-      title: const Text('Export log'),
+      title: Text(context.l10n!.exportLog),
       leading: const Icon(Icons.ios_share_rounded),
       onTap: () => pipe.invokeMethod("EXPORT_LOG", ""),
     );

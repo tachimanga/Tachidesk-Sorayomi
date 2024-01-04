@@ -51,7 +51,6 @@ class ChapterWithId extends _$ChapterWithId {
       updateReaderListState(update);
     }
   }
-
   Future<void> loadChapter({
     required String mangaId,
     required String chapterIndex,

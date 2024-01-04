@@ -7,18 +7,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../widgets/colored_safe_area.dart';
 import 'manga_chapter_filter.dart';
 import 'manga_chapter_sort.dart';
 
 class MangaChapterOrganizer extends StatelessWidget {
-  const MangaChapterOrganizer({
-    super.key,
-    /* required this.controller */
-  });
-  // final ScrollController controller;
+  const MangaChapterOrganizer({super.key, required this.mangaId});
+  final String mangaId;
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return ColoredSafeArea(child:
+      DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: TabBar(
@@ -27,13 +26,13 @@ class MangaChapterOrganizer extends StatelessWidget {
             Tab(text: context.l10n!.sort),
           ],
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            MangaChapterFilter(),
-            MangaChapterSort(),
+            MangaChapterFilter(mangaId: mangaId),
+            const MangaChapterSort(),
           ],
         ),
       ),
-    );
+    ));
   }
 }
