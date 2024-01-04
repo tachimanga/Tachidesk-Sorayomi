@@ -65,7 +65,7 @@ class ExtensionDescriptiveListTile extends StatelessWidget {
                       child: Column(
                     children: [
                       Text(
-                        "${extension.lang?.displayName}",
+                        "${extension.lang?.localizedDisplayName(context)}",
                         style: context.textTheme.titleMedium,
                       ),
                       Text(

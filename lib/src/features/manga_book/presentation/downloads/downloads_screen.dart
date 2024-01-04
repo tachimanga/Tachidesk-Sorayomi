@@ -72,8 +72,7 @@ class DownloadsScreen extends HookConsumerWidget {
         ListTile(
           title: Text(context.l10n!.recentlyDownloaded),
           leading: const Icon(Icons.download_outlined),
-          onTap: () => context.push(
-              [Routes.settings, Routes.downloads, Routes.downloaded].toPath),
+          onTap: () => context.push(Routes.downloaded),
         ),
         const Divider(),
         Expanded(

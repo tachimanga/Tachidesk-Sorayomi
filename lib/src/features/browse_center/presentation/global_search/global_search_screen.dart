@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
+import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/search_field.dart';
@@ -21,14 +22,17 @@ class GlobalSearchScreen extends HookConsumerWidget {
   final String? initialQuery;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
     final query = useState(initialQuery);
-    final quickSearchResult =
-        ref.watch(quickSearchResultsProvider(query: query.value));
+    final autofocus = initialQuery.isBlank == true;
+    final onlySearchPinSource = ref.watch(onlySearchPinSourceProvider);
+    final quickSearchResult = ref.watch(quickSearchResultsProvider(
+        query: query.value, pin: onlySearchPinSource == true));
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.globalSearch),
         bottom: PreferredSize(
-          preferredSize: kCalculateAppBarBottomSize([true]),
+          preferredSize: kCalculateAppBarBottomSize([true, true]),
           child: Column(
             children: [
               Align(
@@ -36,16 +40,35 @@ class GlobalSearchScreen extends HookConsumerWidget {
                 child: SearchField(
                   initialText: query.value,
                   onSubmitted: (value) => query.value = value,
-                  autofocus: false,
+                  autofocus: autofocus,
                 ),
               ),
+              const SizedBox(
+                height: 2,
+              ),
+              if (magic.b7 == true)
+                Row(
+                  children: [
+                    Checkbox(
+                      value: onlySearchPinSource == true,
+                      onChanged: (value) {
+                        ref
+                            .read(onlySearchPinSourceProvider.notifier)
+                            .update(value == true);
+                      },
+                    ),
+                    Expanded(
+                      child: Text(context.l10n!.onlySearchPinSource),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
       ),
       body: quickSearchResult.showUiWhenData(
         context,
-        (data) => data.isBlank
+        (data) => data.isBlank && query.value.isBlank == false
             ? Emoticons(
                 text: context.l10n!.noSourcesFound,
                 button: TextButton(

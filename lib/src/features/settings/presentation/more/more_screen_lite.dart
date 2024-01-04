@@ -20,12 +20,12 @@ import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
+import '../../../../widgets/text_premium.dart';
 import '../../../about/presentation/about/widget/media_launch_button.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../widgets/server_url_tile/server_url_tile.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import '../browse/widgets/repo_setting/repo_url_tile.dart';
-import 'purchase_cell.dart';
 
 class MoreScreenLite extends HookConsumerWidget {
   const MoreScreenLite({super.key});
@@ -43,7 +43,7 @@ class MoreScreenLite extends HookConsumerWidget {
 
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final shareMsg = userDefaults.getString("config.shareMsg") ??
-        "Tachimanga (Tachiyomi port for iOS) is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
+        "Tachimanga (an iOS equivalent for Tachiyomi) is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
     final repoUrlSetting = ref.watch(repoUrlProvider);
@@ -114,8 +114,7 @@ class MoreScreenLite extends HookConsumerWidget {
           ListTile(
             title: Text(context.l10n!.downloads),
             leading: const Icon(Icons.download_outlined),
-            onTap: () =>
-                context.push([Routes.settings, Routes.downloads].toPath),
+            onTap: () => context.push(Routes.downloads),
           ),
           const Divider(),
           ListTile(
@@ -168,7 +167,7 @@ class MoreScreenLite extends HookConsumerWidget {
           ],
           if (magic.b3) ...[
             ListTile(
-              title: Text(context.l10n!.copyRightClaim),
+              title: const Text("Copyright claim"),
               leading: const Icon(Icons.email_rounded),
               onTap: () {
                 pipe.invokeMethod("LogEvent", "COPYRIGHT_CLAIM");
@@ -186,34 +185,4 @@ class MoreScreenLite extends HookConsumerWidget {
     );
   }
 
-}
-
-class TextPremium extends ConsumerWidget {
-  const TextPremium({super.key, required this.text});
-  final String text;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Text.rich(
-      TextSpan(text: text, children: [
-        WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            baseline: TextBaseline.ideographic,
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(6, 2, 0, 0),
-                child: Container(
-                  padding: KEdgeInsets.h4.size,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      border: Border.all(
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black,
-                          width: 0.5)),
-                  child: Text("PREMIUM",
-                      style: Theme.of(context).textTheme.labelSmall),
-                ))),
-      ]),
-    );
-  }
 }

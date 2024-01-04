@@ -4,33 +4,23 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:system_proxy/system_proxy.dart';
 
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
-import '../../../../global_providers/preference_providers.dart';
+import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
-import '../../../../utils/http_proxy.dart';
-import '../../../../utils/log.dart';
-import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/radio_list_popup.dart';
-import '../../../browse_center/data/settings_repository/settings_repository.dart';
+import 'widgets/default_tab_tile/default_tab_tile.dart';
 
 class GeneralScreen extends ConsumerWidget {
   const GeneralScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pipe = ref.watch(getMagicPipeProvider);
-    final settingsRepository = ref.watch(settingsRepositoryProvider);
-    final toast = ref.watch(toastProvider(context));
-
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n!.general)),
       body: ListView(
@@ -54,42 +44,16 @@ class GeneralScreen extends ConsumerWidget {
               ),
             ),
           ),
+          const DefaultTabTile(),
           ListTile(
-            leading: const Icon(Icons.cleaning_services_rounded),
-            title: Text(context.l10n!.clearCookies),
-            onTap: () async {
-              toast.show("${context.l10n!.clearCookies}...",
-                  gravity: ToastGravity.CENTER,
-                  toastDuration: const Duration(seconds: 30));
-              try {
-                await pipe.invokeMethod("ClearCookies");
-                await settingsRepository.clearCookies();
-                log("clearCookies succ");
-              } catch (e) {
-                log("clearCookies err $e");
-              }
-              toast.close();
-              toast.show("Cookies Cleared",
-                  gravity: ToastGravity.CENTER);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.cleaning_services_rounded),
-            title: Text(context.l10n!.clearCache),
-            onTap: () async {
-              toast.show("${context.l10n!.clearCache}...",
-                  gravity: ToastGravity.CENTER,
-                  toastDuration: const Duration(seconds: 30));
-              try {
-                await pipe.invokeMethod("CleanCache");
-                log("CleanCache succ");
-              } catch (e) {
-                log("CleanCache err $e");
-              }
-              toast.close();
-              toast.show("Cache Cleared",
-                gravity: ToastGravity.CENTER);
-            },
+            leading: const Icon(Icons.code_rounded),
+            title: Text(context.l10n!.advanced),
+            subtitle: Text(context.l10n!.advancedSubtitle),
+            onTap: () => context.push([
+              Routes.settings,
+              Routes.generalSettings,
+              Routes.advancedSettings
+            ].toPath),
           ),
         ],
       ),

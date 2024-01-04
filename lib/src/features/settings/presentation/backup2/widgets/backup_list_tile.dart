@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../utils/date_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../domain/backup/backup_model.dart';
@@ -139,12 +140,5 @@ class BackupListTile extends ConsumerWidget {
       prefix = context.l10n!.backupNamePrefixSchedule;
     }
     return prefix;
-  }
-
-  String formatLocalizedDateTime(BuildContext context, int timestamp) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    DateFormat formatter =
-        DateFormat.yMd(context.currentLocale.toString()).add_Hms();
-    return formatter.format(dateTime);
   }
 }

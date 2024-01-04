@@ -12,6 +12,7 @@ class AsyncTextButtonIcon extends HookWidget {
     super.key,
     required this.isPrimary,
     this.onPressed,
+    this.onLongPressed,
     required this.primaryIcon,
     required this.primaryLabel,
     this.primaryStyle,
@@ -22,6 +23,7 @@ class AsyncTextButtonIcon extends HookWidget {
 
   final bool isPrimary;
   final VoidCallback? onPressed;
+  final VoidCallback? onLongPressed;
   final Widget primaryIcon;
   final Widget primaryLabel;
   final Widget? secondaryIcon;
@@ -38,6 +40,7 @@ class AsyncTextButtonIcon extends HookWidget {
               onPressed!();
             }
           : null,
+      onLongPress: onLongPressed,
       icon: (secondaryIcon != null && !isPrimary)
           ? secondaryIcon!
           : primaryIcon,

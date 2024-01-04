@@ -21,54 +21,122 @@ import 'layouts/right_and_left_layout.dart';
 class ReaderNavigationLayoutWidget extends HookConsumerWidget {
   const ReaderNavigationLayoutWidget({
     super.key,
-    this.navigationLayout,
+    required this.navigationLayout,
+    required this.readerMode,
     required this.onPrevious,
     required this.onNext,
+    this.alwaysShow,
   });
-  final ReaderNavigationLayout? navigationLayout;
+  final ReaderNavigationLayout navigationLayout;
+  final ReaderMode readerMode;
   final VoidCallback? onPrevious;
   final VoidCallback? onNext;
+  final bool? alwaysShow;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final animationController = useAnimationController(duration: kLongDuration);
+    final animationController =
+        useAnimationController(duration: const Duration(seconds: 2));
     useAnimation(animationController);
-    final nextColorTween =
-        ColorTween(begin: Colors.green).animate(animationController).value;
 
-    final prevColorTween =
-        ColorTween(begin: Colors.blue).animate(animationController).value;
+    final animationFlag = useState(0);
     useEffect(() {
+      animationFlag.value = animationFlag.value + 1;
+      return;
+    }, [navigationLayout]);
+
+    final nextColorTween = alwaysShow == true
+        ? Colors.green
+        : ColorTween(begin: Colors.green).animate(animationController).value;
+
+    final prevColorTween = alwaysShow == true
+        ? Colors.blue
+        : ColorTween(begin: Colors.blue).animate(animationController).value;
+
+    final opacityTween = alwaysShow == true
+        ? 1.0
+        : Tween<double>(begin: 1.0, end: 0.0)
+            .animate(animationController)
+            .value;
+
+    useEffect(() {
+      animationController.reset();
       animationController.forward();
       return;
-    }, []);
+    }, [animationFlag.value]);
 
-    final layout = navigationLayout == null ||
-            navigationLayout == ReaderNavigationLayout.defaultNavigation
-        ? ref.watch(readerNavigationLayoutKeyProvider)
-        : navigationLayout;
     final invertTap = ref.watch(invertTapProvider).ifNull();
     final VoidCallback? onLeftTap;
     final VoidCallback? onRightTap;
     final Color? leftColor;
     final Color? rightColor;
-    if (invertTap) {
+    final Widget? leftText;
+    final Widget? rightText;
+    final Widget menuText = Opacity(
+      opacity: opacityTween,
+      child: Text(
+        context.l10n!.tapMenu,
+        style: context.textTheme.headlineSmall,
+      ),
+    );
+
+    final rtl = readerMode == ReaderMode.continuousHorizontalRTL ||
+        readerMode == ReaderMode.singleHorizontalRTL;
+    final rightAndLeftLayout =
+        navigationLayout == ReaderNavigationLayout.rightAndLeft;
+    final swap =
+        (!rightAndLeftLayout && invertTap) || (rightAndLeftLayout && rtl);
+
+    if (swap) {
       onLeftTap = onNext;
       onRightTap = onPrevious;
       leftColor = nextColorTween;
       rightColor = prevColorTween;
+      leftText = Opacity(
+        opacity: opacityTween,
+        child: Text(
+          context.l10n!.nextPage,
+          style: context.textTheme.headlineSmall,
+        ),
+      );
+      rightText = Opacity(
+        opacity: opacityTween,
+        child: Text(
+          context.l10n!.prevPage,
+          style: context.textTheme.headlineSmall,
+        ),
+      );
     } else {
       onLeftTap = onPrevious;
       onRightTap = onNext;
       leftColor = prevColorTween;
       rightColor = nextColorTween;
+      leftText = Opacity(
+        opacity: opacityTween,
+        child: Text(
+          context.l10n!.prevPage,
+          style: context.textTheme.headlineSmall,
+        ),
+      );
+      rightText = Opacity(
+        opacity: opacityTween,
+        child: Text(
+          context.l10n!.nextPage,
+          style: context.textTheme.headlineSmall,
+        ),
+      );
     }
-    switch (layout) {
+
+    switch (navigationLayout) {
       case ReaderNavigationLayout.edge:
         return EdgeLayout(
           onLeftTap: onLeftTap,
           onRightTap: onRightTap,
           leftColor: leftColor,
           rightColor: rightColor,
+          leftText: leftText,
+          rightText: rightText,
+          menuText: menuText,
         );
       case ReaderNavigationLayout.kindlish:
         return KindlishLayout(
@@ -76,6 +144,9 @@ class ReaderNavigationLayoutWidget extends HookConsumerWidget {
           onRightTap: onRightTap,
           leftColor: leftColor,
           rightColor: rightColor,
+          leftText: leftText,
+          rightText: rightText,
+          menuText: menuText,
         );
       case ReaderNavigationLayout.lShaped:
         return LShapedLayout(
@@ -83,6 +154,9 @@ class ReaderNavigationLayoutWidget extends HookConsumerWidget {
           onRightTap: onRightTap,
           leftColor: leftColor,
           rightColor: rightColor,
+          leftText: leftText,
+          rightText: rightText,
+          menuText: menuText,
         );
       case ReaderNavigationLayout.rightAndLeft:
         return RightAndLeftLayout(
@@ -90,6 +164,21 @@ class ReaderNavigationLayoutWidget extends HookConsumerWidget {
           onRightTap: onRightTap,
           leftColor: leftColor,
           rightColor: rightColor,
+          leftText: Opacity(
+            opacity: opacityTween,
+            child: Text(
+              context.l10n!.leftPage,
+              style: context.textTheme.headlineSmall,
+            ),
+          ),
+          rightText: Opacity(
+            opacity: opacityTween,
+            child: Text(
+              context.l10n!.rightPage,
+              style: context.textTheme.headlineSmall,
+            ),
+          ),
+          menuText: menuText,
         );
       case ReaderNavigationLayout.disabled:
       case ReaderNavigationLayout.defaultNavigation:

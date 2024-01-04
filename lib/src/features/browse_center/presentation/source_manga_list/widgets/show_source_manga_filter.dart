@@ -15,6 +15,7 @@ import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../widgets/colored_safe_area.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../controller/source_manga_controller.dart';
 import 'filter_to_widget.dart';
@@ -48,7 +49,7 @@ class ShowSourceMangaFilter extends HookConsumerWidget {
     if (filters.value == null) {
       return const SizedBox.shrink();
     }
-    return SafeArea(
+    return ColoredSafeArea(
         child: Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kAppBarBottomHeight),

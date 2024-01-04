@@ -6,17 +6,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pub_semver/pub_semver.dart';
 
-import '../../features/about/data/about_repository.dart';
-import '../../features/about/presentation/about/controllers/about_controller.dart';
-import '../../features/about/presentation/about/widget/app_update_dialog.dart';
-
+import '../../constants/enum.dart';
+import '../../features/browse_center/presentation/extension/controller/extension_controller.dart';
 import '../../features/manga_book/data/downloads/downloads_repository.dart';
 import '../../features/manga_book/data/updates/updates_repository.dart';
+import '../../global_providers/global_providers.dart';
 import '../../global_providers/preference_providers.dart';
 import '../../utils/extensions/custom_extensions.dart';
 import '../../utils/log.dart';
@@ -31,45 +30,14 @@ class ShellScreen extends HookConsumerWidget {
   });
   final Widget child;
 
-  Future<void> checkForUpdate({
-    required String? title,
-    required BuildContext context,
-    required Future<AsyncValue<Version?>> Function() updateCallback,
-    required Toast toast,
-  }) async {
-    updateCallback().then((value) {
-      toast.close();
-      value.whenOrNull(
-        data: (version) {
-          if (version != null) {
-            appUpdateDialog(
-              title: title ?? context.l10n!.appTitle,
-              newRelease: "v${version.canonicalizedVersion}",
-              context: context,
-              toast: toast,
-            );
-          }
-        },
-      );
-      return;
-    });
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /*
-    useEffect(() {
-      Future.microtask(
-        () => checkForUpdate(
-          title: ref.read(packageInfoProvider).appName,
-          context: context,
-          updateCallback: ref.read(aboutRepositoryProvider).checkUpdate,
-          toast: ref.read(toastProvider(context)),
-        ),
-      );
-      return;
-    }, []);
-     */
+    final extensionUpdate = ref.watch(extensionUpdateProvider);
+    final extensionUpdateCount =
+        extensionUpdate.valueOrNull?.isGreaterThan(0) == true
+            ? extensionUpdate.value!
+            : 0;
+    setupHandler(context, ref);
 
     useOnAppLifecycleStateChange((pref, state) {
       log("useOnAppLifecycleStateChange pref:$pref curr:$state");
@@ -78,7 +46,6 @@ class ShellScreen extends HookConsumerWidget {
         ref.invalidate(updatesSocketProvider);
       }
     });
-
     return context.isTablet
         ? Scaffold(
             body: Row(
@@ -89,6 +56,7 @@ class ShellScreen extends HookConsumerWidget {
                     log("[initLocation]onDestinationSelected $value");
                     ref.read(initLocationProvider.notifier).update(value);
                   },
+                  extensionUpdateCount: extensionUpdateCount,
                 ),
                 Expanded(child: child),
               ],
@@ -104,7 +72,32 @@ class ShellScreen extends HookConsumerWidget {
                 log("[initLocation]onDestinationSelected $value");
                 ref.read(initLocationProvider.notifier).update(value);
               },
+              extensionUpdateCount: extensionUpdateCount,
             ),
           );
+  }
+
+  void setupHandler(BuildContext context, WidgetRef ref) {
+    final notifyChannel = ref.watch(notifyChannelProvider);
+    useEffect(() {
+      notifyChannel.setMethodCallHandler((call) async {
+        log("notify: ${call.method}, arg: ${call.arguments}");
+        if (call.method == 'BYPASS_NOTIFY') {
+          if (call.arguments != null && call.arguments is String) {
+            if (context.mounted) {
+              final code = BypassStatus.fromCode(call.arguments);
+              final text = code.toLocale(context);
+              if (text != null) {
+                Fluttertoast.showToast(
+                    msg: text,
+                    timeInSecForIosWeb: code == BypassStatus.start ? 5 : 2);
+              }
+            }
+          }
+        }
+        return Future.value('OK');
+      });
+      return;
+    }, []);
   }
 }

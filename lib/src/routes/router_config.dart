@@ -34,15 +34,19 @@ import '../features/manga_book/presentation/reader/controller/reader_controller_
 import '../features/manga_book/presentation/reader/reader_screen.dart';
 import '../features/manga_book/presentation/reader/reader_screen_v2.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
+import '../features/settings/presentation/advanced/advanced_screen.dart';
 import '../features/settings/presentation/appearance/appearance_screen.dart';
 import '../features/settings/presentation/backup/backup_screen.dart';
 import '../features/settings/presentation/backup2/backup_screen_v2.dart';
 import '../features/settings/presentation/browse/browse_settings_screen.dart';
 import '../features/settings/presentation/general/general_screen.dart';
+import '../features/settings/presentation/general/widgets/default_tab_tile/default_tab_tile.dart';
 import '../features/settings/presentation/library/library_settings_screen.dart';
 import '../features/settings/presentation/more/more_screen.dart';
 import '../features/settings/presentation/more/more_screen_lite.dart';
 import '../features/settings/presentation/reader/reader_settings_screen.dart';
+import '../features/settings/presentation/reader/reader_tap_zones_settings_screen.dart';
+import '../features/settings/presentation/reader/widgets/reader_advanced_setting/reader_advanced_screen.dart';
 import '../features/settings/presentation/server/server_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
 import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
@@ -67,13 +71,14 @@ abstract class Routes {
   static const librarySettings = 's-library';
   static const updates = '/updates';
   static const browse = '/browse';
-  static const downloads = 'downloads';
-  static const downloaded = 'downloaded';
+  static const downloads = '/downloads';
+  static const downloaded = '/downloaded';
   static const history = '/history';
   static const more = '/more';
   static const about = '/about';
   static const appearanceSettings = 's-appearance';
   static const generalSettings = 's-general';
+  static const advancedSettings = 's-advanced';
   static const debugSettings = 's-debug';
   static const backup = 'backup';
   static const settings = '/settings';
@@ -81,6 +86,8 @@ abstract class Routes {
   static getExtensionSetting(String name, String url) =>
     '$browseSettings?name=$name&url=$url';
   static const readerSettings = 'reader';
+  static const readerAdvancedSettings = 'r-advanced';
+  static const readerTapZones = 'tapZones';
   static const trackingSettings = 'tracking';
   static const reader = '/reader/:mangaId/:chapterIndex';
   static getReader(String mangaId, String chapterIndex) =>
@@ -95,6 +102,7 @@ abstract class Routes {
       '/manga/$mangaId${categoryId.isNull ? '' : "?categoryId=$categoryId"}';
   static const mangaTrackSearch = '/track/search/:trackerId/:mangaId';
   static const mangaTrackSetting = '/track/setting';
+  static const mangaCategorySetting = '/category/setting';
   static getMangaTrackSearch(int trackerId, int mangaId) => '/track/search/$trackerId/$mangaId';
   static const sourceManga = '/source/:sourceId/:sourceType';
   static getSourceManga(String sourceId, SourceType sourceType,
@@ -116,12 +124,16 @@ RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 @riverpod
 GoRouter routerConfig(ref) {
   final pipe = ref.watch(getMagicPipeProvider);
-  final initLocationConfig = ref.read(initLocationProvider);
+  final defaultTab = ref.read(defaultTabPrefProvider) ?? DefaultTabEnum.auto;
+  final initLocationConfig = defaultTab == DefaultTabEnum.auto
+      ? ref.read(initLocationProvider)
+      : defaultTab.route;
+
   final initLocation = NavigationBarData.navList
       .map((e) => e.path)
       .where((path) => initLocationConfig == path)
       .firstOrNull;
-  log("[initLocation]config: $initLocationConfig match: $initLocation");
+  log("[initLocation]defaultTab:$defaultTab, config: $initLocationConfig match: $initLocation");
 
   final FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(channel: pipe);
   return GoRouter(
@@ -242,7 +254,12 @@ GoRouter routerConfig(ref) {
       GoRoute(
         path: Routes.mangaTrackSetting,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => TrackerSettingsScreen(),
+        builder: (context, state) => const TrackerSettingsScreen(),
+      ),
+      GoRoute(
+        path: Routes.mangaCategorySetting,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EditCategoryScreen(),
       ),
       GoRoute(
         path: Routes.settings,
@@ -265,6 +282,16 @@ GoRouter routerConfig(ref) {
           GoRoute(
             path: Routes.readerSettings,
             builder: (context, state) => const ReaderSettingsScreen(),
+            routes: [
+              GoRoute(
+                path: Routes.readerTapZones,
+                builder: (context, state) => const ReaderTapZonesSettingsScreen(),
+              ),
+              GoRoute(
+                path: Routes.readerAdvancedSettings,
+                builder: (context, state) => const ReaderAdvancedScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: Routes.trackingSettings,
@@ -277,6 +304,12 @@ GoRouter routerConfig(ref) {
           GoRoute(
             path: Routes.generalSettings,
             builder: (context, state) => const GeneralScreen(),
+            routes: [
+              GoRoute(
+                path: Routes.advancedSettings,
+                builder: (context, state) => const AdvancedScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: Routes.debugSettings,
@@ -297,17 +330,17 @@ GoRouter routerConfig(ref) {
             path: Routes.backup,
             builder: (context, state) => const BackupScreenV2(),
           ),
-          GoRoute(
-            path: Routes.downloads,
-            builder: (context, state) => const DownloadsScreen(),
-            routes: [
-              GoRoute(
-                path: Routes.downloaded,
-                builder: (context, state) => const DownloadedScreen(),
-              ),
-            ],
-          ),
         ],
+      ),
+      GoRoute(
+        path: Routes.downloads,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DownloadsScreen(),
+      ),
+      GoRoute(
+        path: Routes.downloaded,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DownloadedScreen(),
       ),
       GoRoute(
         path: Routes.goWebView,

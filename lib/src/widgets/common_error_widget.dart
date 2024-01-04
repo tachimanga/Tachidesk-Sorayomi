@@ -19,6 +19,7 @@ import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
 import '../utils/misc/toast/toast.dart';
+import '../utils/storage/dio_error_util.dart';
 import 'emoticons.dart';
 
 class CommonErrorWidget extends HookConsumerWidget {
@@ -42,7 +43,7 @@ class CommonErrorWidget extends HookConsumerWidget {
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final message = showGenericError
         ? context.l10n!.errorSomethingWentWrong
-        : error.toString();
+        : DioErrorUtil.localizeErrorMessage(error.toString(), context);
     final enableRefresh = useState(true);
 
     return Emoticons(

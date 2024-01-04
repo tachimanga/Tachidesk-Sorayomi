@@ -73,7 +73,10 @@ class LibraryScreen extends HookConsumerWidget {
                           TabBar(
                             isScrollable: true,
                             tabs: data
-                                .map((e) => Tab(text: e.name ?? ""))
+                                .map((e) => Tab(
+                                    text: e.id == 0
+                                        ? context.l10n!.label_default
+                                        : e.name ?? ""))
                                 .toList(),
                             dividerColor: Colors.transparent,
                           ),

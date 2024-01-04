@@ -18,6 +18,7 @@ import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../utils/storage/dio_error_util.dart';
 import '../../../../../widgets/emoticons.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../domain/source/source_model.dart';
@@ -32,7 +33,8 @@ class SourcePageErrorView extends ConsumerWidget {
     final pipe = ref.watch(getMagicPipeProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final magic = ref.watch(getMagicProvider);
-    final message = this.message ?? controller.error.toString();
+    final rawMessage = this.message ?? controller.error.toString();
+    final message = DioErrorUtil.localizeErrorMessage(rawMessage, context);
     return Emoticons(
       text: message,
       button: Row(

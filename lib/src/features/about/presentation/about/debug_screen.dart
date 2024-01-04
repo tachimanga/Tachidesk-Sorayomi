@@ -149,6 +149,20 @@ class DebugScreen extends HookConsumerWidget {
               print(r);
             }),
         ListTile(
+            title: Text("GDPR SETTING"),
+            leading: const Icon(Icons.send_rounded),
+            onTap: () async {
+              final r = await pipe.invokeMethod("AD:GDPR:SETTING");
+              print(r);
+            }),
+        ListTile(
+            title: Text("GDPR RESET"),
+            leading: const Icon(Icons.send_rounded),
+            onTap: () async {
+              final r = await pipe.invokeMethod("AD:GDPR:RESET");
+              print(r);
+            }),
+        ListTile(
             title: Text("purchase"),
             leading: const Icon(Icons.star_rounded),
             onTap: () {
@@ -159,6 +173,12 @@ class DebugScreen extends HookConsumerWidget {
             leading: const Icon(Icons.send_rounded),
             onTap: () async {
               pipe.invokeMethod("SHOW_FLEX");
+            }),
+        ListTile(
+            title: Text("SANDBOX"),
+            leading: const Icon(Icons.send_rounded),
+            onTap: () async {
+              pipe.invokeMethod("SHOW_SANDBOX");
             }),
         ListTile(
             title: Text("REPORT_INFO"),

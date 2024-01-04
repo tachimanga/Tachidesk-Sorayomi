@@ -25,3 +25,9 @@ class LightAndDarkThemeData {
     );
   }
 }
+
+class AppThemeData {
+  final ThemeData light;
+  final ThemeData dark;
+  const AppThemeData(this.light, this.dark);
+}

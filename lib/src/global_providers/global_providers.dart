@@ -84,6 +84,12 @@ MethodChannel getMagicPipe(GetMagicPipeRef ref) {
 }
 
 @riverpod
+MethodChannel notifyChannel(NotifyChannelRef ref) {
+  final pipe = const MethodChannel('MC_NOTIFY');
+  return pipe;
+}
+
+@riverpod
 class InstallLocalCount extends _$InstallLocalCount
     with SharedPreferenceClientMixin<int> {
   @override

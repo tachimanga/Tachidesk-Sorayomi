@@ -41,4 +41,14 @@ extension IterableExtensions<T> on Iterable<T>? {
       return null;
     }
   }
+
+  int indexOfFirst(bool Function(T element) test) {
+    if (isNull) return -1;
+    var i = 0;
+    for (final element in this!) {
+      if (test(element)) return i;
+      i++;
+    }
+    return -1;
+  }
 }

@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'app_constants.dart';
 import 'enum.dart';
 
 enum DBKeys {
@@ -51,6 +52,20 @@ enum DBKeys {
   markNeedAskRate(false),
   initLocation(null),
   scrollAnimation(false),
+  doubleTapZoomIn(true),
+  pinSourceIdList(<String>[]),
+  onlySearchPinSource(false),
+  disableBypass(false),
+  watermarkSwitch(true),
+  themeKey('default'),
+  themeBlendLevel(10.0),
+  themePureBlackDarkMode(false),
+  autoBackupFrequency(FrequencyEnum.off),
+  autoBackupLimit(2),
+  showStatusBar(false),
+  defaultTab(DefaultTabEnum.auto),
+  swipeRightToGoBackMode(SwipeRightToGoBackMode.always),
+  defaultCategory(kCategoryAlwaysAskValue),
   ;
 
   const DBKeys(this.initial);

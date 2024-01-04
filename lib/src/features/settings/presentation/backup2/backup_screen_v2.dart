@@ -12,6 +12,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/enum.dart';
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -19,9 +20,16 @@ import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
+import '../../../../widgets/premium_required_tile.dart';
+import '../../../../widgets/section_title.dart';
+import '../../../custom/inapp/purchase_providers.dart';
 import '../../data/backup/backup_repository.dart';
 import '../../domain/backup/backup_model.dart';
+import 'controller/auto_backup_controller.dart';
 import 'controller/backup_controller.dart';
+import 'widgets/auto_backup_frequency_tile.dart';
+import 'widgets/auto_backup_latest_tile.dart';
+import 'widgets/auto_backup_limit_tile.dart';
 import 'widgets/backup_list_tile.dart';
 import 'widgets/import_backup_dialog.dart';
 
@@ -65,10 +73,31 @@ class BackupScreenV2 extends HookConsumerWidget {
       };
     }, []);
 
+    final autoBackupFrequency =
+        ref.watch(autoBackupFrequencyProvider) ?? FrequencyEnum.off;
+
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final testflightFlag = ref.watch(testflightFlagProvider);
+
+    final autoBackupEnable = autoBackupFrequency != FrequencyEnum.off;
+    final premiumAlertForAutoBackup =
+        !purchaseGate && !testflightFlag && autoBackupEnable;
+
+    final latestAutoBackupItem =
+        backupList.valueOrNull?.firstWhereOrNull((e) => e.type == 2);
+
     return WillPopScope(
-        onWillPop: () async {
-          return loadingState.value == false;
-        },
+        onWillPop: premiumAlertForAutoBackup || loadingState.value == true
+            ? () async {
+                if (premiumAlertForAutoBackup) {
+                  pipe.invokeMethod("LogEvent", "BACKUP:AUTO:RESET");
+                  ref
+                      .read(autoBackupFrequencyProvider.notifier)
+                      .update(FrequencyEnum.off);
+                }
+                return loadingState.value == false;
+              }
+            : null,
         child: Scaffold(
           appBar: AppBar(
             title: Text(context.l10n!.backup),
@@ -157,6 +186,20 @@ class BackupScreenV2 extends HookConsumerWidget {
                                         msgMap, refresh);
                                   },
                                 ),
+                              SectionTitle(
+                                  title: context.l10n!.autoBackupSectionTitle),
+                              const AutoBackupFrequencyTile(),
+                              if (autoBackupEnable) ...[
+                                const AutoBackupLimitTile(),
+                                if (latestAutoBackupItem != null) ...[
+                                  AutoBackupLatestTile(
+                                    backupItem: latestAutoBackupItem,
+                                  ),
+                                ],
+                              ],
+                              if (premiumAlertForAutoBackup) ...[
+                                const PremiumRequiredTile(),
+                              ],
                               const Divider(),
                             ],
                           );
@@ -164,14 +207,8 @@ class BackupScreenV2 extends HookConsumerWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Section Header
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                              child: Text(
-                                context.l10n!.backupsSectionTitle,
-                                style: context.textTheme.titleMedium,
-                              ),
-                            ),
+                            SectionTitle(
+                                title: context.l10n!.backupsSectionTitle),
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const ClampingScrollPhysics(),
@@ -211,7 +248,7 @@ class BackupScreenV2 extends HookConsumerWidget {
           title: Text(context.l10n!.backupCreated),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: Text(context.l10n!.ok),
               onPressed: () {
                 context.pop();
               },
@@ -449,7 +486,8 @@ extension BackupAsyncValueExtensions<T> on AsyncValue<T> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: const Text("Import failed: Backup file is too large."),
-                  content: const Text("When creating a backup of Tachiyomi, only backup Library, Categories, and Tracking, then retry."),
+                  content: const Text(
+                      "When creating a backup of Tachiyomi, only backup Library, Categories, and Tracking, then retry."),
                   actions: <Widget>[
                     TextButton(
                       child: const Text('OK'),

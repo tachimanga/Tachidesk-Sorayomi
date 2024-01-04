@@ -38,8 +38,6 @@ class ImportBackupDialog extends HookConsumerWidget {
 
       if (status?.state == BackupState.success.value) {
         Future(() {
-          ref.read(repoOldUserProvider.notifier).update(true);
-          ref.read(nsfwOldUserProvider.notifier).update(true);
           ref.read(markNeedAskRateProvider.notifier).update(true);
           if (status?.codes?.isNotEmpty == true) {
             final enabledLanguages = ref.watch(sourceLanguageFilterProvider);

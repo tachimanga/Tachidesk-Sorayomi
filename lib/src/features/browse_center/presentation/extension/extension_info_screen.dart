@@ -20,6 +20,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/pop_button.dart';
+import '../source/controller/source_controller.dart';
 import '../source/widgets/source_list_tile.dart';
 import 'controller/extension_info_controller.dart';
 import 'widgets/extension_descriptive_list_tile.dart';
@@ -31,6 +32,8 @@ class ExtensionInfoScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final extensionInfo = ref.watch(extensionInfoProvider(pkgName: pkgName));
     final toast = ref.watch(toastProvider(context));
+    final pinSourceIdList = ref.watch(pinSourceIdListProvider);
+    final pinSourceIdSet = {...?pinSourceIdList};
 
     return Scaffold(
       appBar: AppBar(
@@ -67,6 +70,7 @@ class ExtensionInfoScreen extends HookConsumerWidget {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => SourceListTile(
                     source: data.sources![index],
+                    pinSourceIdSet: pinSourceIdSet,
                   ),
                   childCount: data.sources!.length,
                 ),

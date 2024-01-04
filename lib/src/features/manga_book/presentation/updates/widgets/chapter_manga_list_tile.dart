@@ -53,11 +53,20 @@ class ChapterMangaListTile extends StatelessWidget {
             ),
           ],
         ),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: ServerImage(
-            imageUrl: pair.manga?.thumbnailUrl ?? "",
-            size: const Size.square(48),
+        leading: InkWell(
+          onTap: () {
+            if (pair.manga?.id != null) {
+              context.push(Routes.getManga(
+                pair.manga!.id!,
+              ));
+            }
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: ServerImage(
+              imageUrl: pair.manga?.thumbnailUrl ?? "",
+              size: const Size.square(48),
+            ),
           ),
         ),
         subtitle: Text(

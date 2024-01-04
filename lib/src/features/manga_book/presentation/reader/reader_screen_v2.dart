@@ -19,7 +19,9 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart' as logger;
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/common_error_widget.dart';
+import '../../../settings/presentation/appearance/controller/theme_controller.dart';
 import '../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
+import '../../../settings/presentation/reader/widgets/swipe_right_back_tile/swipe_right_back_tile.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter_patch/chapter_put_model.dart';
 import '../manga_details/controller/manga_details_controller.dart';
@@ -38,6 +40,7 @@ class ReaderScreen2 extends HookConsumerWidget {
   final String initChapterIndex;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appThemeData = ref.watch(themeSchemeColorProvider);
     final initChapterIndexState = useState(initChapterIndex);
 
     final readerListProvider = useMemoized(
@@ -112,10 +115,24 @@ class ReaderScreen2 extends HookConsumerWidget {
       logger.log("ReaderScreen did pop");
       ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
     });
+
+    final swipeRightMode =
+        ref.watch(swipeRightBackPrefProvider) ?? SwipeRightToGoBackMode.always;
+    final readerMode = manga.valueOrNull?.meta?.readerMode ?? defaultReaderMode;
+    final disableSwipeRight =
+        swipeRightMode == SwipeRightToGoBackMode.disable ||
+            (swipeRightMode == SwipeRightToGoBackMode.disableWhenHorizontal &&
+                (readerMode == ReaderMode.singleHorizontalLTR ||
+                    readerMode == ReaderMode.singleHorizontalRTL ||
+                    readerMode == ReaderMode.continuousHorizontalLTR ||
+                    readerMode == ReaderMode.continuousHorizontalRTL));
+
     return WillPopScope(
-      onWillPop: null,
-      child: Theme(
-              data: defaultTheme.dark.copyWith(scaffoldBackgroundColor:
+        onWillPop: disableSwipeRight ? () async {
+          return true;
+        } : null,
+        child: Theme(
+              data: appThemeData.dark.copyWith(scaffoldBackgroundColor:
                 Colors.black,
                 appBarTheme: const AppBarTheme(
                   systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
@@ -130,7 +147,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                             (chapterData) {
                           if (chapterData == null
                               || chapterData.pageCount == null
-                              || chapterData.pageCount == 0) {
+                              || chapterData.pageCount! <= 0) {
                             return Scaffold(
                                 appBar: AppBar(backgroundColor: Colors.black.withOpacity(.7)),
                                 body: CommonErrorWidget(

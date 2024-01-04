@@ -25,3 +25,4 @@ const MagnifierDecoration kMagnifierDecoration = MagnifierDecoration(
 );
 
 const kDebounceDuration = Duration(milliseconds: 500);
+const kCategoryAlwaysAskValue = -1;

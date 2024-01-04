@@ -13,11 +13,18 @@ class EdgeLayout extends StatelessWidget {
     this.onRightTap,
     this.leftColor,
     this.rightColor,
+    this.leftText,
+    this.rightText,
+    this.menuText,
   });
   final VoidCallback? onLeftTap;
   final VoidCallback? onRightTap;
   final Color? leftColor;
   final Color? rightColor;
+  final Widget? leftText;
+  final Widget? rightText;
+  final Widget? menuText;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,21 +34,35 @@ class EdgeLayout extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: onRightTap,
-            child: Container(color: rightColor),
+            child: Container(
+              color: rightColor,
+              child: Center(
+                child: rightText,
+              ),
+            ),
           ),
         ),
         Expanded(
           child: Column(
             children: [
-              const Expanded(
+              Expanded(
                 flex: 2,
-                child: SizedBox.expand(),
+                child: SizedBox.expand(
+                  child: Center(
+                    child: menuText,
+                  ),
+                ),
               ),
               Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: onLeftTap,
-                  child: Container(color: leftColor),
+                  child: Container(
+                    color: leftColor,
+                    child: Center(
+                      child: leftText,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -51,7 +72,12 @@ class EdgeLayout extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: onRightTap,
-            child: Container(color: rightColor),
+            child: Container(
+              color: rightColor,
+              child: Center(
+                child: rightText,
+              ),
+            ),
           ),
         ),
       ],

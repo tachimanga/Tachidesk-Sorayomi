@@ -54,7 +54,7 @@ class SourceLanguageFilter extends ConsumerWidget {
                 }
               },
               title: Text(
-                language?.nativeName ?? language?.name ?? languageCodes[index],
+                language?.localizedDisplayName(context) ?? languageCodes[index],
               ),
               subtitle: language?.name != null ? Text(language?.name ?? "") : null,
             );

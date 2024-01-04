@@ -7,11 +7,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../utils/extensions/custom_extensions.dart';
-import 'widgets/reader_invert_tap_tile/reader_invert_tap_tile.dart';
+import '../general/widgets/watermark_switch/watermark_switch.dart';
+import 'widgets/reader_advanced_setting/reader_advanced_tile.dart';
 import 'widgets/reader_mode_tile/reader_mode_tile.dart';
 import 'widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
 import 'widgets/reader_padding_slider/reader_padding_slider.dart';
-import 'widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
 
 class ReaderSettingsScreen extends StatelessWidget {
   const ReaderSettingsScreen({super.key});
@@ -24,9 +24,9 @@ class ReaderSettingsScreen extends StatelessWidget {
         children: const [
           ReaderModeTile(),
           ReaderNavigationLayoutTile(),
-          ReaderScrollAnimationTile(),
-          ReaderInvertTapTile(),
           ReaderPaddingSlider(),
+          WatermarkSwitchTile(),
+          ReaderAdvancedTile(),
         ],
       ),
     );

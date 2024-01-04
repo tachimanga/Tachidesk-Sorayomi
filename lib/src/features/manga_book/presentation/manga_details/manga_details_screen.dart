@@ -16,9 +16,11 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
+import '../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
+import '../../../settings/presentation/share/controller/share_controller.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/manga/manga_model.dart';
 import '../../widgets/chapter_actions/multi_chapters_actions_bottom_app_bar.dart';
@@ -102,6 +104,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
         ref.invalidate(categoryMangaListProvider(categoryId!));
       }
     });
+    final toast = ref.read(toastProvider(context));
     return WillPopScope(
       onWillPop: null,
       child: manga.showUiWhenData(
@@ -146,6 +149,28 @@ class MangaDetailsScreen extends HookConsumerWidget {
               : AppBar(
                   title: Text(data?.title ?? context.l10n!.manga),
                   actions: [
+                    AsyncIconButton(
+                      onPressed: data != null
+                          ? () async {
+                              if (!context.mounted) {
+                                return;
+                              }
+                              final text = context.l10n!.mangaShareText(
+                                  data.author ?? "",
+                                  data.realUrl ?? "",
+                                  data.title ?? "");
+                              pipe.invokeMethod(
+                                  "LogEvent", "SHARE:SHARE_MANGA");
+                              (await AsyncValue.guard(() async {
+                                await ref.read(shareActionProvider).shareText(
+                                      text,
+                                    );
+                              }))
+                                  .showToastOnError(toast);
+                            }
+                          : null,
+                      icon: const Icon(Icons.share_outlined),
+                    ),
                     if (context.isTablet)
                       IconButton(
                         onPressed: () => refresh(true),
@@ -163,7 +188,9 @@ class MangaDetailsScreen extends HookConsumerWidget {
                                 borderRadius: KBorderRadius.rT16.radius,
                               ),
                               clipBehavior: Clip.hardEdge,
-                              builder: (_) => const MangaChapterOrganizer(),
+                              builder: (_) => MangaChapterOrganizer(
+                                mangaId: mangaId,
+                              ),
                             );
                           }
                         },
@@ -177,13 +204,14 @@ class MangaDetailsScreen extends HookConsumerWidget {
                       icon: const Icon(Icons.more_vert_rounded),
                       itemBuilder: (context) => [
                         PopupMenuItem(
-                          onTap: () => Future.microtask(
-                            () => showDialog(
+                          onTap: () async {
+                            await showDialog(
                               context: context,
                               builder: (context) =>
                                   EditMangaCategoryDialog(mangaId: mangaId),
-                            ),
-                          ),
+                            );
+                            mangaRefresh();
+                          },
                           child: Text(context.l10n!.editCategory),
                         ),
                         if (!context.isTablet)
@@ -195,9 +223,11 @@ class MangaDetailsScreen extends HookConsumerWidget {
                     )
                   ],
                 ),
-          endDrawer: const Drawer(
+          endDrawer: Drawer(
             width: kDrawerWidth,
-            child: MangaChapterOrganizer(),
+            child: MangaChapterOrganizer(
+              mangaId: mangaId,
+            ),
           ),
           bottomSheet: selectedChapters.value.isNotEmpty
               ? MultiChaptersActionsBottomAppBar(
@@ -205,25 +235,25 @@ class MangaDetailsScreen extends HookConsumerWidget {
                   selectedChapters: selectedChapters,
                 )
               : null,
-          floatingActionButton: firstUnreadChapter != null
-              && selectedChapters.value.isEmpty
-              ? FloatingActionButton.extended(
-                  label: Text(
-                    data?.lastChapterRead?.index != null
-                        ? context.l10n!.resume
-                        : context.l10n!.start,
-                  ),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  onPressed: () {
-                    context.push(
-                      Routes.getReader(
-                        "${firstUnreadChapter.mangaId ?? mangaId}",
-                        "${firstUnreadChapter.index ?? 0}",
+          floatingActionButton:
+              firstUnreadChapter != null && selectedChapters.value.isEmpty
+                  ? FloatingActionButton.extended(
+                      label: Text(
+                        data?.lastChapterRead?.index != null
+                            ? context.l10n!.resume
+                            : context.l10n!.start,
                       ),
-                    );
-                  },
-                )
-              : null,
+                      icon: const Icon(Icons.play_arrow_rounded),
+                      onPressed: () {
+                        context.push(
+                          Routes.getReader(
+                            "${firstUnreadChapter.mangaId ?? mangaId}",
+                            "${firstUnreadChapter.index ?? 0}",
+                          ),
+                        );
+                      },
+                    )
+                  : null,
           body: data != null
               ? context.isTablet
                   ? BigScreenMangaDetails(
@@ -259,19 +289,34 @@ class MangaDetailsScreen extends HookConsumerWidget {
           appBar: AppBar(
             title: Text(mangaBasic?.title ?? context.l10n!.manga),
           ),
-          body: context.isTablet || mangaBasic == null
+          body: mangaBasic == null
               ? body
               : Stack(
-            children: [
-              MangaCoverDescriptiveListTile(
-                manga: mangaBasic!,
-                showBadges: false,
-                onTitleClicked: (query) =>
-                    context.push(Routes.getGlobalSearch(query)),
-              ),
-              body,
-            ],
-          ),
+                  children: [
+                    context.isTablet
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: MangaCoverDescriptiveListTile(
+                                  manga: mangaBasic!,
+                                  showBadges: false,
+                                  onTitleClicked: (query) => context
+                                      .push(Routes.getGlobalSearch(query)),
+                                ),
+                              ),
+                              const Expanded(child: SizedBox.expand()),
+                            ],
+                          )
+                        : MangaCoverDescriptiveListTile(
+                            manga: mangaBasic!,
+                            showBadges: false,
+                            onTitleClicked: (query) =>
+                                context.push(Routes.getGlobalSearch(query)),
+                          ),
+                    body,
+                  ],
+                ),
         ),
       ),
     );

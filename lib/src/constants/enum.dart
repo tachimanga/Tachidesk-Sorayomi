@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 
 enum AuthType {
@@ -91,7 +92,8 @@ enum MangaSort {
   alphabetical,
   dateAdded,
   unread,
-  lastRead;
+  lastRead,
+  latestChapterFetchAt;
 
   String toLocale(BuildContext context) {
     switch (this) {
@@ -103,6 +105,8 @@ enum MangaSort {
         return context.l10n!.mangaSortUnread;
       case MangaSort.lastRead:
         return context.l10n!.mangaSortLastRead;
+      case MangaSort.latestChapterFetchAt:
+        return context.l10n!.mangaSortLatestChapterFetch;
     }
   }
 }
@@ -208,6 +212,117 @@ enum SourceType {
         return context.l10n!.sourceTypePopular;
       case SourceType.filter:
         return context.l10n!.sourceTypeFilter;
+    }
+  }
+}
+
+enum BypassStatus {
+  start("start"),
+  success("succ"),
+  timeout("timeout"),
+  cancel("stop"),
+  unknown("unknown"),
+  ;
+
+  final String code;
+  const BypassStatus(
+    this.code,
+  );
+  static final _statusMap = <String, BypassStatus>{
+    for (BypassStatus status in BypassStatus.values) status.code: status
+  };
+  static BypassStatus fromCode(String code) =>
+      _statusMap[code] ?? BypassStatus.unknown;
+
+  String? toLocale(BuildContext context) {
+    switch (this) {
+      case BypassStatus.start:
+        return context.l10n!.byPassStart;
+      case BypassStatus.success:
+        return context.l10n!.byPassSuccess;
+      case BypassStatus.timeout:
+        return context.l10n!.byPassTimeout;
+      case BypassStatus.cancel:
+        return context.l10n!.byPassCancel;
+      case BypassStatus.unknown:
+        return null;
+    }
+  }
+}
+
+enum FrequencyEnum {
+  off,
+  update_6hour,
+  update_12hour,
+  update_24hour,
+  update_48hour,
+  update_weekly,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case FrequencyEnum.off:
+        return context.l10n!.off;
+      case FrequencyEnum.update_6hour:
+        return context.l10n!.update_6hour;
+      case FrequencyEnum.update_12hour:
+        return context.l10n!.update_12hour;
+      case FrequencyEnum.update_24hour:
+        return context.l10n!.update_24hour;
+      case FrequencyEnum.update_48hour:
+        return context.l10n!.update_48hour;
+      case FrequencyEnum.update_weekly:
+        return context.l10n!.update_weekly;
+    }
+  }
+}
+
+enum DefaultTabEnum {
+  auto(""),
+  library(Routes.library),
+  updates(Routes.updates),
+  browse(Routes.browse),
+  history(Routes.history),
+  more(Routes.more),
+  ;
+
+  final String route;
+  const DefaultTabEnum(
+    this.route,
+  );
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case DefaultTabEnum.auto:
+        return context.l10n!.lastOpenedTab;
+      case DefaultTabEnum.updates:
+        return context.l10n!.updates;
+      case DefaultTabEnum.library:
+        return context.l10n!.library;
+      case DefaultTabEnum.browse:
+        return context.l10n!.browse;
+      case DefaultTabEnum.history:
+        return context.l10n!.history;
+      case DefaultTabEnum.more:
+        return context.l10n!.more;
+    }
+  }
+}
+
+enum SwipeRightToGoBackMode {
+  always,
+  disable,
+  disableWhenHorizontal,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case SwipeRightToGoBackMode.always:
+        return context.l10n!.always;
+      case SwipeRightToGoBackMode.disable:
+        return context.l10n!.disable;
+      case SwipeRightToGoBackMode.disableWhenHorizontal:
+        return context.l10n!.disableWhenHorizontal;
     }
   }
 }

@@ -11,8 +11,10 @@ import '../../../../../constants/db_keys.dart';
 import '../../../../../global_providers/locale_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../data/source_repository/source_repository.dart';
 import '../../../domain/source/source_model.dart';
+import 'source_query_controller.dart';
 
 part 'source_controller.g.dart';
 
@@ -67,6 +69,35 @@ AsyncValue<Map<String, List<Source>>?> sourceMapFiltered(
   for (final e in enabledLangList) {
     if (sourceMap.containsKey(e)) sourceMapFiltered[e] = sourceMap[e]!;
   }
+
+  final pinSourceIdList = ref.watch(pinSourceIdListProvider);
+  final pinSourceIdSet = {...?pinSourceIdList};
+  final pinSourceList = <Source>[];
+
+  for (var entry in sourceMapFiltered.entries) {
+    if (entry.key == "lastUsed") {
+      continue;
+    }
+    final keep = <Source>[];
+    for (final s in entry.value) {
+      if (pinSourceIdSet.contains(s.id)) {
+        pinSourceList.add(s);
+      } else {
+        keep.add(s);
+      }
+    }
+    sourceMapFiltered[entry.key] = keep;
+  }
+  sourceMapFiltered["pinned"] = pinSourceList;
+
+  final query = ref.watch(sourceQueryProvider);
+  if (query.isNotBlank) {
+    for (var entry in sourceMapFiltered.entries) {
+      sourceMapFiltered[entry.key] =
+          entry.value.where((element) => element.name.query(query)).toList();
+    }
+  }
+
   return sourceMapData.copyWithData((e) => sourceMapFiltered);
 }
 
@@ -90,4 +121,27 @@ class SourceLastUsed extends _$SourceLastUsed
         key: DBKeys.sourceLastUsed.name,
         initial: DBKeys.sourceLastUsed.initial,
       );
+}
+
+@riverpod
+class PinSourceIdList extends _$PinSourceIdList
+    with SharedPreferenceClientMixin<List<String>> {
+  @override
+  List<String>? build() => initialize(
+    ref,
+    key: DBKeys.pinSourceIdList.name,
+    initial: DBKeys.pinSourceIdList.initial,
+  );
+}
+
+
+@riverpod
+class OnlySearchPinSource extends _$OnlySearchPinSource
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: DBKeys.onlySearchPinSource.name,
+    initial: DBKeys.onlySearchPinSource.initial,
+  );
 }

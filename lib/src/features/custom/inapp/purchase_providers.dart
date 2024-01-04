@@ -117,6 +117,7 @@ class PurchaseListener extends _$PurchaseListener {
       log("purchaseDone to true");
       ref.read(purchaseDoneProvider.notifier).update(true);
       ref.read(purchaseExpireMsProvider.notifier).update(verifyResult?.expire);
+      ref.read(purchaseTokenProvider.notifier).update(verifyResult?.token);
       ref.read(getMagicPipeProvider)
           .invokeMethod("LogEvent", "VERIFY_SUCC");
     }
@@ -171,12 +172,15 @@ Future<ProductPageData> products(ProductsRef ref) async {
 
   final map = <String, ProductItem>{};
   var list = ["10", "20", "21"];
+  var keys = <String>[];
   if (result != null && result.list != null) {
     for (var value in result.list!) {
       map[value.id ?? ""] = value;
+      keys.add(value.id ?? "");
     }
-    list = map.keys.toList();
+    list = keys;
   }
+  log("list order $list");
   log("product map $map");
 
   final isAvailable = await InAppPurchase.instance.isAvailable();
@@ -193,8 +197,17 @@ Future<ProductPageData> products(ProductsRef ref) async {
   if (productDetailResponse.error != null) {
     throw Exception(productDetailResponse.error.toString());
   }
+
+  var productDetails = <ProductDetails>[];
+  for (final id in list) {
+    final e = productDetailResponse.productDetails.firstWhereOrNull((element) => element.id == id);
+    if (e != null) {
+      productDetails.add(e);
+    }
+  }
+
   //ref.keepAlive();
-  return ProductPageData(productDetailResponse.productDetails,
+  return ProductPageData(productDetails,
     result,
     map
   );
@@ -220,4 +233,71 @@ class PurchaseExpireMs extends _$PurchaseExpireMs
     key: DBKeys.purchaseExpireMs.name,
     initial: DBKeys.purchaseExpireMs.initial,
   );
+}
+
+@riverpod
+class PurchaseToken extends _$PurchaseToken
+    with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() => initialize(
+    ref,
+    key: DBKeys.purchaseToken.name,
+    initial: DBKeys.purchaseToken.initial,
+  );
+}
+
+@riverpod
+class PurchaseGate extends _$PurchaseGate {
+  @override
+  bool build() {
+    final purchaseDone = ref.watch(purchaseDoneProvider);
+    final purchaseExpireMs = ref.watch(purchaseExpireMsProvider);
+
+    var gate = false;
+    if (purchaseDone == true) {
+      if (purchaseExpireMs != null && purchaseExpireMs == -1) {
+        log("lifetime");
+        gate = true;
+      } else if (purchaseExpireMs != null && purchaseExpireMs > 0) {
+        final now = DateTime.now().millisecondsSinceEpoch;
+        log("now $now, expire $purchaseExpireMs");
+        if (now <= purchaseExpireMs) {
+          gate = true;
+        }
+      }
+    } else {
+      log("not purchaseDone");
+    }
+    log("PurchaseGate: purchaseDone $purchaseDone, expire $purchaseExpireMs, gate: $gate");
+    return gate;
+  }
+}
+
+@riverpod
+class TestflightFlag extends _$TestflightFlag {
+  @override
+  bool build() {
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    return userDefaults.getString("config.testflight") == "1";
+  }
+}
+
+@riverpod
+class FreeTrialFlag extends _$FreeTrialFlag {
+  @override
+  bool build() {
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    return userDefaults.getString("config.freeTrial") == "1";
+  }
+}
+
+@riverpod
+class PurchaseSelectIndex extends _$PurchaseSelectIndex {
+  @override
+  int build() {
+    return 1;
+  }
+  void update(int d) {
+    state = d;
+  }
 }

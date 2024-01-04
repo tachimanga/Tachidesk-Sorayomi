@@ -49,6 +49,7 @@ abstract class MangaUrl {
   static String fullWithId(String mangaId) => "$_manga/$mangaId/full";
   static String thumbnail(int mangaId) => "$_manga/$mangaId/thumbnail";
   static String category(String mangaId) => "$_manga/$mangaId/category";
+  static String updateCategory(String mangaId) => "$_manga/$mangaId/updateCategory";
   static String categoryId(String mangaId, String categoryId) =>
       "$_manga/$mangaId/category/$categoryId";
   static String library(String mangaId) => "$_manga/$mangaId/library";

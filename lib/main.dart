@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupertino_http/cupertino_http.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart';
 
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ import 'src/utils/log.dart';
 
 
 Future<void> main() async {
+  // debugPaintSizeEnabled=true;
   WidgetsFlutterBinding.ensureInitialized();
   //MobileAds.instance.initialize();
   final packageInfo = await PackageInfo.fromPlatform();
@@ -56,7 +58,6 @@ Future<void> main() async {
   if (useNativeNet == null || useNativeNet == true) {
     log("enable flutter native net");
     final config = URLSessionConfiguration.defaultSessionConfiguration();
-    config.httpShouldSetCookies = false;
     config.requestCachePolicy = URLRequestCachePolicy.reloadIgnoringLocalCacheData;
     final maxConnPerHostStr = sharedPreferences.getString("config.maxConnPerHost");
     int? maxConnPerHost = maxConnPerHostStr != null

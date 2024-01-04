@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/enum.dart';
 
+import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/server_image.dart';
@@ -17,12 +18,17 @@ import '../../../domain/source/source_model.dart';
 import '../controller/source_controller.dart';
 
 class SourceListTile extends ConsumerWidget {
-  const SourceListTile({super.key, required this.source});
+  const SourceListTile(
+      {super.key, required this.source, required this.pinSourceIdSet});
 
   final Source source;
+  final Set<String> pinSourceIdSet;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
+    final pinned = pinSourceIdSet.contains(source.id ?? '');
+    final localSource = source.lang?.code == 'localsourcelang';
     return ListTile(
       onTap: (() async {
         if (source.id == null) return;
@@ -32,6 +38,7 @@ class SourceListTile extends ConsumerWidget {
           SourceType.popular,
         ));
       }),
+      contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 6.0),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: ServerImage(
@@ -39,39 +46,62 @@ class SourceListTile extends ConsumerWidget {
           size: const Size.square(48),
         ),
       ),
-      title: Text(source.displayName ?? source.name ?? ""),
-      subtitle: (source.lang?.displayName).isNotBlank
-          ? Text(source.lang?.displayName ?? "")
-          : null,
+      title: localSource
+          ? Text(context.l10n!.local_source)
+          : Text(source.displayName ?? source.name ?? ""),
+      subtitle: localSource
+          ? Text(context.l10n!.other_source)
+          : (source.lang?.localizedDisplayName(context)).isNotBlank
+              ? Text(source.lang?.localizedDisplayName(context) ?? "")
+              : null,
       trailing: Wrap(
         spacing: 0, // space between two icons
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           if (source.isConfigurable.ifNull()) ...[
-            ['fr', 'pt', 'uk'].contains(context.currentLocale.languageCode)
-                ? IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {
-                      context.push(Routes.getSourcePref(source.id!));
-                    },
-                  )
-                : TextButton(
-                    onPressed: () async {
-                      context.push(Routes.getSourcePref(source.id!));
-                    },
-                    child: Text(context.l10n!.settings),
-                  )
+            IconButton(
+              icon: const Icon(Icons.settings),
+              style: const ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () {
+                context.push(Routes.getSourcePref(source.id!));
+              },
+            )
           ],
+          if (magic.b7 == true)
+            IconButton(
+              icon: pinned
+                  ? const Icon(Icons.push_pin)
+                  : const Icon(Icons.push_pin_outlined),
+              style: const ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () {
+                if (pinned) {
+                  pinSourceIdSet.remove(source.id ?? '');
+                } else {
+                  pinSourceIdSet.add(source.id ?? '');
+                }
+                ref
+                    .read(pinSourceIdListProvider.notifier)
+                    .update(pinSourceIdSet.toList());
+              },
+            ),
           if (source.supportsLatest.ifNull()) ...[
-            TextButton(
-              onPressed: () async {
+            IconButton(
+              icon: const Icon(Icons.new_releases_outlined),
+              style: const ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () {
                 ref.read(sourceLastUsedProvider.notifier).update(source.id);
                 context.push(Routes.getSourceManga(
                   source.id!,
                   SourceType.latest,
                 ));
               },
-              child: Text(context.l10n!.latest),
-            )
+            ),
           ],
         ],
       ),
