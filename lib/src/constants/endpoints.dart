@@ -31,10 +31,10 @@ abstract class ExtensionUrl {
   static const String _extension = "/extension";
   static const String list = "$_extension/list";
   static const String installFile = "$_extension/install";
-  static String installPkg(String pkgName) => "$installFile/$pkgName";
-  static String updatePkg(String pkgName) => "$_extension/update/$pkgName";
-  static String uninstallPkg(String pkgName) =>
-      "$_extension/uninstall/$pkgName";
+  static String installPkg(int extensionId) => "$installFile/$extensionId";
+  static String updatePkg(int extensionId) => "$_extension/update/$extensionId";
+  static String uninstallPkg(int extensionId) =>
+      "$_extension/uninstall/$extensionId";
   static String icon(String apkName) => "$_extension/icon/$apkName";
 }
 
@@ -42,6 +42,15 @@ abstract class CategoryUrl {
   static const String category = "/category";
   static const String reorder = "$category/reorder";
   static String withId(int id) => "$category/$id";
+}
+
+abstract class RepoUrl {
+  static const String repo = "/repo";
+  static const String list = "$repo/list";
+  static const String check = "$repo/check";
+  static const String create = "$repo/create";
+  static const String updateByMetaUrl = "$repo/updateByMetaUrl";
+  static String removeWithId(int id) => "$repo/remove/$id";
 }
 
 abstract class MangaUrl {

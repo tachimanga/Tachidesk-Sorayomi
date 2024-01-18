@@ -23,6 +23,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/text_premium.dart';
 import '../../../about/presentation/about/widget/media_launch_button.dart';
 import '../../../custom/inapp/purchase_providers.dart';
+import '../../controller/edit_repo_controller.dart';
 import '../../widgets/server_url_tile/server_url_tile.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import '../browse/widgets/repo_setting/repo_url_tile.dart';
@@ -46,7 +47,7 @@ class MoreScreenLite extends HookConsumerWidget {
         "Tachimanga (an iOS equivalent for Tachiyomi) is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
-    final repoUrlSetting = ref.watch(repoUrlProvider);
+    final repoCount = ref.watch(repoCountProvider);
 
     final debugCount = useState(0);
     return Scaffold(
@@ -98,7 +99,7 @@ class MoreScreenLite extends HookConsumerWidget {
             onTap: () =>
                 context.push([Routes.settings, Routes.trackingSettings].toPath),
           ),
-          if (magic.a8 || magic.a9 || repoUrlSetting.isNotBlank) ...[
+          if (magic.a8 || magic.a9 || repoCount > 0) ...[
             ListTile(
               title: Text(context.l10n!.extensions),
               leading: const Icon(Icons.explore_rounded),

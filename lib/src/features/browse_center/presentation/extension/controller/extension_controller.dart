@@ -121,7 +121,7 @@ AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
   }
 
   for (final e in extensionList) {
-    if (!showNsfw && (e.isNsfw.ifNull())) continue;
+    if (!showNsfw && (e.isNsfw.ifNull()) && e.installed != true) continue;
     if (e.installed.ifNull()) {
       if (e.hasUpdate.ifNull()) {
         extensionMap.update(
@@ -196,6 +196,29 @@ AsyncValue<Map<String, List<Extension>>> extensionMapFilteredAndQueried(
       (key, value) => MapEntry(
         key,
         value.where((element) => element.name.query(query)).toList(),
+      ),
+    ),
+  );
+}
+
+@riverpod
+AsyncValue<Map<String, List<Extension>>>
+    extensionMapFilteredAndQueriedAndRepoId(
+  ExtensionMapFilteredAndQueriedRef ref, {
+  required int repoId,
+}) {
+  final extensionMapData = ref.watch(extensionMapFilteredProvider);
+  final extensionMap = {...?extensionMapData.valueOrNull};
+  final query = ref.watch(extensionQueryProvider);
+  return extensionMapData.copyWithData(
+    (e) => extensionMap.map<String, List<Extension>>(
+      (key, value) => MapEntry(
+        key,
+        value
+            .where((element) =>
+                element.repoId == repoId &&
+                (query.isBlank || element.name.query(query)))
+            .toList(),
       ),
     ),
   );

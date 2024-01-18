@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:octo_image/octo_image.dart';
 
 import '../constants/endpoints.dart';
 import '../constants/enum.dart';
@@ -35,6 +36,7 @@ class ServerImage extends ConsumerWidget {
     this.reloadButton = false,
     this.progressIndicatorBuilder,
     this.wrapper,
+    this.imageSizeCache,
     this.memCacheWidth,
     this.memCacheHeight,
   });
@@ -48,6 +50,7 @@ class ServerImage extends ConsumerWidget {
   final Widget Function(BuildContext, String, DownloadProgress)?
       progressIndicatorBuilder;
   final Widget Function(Widget child)? wrapper;
+  final ImageSizeCache? imageSizeCache;
 
   /// Will resize the image in memory to have a certain width using [ResizeImage]
   final int? memCacheWidth;
@@ -139,6 +142,7 @@ class ServerImage extends ConsumerWidget {
       errorWidget: (context, url, error) => wrapper != null
           ? wrapper!(buildImgErrorWidget(context, url, error))
           : buildImgErrorWidget(context, url, error),
+      imageSizeCache: imageSizeCache,
     );
   }
 }

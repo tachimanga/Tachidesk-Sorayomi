@@ -18,6 +18,7 @@ import 'constants/enum.dart';
 import 'constants/navigation_bar_data.dart';
 import 'features/about/presentation/about/widget/file_log_tile.dart';
 import 'features/custom/inapp/purchase_providers.dart';
+import 'features/settings/domain/repo/repo_model.dart';
 import 'features/settings/presentation/appearance/constants/theme_define.dart';
 import 'features/settings/presentation/appearance/controller/theme_controller.dart';
 import 'features/settings/presentation/backup2/controller/auto_backup_controller.dart';
@@ -128,9 +129,41 @@ class Sorayomi extends HookConsumerWidget {
           final name = uri.queryParameters["name"];
           final repo = uri.queryParameters["url"];
           if (name != null && repo != null) {
-            log("name: $name, repo: $repo");
+            log("repo name: $name, repo: $repo");
             goRouter.go(Routes.more);
-            goRouter.push([Routes.settings, Routes.getExtensionSetting(name, repo)].toPath);
+            final param = UrlSchemeAddRepo(repoName: name, baseUrl: repo);
+            goRouter.push([
+              Routes.settings,
+              Routes.browseSettings,
+              Routes.editRepo
+            ].toPath, extra: param);
+
+            pipe.invokeMethod("LogEvent2", <String, Object?>{
+              'eventName': 'REPO:ADD:BY_MANGA',
+              'parameters': <String, String?>{
+                'url': repo,
+              },
+            });
+          }
+        }
+        if (uri.host == 'add-repo') {
+          final url = uri.queryParameters["url"];
+          if (url != null) {
+            log("add-repo url: $url");
+            goRouter.go(Routes.more);
+            final param = UrlSchemeAddRepo(metaUrl: url);
+            goRouter.push([
+              Routes.settings,
+              Routes.browseSettings,
+              Routes.editRepo
+            ].toPath, extra: param);
+
+            pipe.invokeMethod("LogEvent2", <String, Object?>{
+              'eventName': 'REPO:ADD:BY_YOMI',
+              'parameters': <String, String?>{
+                'url': url,
+              },
+            });
           }
         }
       }

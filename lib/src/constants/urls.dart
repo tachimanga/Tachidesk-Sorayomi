@@ -24,6 +24,8 @@ enum AppUrls {
   backupHelp(url: "https://tachimanga.app/help/guides/backups.html"),
   downloadHelp(url: "https://tachimanga.app/help/guides/downloads.html"),
   extensionHelp(url: "https://tachimanga.app/help/guides/extensions.html"),
+  repositoriesHelp(url: "https://tachimanga.app/help/guides/repositories.html"),
+  findRepositories(url: "https://tachimanga.app/help/guides/find-repos.html"),
   appstore(url: "https://apps.apple.com/us/app/tachimanga/id6447486175"),
   sorayomiLatestReleaseApiUrl(
     url:

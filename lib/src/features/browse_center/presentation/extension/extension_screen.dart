@@ -17,12 +17,15 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../settings/presentation/browse/widgets/mutil_repo_setting/repo_help_button.dart';
 import '../../domain/extension/extension_model.dart';
 import 'controller/extension_controller.dart';
 import 'widgets/extension_list_tile.dart';
 
 class ExtensionScreen extends HookConsumerWidget {
-  const ExtensionScreen({super.key});
+  const ExtensionScreen({super.key, this.repoId});
+
+  final int? repoId;
 
   List<Widget> extensionSet({
     Key? key,
@@ -41,9 +44,10 @@ class ExtensionScreen extends HookConsumerWidget {
         key: key,
         delegate: SliverChildBuilderDelegate(
           (context, index) => ExtensionListTile(
-            key: ValueKey(extensions[index].pkgName),
+            key: ValueKey(extensions[index].extensionId),
             extension: extensions[index],
             refresh: refresh,
+            showRepoName: repoId == null,
           ),
           childCount: extensions!.length,
         ),
@@ -53,7 +57,10 @@ class ExtensionScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final extensionMapData = ref.watch(extensionMapFilteredAndQueriedProvider);
+    final extensionMapData = repoId != null
+        ? ref.watch(
+            extensionMapFilteredAndQueriedAndRepoIdProvider(repoId: repoId!))
+        : ref.watch(extensionMapFilteredAndQueriedProvider);
     final extensionMap = {...?extensionMapData.valueOrNull};
     final installed = extensionMap.remove("installed");
     final update = extensionMap.remove("update");
@@ -135,17 +142,13 @@ class ExtensionScreen extends HookConsumerWidget {
                       extensions: extensionMap[k],
                       refresh: refresh,
                     ),
-                  if (emptyRepo) ...[
+                  if (emptyRepo) ...const [
                     SliverToBoxAdapter(
-                        child: TextButton.icon(
-                            onPressed: () => launchUrlInWeb(
-                                  context,
-                                  userDefaults.getString("config.helpUrl") ??
-                                      AppUrls.addRepo.url,
-                                  ref.read(toastProvider(context)),
-                                ),
-                            icon: const Icon(Icons.help_rounded),
-                            label: Text(context.l10n!.help))),
+                      child: RepoHelpButton(
+                        icon: false,
+                        source: "EXT_BOTTOM",
+                      ),
+                    ),
                   ]
                 ],
               ),

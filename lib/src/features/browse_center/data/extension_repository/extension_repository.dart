@@ -51,33 +51,34 @@ class ExtensionRepository {
   }
 
   Future<void> installExtension(
-    String pkgName, {
+    int extensionId, {
     CancelToken? cancelToken,
   }) =>
       dioClient.get(
-        ExtensionUrl.installPkg(pkgName),
+        ExtensionUrl.installPkg(extensionId),
         cancelToken: cancelToken,
       );
 
   Future<void> uninstallExtension(
-    String pkgName, {
+    int extensionId, {
     CancelToken? cancelToken,
   }) =>
       dioClient.get(
-        ExtensionUrl.uninstallPkg(pkgName),
+        ExtensionUrl.uninstallPkg(extensionId),
         cancelToken: cancelToken,
       );
 
   Future<void> updateExtension(
-    String pkgName, {
+    int extensionId, {
     CancelToken? cancelToken,
   }) =>
       dioClient.get(
-        ExtensionUrl.updatePkg(pkgName),
+        ExtensionUrl.updatePkg(extensionId),
         cancelToken: cancelToken,
       );
 
-  Future<List<Extension>?> getExtensionList(String repoUrl, {CancelToken? cancelToken}) async =>
+  Future<List<Extension>?> getExtensionList(String repoUrl,
+          {CancelToken? cancelToken}) async =>
       (await dioClient.get<List<Extension>, Extension>(
         ExtensionUrl.list,
         queryParameters: {"repoUrl": repoUrl},

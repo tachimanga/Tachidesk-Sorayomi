@@ -15,6 +15,8 @@ import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
+import '../../../../settings/controller/edit_repo_controller.dart';
+import '../../../../settings/domain/repo/repo_model.dart';
 import '../../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../../settings/presentation/browse/widgets/show_nsfw_switch/show_nsfw_switch.dart';
 import '../../../data/extension_repository/extension_repository.dart';
@@ -42,20 +44,23 @@ Future<List<Source>?> sourceListNoCache(SourceListNoCacheRef ref) async {
 @riverpod
 AsyncValue<ExtensionInfo> extensionInfo(
   ExtensionInfoRef ref, {
-  String? pkgName,
+  int? extensionId,
 }) {
   final extensionListData = ref.watch(extensionProvider);
   final sourceListData = ref.watch(sourceListNoCacheProvider);
 
   final extension = extensionListData.valueOrNull
-      ?.where((e) => e.pkgName == pkgName)
+      ?.where((e) => e.extensionId == extensionId)
       .firstOrNull;
   final sources = sourceListData.valueOrNull
-      ?.where((e) => e.extPkgName == pkgName)
+      ?.where((e) => e.extPkgName == extension?.pkgName)
       .toList();
 
-  final changelogUrl = getChangelogUrl(extension);
-  final readmeUrl = getReadmeUrl(extension);
+  final repoList = ref.watch(repoControllerProvider);
+  final repo = repoList.valueOrNull?.where((e) => e.id == extension?.repoId).firstOrNull;
+
+  final changelogUrl = getChangelogUrl(extension, repo);
+  final readmeUrl = getReadmeUrl(extension, repo);
 
   return sourceListData.copyWithData((p0) => ExtensionInfo(
       extension: extension,
@@ -64,44 +69,53 @@ AsyncValue<ExtensionInfo> extensionInfo(
       readmeUrl: readmeUrl));
 }
 
-const URL_EXTENSION_COMMITS = "";
-const URL_EXTENSION_BLOB = "";
+const URL_EXTENSION_COMMITS = "/commits/main";
+const URL_EXTENSION_BLOB = "/blob/main";
 
-
-String createUrl(String url, String pkgName, String? pkgFactory, {String path = ""}) {
+String createUrl(String? baseUrl, String url, String pkgName, String? pkgFactory, {String path = ""}) {
+  var finalBaseUrl = "";
+  if (baseUrl != null) {
+    RegExp regex = RegExp(r"https://.*?github.*?/(.*?)/(.*?)/");
+    Match? match = regex.firstMatch(baseUrl);
+    if (match != null) {
+      String username = match.group(1)!;
+      String repo = match.group(2)!;
+      finalBaseUrl = "https://github.com/$username/$repo";
+    }
+  }
   if (pkgFactory?.isNotEmpty == true) {
     if (path.isEmpty) {
-      return "$url/multisrc/src/main/java/eu/kanade/tachiyomi/multisrc/$pkgFactory";
+      return "$finalBaseUrl$url/multisrc/src/main/java/eu/kanade/tachiyomi/multisrc/$pkgFactory";
     } else {
       final parts = pkgName.split('.');
       String package = parts.isNotEmpty ? parts.last : "";
-      return "$url/multisrc/overrides/$pkgFactory/$package$path";
+      return "$finalBaseUrl$url/multisrc/overrides/$pkgFactory/$package$path";
     }
   } else {
-    return "$url/src/${pkgName.replaceAll('.', '/')}$path";
+    return "$finalBaseUrl$url/src/${pkgName.replaceAll('.', '/')}$path";
   }
 }
 
-String getChangelogUrl(Extension? extension) {
+String getChangelogUrl(Extension? extension, Repo? repo) {
   if (extension == null || extension.pkgName?.isEmpty == true) {
     return "";
   }
   final pkgName = extension.pkgName!.replaceAll("eu.kanade.tachiyomi.extension.", "");
-  if (extension.hasUpdate == true) {
-    return createUrl(URL_EXTENSION_BLOB, pkgName, extension.pkgFactory, path: "/CHANGELOG.md");
+  if (extension.hasReadme == true) {
+    return createUrl(repo?.baseUrl, URL_EXTENSION_BLOB, pkgName, extension.pkgFactory, path: "/CHANGELOG.md");
   }
   // Falling back on GitHub commit history because there is no explicit changelog in extension
-  return createUrl(URL_EXTENSION_COMMITS, pkgName, extension.pkgFactory);
+  return createUrl(repo?.baseUrl, URL_EXTENSION_COMMITS, pkgName, extension.pkgFactory);
 }
 
-String getReadmeUrl(Extension? extension) {
+String getReadmeUrl(Extension? extension, Repo? repo) {
   if (extension == null || extension.pkgName?.isEmpty == true) {
     return AppUrls.extensionHelp.url;
   }
 
   if (extension.hasReadme == true) {
     final pkgName = extension.pkgName!.replaceAll("eu.kanade.tachiyomi.extension.", "");
-    return createUrl(URL_EXTENSION_BLOB, pkgName, extension.pkgFactory, path: "/CHANGELOG.md");
+    return createUrl(repo?.baseUrl, URL_EXTENSION_BLOB, pkgName, extension.pkgFactory, path: "/CHANGELOG.md");
   }
 
   return "${AppUrls.extensionHelp.url}?pkg=${extension.pkgName}";

@@ -17,6 +17,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../settings/presentation/browse/widgets/mutil_repo_setting/repo_help_button.dart';
 import '../extension/controller/extension_controller.dart';
 import 'controller/source_controller.dart';
 import 'widgets/source_list_tile.dart';
@@ -128,16 +129,12 @@ class SourceScreen extends HookConsumerWidget {
                 )
               ],
               if (magic.b9 && emptyRepo) ...[
-                SliverToBoxAdapter(
-                    child: TextButton.icon(
-                        onPressed: () => launchUrlInWeb(
-                              context,
-                              userDefaults.getString("config.helpUrl") ??
-                                  AppUrls.addRepo.url,
-                              ref.read(toastProvider(context)),
-                            ),
-                        icon: const Icon(Icons.help_rounded),
-                        label: Text(context.l10n!.help))),
+                const SliverToBoxAdapter(
+                  child: RepoHelpButton(
+                    icon: false,
+                    source: "SRC_BOTTOM",
+                  ),
+                ),
               ]
             ],
           ),

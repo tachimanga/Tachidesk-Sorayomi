@@ -32,7 +32,7 @@ class BackupRepository {
   final DioClient dioClient;
 
   Future<BackupMissing?> restoreBackup(
-      BuildContext context, PlatformFile? file) async {
+      BuildContext context, PlatformFile? file, String defaultRepoUrl) async {
     if ((file?.name).isBlank ||
         (kIsWeb && (file?.bytes).isBlank ||
             (!kIsWeb && (file?.path).isBlank))) {
@@ -44,6 +44,7 @@ class BackupRepository {
     return (await dioClient.post<BackupMissing, BackupMissing?>(
       ImportUrl.import,
       data: FormData.fromMap({
+        'defaultRepoUrl': defaultRepoUrl,
         'backup.proto.gz': kIsWeb
             ? MultipartFile.fromBytes(
                 file!.bytes!,
