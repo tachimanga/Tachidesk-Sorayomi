@@ -124,10 +124,11 @@ packages:
   cached_network_image:
     dependency: "direct main"
     description:
-      name: cached_network_image
-      sha256: fd3d0dc1d451f9a252b32d95d3f0c3c487bc41a75eba2e6097cb0b9c71491b15
-      url: "https://pub.dev"
-    source: hosted
+      path: cached_network_image
+      ref: HEAD
+      resolved-ref: bf37cf8f1b9e4e69f92ddde9a7cdcaad1032ff1f
+      url: "git@github.com:tachimanga/flutter_cached_network_image.git"
+    source: git
     version: "3.2.3"
   cached_network_image_platform_interface:
     dependency: "direct main"
@@ -764,7 +765,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "777bcc504b2bb56c46d94084bf51130129a72660"
+      resolved-ref: d8b052a3cdf7dbd0b7b51627eb1a34635982c592
       url: "git@github.com:tachimanga/octo_image.git"
     source: git
     version: "1.0.2"

@@ -18,6 +18,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/search_field.dart';
+import '../../../settings/presentation/browse/widgets/mutil_repo_setting/repo_help_button.dart';
 import '../extension/controller/extension_controller.dart';
 import '../extension/extension_screen.dart';
 import '../extension/widgets/extension_language_filter_dialog.dart';
@@ -51,14 +52,12 @@ class BrowseScreen extends HookConsumerWidget {
         centerTitle: true,
         actions: emptyRepo
             ? [
-                IconButton(
-                  onPressed: () => launchUrlInWeb(
-                    context,
-                    userDefaults.getString("config.helpUrl") ??
-                        AppUrls.addRepo.url,
-                    toast,
-                  ),
-                  icon: const Icon(Icons.help),
+                if (tabController.index == 1 && magic.a6 == true) ...[
+                  const InstallExtensionFile(),
+                ],
+                const RepoHelpButton(
+                  icon: true,
+                  source: "EXT_TOP",
                 ),
               ]
             : [

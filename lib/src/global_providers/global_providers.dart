@@ -63,6 +63,16 @@ class Magic {
   bool b7 = false; // no use
   bool b8 = false; // no use
   bool b9 = false; // no use
+  bool c0 = false; // enable find repo
+  bool c1 = false;
+  bool c2 = false;
+  bool c3 = false;
+  bool c4 = false;
+  bool c5 = false;
+  bool c6 = false;
+  bool c7 = false;
+  bool c8 = false;
+  bool c9 = false;
 }
 
 @riverpod
@@ -74,6 +84,7 @@ Magic getMagic(GetMagicRef ref) {
   magic.a7 = userDefaults.getBool("flutter.config.a7") ?? false;
   magic.a9 = userDefaults.getBool("flutter.config.a9") ?? false;
   magic.b1 = userDefaults.getBool("flutter.config.b1") ?? false;
+  magic.c0 = userDefaults.getBool("flutter.config.c0") ?? false;
   return magic;
 }
 

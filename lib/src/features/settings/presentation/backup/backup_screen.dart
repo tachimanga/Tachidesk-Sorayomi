@@ -33,7 +33,7 @@ class BackupScreen extends ConsumerWidget {
     }
     AsyncValue.guard(() => ref
         .read(backupRepositoryProvider)
-        .restoreBackup(context, file?.files.single)).then(
+        .restoreBackup(context, file?.files.single, "")).then(
       (result) => result.whenOrNull<void>(
         error: (error, stackTrace) => result.showToastOnError(toast),
         data: (data) {

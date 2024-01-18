@@ -53,7 +53,13 @@ dependency_overrides:
     git:
       url: git@github.com:tachimanga/flutter_cache_manager.git
       path: flutter_cache_manager
+  cached_network_image:
+    #path: ../Tachidesk-Sorayomi-thirdpart/flutter_cached_network_image/cached_network_image
+    git:
+      url: git@github.com:tachimanga/flutter_cached_network_image.git
+      path: cached_network_image
   octo_image:
+    #path: ../Tachidesk-Sorayomi-thirdpart/octo_image
     git:
       url: git@github.com:tachimanga/octo_image.git
   file_picker:

@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/gen/assets.gen.dart';
 
+import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
@@ -23,7 +24,8 @@ class AboutScreenLite extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final packageInfo = ref.watch(packageInfoProvider);
     final toast = ref.watch(toastProvider(context));
-
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    final translateUrl = userDefaults.getString("config.translateUrl");
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.about),
@@ -80,7 +82,7 @@ class AboutScreenLite extends HookConsumerWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => launchUrlInWeb(
                               context,
-                              "https://github.com/tachiyomiorg/tachiyomi-extensions",
+                              "https://github.com/tachiyomiorg/extensions",
                               toast,
                             ),
                     ),
@@ -88,6 +90,19 @@ class AboutScreenLite extends HookConsumerWidget {
                   ],
                 ),
               )),
+          const Divider(),
+          if (translateUrl?.isNotEmpty == true) ...[
+            ListTile(
+              title: const Text("Help translate"),
+              leading: const Icon(Icons.translate_rounded),
+              onTap: () => launchUrlInWeb(
+                context,
+                translateUrl ?? "",
+                ref.read(toastProvider(context)),
+              ),
+            ),
+          ],
+          const Divider(),
         ],
       ),
     );

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:octo_image/octo_image.dart';
 
 import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/app_sizes.dart';
@@ -68,6 +69,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
 
     final scrollController = useMemoized(() => ItemScrollController());
     final positionsListener = useMemoized(() => ItemPositionsListener.create());
+    final imageSizeCache = useMemoized(() => ImageSizeCache());
 
     useEffect(() {
       final page = readerListData.pageList[currentIndex.value];
@@ -245,6 +247,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                   memCacheHeight: scrollDirection != Axis.vertical
                       ? (context.height * context.devicePixelRatio).toInt()
                       : null,
+                  imageSizeCache: imageSizeCache,
                 );
                 final image = GestureDetector(
                   onLongPress: () {

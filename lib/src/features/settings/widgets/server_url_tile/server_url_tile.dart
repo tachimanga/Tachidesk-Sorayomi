@@ -90,6 +90,13 @@ class ServerUrlField extends HookConsumerWidget {
           },
           child: Text("server"),
         ),
+        ElevatedButton(
+          onPressed: () {
+            _update("http://192.168.0.36:4567", ref);
+            context.pop();
+          },
+          child: Text("server-36"),
+        ),
         const PopButton(),
         ElevatedButton(
           onPressed: () {

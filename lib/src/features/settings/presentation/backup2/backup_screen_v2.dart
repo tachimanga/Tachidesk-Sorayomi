@@ -407,9 +407,13 @@ class BackupScreenV2 extends HookConsumerWidget {
                       if (!context.mounted) {
                         return;
                       }
+                      final defaultRepoUrl = ref
+                              .read(sharedPreferencesProvider)
+                              .getString("config.defaultRepoUrl") ??
+                          "";
                       await ref
                           .read(backupRepositoryProvider)
-                          .restoreBackup(context, file);
+                          .restoreBackup(context, file, defaultRepoUrl);
                       if (!context.mounted) {
                         return;
                       }

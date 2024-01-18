@@ -34,11 +34,14 @@ import '../features/manga_book/presentation/reader/controller/reader_controller_
 import '../features/manga_book/presentation/reader/reader_screen.dart';
 import '../features/manga_book/presentation/reader/reader_screen_v2.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
+import '../features/settings/domain/repo/repo_model.dart';
 import '../features/settings/presentation/advanced/advanced_screen.dart';
 import '../features/settings/presentation/appearance/appearance_screen.dart';
 import '../features/settings/presentation/backup/backup_screen.dart';
 import '../features/settings/presentation/backup2/backup_screen_v2.dart';
 import '../features/settings/presentation/browse/browse_settings_screen.dart';
+import '../features/settings/presentation/browse/edit_repo_screen.dart';
+import '../features/settings/presentation/browse/extension_detail_screen.dart';
 import '../features/settings/presentation/general/general_screen.dart';
 import '../features/settings/presentation/general/widgets/default_tab_tile/default_tab_tile.dart';
 import '../features/settings/presentation/library/library_settings_screen.dart';
@@ -83,8 +86,9 @@ abstract class Routes {
   static const backup = 'backup';
   static const settings = '/settings';
   static const browseSettings = 'extensionSetting';
-  static getExtensionSetting(String name, String url) =>
-    '$browseSettings?name=$name&url=$url';
+  static const editRepo = 'edit-repo';
+  static const repoDetail = 'repo-detail';
+  static getRepoDetail(int repoId, String repoName) => '$repoDetail?repoId=$repoId&repoName=$repoName';
   static const readerSettings = 'reader';
   static const readerAdvancedSettings = 'r-advanced';
   static const readerTapZones = 'tapZones';
@@ -95,8 +99,8 @@ abstract class Routes {
   static const serverSettings = 'server';
   static const editCategories = 'edit-categories';
   static const extensions = '/extensions';
-  static const extensionInfo = '/extension/:pkgName';
-  static getExtensionInfo(String? pkgName) => '/extension/$pkgName';
+  static const extensionInfo = '/extension/:extensionId';
+  static getExtensionInfo(int extensionId) => '/extension/$extensionId';
   static const manga = '/manga/:mangaId';
   static getManga(int mangaId, {int? categoryId}) =>
       '/manga/$mangaId${categoryId.isNull ? '' : "?categoryId=$categoryId"}';
@@ -216,8 +220,8 @@ GoRouter routerConfig(ref) {
         path: Routes.extensionInfo,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => ExtensionInfoScreen(
-          key: ValueKey(state.params['pkgName'] ?? "0"),
-          pkgName: state.params['pkgName'] ?? "",
+          key: ValueKey(state.params['extensionId'] ?? "0"),
+          extensionId: int.parse(state.params['extensionId'] ?? ""),
         ),
       ),
       GoRoute(
@@ -321,10 +325,24 @@ GoRouter routerConfig(ref) {
           ),
           GoRoute(
             path: Routes.browseSettings,
-            builder: (context, state) => BrowseSettingsScreen(
-              repoName: state.queryParams['name'],
-              repoUrl: state.queryParams['url'],
-            ),
+            builder: (context, state) => const BrowseSettingsScreen(),
+            routes: [
+              GoRoute(
+                path: Routes.editRepo,
+                builder: (context, state) => EditRepoScreen(
+                  urlSchemeAddRepo: state.extra as UrlSchemeAddRepo?,
+                ),
+                routes: [
+                  GoRoute(
+                    path: Routes.repoDetail,
+                    builder: (context, state) => ExtensionDetailScreen(
+                      repoId: int.parse(state.queryParams['repoId'] ?? ""),
+                      repoName: state.queryParams['repoName'] ?? "",
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           GoRoute(
             path: Routes.backup,

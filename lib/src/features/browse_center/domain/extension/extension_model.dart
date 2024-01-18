@@ -35,6 +35,10 @@ class Extension with _$Extension {
     int? versionCode,
     String? versionName,
     List<Tag>? tagList,
+
+    int? extensionId,
+    int? repoId,
+    String? repoName,
   }) = _Extension;
 
   factory Extension.fromJson(Map<String, dynamic> json) =>

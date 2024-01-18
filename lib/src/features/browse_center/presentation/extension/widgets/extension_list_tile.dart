@@ -15,6 +15,7 @@ import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../widgets/confirm_dialog.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../../custom/hex_color.dart';
 import '../../../data/extension_repository/extension_repository.dart';
@@ -27,10 +28,12 @@ class ExtensionListTile extends HookConsumerWidget {
     super.key,
     required this.extension,
     required this.refresh,
+    this.showRepoName = true,
   });
 
   final Extension extension;
   final AsyncCallback refresh;
+  final bool showRepoName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,8 +45,8 @@ class ExtensionListTile extends HookConsumerWidget {
 
     return ListTile(
       key: key,
-      onTap: magic.b7 == true && extension.installed == true
-          ? () => context.push(Routes.getExtensionInfo(extension.pkgName))
+      onTap: magic.b7 == true && extension.installed == true && extension.extensionId != null
+          ? () => context.push(Routes.getExtensionInfo(extension.extensionId!))
           : null,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -72,9 +75,16 @@ class ExtensionListTile extends HookConsumerWidget {
               ),
             if (extension.isNsfw.ifNull())
               TextSpan(
-                text: context.l10n!.nsfw18,
+                text: "${context.l10n!.nsfw18} ",
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
+                ),
+              ),
+            if (showRepoName && extension.repoName.isNotBlank)
+              TextSpan(
+                text: "${extension.repoName} ",
+                style: const TextStyle(
+                  fontWeight: FontWeight.normal,
                 ),
               ),
             if (extension.tagList?.isNotEmpty == true) ...[
@@ -104,11 +114,28 @@ class ExtensionListTile extends HookConsumerWidget {
           ? OutlinedButton(
               onPressed: extension.installed.ifNull()
                   ? () async {
-                      (await AsyncValue.guard(() async {
-                        await repository.uninstallExtension(extension.pkgName!);
-                        await refresh();
-                      }))
-                          .showToastOnError(toast);
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ConfirmDialog(
+                              title: Text(extension.name ?? ""),
+                              content: Text(context.l10n!.uninstall_confirm),
+                              onConfirm: () async {
+                                context.pop();
+                                isLoading.value = true;
+                                (await AsyncValue.guard(() async {
+                                  if (extension.extensionId == null) {
+                                    throw context.l10n!.errorExtension;
+                                  }
+                                  await repository
+                                      .uninstallExtension(extension.extensionId!);
+                                  await refresh();
+                                }))
+                                    .showToastOnError(toast);
+                                isLoading.value = false;
+                              },
+                            );
+                          });
                     }
                   : null,
               child: Text(
@@ -121,28 +148,46 @@ class ExtensionListTile extends HookConsumerWidget {
                   onPressed: isLoading.value
                       ? null
                       : () async {
-                          try {
+                          if (extension.hasUpdate.ifNull()) {
                             isLoading.value = true;
                             (await AsyncValue.guard(
                               () async {
-                                if (extension.pkgName.isBlank) {
+                                if (extension.extensionId == null) {
                                   throw context.l10n!.errorExtension;
                                 }
-                                if (extension.hasUpdate.ifNull()) {
-                                  await repository
-                                      .updateExtension(extension.pkgName!);
-                                } else {
-                                  await repository
-                                      .uninstallExtension(extension.pkgName!);
-                                }
-
+                                await repository
+                                    .updateExtension(extension.extensionId!);
                                 await refresh();
                               },
                             ))
                                 .showToastOnError(toast);
                             isLoading.value = false;
-                          } catch (e) {
-                            //
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ConfirmDialog(
+                                    title: Text(extension.name ?? ""),
+                                    content:
+                                        Text(context.l10n!.uninstall_confirm),
+                                    onConfirm: () async {
+                                      context.pop();
+                                      isLoading.value = true;
+                                      (await AsyncValue.guard(
+                                        () async {
+                                          if (extension.extensionId == null) {
+                                            throw context.l10n!.errorExtension;
+                                          }
+                                          await repository.uninstallExtension(
+                                              extension.extensionId!);
+                                          await refresh();
+                                        },
+                                      ))
+                                          .showToastOnError(toast);
+                                      isLoading.value = false;
+                                    },
+                                  );
+                                });
                           }
                         },
                   child: Text(
@@ -162,13 +207,13 @@ class ExtensionListTile extends HookConsumerWidget {
                           try {
                             isLoading.value = true;
                             (await AsyncValue.guard(() async {
-                              if (extension.pkgName.isBlank) {
+                              if (extension.extensionId == null) {
                                 throw context.l10n!.errorExtension;
                               }
                               final pkgName = extension.pkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
                               magicPipe.invokeMethod("LogEvent", "ADD_$pkgName");
                               await repository
-                                  .installExtension(extension.pkgName!);
+                                  .installExtension(extension.extensionId!);
                               if (extension.lang?.code != null) {
                                 final code = extension.lang!.code!;
                                 final enabledLanguages = ref.watch(sourceLanguageFilterProvider);
@@ -180,9 +225,7 @@ class ExtensionListTile extends HookConsumerWidget {
                               }
                               await refresh();
                             }))
-                                .showToastOnError(
-                              ref.read(toastProvider(context)),
-                            );
+                                .showToastOnError(toast);
                             isLoading.value = false;
                           } catch (e) {
                             //
@@ -190,7 +233,7 @@ class ExtensionListTile extends HookConsumerWidget {
                         },
                   child: Text(
                     isLoading.value
-                        ? context.l10n!.installing
+                        ? context.l10n!.label_adding
                         : context.l10n!.install,
                   ),
                 ),

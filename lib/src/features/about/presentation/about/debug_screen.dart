@@ -29,6 +29,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../../manga_book/presentation/reader/controller/reader_controller_v2.dart';
+import '../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../settings/widgets/server_url_tile/server_url_tile.dart';
 import '../../data/about_repository.dart';
 import '../../domain/about/about_model.dart';
@@ -135,6 +136,7 @@ class DebugScreen extends HookConsumerWidget {
               ref.read(purchaseExpireMsProvider.notifier).update(0);
             }),
          */
+        const RepoUrlTile(),
         ListTile(
             title: Text("clean ad mem"),
             leading: const Icon(Icons.cleaning_services_rounded),

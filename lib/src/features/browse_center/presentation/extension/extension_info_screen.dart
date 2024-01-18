@@ -26,11 +26,11 @@ import 'controller/extension_info_controller.dart';
 import 'widgets/extension_descriptive_list_tile.dart';
 
 class ExtensionInfoScreen extends HookConsumerWidget {
-  const ExtensionInfoScreen({super.key, required this.pkgName});
-  final String pkgName;
+  const ExtensionInfoScreen({super.key, required this.extensionId});
+  final int extensionId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final extensionInfo = ref.watch(extensionInfoProvider(pkgName: pkgName));
+    final extensionInfo = ref.watch(extensionInfoProvider(extensionId: extensionId));
     final toast = ref.watch(toastProvider(context));
     final pinSourceIdList = ref.watch(pinSourceIdListProvider);
     final pinSourceIdSet = {...?pinSourceIdList};
