@@ -128,7 +128,10 @@ class SourceMangaListScreen extends HookConsumerWidget {
             ],
           ],
           bottom: PreferredSize(
-            preferredSize: kCalculateAppBarBottomSize([true, showSearch.value]),
+            preferredSize: kCalculateAppBarBottomSizeV2(
+              showTabBar: true,
+              showTextField: showSearch.value,
+            ),
             child: Column(
               children: [
                 Row(

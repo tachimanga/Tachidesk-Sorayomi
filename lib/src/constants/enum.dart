@@ -277,6 +277,67 @@ enum FrequencyEnum {
   }
 }
 
+enum LockTypeEnum {
+  off,
+  biometrics,
+  passcode,
+  ;
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case LockTypeEnum.off:
+        return context.l10n!.off;
+      case LockTypeEnum.biometrics:
+        return context.l10n!.lock_type_biometrics;
+      case LockTypeEnum.passcode:
+        return context.l10n!.lock_type_passcode;
+    }
+  }
+}
+
+enum LockIntervalEnum {
+  always,
+  after_1min,
+  after_2min,
+  after_5min,
+  after_10min,
+  never,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case LockIntervalEnum.always:
+        return context.l10n!.lock_always;
+      case LockIntervalEnum.after_1min:
+        return context.l10n!.lock_after_one_min;
+      case LockIntervalEnum.after_2min:
+        return context.l10n!.lock_after_mins(2);
+      case LockIntervalEnum.after_5min:
+        return context.l10n!.lock_after_mins(5);
+      case LockIntervalEnum.after_10min:
+        return context.l10n!.lock_after_mins(10);
+      case LockIntervalEnum.never:
+        return context.l10n!.lock_never;
+    }
+  }
+}
+
+enum SecureScreenEnum {
+  off,
+  incognito,
+  always,
+  ;
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case SecureScreenEnum.off:
+        return context.l10n!.off;
+      case SecureScreenEnum.incognito:
+        return context.l10n!.pref_incognito_mode;
+      case SecureScreenEnum.always:
+        return context.l10n!.always;
+    }
+  }
+}
+
 enum DefaultTabEnum {
   auto(""),
   library(Routes.library),

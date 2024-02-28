@@ -17,10 +17,12 @@ import '../../../../../constants/app_sizes.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../utils/purchase.dart';
 import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
 import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../../browse_center/presentation/migrate/controller/migrate_controller.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../library/presentation/category/controller/edit_category_controller.dart';
 import '../../../../settings/presentation/library/controller/category_settings_controller.dart';
@@ -65,7 +67,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
                       title: "${manga.title}",
                     ),
                   );
-                  refresh();
+                  invokeRefresh(ref);
                 }
                 return;
               }
@@ -74,7 +76,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
                 .read(mangaBookRepositoryProvider)
                 .addMangaToLibrary("${manga.id}");
           }
-          await refresh();
+          await invokeRefresh(ref);
         });
         if (context.mounted) {
           val.showToastOnError(ref.read(toastProvider(context)));
@@ -88,7 +90,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
             title: "${manga.title}",
           ),
         );
-        refresh();
+        invokeRefresh(ref);
       },
       isPrimary: manga.inLibrary.ifNull(),
       primaryIcon: const Icon(Icons.favorite_rounded),
@@ -99,5 +101,14 @@ class MangaAddLibraryButton extends HookConsumerWidget {
       primaryLabel: Text(context.l10n!.inLibrary),
       secondaryLabel: Text(context.l10n!.addToLibrary),
     );
+  }
+
+  Future<void> invokeRefresh(WidgetRef ref) async {
+    await refresh();
+    try {
+      ref.invalidate(migrateInfoProvider);
+    } catch (e) {
+      log("refresh migrateInfoProvider err $e");
+    }
   }
 }

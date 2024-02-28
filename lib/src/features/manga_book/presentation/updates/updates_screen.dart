@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../../../../constants/db_keys.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
 import '../../../../utils/misc/toast/toast.dart';
@@ -20,6 +21,7 @@ import '../../widgets/chapter_actions/multi_chapters_actions_bottom_app_bar.dart
 import '../../widgets/update_status_fab.dart';
 import '../../widgets/update_status_popup_menu.dart';
 import '../reader/controller/reader_controller.dart';
+import 'controller/update_controller.dart';
 import 'widgets/chapter_manga_list_tile.dart';
 
 class UpdatesScreen extends HookConsumerWidget {
@@ -67,6 +69,8 @@ class UpdatesScreen extends HookConsumerWidget {
       return;
     }, []);
     final selectedChapters = useState<Map<int, Chapter>>({});
+    final alwaysAskSelect = ref.watch(alwaysAskCategoryToUpdatePrefProvider) ??
+        DBKeys.alwaysAskCategoryToUpdate.initial;
     return Scaffold(
       floatingActionButton:
           selectedChapters.value.isEmpty ? const UpdateStatusFab() : null,
@@ -82,7 +86,11 @@ class UpdatesScreen extends HookConsumerWidget {
             )
           : AppBar(
               title: Text(context.l10n!.updates),
-              actions: const [UpdateStatusPopupMenu()],
+              centerTitle: true,
+              actions: [
+                if (!alwaysAskSelect) const UpdateSettingIcon(),
+                const UpdateStatusPopupMenu()
+              ],
             ),
       bottomSheet: selectedChapters.value.isNotEmpty
           ? MultiChaptersActionsBottomAppBar(

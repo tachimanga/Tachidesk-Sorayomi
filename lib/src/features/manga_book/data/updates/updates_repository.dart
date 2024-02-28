@@ -41,15 +41,13 @@ class UpdatesRepository {
           .data;
 
   Future<void> fetchUpdates({
-    int? categoryId,
+    List<int>? categoryIds,
     CancelToken? cancelToken,
   }) =>
       dioClient.post(
         UpdateUrl.fetch,
         cancelToken: cancelToken,
-        data: FormData.fromMap({
-          if (categoryId != null && categoryId != 0) "categoryId": categoryId,
-        }),
+        data: jsonEncode({"categoryIds": categoryIds}),
       );
 
   Future<void> resetUpdates({

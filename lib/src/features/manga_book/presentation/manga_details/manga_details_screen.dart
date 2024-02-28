@@ -19,6 +19,7 @@ import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../browse_center/presentation/migrate/widgets/migrate_manga_dialog.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
 import '../../../settings/presentation/share/controller/share_controller.dart';
 import '../../domain/chapter/chapter_model.dart';
@@ -214,6 +215,17 @@ class MangaDetailsScreen extends HookConsumerWidget {
                           },
                           child: Text(context.l10n!.editCategory),
                         ),
+                        if (data?.inLibrary == true) ...[
+                          PopupMenuItem(
+                            onTap: () async {
+                              context.push(
+                                Routes.getGlobalSearch(data?.title ?? ""),
+                                extra: data,
+                              );
+                            },
+                            child: Text(context.l10n!.migrate_action_migrate),
+                          ),
+                        ],
                         if (!context.isTablet)
                           PopupMenuItem(
                             onTap: () => refresh(true),

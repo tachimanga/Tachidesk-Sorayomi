@@ -20,6 +20,7 @@ class TextFieldPopup extends HookWidget {
     this.subtitle,
     this.hint,
     this.initialValue,
+    this.textInputAction,
   });
 
   final String title;
@@ -27,6 +28,7 @@ class TextFieldPopup extends HookWidget {
   final String? hint;
   final String? initialValue;
   final ValueChanged<String> onChange;
+  final TextInputAction? textInputAction;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,8 @@ class TextFieldPopup extends HookWidget {
                   border: const OutlineInputBorder(),
                   hintText: hint ?? "",
                 ),
+                textInputAction: textInputAction,
+                maxLines: textInputAction == TextInputAction.newline ? null : 1,
               ),
             ),
           ],

@@ -151,6 +151,13 @@ class DebugScreen extends HookConsumerWidget {
               print(r);
             }),
         ListTile(
+            title: Text("test rate"),
+            leading: const Icon(Icons.send_rounded),
+            onTap: () async {
+              final r = await pipe.invokeMethod("TEST_RATE");
+              print(r);
+            }),
+        ListTile(
             title: Text("GDPR SETTING"),
             leading: const Icon(Icons.send_rounded),
             onTap: () async {

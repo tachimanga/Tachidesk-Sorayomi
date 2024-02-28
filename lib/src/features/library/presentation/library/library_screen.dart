@@ -64,8 +64,9 @@ class LibraryScreen extends HookConsumerWidget {
                   title: Text(context.l10n!.library),
                   centerTitle: true,
                   bottom: PreferredSize(
-                    preferredSize: kCalculateAppBarBottomSize(
-                      [data.length.isGreaterThan(1), showSearch.value],
+                    preferredSize: kCalculateAppBarBottomSizeV2(
+                      showTabBar: data.length.isGreaterThan(1),
+                      showTextField: showSearch.value,
                     ),
                     child: Column(
                       children: [

@@ -15,11 +15,23 @@ import 'db_keys.dart';
 const kTabSize = Size.fromHeight(kAppBarBottomHeight);
 const kAppBarBottomHeight = 64.0;
 const kDrawerWidth = 384.0;
-
+const kTextFieldHeight = 72.0; //56 + padding 8*2
+const kTabBarHeight = 46.0; //material/tabs.dart
 Size kCalculateAppBarBottomSize(List<bool> checks) {
   final multiplier =
       checks.map((e) => e ? 1 : 0).toList().fold(0, (v1, v2) => v1 + v2);
   return Size.fromHeight(kAppBarBottomHeight * multiplier);
+}
+
+Size kCalculateAppBarBottomSizeV2({
+  bool showTextField = false,
+  bool showTabBar = false,
+  bool showCheckBox = false,
+}) {
+  final height = (showTextField ? kTextFieldHeight : 0.0) +
+      (showTabBar ? kTabBarHeight : 0.0) +
+      (showCheckBox ? kMinInteractiveDimension : 0.0);
+  return Size.fromHeight(height);
 }
 
 Offset kMagnifierPosition(Offset position, Size size, double multiplier) =>

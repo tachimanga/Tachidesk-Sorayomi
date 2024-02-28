@@ -13,13 +13,18 @@ import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/search_field.dart';
+import '../../../manga_book/domain/manga/manga_model.dart';
 import '../source/controller/source_controller.dart';
 import 'controller/source_quick_search_controller.dart';
 import 'widgets/source_quick_search.dart';
 
 class GlobalSearchScreen extends HookConsumerWidget {
-  const GlobalSearchScreen({super.key, this.initialQuery});
+  const GlobalSearchScreen(
+      {super.key, this.initialQuery, this.migrateSrcManga});
+
   final String? initialQuery;
+  final Manga? migrateSrcManga;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final magic = ref.watch(getMagicProvider);
@@ -32,7 +37,10 @@ class GlobalSearchScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: Text(context.l10n!.globalSearch),
         bottom: PreferredSize(
-          preferredSize: kCalculateAppBarBottomSize([true, true]),
+          preferredSize: kCalculateAppBarBottomSizeV2(
+            showTextField: true,
+            showCheckBox: true,
+          ),
           child: Column(
             children: [
               Align(
@@ -42,9 +50,6 @@ class GlobalSearchScreen extends HookConsumerWidget {
                   onSubmitted: (value) => query.value = value,
                   autofocus: autofocus,
                 ),
-              ),
-              const SizedBox(
-                height: 2,
               ),
               if (magic.b7 == true)
                 Row(
@@ -85,6 +90,7 @@ class GlobalSearchScreen extends HookConsumerWidget {
                       source: data[index].source,
                       mangaList: data[index].mangaList,
                       query: query.value,
+                      migrateSrcManga: migrateSrcManga,
                     );
                   }
                 },

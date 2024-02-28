@@ -65,7 +65,16 @@ enum DBKeys {
   showStatusBar(false),
   defaultTab(DefaultTabEnum.auto),
   swipeRightToGoBackMode(SwipeRightToGoBackMode.always),
+  migrateChapterFlag(true),
+  migrateCategoryFlag(true),
+  migrateTrackFlag(true),
+  categoryIdsToUpdate(<String>[]),
+  alwaysAskCategoryToUpdate(true),
   defaultCategory(kCategoryAlwaysAskValue),
+  lockType(LockTypeEnum.off),
+  lockInterval(LockIntervalEnum.always),
+  lockPasscode(''),
+  secureScreen(SecureScreenEnum.off),
   ;
 
   const DBKeys(this.initial);
