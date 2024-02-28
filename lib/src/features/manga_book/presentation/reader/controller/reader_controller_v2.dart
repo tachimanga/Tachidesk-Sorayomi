@@ -48,6 +48,13 @@ class ReaderPageData {
   ReaderPageData(this.chapterIndex, this.pageIndex, this.imageData);
 }
 
+class PageChangedData {
+  final ReaderPageData currentPage;
+  final bool flush;
+
+  PageChangedData(this.currentPage, this.flush);
+}
+
 class ReaderListData {
   final String mangaId;
   final int totalPageCount;

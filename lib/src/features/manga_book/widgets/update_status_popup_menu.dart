@@ -35,7 +35,7 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
               child: Text(context.l10n!.categoryUpdate),
               onTap: () => ref
                   .read(updatesRepositoryProvider)
-                  .fetchUpdates(categoryId: category.id),
+                  .fetchUpdates(categoryIds: [category.id ?? 0]),
             ),
           PopupMenuItem(
             onTap: () => ref.read(updatesRepositoryProvider).fetchUpdates(),

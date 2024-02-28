@@ -16,6 +16,7 @@ import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../domain/source/source_model.dart';
+import '../../migrate/widgets/migrate_manga_dialog.dart';
 
 class SourceShortSearch extends StatelessWidget {
   const SourceShortSearch({
@@ -23,10 +24,12 @@ class SourceShortSearch extends StatelessWidget {
     required this.source,
     required this.mangaList,
     this.query,
+    this.migrateSrcManga,
   });
   final Source source;
   final AsyncValue<List<Manga>> mangaList;
   final String? query;
+  final Manga? migrateSrcManga;
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +66,22 @@ class SourceShortSearch extends StatelessWidget {
                           child: MangaCoverGridTile(
                             manga: i,
                             showDarkOverlay: i.inLibrary.ifNull(),
-                            onPressed: i.id != null
-                                ? () => context.push(Routes.getManga(i.id!))
-                                : null,
+                            onPressed: () {
+                              if (migrateSrcManga != null &&
+                                  migrateSrcManga!.id != i.id) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => MigrateMangaDialog(
+                                    srcManga: migrateSrcManga!,
+                                    destManga: i,
+                                  ),
+                                );
+                                return;
+                              }
+                              if (i.id != null) {
+                                context.push(Routes.getManga(i.id!));
+                              }
+                            },
                           ),
                         ),
                     ],

@@ -18,9 +18,10 @@ class MangaChapterFilter extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scanlatorList =
-    ref.watch(mangaScanlatorListProvider(mangaId: mangaId));
-    final selectedScanlator =
-    ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
+        ref.watch(mangaScanlatorListProvider(mangaId: mangaId));
+    final selectedScanlators =
+        ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
+    final selectedScanlatorSet = {...selectedScanlators};
     return ListView(
       children: [
         CustomCheckboxListTile(
@@ -32,13 +33,13 @@ class MangaChapterFilter extends ConsumerWidget {
           title: context.l10n!.bookmarked,
           provider: mangaChapterFilterBookmarkedProvider,
           onChanged:
-          ref.read(mangaChapterFilterBookmarkedProvider.notifier).update,
+              ref.read(mangaChapterFilterBookmarkedProvider.notifier).update,
         ),
         CustomCheckboxListTile(
           title: context.l10n!.downloaded,
           provider: mangaChapterFilterDownloadedProvider,
           onChanged:
-          ref.read(mangaChapterFilterDownloadedProvider.notifier).update,
+              ref.read(mangaChapterFilterDownloadedProvider.notifier).update,
         ),
         if (scanlatorList.isNotBlank && scanlatorList.length > 1) ...[
           ListTile(
@@ -48,24 +49,35 @@ class MangaChapterFilter extends ConsumerWidget {
             ),
             dense: true,
           ),
-          RadioListTile(
+          CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
             title: Text(context.l10n!.allScanlators),
-            value: MangaMetaKeys.scanlator.key,
-            groupValue: selectedScanlator,
-            onChanged: (val) => ref
-                .read(mangaChapterFilterScanlatorProvider(mangaId: mangaId)
-                .notifier)
-                .update(val),
+            value: selectedScanlatorSet.isEmpty,
+            onChanged: (value) {
+              if (value == true) {
+                ref
+                    .read(mangaChapterFilterScanlatorProvider(mangaId: mangaId)
+                        .notifier)
+                    .update([]);
+              }
+            },
           ),
           for (final scanlator in scanlatorList)
-            RadioListTile(
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
               title: Text(scanlator),
-              value: scanlator,
-              groupValue: selectedScanlator,
-              onChanged: (val) => ref
-                  .read(mangaChapterFilterScanlatorProvider(mangaId: mangaId)
-                  .notifier)
-                  .update(val),
+              value: selectedScanlatorSet.contains(scanlator),
+              onChanged: (value) {
+                if (value == true) {
+                  selectedScanlatorSet.add(scanlator);
+                } else {
+                  selectedScanlatorSet.remove(scanlator);
+                }
+                ref
+                    .read(mangaChapterFilterScanlatorProvider(mangaId: mangaId)
+                        .notifier)
+                    .update([...selectedScanlatorSet]);
+              },
             ),
         ],
       ],

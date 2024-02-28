@@ -54,9 +54,19 @@ class Filter with _$Filter {
       orElse: () => [
         {
           "position": position,
-          "state": json.encode(filter.filterState?.toJson()["state"])
+          "state": jsonEncode(filter.filterState?.state)
         }
       ],
     );
+  }
+
+  static String jsonEncode(Object? value) {
+    if (value == null) {
+      return "";
+    }
+    if (value is String) {
+      return value;
+    }
+    return json.encode(value);
   }
 }

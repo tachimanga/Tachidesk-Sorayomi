@@ -22,6 +22,7 @@ import 'features/settings/domain/repo/repo_model.dart';
 import 'features/settings/presentation/appearance/constants/theme_define.dart';
 import 'features/settings/presentation/appearance/controller/theme_controller.dart';
 import 'features/settings/presentation/backup2/controller/auto_backup_controller.dart';
+import 'features/settings/presentation/security/controller/security_controller.dart';
 import 'features/settings/widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'global_providers/global_providers.dart';
 import 'global_providers/preference_providers.dart';
@@ -121,7 +122,7 @@ class Sorayomi extends HookConsumerWidget {
             //print("index$index");
             int val = int.tryParse(index) ?? -1;
             if (val >= 0 && val < NavigationBarData.navList.length) {
-                goRouter.go(NavigationBarData.navList[val].path);
+              goRouter.go(NavigationBarData.navList[val].path);
             }
           }
         }
@@ -210,6 +211,21 @@ class Sorayomi extends HookConsumerWidget {
         ref
             .read(autoBackupFrequencyProvider.notifier)
             .update(FrequencyEnum.off);
+      });
+    }
+
+    if (ref.read(lockTypePrefProvider) != LockTypeEnum.off) {
+      log("reset lockTypePrefProvider");
+      Future(() {
+        ref.read(lockTypePrefProvider.notifier).update(LockTypeEnum.off);
+      });
+    }
+    if (ref.read(secureScreenPrefProvider) != SecureScreenEnum.off) {
+      log("reset secureScreenPrefProvider");
+      Future(() {
+        ref
+            .read(secureScreenPrefProvider.notifier)
+            .update(SecureScreenEnum.off);
       });
     }
   }

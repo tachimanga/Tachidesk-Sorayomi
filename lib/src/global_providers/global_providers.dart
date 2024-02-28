@@ -64,7 +64,7 @@ class Magic {
   bool b8 = false; // no use
   bool b9 = false; // no use
   bool c0 = false; // enable find repo
-  bool c1 = false;
+  bool c1 = false; // enable migrate
   bool c2 = false;
   bool c3 = false;
   bool c4 = false;
@@ -85,6 +85,7 @@ Magic getMagic(GetMagicRef ref) {
   magic.a9 = userDefaults.getBool("flutter.config.a9") ?? false;
   magic.b1 = userDefaults.getBool("flutter.config.b1") ?? false;
   magic.c0 = userDefaults.getBool("flutter.config.c0") ?? false;
+  magic.c1 = userDefaults.getBool("flutter.config.c1") ?? false;
   return magic;
 }
 

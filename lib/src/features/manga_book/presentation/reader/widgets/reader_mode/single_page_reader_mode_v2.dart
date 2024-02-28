@@ -41,7 +41,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
   final ValueNotifier<String> initChapterIndexState;
   final Chapter initChapter;
   final ReaderListData readerListData;
-  final ValueSetter<ReaderPageData>? onPageChanged;
+  final ValueSetter<PageChangedData>? onPageChanged;
   final bool reverse;
   final Axis scrollDirection;
   @override
@@ -67,18 +67,14 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     final currPage = useState(readerListData.pageList[initIndex]);
 
     useEffect(() {
-      if (currentIndex.value > readerListData.pageList.length - 1) {
-        return;
-      }
-      final page = readerListData.pageList[currentIndex.value];
-      final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
-      currPage.value = page;
-      currChapter.value = pageChapter;
-      // log("[Reader2] curr page ${page.pageIndex} "
-      //     "curr chapter: ${pageChapter.index}");
-      if (onPageChanged != null) onPageChanged!(currPage.value);
+      notifyPageUpdate(currentIndex, currPage, currChapter, false);
       return;
     }, [currentIndex.value]);
+    useEffect(() {
+      return () {
+        notifyPageUpdate(currentIndex, currPage, currChapter, true);
+      };
+    }, []);
 
     useEffect(() {
       final chapter = readerListData.chapterList.firstWhereOrNull(
@@ -220,6 +216,25 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       ),
     );
   }
+
+  void notifyPageUpdate(
+      ValueNotifier<int> currentIndex,
+      ValueNotifier<ReaderPageData> currPage,
+      ValueNotifier<Chapter> currChapter,
+      bool flush) {
+    if (currentIndex.value > readerListData.pageList.length - 1) {
+      return;
+    }
+    final page = readerListData.pageList[currentIndex.value];
+    final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
+    currPage.value = page;
+    currChapter.value = pageChapter;
+    // log("[Reader2] curr page ${page.pageIndex} "
+    //     "curr chapter: ${pageChapter.index}");
+    if (onPageChanged != null) {
+      onPageChanged!(PageChangedData(currPage.value, flush));
+    }
+  }
 }
 
 class CustomPageViewScrollPhysics extends ScrollPhysics {
@@ -233,8 +248,8 @@ class CustomPageViewScrollPhysics extends ScrollPhysics {
 
   @override
   SpringDescription get spring => const SpringDescription(
-    mass: 50,
-    stiffness: 100,
-    damping: 0.8,
-  );
+        mass: 50,
+        stiffness: 100,
+        damping: 0.8,
+      );
 }

@@ -49,6 +49,7 @@ class DioClient {
           onReceiveProgress: onReceiveProgress,
         ),
         decoder: decoder,
+        url: "${dio.options.baseUrl}/$url",
       );
 
   /// Handy method to make http POST request,
@@ -75,6 +76,7 @@ class DioClient {
           onReceiveProgress: onReceiveProgress,
         ),
         decoder: decoder,
+        url: "${dio.options.baseUrl}/$url",
       );
 
   /// Handy method to make http PATCH request,
@@ -101,6 +103,7 @@ class DioClient {
           onReceiveProgress: onReceiveProgress,
         ),
         decoder: decoder,
+        url: "${dio.options.baseUrl}/$url",
       );
 
   /// Handy method to make http PUT request,
@@ -127,6 +130,7 @@ class DioClient {
           onReceiveProgress: onReceiveProgress,
         ),
         decoder: decoder,
+        url: "${dio.options.baseUrl}/$url",
       );
 
   /// Handy method to make http DELETE request,
@@ -149,11 +153,13 @@ class DioClient {
           cancelToken: cancelToken,
         ),
         decoder: decoder,
+        url: "${dio.options.baseUrl}/$url",
       );
 
   Future<Response<ReturnType?>> _handelDecoding<ReturnType, DecoderType>({
     required Future<Response> Function() sendRequest,
     ResponseDecoderCallBack<DecoderType>? decoder,
+    String? url,
   }) async {
     try {
       final Response response = await sendRequest();
@@ -172,7 +178,14 @@ class DioClient {
     } on DioError catch (e) {
       //if (kDebugMode) rethrow;
       final msg = DioErrorUtil.handleError(e);
-      pipe.invokeMethod("LogEvent", "ERR_$msg");
+      pipe.invokeMethod("LogEvent2", <String, Object?>{
+        'eventName': "ERR_$msg",
+        'parameters': <String, String?>{
+          'url': "$url",
+          'error': "${e.error}",
+          'message': "${e.message}",
+        },
+      });
       throw msg;
     } catch (e) {
       if (kDebugMode) rethrow;

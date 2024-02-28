@@ -102,6 +102,7 @@ class SourcePreferenceToWidget extends StatelessWidget {
             onChange: (value) => onChangedPreferenceCopyWith(
                 prop.copyWith(currentValue: value), context),
             initialValue: prop.currentValue ?? prop.defaultValue,
+            textInputAction: TextInputAction.newline,
           ),
         ),
       );

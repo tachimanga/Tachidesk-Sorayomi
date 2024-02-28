@@ -16,11 +16,13 @@ import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import '../../../constants/db_keys.dart';
 import '../../../global_providers/global_providers.dart';
 import '../../../global_providers/locale_providers.dart';
+import '../../../utils/event_util.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/log.dart';
 import '../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../api/api_providers.dart';
 import 'model/purchase_model.dart';
+import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
 part 'purchase_providers.g.dart';
 
 class PurchaseData {
@@ -161,14 +163,18 @@ Future<ProductPageData> products(ProductsRef ref) async {
 
   final dioClient = ref.watch(dioClientApiProvider);
   final locale = ref.watch(userPreferLocaleProvider);
-  final result = (await dioClient.post<ProductListResult, ProductListResult?>(
-    "/productList",
-    data: {
-      "language": locale.languageCode,
-      "locale": locale.toLanguageTag(),
-    },
-    decoder: (e) => e is Map<String, dynamic> ? ProductListResult.fromJson(e) : null,
-  )).data;
+  final pipe = ref.watch(getMagicPipeProvider);
+
+  ProductListResult? result;
+  try {
+    final stopwatch = Stopwatch()..start();
+    result = await queryProductList(dioClient, locale);
+    stopwatch.stop();
+    logEvent2(pipe, "IAP:LOAD:API:SUCC", {"ms": "${stopwatch.elapsedMilliseconds}"});
+  } catch (e) {
+    logEvent2(pipe, "IAP:LOAD:API:FAIL", {"error": "$e"});
+    rethrow;
+  }
 
   final map = <String, ProductItem>{};
   var list = ["10", "20", "21"];
@@ -183,19 +189,15 @@ Future<ProductPageData> products(ProductsRef ref) async {
   log("list order $list");
   log("product map $map");
 
-  final isAvailable = await InAppPurchase.instance.isAvailable();
-  if (!isAvailable) {
-    throw Exception('InAppPurchase unavailable');
-  }
-  final ProductDetailsResponse productDetailResponse = await InAppPurchase
-      .instance
-      .queryProductDetails(list.toSet());
-  log("purchase productDetailResponse "
-      "productDetails ${productDetailResponse.productDetails}, "
-      "notFoundIDs ${productDetailResponse.notFoundIDs}, "
-      "error ${productDetailResponse.error}");
-  if (productDetailResponse.error != null) {
-    throw Exception(productDetailResponse.error.toString());
+  ProductDetailsResponse productDetailResponse;
+  try {
+    final stopwatch = Stopwatch()..start();
+    productDetailResponse = await queryProductDetails(list);
+    stopwatch.stop();
+    logEvent2(pipe, "IAP:LOAD:IAP:SUCC", {"ms": "${stopwatch.elapsedMilliseconds}"});
+  } catch (e) {
+    logEvent2(pipe, "IAP:LOAD:IAP:FAIL", {"error": "$e"});
+    rethrow;
   }
 
   var productDetails = <ProductDetails>[];
@@ -211,6 +213,36 @@ Future<ProductPageData> products(ProductsRef ref) async {
     result,
     map
   );
+}
+
+Future<ProductListResult?> queryProductList(DioClient dioClient, Locale locale) async {
+   final result = (await dioClient.post<ProductListResult, ProductListResult?>(
+    "/productList",
+    data: {
+      "language": locale.languageCode,
+      "locale": locale.toLanguageTag(),
+    },
+    decoder: (e) => e is Map<String, dynamic> ? ProductListResult.fromJson(e) : null,
+  )).data;
+  return result;
+}
+
+Future<ProductDetailsResponse> queryProductDetails(List<String> list) async {
+  final isAvailable = await InAppPurchase.instance.isAvailable();
+  if (!isAvailable) {
+    throw Exception('InAppPurchase unavailable');
+  }
+  final ProductDetailsResponse productDetailResponse = await InAppPurchase
+      .instance
+      .queryProductDetails(list.toSet());
+  log("purchase productDetailResponse "
+      "productDetails ${productDetailResponse.productDetails}, "
+      "notFoundIDs ${productDetailResponse.notFoundIDs}, "
+      "error ${productDetailResponse.error}");
+  if (productDetailResponse.error != null) {
+    throw Exception(productDetailResponse.error.toString());
+  }
+  return productDetailResponse;
 }
 
 @riverpod

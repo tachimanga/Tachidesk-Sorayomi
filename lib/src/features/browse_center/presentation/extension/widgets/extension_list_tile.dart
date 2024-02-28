@@ -129,10 +129,14 @@ class ExtensionListTile extends HookConsumerWidget {
                                   }
                                   await repository
                                       .uninstallExtension(extension.extensionId!);
-                                  await refresh();
+                                  if (context.mounted) {
+                                    await refresh();
+                                  }
                                 }))
                                     .showToastOnError(toast);
-                                isLoading.value = false;
+                                if (context.mounted) {
+                                  isLoading.value = false;
+                                }
                               },
                             );
                           });
@@ -157,11 +161,15 @@ class ExtensionListTile extends HookConsumerWidget {
                                 }
                                 await repository
                                     .updateExtension(extension.extensionId!);
-                                await refresh();
+                                if (context.mounted) {
+                                  await refresh();
+                                }
                               },
                             ))
                                 .showToastOnError(toast);
-                            isLoading.value = false;
+                            if (context.mounted) {
+                              isLoading.value = false;
+                            }
                           } else {
                             showDialog(
                                 context: context,
@@ -180,11 +188,15 @@ class ExtensionListTile extends HookConsumerWidget {
                                           }
                                           await repository.uninstallExtension(
                                               extension.extensionId!);
-                                          await refresh();
+                                          if (context.mounted) {
+                                            await refresh();
+                                          }
                                         },
                                       ))
                                           .showToastOnError(toast);
-                                      isLoading.value = false;
+                                      if (context.mounted) {
+                                        isLoading.value = false;
+                                      }
                                     },
                                   );
                                 });
@@ -204,7 +216,6 @@ class ExtensionListTile extends HookConsumerWidget {
                   onPressed: isLoading.value
                       ? null
                       : () async {
-                          try {
                             isLoading.value = true;
                             (await AsyncValue.guard(() async {
                               if (extension.extensionId == null) {
@@ -223,13 +234,14 @@ class ExtensionListTile extends HookConsumerWidget {
                                   );
                                 }
                               }
-                              await refresh();
+                              if (context.mounted) {
+                                await refresh();
+                              }
                             }))
                                 .showToastOnError(toast);
-                            isLoading.value = false;
-                          } catch (e) {
-                            //
-                          }
+                            if (context.mounted) {
+                              isLoading.value = false;
+                            }
                         },
                   child: Text(
                     isLoading.value

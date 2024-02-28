@@ -4,6 +4,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -111,21 +114,37 @@ Set<String> mangaScanlatorList(MangaScanlatorListRef ref,
 @riverpod
 class MangaChapterFilterScanlator extends _$MangaChapterFilterScanlator {
   @override
-  String build({required String mangaId}) {
+  List<String> build({required String mangaId}) {
     final manga = ref.watch(mangaWithIdProvider(mangaId: mangaId));
-    return manga.valueOrNull?.meta?.scanlator ?? MangaMetaKeys.scanlator.key;
+    final str = manga.valueOrNull?.meta?.scanlator;
+    //print("MangaChapterFilterScanlator init: $str");
+    if (str == null || str.isEmpty) {
+      return []; // [] for select all
+    }
+    if (str.startsWith("{")) {
+      final e = json.decode(str);
+      if (e is Map<String, dynamic>) {
+        final meta = ScanlatorMeta.fromJson(e);
+        if (meta.list != null) {
+          return meta.list!;
+        }
+      }
+    }
+    return [str];
   }
 
-  void update(String? scanlator) async {
+  void update(List<String> scanlators) async {
+    final str = json.encode(ScanlatorMeta(list: scanlators));
+    //print("MangaChapterFilterScanlator update: $str");
     await AsyncValue.guard(
           () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
         mangaId: mangaId,
         key: MangaMetaKeys.scanlator.key,
-        value: scanlator ?? MangaMetaKeys.scanlator.key,
+        value: str,
       ),
     );
     ref.invalidate(mangaWithIdProvider(mangaId: mangaId));
-    state = scanlator ?? MangaMetaKeys.scanlator.key;
+    state = scanlators;
   }
 }
 
@@ -142,8 +161,9 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   final sortedBy = ref.watch(mangaChapterSortProvider);
   final sortedDirection =
       ref.watch(mangaChapterSortDirectionProvider).ifNull(true);
-  final chapterFilterScanlator =
-  ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
+  final chapterFilterScanlators =
+    ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
+  final selectedScanlatorSet = {...chapterFilterScanlators};
 
   bool applyChapterFilter(Chapter chapter) {
     if (chapterFilterUnread != null &&
@@ -161,8 +181,8 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
       return false;
     }
 
-    if (chapterFilterScanlator != MangaMetaKeys.scanlator.key &&
-        chapter.scanlator != chapterFilterScanlator) {
+    if (selectedScanlatorSet.isNotEmpty
+        && !selectedScanlatorSet.contains(chapter.scanlator)) {
       return false;
     }
     return true;

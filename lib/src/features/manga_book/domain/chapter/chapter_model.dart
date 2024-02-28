@@ -38,3 +38,13 @@ class Chapter with _$Chapter {
   factory Chapter.fromJson(Map<String, dynamic> json) =>
       _$ChapterFromJson(json);
 }
+
+@freezed
+class ScanlatorMeta with _$ScanlatorMeta {
+  factory ScanlatorMeta({
+    List<String>? list,
+  }) = _ScanlatorMeta;
+
+  factory ScanlatorMeta.fromJson(Map<String, dynamic> json) =>
+      _$ScanlatorMetaFromJson(json);
+}

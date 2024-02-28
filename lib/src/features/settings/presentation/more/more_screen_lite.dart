@@ -113,6 +113,11 @@ class MoreScreenLite extends HookConsumerWidget {
             onTap: () => context.push([Routes.settings, Routes.backup].toPath),
           ),
           ListTile(
+            title: Text(context.l10n!.pref_category_security),
+            leading: const Icon(Icons.security_rounded),
+            onTap: () => context.push([Routes.settings, Routes.securitySettings].toPath),
+          ),
+          ListTile(
             title: Text(context.l10n!.downloads),
             leading: const Icon(Icons.download_outlined),
             onTap: () => context.push(Routes.downloads),
@@ -173,6 +178,7 @@ class MoreScreenLite extends HookConsumerWidget {
               onTap: () {
                 pipe.invokeMethod("LogEvent", "COPYRIGHT_CLAIM");
                 pipe.invokeMethod("SEND_MAIL", <String, Object?>{
+                  'recipient': 'tachimangaapp+cr@gmail.com',
                   'title': 'Copyright Claim Notice',
                   'content': 'Please provide the following details:\n'
                       'Description of the copyrighted material: [Provide detailed description]\n'

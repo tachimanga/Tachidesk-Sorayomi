@@ -74,17 +74,19 @@ AsyncValue<List<QuickSearchResult>> quickSearchResults(
   final sourceMapData = ref.watch(sourceMapFilteredProvider);
 
   final sourceMap = {...?sourceMapData.valueOrNull}..remove("lastUsed");
+  final pinnedList = sourceMap.remove("pinned");
   final sourceList = sourceMap.values.fold(
     <Source>[],
     (prev, cur) => [...prev, ...cur],
   );
+  final sortedSourceList = [...?pinnedList, ...sourceList];
   final List<QuickSearchResult> sourceMangaListPairList = [];
 
   final onlySearchPinSource = ref.watch(onlySearchPinSourceProvider);
   final pinSourceIdList = ref.watch(pinSourceIdListProvider);
   final pinSourceIdSet = {...?pinSourceIdList};
 
-  for (Source source in sourceList) {
+  for (Source source in sortedSourceList) {
     if (source.id.isNotBlank) {
       if (onlySearchPinSource == true && !pinSourceIdSet.contains(source.id!)) {
         continue;

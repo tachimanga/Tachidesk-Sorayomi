@@ -47,7 +47,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
   final Chapter initChapter;
   final ReaderListData readerListData;
   final bool showSeparator;
-  final ValueSetter<ReaderPageData>? onPageChanged;
+  final ValueSetter<PageChangedData>? onPageChanged;
   final Axis scrollDirection;
   final bool reverse;
   @override
@@ -72,15 +72,14 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     final imageSizeCache = useMemoized(() => ImageSizeCache());
 
     useEffect(() {
-      final page = readerListData.pageList[currentIndex.value];
-      final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
-      currPage.value = page;
-      currChapter.value = pageChapter;
-      // logger.log("[Reader2] curr page ${page.pageIndex} "
-      //     "curr chapter: ${pageChapter.index}");
-      if (onPageChanged != null) onPageChanged!(currPage.value);
+      notifyPageUpdate(currentIndex, currPage, currChapter, false);
       return;
     }, [currentIndex.value]);
+    useEffect(() {
+      return () {
+        notifyPageUpdate(currentIndex, currPage, currChapter, true);
+      };
+    }, []);
 
     useEffect(() {
       final chapter = readerListData.chapterList.firstWhereOrNull(
@@ -385,5 +384,21 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
             ),
           )),
     );
+  }
+
+  void notifyPageUpdate(
+      ValueNotifier<int> currentIndex,
+      ValueNotifier<ReaderPageData> currPage,
+      ValueNotifier<Chapter> currChapter,
+      bool flush) {
+    final page = readerListData.pageList[currentIndex.value];
+    final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
+    currPage.value = page;
+    currChapter.value = pageChapter;
+    // logger.log("[Reader2] curr page ${page.pageIndex} "
+    //     "curr chapter: ${pageChapter.index}");
+    if (onPageChanged != null) {
+      onPageChanged!(PageChangedData(currPage.value, flush));
+    }
   }
 }

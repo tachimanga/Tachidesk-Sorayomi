@@ -10,6 +10,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_sizes.dart';
 import '../../../../constants/enum.dart';
 import '../../../../global_providers/global_providers.dart';
 
@@ -19,6 +20,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/pop_button.dart';
+import '../../../../widgets/search_field.dart';
 import '../../data/manga_book_repository.dart';
 import 'controller/history_controller.dart';
 
@@ -27,8 +29,9 @@ class HistoryScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mangaList = ref.watch(historyListProvider);
+    final mangaList = ref.watch(historyListFilterProvider);
     final toast = ref.read(toastProvider(context));
+    final showSearch = useState(false);
 
     refresh() => ref.refresh(historyListProvider.future);
 
@@ -48,6 +51,32 @@ class HistoryScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.history),
+        bottom: PreferredSize(
+          preferredSize: kCalculateAppBarBottomSizeV2(
+            showTextField: showSearch.value,
+          ),
+          child: Column(
+            children: [
+              if (showSearch.value)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SearchField(
+                    initialText: ref.read(historyMangaQueryProvider),
+                    onChanged: (val) => ref
+                        .read(historyMangaQueryProvider.notifier)
+                        .update(val),
+                    onClose: () => showSearch.value = false,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => showSearch.value = true,
+            icon: const Icon(Icons.search_rounded),
+          ),
+        ],
       ),
       body: mangaList.showUiWhenData(
         context,

@@ -8,8 +8,8 @@ part of '../custom_extensions.dart';
 
 extension BoolExtensions on bool? {
   bool ifNull([bool? alternative]) => this ?? alternative ?? false;
-  // const val STATE_IGNORE = 0
-  // const val STATE_INCLUDE = 1
-  // const val STATE_EXCLUDE = 2
+  // const val STATE_IGNORE  = 0 <-> null
+  // const val STATE_INCLUDE = 1 <-> true
+  // const val STATE_EXCLUDE = 2 <-> false
   int? get toInt => this != null ? (this! ? 1 : 2) : 0;
 }

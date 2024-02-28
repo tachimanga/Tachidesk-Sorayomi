@@ -23,6 +23,9 @@ import '../extension/controller/extension_controller.dart';
 import '../extension/extension_screen.dart';
 import '../extension/widgets/extension_language_filter_dialog.dart';
 import '../extension/widgets/install_extension_file.dart';
+import '../migrate/controller/migrate_controller.dart';
+import '../migrate/migrate_screen.dart';
+import '../migrate/widgets/migrate_help_button.dart';
 import '../source/controller/source_query_controller.dart';
 import '../source/source_screen.dart';
 import '../source/widgets/source_language_filter.dart';
@@ -32,8 +35,6 @@ class BrowseScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabController = useTabController(initialLength: 2);
-    useListenable(tabController);
     final key = useMemoized(() => GlobalKey());
     final showSearch = useState(false);
     final magic = ref.watch(getMagicProvider);
@@ -43,8 +44,16 @@ class BrowseScreen extends HookConsumerWidget {
             ? extensionUpdate.value!
             : 0;
     final emptyRepo = ref.watch(emptyRepoProvider);
-    final userDefaults = ref.watch(sharedPreferencesProvider);
-    final toast = ref.watch(toastProvider(context));
+    final existInLibraryManga =
+        ref.watch(migrateInfoProvider).valueOrNull?.existInLibraryManga == true;
+    final showMigrate = magic.c1 && existInLibraryManga;
+
+    final twoTabController = useTabController(initialLength: 2);
+    useListenable(twoTabController);
+    final threeTabController = useTabController(initialLength: 3);
+    useListenable(threeTabController);
+
+    final tabController = showMigrate ? threeTabController : twoTabController;
 
     return Scaffold(
       appBar: AppBar(
@@ -76,18 +85,26 @@ class BrowseScreen extends HookConsumerWidget {
                     icon: const Icon(Icons.travel_explore_rounded),
                   ),
                 ],
-                IconButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => tabController.index == 0
-                        ? const SourceLanguageFilter()
-                        : const ExtensionLanguageFilterDialog(),
+                if (tabController.index == 0 || tabController.index == 1) ...[
+                  IconButton(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => tabController.index == 0
+                          ? const SourceLanguageFilter()
+                          : const ExtensionLanguageFilterDialog(),
+                    ),
+                    icon: const Icon(Icons.translate_rounded),
                   ),
-                  icon: const Icon(Icons.translate_rounded),
-                ),
+                ],
+                if (tabController.index == 2) ...[
+                  const MigrateHelpButton(icon: true)
+                ],
               ],
         bottom: PreferredSize(
-          preferredSize: kCalculateAppBarBottomSize([true, showSearch.value]),
+          preferredSize: kCalculateAppBarBottomSizeV2(
+            showTabBar: true,
+            showTextField: showSearch.value,
+          ),
           child: Column(
             children: [
               TabBar(
@@ -107,7 +124,10 @@ class BrowseScreen extends HookConsumerWidget {
                         ]
                       ],
                     ),
-                  )
+                  ),
+                  if (showMigrate) ...[
+                    Tab(text: context.l10n!.migrate),
+                  ],
                 ],
               ),
               if (showSearch.value)
@@ -129,14 +149,23 @@ class BrowseScreen extends HookConsumerWidget {
                           },
                           onClose: () => showSearch.value = false,
                         )
-                      : SearchField(
-                          key: const ValueKey(1),
-                          initialText: ref.read(extensionQueryProvider),
-                          onChanged: (val) => ref
-                              .read(extensionQueryProvider.notifier)
-                              .update(val),
-                          onClose: () => showSearch.value = false,
-                        ),
+                      : tabController.index == 1
+                          ? SearchField(
+                              key: const ValueKey(1),
+                              initialText: ref.read(extensionQueryProvider),
+                              onChanged: (val) => ref
+                                  .read(extensionQueryProvider.notifier)
+                                  .update(val),
+                              onClose: () => showSearch.value = false,
+                            )
+                          : SearchField(
+                              key: const ValueKey(2),
+                              initialText: ref.read(migrateSourceQueryProvider),
+                              onChanged: (val) => ref
+                                  .read(migrateSourceQueryProvider.notifier)
+                                  .update(val),
+                              onClose: () => showSearch.value = false,
+                            ),
                 ),
             ],
           ),
@@ -145,9 +174,12 @@ class BrowseScreen extends HookConsumerWidget {
       body: TabBarView(
         key: key,
         controller: tabController,
-        children: const [
-          SourceScreen(),
-          ExtensionScreen(),
+        children: [
+          const SourceScreen(),
+          const ExtensionScreen(),
+          if (showMigrate) ...[
+            const MigrateScreen(),
+          ],
         ],
       ),
     );

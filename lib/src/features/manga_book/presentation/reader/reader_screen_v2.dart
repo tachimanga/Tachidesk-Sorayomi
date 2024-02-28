@@ -54,18 +54,23 @@ class ReaderScreen2 extends HookConsumerWidget {
             chapterWithIdProvider(mangaId: mangaId, chapterIndex: initChapterIndex),
         []);
 
+    final mangaBookRepository = ref.read(mangaBookRepositoryProvider);
+
     final manga = ref.watch(mangaProvider);
     final chapter = ref.watch(chapterProviderWithIndex);
     final defaultReaderMode = ref.watch(readerModeKeyProvider);
     //logger.log("[Reader2] ReaderScreen2.chapter ${chapter.valueOrNull?.name}, index:${chapter.valueOrNull?.index}");
 
     final debounce = useRef<Timer?>(null);
-    final onPageChanged2 = useCallback<AsyncValueSetter<ReaderPageData>>(
-      (ReaderPageData currentPage) async {
+    final onPageChanged2 = useCallback<AsyncValueSetter<PageChangedData>>(
+      (PageChangedData pageChangedData) async {
+        final currentPage = pageChangedData.currentPage;
+        final flush = pageChangedData.flush;
+
         final currChapter = readerListData.chapterList.firstWhereOrNull(
             (element) => element.index == currentPage.chapterIndex);
         logger.log("[Reader2] onPageChanged currChapter:${currChapter?.name}, "
-            "currentPage:${currentPage.pageIndex}");
+            "currentPage:${currentPage.pageIndex}, flush:$flush");
         if (currChapter == null) {
           //logger.log("[Reader2] currChapter is null");
           return;
@@ -85,7 +90,7 @@ class ReaderScreen2 extends HookConsumerWidget {
           // logger.log("[Reader2] updateLastRead "
           //     "isRead:$isReadingCompeted index:${currentPage.pageIndex}");
           await AsyncValue.guard(
-            () => ref.read(mangaBookRepositoryProvider).putChapter(
+            () => mangaBookRepository.putChapter(
                   mangaId: mangaId,
                   chapterIndex: "${currentPage.chapterIndex}",
                   patch: ChapterPut(
@@ -101,7 +106,7 @@ class ReaderScreen2 extends HookConsumerWidget {
           finalDebounce?.cancel();
         }
         if (currentPage.pageIndex + 1 >=
-            currChapter.pageCount.ifNullOrNegative(0)) {
+            currChapter.pageCount.ifNullOrNegative(0) || flush) {
           updateLastRead();
         } else {
           debounce.value = Timer(const Duration(seconds: 2), updateLastRead);

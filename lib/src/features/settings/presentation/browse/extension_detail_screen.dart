@@ -49,7 +49,9 @@ class ExtensionDetailScreen extends HookConsumerWidget {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: kCalculateAppBarBottomSize([showSearch.value]),
+          preferredSize: kCalculateAppBarBottomSizeV2(
+            showTextField: showSearch.value,
+          ),
           child: Column(
             children: [
               if (showSearch.value)

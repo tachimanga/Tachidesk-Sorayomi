@@ -16,9 +16,11 @@ import '../features/about/presentation/about/about_screen_lite.dart';
 import '../features/about/presentation/about/debug_keyboard_screen.dart';
 import '../features/about/presentation/about/debug_screen.dart';
 import '../features/browse_center/domain/filter/filter_model.dart';
+import '../features/browse_center/domain/migrate/migrate_model.dart';
 import '../features/browse_center/presentation/browse/browse_screen.dart';
 import '../features/browse_center/presentation/extension/extension_info_screen.dart';
 import '../features/browse_center/presentation/global_search/global_search_screen.dart';
+import '../features/browse_center/presentation/migrate/migrate_source_detail_screen.dart';
 import '../features/browse_center/presentation/source_manga_list/source_manga_list_screen.dart';
 import '../features/browse_center/presentation/source_preference/source_preference_screen.dart';
 import '../features/browse_center/presentation/webview/webview_screen.dart';
@@ -50,6 +52,7 @@ import '../features/settings/presentation/more/more_screen_lite.dart';
 import '../features/settings/presentation/reader/reader_settings_screen.dart';
 import '../features/settings/presentation/reader/reader_tap_zones_settings_screen.dart';
 import '../features/settings/presentation/reader/widgets/reader_advanced_setting/reader_advanced_screen.dart';
+import '../features/settings/presentation/security/security_setting_screen.dart';
 import '../features/settings/presentation/server/server_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
 import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
@@ -93,6 +96,7 @@ abstract class Routes {
   static const readerAdvancedSettings = 'r-advanced';
   static const readerTapZones = 'tapZones';
   static const trackingSettings = 'tracking';
+  static const securitySettings = 'security';
   static const reader = '/reader/:mangaId/:chapterIndex';
   static getReader(String mangaId, String chapterIndex) =>
       '/reader/$mangaId/$chapterIndex';
@@ -121,6 +125,8 @@ abstract class Routes {
   static const goWebView = '/webView';
   static getWebView(String url) => '$goWebView?url=$url';
   static const purchase = '/purchase';
+  static const migrateMangaList = '/migrate/:sourceId';
+  static getMigrateMangaList(String sourceId) => '/migrate/$sourceId';
 }
 
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -193,6 +199,7 @@ GoRouter routerConfig(ref) {
         builder: (context, state) => GlobalSearchScreen(
           key: ValueKey(state.queryParams['query'] ?? "1"),
           initialQuery: state.queryParams['query'],
+          migrateSrcManga: state.extra as Manga?,
         ),
       ),
       GoRoute(
@@ -264,6 +271,15 @@ GoRouter routerConfig(ref) {
         path: Routes.mangaCategorySetting,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const EditCategoryScreen(),
+      ),
+      GoRoute(
+        path: Routes.migrateMangaList,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MigrateSourceDetailScreen(
+          key: ValueKey(state.params['sourceId'] ?? "0"),
+          sourceId: state.params['sourceId'] ?? "0",
+          migrateSource: state.extra as MigrateSource?,
+        ),
       ),
       GoRoute(
         path: Routes.settings,
@@ -347,6 +363,10 @@ GoRouter routerConfig(ref) {
           GoRoute(
             path: Routes.backup,
             builder: (context, state) => const BackupScreenV2(),
+          ),
+          GoRoute(
+            path: Routes.securitySettings,
+            builder: (context, state) => const SecuritySettingScreen(),
           ),
         ],
       ),

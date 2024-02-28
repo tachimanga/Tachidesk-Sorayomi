@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../utils/extensions/custom_extensions.dart';
+import 'tristate_checkbox_list_tile.dart';
 
 class CustomCheckboxListTile<NotifierT extends AutoDisposeNotifier<bool?>>
     extends ConsumerWidget {
@@ -23,9 +24,20 @@ class CustomCheckboxListTile<NotifierT extends AutoDisposeNotifier<bool?>>
   final AutoDisposeNotifierProvider<NotifierT, bool?> provider;
   final ValueChanged<bool?> onChanged;
   final bool tristate;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final val = ref.watch(provider);
+    if (tristate == true) {
+      return TriCheckboxListTile(
+        controlAffinity: ListTileControlAffinity.leading,
+        activeColor: context.theme.indicatorColor,
+        value: val,
+        title: Text(title),
+        tristate: tristate,
+        onChanged: onChanged,
+      );
+    }
     return CheckboxListTile(
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: context.theme.indicatorColor,
