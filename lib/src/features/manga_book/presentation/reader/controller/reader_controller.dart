@@ -17,6 +17,7 @@ import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
+import '../../../../settings/presentation/security/controller/security_controller.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import 'reader_controller_v2.dart';
@@ -32,11 +33,13 @@ class ChapterWithId extends _$ChapterWithId {
     required String mangaId,
     required String chapterIndex,
   }) async {
-    log('[Reader2] ChapterWithId. $mangaId#$chapterIndex create');
+    final incognito = ref.read(incognitoModePrefProvider) == true;
+    log('[Reader2] ChapterWithId. $mangaId#$chapterIndex create, incognito:$incognito');
     ref.onDispose(() => log('[Reader2] ChapterWithId. $mangaId#$chapterIndex dispose'));
     final result = await ref.watch(mangaBookRepositoryProvider).getChapter(
           mangaId: mangaId,
           chapterIndex: chapterIndex,
+        incognito: incognito,
         );
     updateReaderListState(result);
     return result;
@@ -56,7 +59,8 @@ class ChapterWithId extends _$ChapterWithId {
     required String chapterIndex,
     required bool nextPage,
   }) async {
-    log('[Reader2] loadChapter nextPage:$nextPage');
+    final incognito = ref.read(incognitoModePrefProvider) == true;
+    log('[Reader2] loadChapter nextPage:$nextPage, incognito:$incognito');
     final token = CancelToken();
     ref.onDispose(token.cancel);
     state = const AsyncValue.loading();
@@ -64,6 +68,7 @@ class ChapterWithId extends _$ChapterWithId {
             () => ref.watch(mangaBookRepositoryProvider).getChapter(
           mangaId: mangaId,
           chapterIndex: chapterIndex,
+              incognito: incognito,
         ));
 
     updateReaderListState(result.valueOrNull, nextPage);

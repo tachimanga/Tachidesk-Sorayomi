@@ -13,6 +13,7 @@ import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../data/source_repository/source_repository.dart';
 import '../../../domain/filter/filter_model.dart';
 import '../../../domain/source/source_model.dart';
@@ -103,4 +104,11 @@ class SourceDisplayMode extends _$SourceDisplayMode
         initial: DBKeys.sourceDisplayMode.initial,
         enumList: DisplayMode.sourceDisplayList,
       );
+}
+
+@riverpod
+class LocalSourceListRefreshSignal extends _$LocalSourceListRefreshSignal
+    with StateProviderMixin<int?> {
+  @override
+  int? build() => 0;
 }

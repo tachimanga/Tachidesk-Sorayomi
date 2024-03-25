@@ -142,6 +142,11 @@ class ReaderWrapper extends HookConsumerWidget {
         builder: (context) => RadioListPopup<ReaderMode>(
           optionList: ReaderMode.values,
           optionDisplayName: (value) => value.toLocale(context),
+          showDisplaySubName: (value) {
+            return value == ReaderMode.defaultReader &&
+                globeReaderMode != ReaderMode.defaultReader;
+          },
+          optionDisplaySubName: (value) => globeReaderMode.toLocale(context),
           value: mangaReaderMode,
           title: context.l10n!.readerMode,
           onChange: (enumValue) async {
@@ -166,6 +171,11 @@ class ReaderWrapper extends HookConsumerWidget {
         builder: (context) => RadioListPopup<ReaderNavigationLayout>(
           optionList: ReaderNavigationLayout.values,
           optionDisplayName: (value) => value.toLocale(context),
+          showDisplaySubName: (value) {
+            return value == ReaderNavigationLayout.defaultNavigation &&
+                globeLayout != ReaderNavigationLayout.defaultNavigation;
+          },
+          optionDisplaySubName: (value) => globeLayout.toLocale(context),
           title: context.l10n!.readerNavigationLayout,
           value: mangaReaderNavigationLayout,
           onChange: (enumValue) async {
@@ -213,16 +223,6 @@ class ReaderWrapper extends HookConsumerWidget {
         ),
         AsyncReaderPaddingSlider(
           mangaId: manga.id.toString(),
-          onChanged: (value) {
-            AsyncValue.guard(
-              () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
-                    mangaId: "${manga.id}",
-                    key: MangaMetaKeys.readerPadding.key,
-                    value: value,
-                  ),
-            );
-            //ref.invalidate(mangaWithIdProvider(mangaId: "${manga.id}"));
-          },
         ),
       ],
     );
@@ -521,15 +521,7 @@ class ReaderView extends HookWidget {
         GestureDetector(
           onTap: toggleVisibility,
           behavior: HitTestBehavior.translucent,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: context.height *
-                  (scrollDirection != Axis.vertical ? mangaReaderPadding : 0),
-              horizontal: context.width *
-                  (scrollDirection == Axis.vertical ? mangaReaderPadding : 0),
-            ),
-            child: child,
-          ),
+          child: child,
         ),
         ReaderNavigationLayoutWidget(
           onNext: onNext,

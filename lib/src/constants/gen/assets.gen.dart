@@ -9,6 +9,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsDataGen {
+  const $AssetsDataGen();
+
+  /// File path: assets/data/products.json
+  String get products => 'assets/data/products.json';
+
+  /// List of all assets
+  List<String> get values => [products];
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -16,15 +26,13 @@ class $AssetsIconsGen {
   AssetGenImage get darkIcon =>
       const AssetGenImage('assets/icons/dark_icon.png');
 
-  $AssetsIconsLauncherGen get launcher => const $AssetsIconsLauncherGen();
+  /// File path: assets/icons/incognito.png
+  AssetGenImage get incognito =>
+      const AssetGenImage('assets/icons/incognito.png');
 
   /// File path: assets/icons/light_icon.png
   AssetGenImage get lightIcon =>
       const AssetGenImage('assets/icons/light_icon.png');
-
-  /// File path: assets/icons/premium_icon.png
-  AssetGenImage get premiumIcon =>
-      const AssetGenImage('assets/icons/premium_icon.png');
 
   /// File path: assets/icons/previous_done.png
   AssetGenImage get previousDone =>
@@ -32,35 +40,13 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [darkIcon, lightIcon, premiumIcon, previousDone];
-}
-
-class $AssetsIconsLauncherGen {
-  const $AssetsIconsLauncherGen();
-
-  /// File path: assets/icons/launcher/from_suwayomi.png
-  AssetGenImage get fromSuwayomi =>
-      const AssetGenImage('assets/icons/launcher/from_suwayomi.png');
-
-  /// File path: assets/icons/launcher/sorayomi_icon.ico
-  String get sorayomiIconIco => 'assets/icons/launcher/sorayomi_icon.ico';
-
-  /// File path: assets/icons/launcher/sorayomi_icon.png
-  AssetGenImage get sorayomiIconPng =>
-      const AssetGenImage('assets/icons/launcher/sorayomi_icon.png');
-
-  /// File path: assets/icons/launcher/sorayomi_preview_icon.png
-  AssetGenImage get sorayomiPreviewIcon =>
-      const AssetGenImage('assets/icons/launcher/sorayomi_preview_icon.png');
-
-  /// List of all assets
-  List<dynamic> get values =>
-      [fromSuwayomi, sorayomiIconIco, sorayomiIconPng, sorayomiPreviewIcon];
+      [darkIcon, incognito, lightIcon, previousDone];
 }
 
 class Assets {
   Assets._();
 
+  static const $AssetsDataGen data = $AssetsDataGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
 }
 

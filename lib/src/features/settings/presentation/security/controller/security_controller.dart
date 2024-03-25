@@ -56,3 +56,25 @@ class SecureScreenPref extends _$SecureScreenPref
         enumList: SecureScreenEnum.values,
       );
 }
+
+@riverpod
+class IncognitoModePref extends _$IncognitoModePref
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: DBKeys.incognitoMode.name,
+        initial: DBKeys.incognitoMode.initial,
+      );
+}
+
+@riverpod
+class IncognitoModeUsedPref extends _$IncognitoModeUsedPref
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: DBKeys.incognitoModeUsed.name,
+        initial: DBKeys.incognitoModeUsed.initial,
+      );
+}

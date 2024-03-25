@@ -90,10 +90,11 @@ enum ReaderNavigationLayout {
 
 enum MangaSort {
   alphabetical,
-  dateAdded,
-  unread,
   lastRead,
-  latestChapterFetchAt;
+  unread,
+  latestChapterUploadAt,
+  latestChapterFetchAt,
+  dateAdded;
 
   String toLocale(BuildContext context) {
     switch (this) {
@@ -107,6 +108,8 @@ enum MangaSort {
         return context.l10n!.mangaSortLastRead;
       case MangaSort.latestChapterFetchAt:
         return context.l10n!.mangaSortLatestChapterFetch;
+      case MangaSort.latestChapterUploadAt:
+        return context.l10n!.action_sort_latest_chapter;
     }
   }
 }
@@ -282,6 +285,7 @@ enum LockTypeEnum {
   biometrics,
   passcode,
   ;
+
   String toLocale(BuildContext context) {
     switch (this) {
       case LockTypeEnum.off:
@@ -308,7 +312,7 @@ enum LockIntervalEnum {
       case LockIntervalEnum.always:
         return context.l10n!.lock_always;
       case LockIntervalEnum.after_1min:
-        return context.l10n!.lock_after_one_min;
+        return context.l10n!.lock_after_mins(1);
       case LockIntervalEnum.after_2min:
         return context.l10n!.lock_after_mins(2);
       case LockIntervalEnum.after_5min:
@@ -326,6 +330,7 @@ enum SecureScreenEnum {
   incognito,
   always,
   ;
+
   String toLocale(BuildContext context) {
     switch (this) {
       case SecureScreenEnum.off:
@@ -386,4 +391,32 @@ enum SwipeRightToGoBackMode {
         return context.l10n!.disableWhenHorizontal;
     }
   }
+}
+
+// https://api.flutter.dev/flutter/intl/DateFormat-class.html
+// https://en.m.wikipedia.org/wiki/List_of_date_formats_by_country
+enum DateFormatEnum {
+  yMMMd("yMMMd"),
+  yMd("yMd"),
+  MMddyy("MM/dd/yy"),
+  ddMMyy("dd/MM/yy"),
+  yyyyMMdd("yyyy-MM-dd"),
+  ddMMMyyyy("dd MMM yyyy"),
+  MMMddyyyy("MMM dd, yyyy"),
+  ;
+
+  final String code;
+  const DateFormatEnum(
+    this.code,
+  );
+}
+
+enum TraceType {
+  mangaList,
+  mangaSearch,
+  mangaDetail,
+  chapterList,
+  chapterDetail,
+  pageImg,
+  ;
 }

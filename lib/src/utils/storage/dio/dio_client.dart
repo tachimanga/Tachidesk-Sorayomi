@@ -8,6 +8,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import '../../classes/trace/trace_model.dart';
+import '../../event_util.dart';
 import '../dio_error_util.dart';
 
 typedef ResponseDecoderCallBack<DecoderType> = DecoderType Function(dynamic);
@@ -50,6 +52,7 @@ class DioClient {
         ),
         decoder: decoder,
         url: "${dio.options.baseUrl}/$url",
+        traceInfo: options?.extra?["trace"],
       );
 
   /// Handy method to make http POST request,
@@ -77,6 +80,7 @@ class DioClient {
         ),
         decoder: decoder,
         url: "${dio.options.baseUrl}/$url",
+        traceInfo: options?.extra?["trace"],
       );
 
   /// Handy method to make http PATCH request,
@@ -104,6 +108,7 @@ class DioClient {
         ),
         decoder: decoder,
         url: "${dio.options.baseUrl}/$url",
+        traceInfo: options?.extra?["trace"],
       );
 
   /// Handy method to make http PUT request,
@@ -131,6 +136,7 @@ class DioClient {
         ),
         decoder: decoder,
         url: "${dio.options.baseUrl}/$url",
+        traceInfo: options?.extra?["trace"],
       );
 
   /// Handy method to make http DELETE request,
@@ -154,13 +160,16 @@ class DioClient {
         ),
         decoder: decoder,
         url: "${dio.options.baseUrl}/$url",
+        traceInfo: options?.extra?["trace"],
       );
 
   Future<Response<ReturnType?>> _handelDecoding<ReturnType, DecoderType>({
     required Future<Response> Function() sendRequest,
     ResponseDecoderCallBack<DecoderType>? decoder,
-    String? url,
+    required String url,
+    TraceInfo? traceInfo,
   }) async {
+    //print("[traceInfo] traceInfo=${traceInfo.toString()}");
     try {
       final Response response = await sendRequest();
       ReturnType? result;
@@ -177,14 +186,15 @@ class DioClient {
       return response.copyWith<ReturnType>(data: result);
     } on DioError catch (e) {
       //if (kDebugMode) rethrow;
-      final msg = DioErrorUtil.handleError(e);
-      pipe.invokeMethod("LogEvent2", <String, Object?>{
-        'eventName': "ERR_$msg",
-        'parameters': <String, String?>{
-          'url': "$url",
-          'error': "${e.error}",
-          'message': "${e.message}",
-        },
+      final msgRaw = DioErrorUtil.handleError(e, url);
+      final msg = await DioErrorUtil.recoverSocket(msgRaw);
+      logEvent2(pipe, "REQUEST_ERROR", {
+        'x': msg,
+        'url': url,
+        'error': "${e.error}",
+        'message': "${e.message}",
+        "type": traceInfo?.type,
+        "sourceId": traceInfo?.sourceId,
       });
       throw msg;
     } catch (e) {

@@ -10,10 +10,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../constants/db_keys.dart';
+import '../../../../constants/enum.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../data/updates/updates_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/chapter_page/chapter_page_model.dart';
@@ -71,6 +73,8 @@ class UpdatesScreen extends HookConsumerWidget {
     final selectedChapters = useState<Map<int, Chapter>>({});
     final alwaysAskSelect = ref.watch(alwaysAskCategoryToUpdatePrefProvider) ??
         DBKeys.alwaysAskCategoryToUpdate.initial;
+    final dateFormatPref =
+        ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
     return Scaffold(
       floatingActionButton:
           selectedChapters.value.isEmpty ? const UpdateStatusFab() : null,
@@ -168,7 +172,12 @@ class UpdatesScreen extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ListTile(
-                      title: Text(item.chapter!.fetchedAt.toDaysAgoFromSeconds),
+                      title: Text(
+                        item.chapter!.fetchedAt.toLocalizedDaysAgoFromSeconds(
+                          dateFormatPref,
+                          context,
+                        ),
+                      ),
                     ),
                     chapterTile,
                   ],

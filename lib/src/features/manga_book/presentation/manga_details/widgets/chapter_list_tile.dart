@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../constants/app_sizes.dart';
-
+import '../../../../../constants/enum.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../domain/chapter/chapter_model.dart';
@@ -23,6 +23,7 @@ class ChapterListTile extends StatelessWidget {
     required this.chapter,
     required this.updateData,
     required this.toggleSelect,
+    required this.dateFormatPref,
     this.canTapSelect = false,
     this.isSelected = false,
   });
@@ -30,6 +31,7 @@ class ChapterListTile extends StatelessWidget {
   final Chapter chapter;
   final AsyncCallback updateData;
   final ValueChanged<Chapter> toggleSelect;
+  final DateFormatEnum dateFormatPref;
   final bool canTapSelect;
   final bool isSelected;
   @override
@@ -37,6 +39,7 @@ class ChapterListTile extends StatelessWidget {
     return GestureDetector(
       onSecondaryTap: () => toggleSelect(chapter),
       child: ListTile(
+        contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 6.0),
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -64,7 +67,8 @@ class ChapterListTile extends StatelessWidget {
             ? Row(
                 children: [
                   Text(
-                    chapter.uploadDate!.toDaysAgo,
+                    chapter.uploadDate!
+                        .toLocalizedDaysAgo(dateFormatPref, context),
                     style: TextStyle(
                       color: chapter.read.ifNull() ? Colors.grey : null,
                     ),

@@ -20,6 +20,7 @@ import '../features/manga_book/presentation/reader/controller/reader_controller_
 import '../features/settings/presentation/server/widget/credential_popup/credentials_popup.dart';
 import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../global_providers/global_providers.dart';
+import '../utils/classes/trace/trace_model.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
 import '../utils/misc/toast/toast.dart';
@@ -39,10 +40,12 @@ class ServerImage extends ConsumerWidget {
     this.imageSizeCache,
     this.memCacheWidth,
     this.memCacheHeight,
+    this.traceInfo,
   });
 
   final String imageUrl;
   final ImgData? imageData;
+  final TraceInfo? traceInfo;
   final Size? size;
   final BoxFit? fit;
   final bool appendApiToUrl;
@@ -86,6 +89,8 @@ class ServerImage extends ConsumerWidget {
       if (reloadButton) {
         return ImgError(
             text: error.toString(),
+            traceInfo: traceInfo,
+            imageUrl: baseApi,
             button: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

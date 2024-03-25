@@ -14,9 +14,12 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/enum.dart';
 
+import '../../../../constants/urls.dart';
+import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
+import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/search_field.dart';
@@ -82,6 +85,9 @@ class SourceMangaListScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
+    final toast = ref.watch(toastProvider(context));
+
     final sourceRepository = ref.watch(sourceRepositoryProvider);
     final filtersProvider = sourceMangaFilterListProvider(sourceId);
     final _ = ref.watch(filtersProvider);
@@ -104,6 +110,14 @@ class SourceMangaListScreen extends HookConsumerWidget {
       return;
     }, []);
 
+    if (sourceId == "0") {
+      final refreshSignal = ref.watch(localSourceListRefreshSignalProvider);
+      useEffect(() {
+        controller.refresh();
+        return;
+      }, [refreshSignal]);
+    }
+
     return source.showUiWhenData(
       context,
       (data) => Scaffold(
@@ -124,6 +138,16 @@ class SourceMangaListScreen extends HookConsumerWidget {
                   context.push(Routes.getWebView(data?.baseUrl ?? ""));
                 },
                 icon: const Icon(Icons.public),
+              ),
+            ],
+            if (magic.b7 && sourceId == "0") ...[
+              IconButton(
+                onPressed: () => launchUrlInWeb(
+                  context,
+                  AppUrls.localSourceHelp.url,
+                  toast,
+                ),
+                icon: const Icon(Icons.help_rounded),
               ),
             ],
           ],

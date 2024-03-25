@@ -57,6 +57,19 @@ class LibraryMangaDisplay extends ConsumerWidget {
           onChanged: ref.read(unreadBadgeProvider.notifier).update,
           tristate: false,
         ),
+        ListTile(
+          title: Text(
+            context.l10n!.tabs_header,
+            style: context.textTheme.labelLarge,
+          ),
+          dense: true,
+        ),
+        CustomCheckboxListTile(
+          title: context.l10n!.action_display_show_number_of_items,
+          provider: libraryShowMangaCountProvider,
+          onChanged: ref.read(libraryShowMangaCountProvider.notifier).update,
+          tristate: false,
+        ),
       ],
     );
   }

@@ -16,6 +16,7 @@ import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/radio_list_popup.dart';
 import '../../../../../widgets/text_premium.dart';
 import '../../../domain/backup/backup_model.dart';
+import '../../appearance/controller/date_format_controller.dart';
 import '../controller/auto_backup_controller.dart';
 
 class AutoBackupLatestTile extends ConsumerWidget {
@@ -28,7 +29,9 @@ class AutoBackupLatestTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final date = formatLocalizedDateTime(context, backupItem.createAt ?? 0);
+    final dateFormatPref =
+        ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
+    final date = formatLocalizedDateTime(dateFormatPref, context, backupItem.createAt ?? 0);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: Text(

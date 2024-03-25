@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
+import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/confirm_dialog.dart';
@@ -221,8 +222,9 @@ class ExtensionListTile extends HookConsumerWidget {
                               if (extension.extensionId == null) {
                                 throw context.l10n!.errorExtension;
                               }
-                              final pkgName = extension.pkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
-                              magicPipe.invokeMethod("LogEvent", "ADD_$pkgName");
+                              logEvent2(magicPipe, "ADD_EXTENSION", {
+                                "x": extension.pkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "") ?? "-",
+                              });
                               await repository
                                   .installExtension(extension.extensionId!);
                               if (extension.lang?.code != null) {

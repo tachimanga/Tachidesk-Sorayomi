@@ -40,7 +40,7 @@ class MangaCoverListTile extends StatelessWidget {
               child: ServerImage(
                 imageUrl: manga.thumbnailUrl ?? "",
                 imageData: manga.thumbnailImg,
-                size: const Size(60, 80),
+                size: const Size.square(48),
               ),
             ),
           ),

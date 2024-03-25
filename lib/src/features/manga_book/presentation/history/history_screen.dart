@@ -23,12 +23,14 @@ import '../../../../widgets/pop_button.dart';
 import '../../../../widgets/search_field.dart';
 import '../../data/manga_book_repository.dart';
 import 'controller/history_controller.dart';
+import 'widgets/incognito_icon_button.dart';
 
 class HistoryScreen extends HookConsumerWidget {
   const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final mangaListSrc = ref.watch(historyListProvider);
     final mangaList = ref.watch(historyListFilterProvider);
     final toast = ref.read(toastProvider(context));
     final showSearch = useState(false);
@@ -36,7 +38,7 @@ class HistoryScreen extends HookConsumerWidget {
     refresh() => ref.refresh(historyListProvider.future);
 
     useEffect(() {
-      if (!mangaList.isLoading) refresh();
+      if (!mangaListSrc.isLoading) refresh();
       return;
     }, []);
 
@@ -71,7 +73,9 @@ class HistoryScreen extends HookConsumerWidget {
             ],
           ),
         ),
+        centerTitle: true,
         actions: [
+          const IncognitoIconButton(),
           IconButton(
             onPressed: () => showSearch.value = true,
             icon: const Icon(Icons.search_rounded),

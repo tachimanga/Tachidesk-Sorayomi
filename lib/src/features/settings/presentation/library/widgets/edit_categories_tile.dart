@@ -21,9 +21,7 @@ class EditCategoriesTile extends ConsumerWidget {
     final count = categoryList.valueOrNull?.where((e) => e.id != 0).length ?? 0;
     return ListTile(
       title: Text(context.l10n!.editCategory),
-      subtitle: Text(count == 1
-          ? context.l10n!.one_category
-          : context.l10n!.num_categories(count)),
+      subtitle: Text(context.l10n!.num_categories(count)),
       leading: const Icon(Icons.label_rounded),
       onTap: () => context.push([
         Routes.settings,

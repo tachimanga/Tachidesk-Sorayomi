@@ -9,28 +9,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
+import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
-import '../../../../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../../../manga_book/data/manga_book_repository.dart';
+import '../../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../../../manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import '../../../../widgets/slider_setting_tile/slider_setting_tile.dart';
-
-part 'reader_padding_slider.g.dart';
-
-@riverpod
-class ReaderPaddingKey extends _$ReaderPaddingKey
-    with SharedPreferenceClientMixin<double> {
-  @override
-  double? build() => initialize(
-        ref,
-        initial: DBKeys.readerPadding.initial,
-        key: DBKeys.readerPadding.name,
-      );
-}
 
 class ReaderPaddingSlider extends ConsumerWidget {
   const ReaderPaddingSlider({super.key});
@@ -55,30 +43,53 @@ class ReaderPaddingSlider extends ConsumerWidget {
 class AsyncReaderPaddingSlider extends HookConsumerWidget {
   const AsyncReaderPaddingSlider({
     super.key,
-    required this.onChanged,
     required this.mangaId,
   });
 
-  final ValueSetter<double> onChanged;
   final String mangaId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final debounce = useRef<Timer?>(null);
 
-    final readerPaddingProvider = readerPaddingWithMangaIdProvider(mangaId: mangaId);
+    final orientation = MediaQuery.of(context).orientation;
+    //print("orientation $orientation");
+    final portrait = orientation == Orientation.portrait;
+
+    final readerPaddingProvider =
+        readerPaddingWithMangaIdProvider(mangaId: mangaId);
+    final readerPaddingLandscapeProvider =
+        readerPaddingLandscapeWithMangaIdProvider(mangaId: mangaId);
+
     final readerPadding = ref.watch(readerPaddingProvider);
+    final readerPaddingLandscape = ref.watch(readerPaddingLandscapeProvider);
 
     final onDebounceChanged = useCallback<ValueSetter<double>>(
       (double paddingValue) async {
-        ref.read(readerPaddingProvider.notifier).update(paddingValue);
+        if (portrait) {
+          ref.read(readerPaddingProvider.notifier).update(paddingValue);
+        } else {
+          ref
+              .read(readerPaddingLandscapeProvider.notifier)
+              .update(paddingValue);
+        }
         final finalDebounce = debounce.value;
         if ((finalDebounce?.isActive).ifNull()) {
           finalDebounce?.cancel();
         }
         debounce.value = Timer(
           kDebounceDuration,
-          () => onChanged(paddingValue),
+          () {
+            AsyncValue.guard(
+              () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
+                    mangaId: mangaId,
+                    key: portrait
+                        ? MangaMetaKeys.readerPadding.key
+                        : MangaMetaKeys.readerPaddingLandscape.key,
+                    value: paddingValue,
+                  ),
+            );
+          },
         );
         return;
       },
@@ -87,7 +98,7 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
     return SliderSettingTile(
       icon: Icons.width_wide_rounded,
       title: context.l10n!.readerPadding,
-      value: readerPadding,
+      value: portrait ? readerPadding : readerPaddingLandscape,
       labelGenerator: (val) => (val * 2.5).toStringAsFixed(2),
       onChanged: onDebounceChanged,
       defaultValue: DBKeys.readerPadding.initial,

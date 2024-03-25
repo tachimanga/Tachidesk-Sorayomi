@@ -27,6 +27,9 @@ import '../../controller/edit_repo_controller.dart';
 import '../../widgets/server_url_tile/server_url_tile.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import '../browse/widgets/repo_setting/repo_url_tile.dart';
+import '../security/controller/security_controller.dart';
+import '../security/widgets/incognito_mode_tile.dart';
+import 'purchase_cell.dart';
 
 class MoreScreenLite extends HookConsumerWidget {
   const MoreScreenLite({super.key});
@@ -42,12 +45,19 @@ class MoreScreenLite extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.watch(toastProvider(context));
 
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final testflightFlag = ref.watch(testflightFlagProvider);
+
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final shareMsg = userDefaults.getString("config.shareMsg") ??
         "Tachimanga (an iOS equivalent for Tachiyomi) is now available on the App Store!!! Click this link to download: https://apps.apple.com/app/apple-store/id6447486175?pt=10591908&ct=share&mt=8";
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
     final repoCount = ref.watch(repoCountProvider);
+
+    final showIncognitoMode =
+        ref.watch(incognitoModeUsedPrefProvider) == true &&
+            (purchaseGate || testflightFlag);
 
     final debugCount = useState(0);
     return Scaffold(
@@ -69,6 +79,9 @@ class MoreScreenLite extends HookConsumerWidget {
             ),
           ),
           const Divider(),
+          if (showIncognitoMode) ...[
+            const IncognitoModeShortTile(),
+          ],
           ListTile(
             title: Text(context.l10n!.general),
             leading: const Icon(Icons.tune_rounded),
@@ -141,17 +154,6 @@ class MoreScreenLite extends HookConsumerWidget {
                       ref.read(toastProvider(context)),
                     )),
           ],
-          if (magic.a3) ...[
-            ListTile(
-                title: Text(context.l10n!.discordServer),
-                leading: const Icon(Icons.discord_rounded),
-                onTap: () => launchUrlInWeb(
-                      context,
-                      userDefaults.getString("config.discordUrl") ??
-                          AppUrls.discord.url,
-                      ref.read(toastProvider(context)),
-                    )),
-          ],
           if (magic.a5) ...[
             ListTile(
               title: Text(context.l10n!.help),
@@ -163,6 +165,17 @@ class MoreScreenLite extends HookConsumerWidget {
                 ref.read(toastProvider(context)),
               ),
             ),
+          ],
+          if (magic.a3) ...[
+            ListTile(
+                title: Text(context.l10n!.discordServer),
+                leading: const Icon(Icons.discord_rounded),
+                onTap: () => launchUrlInWeb(
+                      context,
+                      userDefaults.getString("config.discordUrl") ??
+                          AppUrls.discord.url,
+                      ref.read(toastProvider(context)),
+                    )),
           ],
           if (magic.a4) ...[
             ListTile(
@@ -191,5 +204,4 @@ class MoreScreenLite extends HookConsumerWidget {
       ),
     );
   }
-
 }

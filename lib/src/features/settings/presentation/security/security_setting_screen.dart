@@ -15,6 +15,7 @@ import '../../../../widgets/info_list_tile.dart';
 import '../../../../widgets/premium_required_tile.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import 'controller/security_controller.dart';
+import 'widgets/incognito_mode_tile.dart';
 import 'widgets/lock_interval_tile.dart';
 import 'widgets/lock_setting_tile.dart';
 import 'widgets/secure_screen_tile.dart';
@@ -33,13 +34,16 @@ class SecuritySettingScreen extends HookConsumerWidget {
     final lockEnable = lockTypePref != LockTypeEnum.off;
     final premiumLockPref = !purchaseGate && !testflightFlag && lockEnable;
 
+    final incognitoEnable = ref.watch(incognitoModePrefProvider) ?? false;
+    final premiumIncognito = !purchaseGate && !testflightFlag && incognitoEnable;
+
     final secureScreenPref =
         ref.watch(secureScreenPrefProvider) ?? SecureScreenEnum.off;
     final secureEnable = secureScreenPref != SecureScreenEnum.off;
     final premiumSecurePref = !purchaseGate && !testflightFlag && secureEnable;
 
     return WillPopScope(
-        onWillPop: premiumLockPref || premiumSecurePref
+        onWillPop: premiumLockPref || premiumSecurePref || premiumIncognito
             ? () async {
                 if (premiumLockPref) {
                   pipe.invokeMethod("LogEvent", "SECURITY:LOCK:RESET");
@@ -52,6 +56,12 @@ class SecuritySettingScreen extends HookConsumerWidget {
                   ref
                       .read(secureScreenPrefProvider.notifier)
                       .update(SecureScreenEnum.off);
+                }
+                if (premiumIncognito) {
+                  pipe.invokeMethod("LogEvent", "SECURITY:INCOGNITO:RESET");
+                  ref
+                      .read(incognitoModePrefProvider.notifier)
+                      .update(false);
                 }
                 return true;
               }
@@ -68,6 +78,11 @@ class SecuritySettingScreen extends HookConsumerWidget {
               ],
               if (lockEnable) ...[
                 const LockIntervalTile(),
+              ],
+              const Divider(),
+              const IncognitoModeTile(),
+              if (premiumIncognito) ...[
+                const PremiumRequiredTile(),
               ],
               const Divider(),
               const SecureScreenTile(),

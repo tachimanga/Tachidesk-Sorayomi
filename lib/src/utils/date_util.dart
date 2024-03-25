@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../constants/enum.dart';
 import 'extensions/custom_extensions.dart';
 
-String formatLocalizedDateTime(BuildContext context, int timestamp) {
+String formatLocalizedDateTime(
+    DateFormatEnum format, BuildContext context, int timestamp) {
   DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
   DateFormat formatter =
-  DateFormat.yMd(context.currentLocale.toString()).add_Hms();
+      DateFormat(format.code, context.currentLocale.toString()).add_Hms();
   return formatter.format(dateTime);
 }

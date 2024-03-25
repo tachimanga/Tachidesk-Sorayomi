@@ -25,6 +25,7 @@ import '../../../domain/tracking/tracking_model.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../appearance/controller/date_format_controller.dart';
 import '../controller/tracking_controller.dart';
 
 class TrackerStatusWidget extends ConsumerWidget {
@@ -43,6 +44,8 @@ class TrackerStatusWidget extends ConsumerWidget {
     final toast = ref.read(toastProvider(context));
     final record = tracker.record!;
     final processingText = context.l10n!.processing;
+    final dateFormatPref =
+        ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
     return Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
         child: Column(children: [
@@ -193,7 +196,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                       borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(20)),
                       text: record.startDate != null && record.startDate != 0
-                          ? record.startDate.toDateString
+                          ? record.startDate.toLocalizedDateString(dateFormatPref, context)
                           : context.l10n!.trackingStartDate,
                       onPressed: () async {
                         DateTime? newDate = await showDatePicker(
@@ -219,7 +222,7 @@ class TrackerStatusWidget extends ConsumerWidget {
                       borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(20)),
                       text: record.finishDate != null && record.finishDate != 0
-                          ? record.finishDate.toDateString
+                          ? record.finishDate.toLocalizedDateString(dateFormatPref, context)
                           : context.l10n!.trackingFinishDate,
                       onPressed: () async {
                         DateTime? newDate = await showDatePicker(

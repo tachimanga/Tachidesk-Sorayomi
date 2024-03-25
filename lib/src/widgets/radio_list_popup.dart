@@ -19,6 +19,7 @@ class RadioListPopup<T> extends StatelessWidget {
     required this.onChange,
     this.optionDisplayName,
     this.optionDisplaySubName,
+    this.showDisplaySubName,
   });
 
   final String title;
@@ -27,6 +28,7 @@ class RadioListPopup<T> extends StatelessWidget {
   final ValueChanged<T> onChange;
   final String Function(T)? optionDisplayName;
   final String Function(T)? optionDisplaySubName;
+  final bool Function(T)? showDisplaySubName;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class RadioListPopup<T> extends StatelessWidget {
         onChange: onChange,
         displayName: optionDisplayName,
         displaySubName: optionDisplaySubName,
+        showDisplaySubName: showDisplaySubName,
       ),
       actions: const [PopButton()],
     );
@@ -53,6 +56,7 @@ class RadioList<T> extends StatelessWidget {
     required this.onChange,
     this.displayName,
     this.displaySubName,
+    this.showDisplaySubName,
   });
 
   final List<T> optionList;
@@ -60,6 +64,7 @@ class RadioList<T> extends StatelessWidget {
   final ValueChanged<T> onChange;
   final String Function(T)? displayName;
   final String Function(T)? displaySubName;
+  final bool Function(T)? showDisplaySubName;
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -74,7 +79,12 @@ class RadioList<T> extends StatelessWidget {
                   title: Text(
                     displayName != null ? displayName!(e) : e.toString(),
                   ),
-                  subtitle: displaySubName != null ? Text(displaySubName!(e)) : null,
+                  subtitle: (showDisplaySubName != null
+                              ? showDisplaySubName!(e)
+                              : true) &&
+                          displaySubName != null
+                      ? Text(displaySubName!(e))
+                      : null,
                   value: e,
                   groupValue: value,
                   onChanged: (value) {

@@ -18,34 +18,31 @@ extension IntExtensions on int? {
 
   bool? get toBool => (this == null || this == 0) ? null : this == 1;
 
-  String get toDateString {
-    if (isNull) return "";
-    return DateFormat.yMMMd().format(
-      DateTime.fromMillisecondsSinceEpoch(this!),
-    );
-  }
-
   String? padLeft([int width = 2, String padding = '0']) {
     if (isNull) return null;
     if (this == 0) return toString();
     return toString().padLeft(width, padding);
   }
 
-  String get toDateStringFromSeconds {
+  String toLocalizedDateString(DateFormatEnum format, BuildContext context) {
     if (isNull) return "";
-    return DateTime.fromMillisecondsSinceEpoch(this! * 1000).toDateString;
+    return DateFormat(format.code, context.currentLocale.toString())
+        .format(DateTime.fromMillisecondsSinceEpoch(this!));
   }
 
-  String get toDaysAgoFromSeconds {
+  String toLocalizedDaysAgoFromSeconds(
+      DateFormatEnum format, BuildContext context) {
     if (isNull) return "";
     if (this == 0) return "N/A";
-    return DateTime.fromMillisecondsSinceEpoch(this! * 1000).convertToDaysAgo;
+    return DateTime.fromMillisecondsSinceEpoch(this! * 1000)
+        .convertToLocalizedDaysAgo(format, context);
   }
 
-  String get toDaysAgo {
+  String toLocalizedDaysAgo(DateFormatEnum format, BuildContext context) {
     if (isNull) return "";
     if (this == 0) return "N/A";
-    return DateTime.fromMillisecondsSinceEpoch(this!).convertToDaysAgo;
+    return DateTime.fromMillisecondsSinceEpoch(this!)
+        .convertToLocalizedDaysAgo(format, context);
   }
 
   bool isSameDayAs(int? anotherDate) {

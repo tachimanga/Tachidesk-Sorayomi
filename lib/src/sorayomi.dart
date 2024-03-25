@@ -228,5 +228,13 @@ class Sorayomi extends HookConsumerWidget {
             .update(SecureScreenEnum.off);
       });
     }
+    if (ref.read(incognitoModePrefProvider) == true) {
+      log("reset incognitoModePrefProvider");
+      Future(() {
+        ref
+            .read(incognitoModePrefProvider.notifier)
+            .update(false);
+      });
+    }
   }
 }

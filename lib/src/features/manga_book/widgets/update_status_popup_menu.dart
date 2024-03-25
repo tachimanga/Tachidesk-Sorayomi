@@ -8,10 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/app_sizes.dart';
-
+import '../../../constants/db_keys.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../library/domain/category/category_model.dart';
+import '../../library/presentation/category/controller/edit_category_controller.dart';
 import '../data/updates/updates_repository.dart';
+import '../presentation/updates/controller/update_controller.dart';
+import 'select_category_to_update_dialog.dart';
 import 'update_status_summary_sheet.dart';
 
 class UpdateStatusPopupMenu extends ConsumerWidget {
@@ -24,6 +27,11 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
   final bool showSummaryButton;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final categoryListValue = ref.watch(categoryControllerProvider);
+    final selectedCategoryIds = ref.watch(categoryIdsToUpdatePrefProvider);
+    final alwaysAskSelect = ref.watch(alwaysAskCategoryToUpdatePrefProvider) ??
+        DBKeys.alwaysAskCategoryToUpdate.initial;
+
     return PopupMenuButton(
       icon: const Icon(Icons.more_vert_rounded),
       shape: RoundedRectangleBorder(borderRadius: KBorderRadius.r16.radius),
@@ -38,7 +46,29 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
                   .fetchUpdates(categoryIds: [category.id ?? 0]),
             ),
           PopupMenuItem(
-            onTap: () => ref.read(updatesRepositoryProvider).fetchUpdates(),
+            onTap: () async {
+              categoryListValue.whenOrNull(data: (categoryList) {
+                if (categoryList == null ||
+                    categoryList.isEmpty ||
+                    categoryList.length == 1) {
+                  ref.read(updatesRepositoryProvider).fetchUpdates();
+                  return;
+                }
+                if (alwaysAskSelect) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => SelectCategoryToUpdateDialog(
+                      onSelectCategory: (List<String> categoryIds) {
+                        fireUpdate(ref, categoryIds);
+                      },
+                    ),
+                  );
+                } else {
+                  fireUpdate(ref, selectedCategoryIds ?? []);
+                }
+                return;
+              });
+            },
             child: Text(context.l10n!.globalUpdate),
           ),
           if (showSummaryButton)
@@ -53,5 +83,14 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
         ];
       },
     );
+  }
+
+  void fireUpdate(WidgetRef ref, List<String> categoryIds) {
+    if (categoryIds.isEmpty) {
+      ref.read(updatesRepositoryProvider).fetchUpdates();
+    } else {
+      final list = categoryIds.map((e) => int.parse(e)).toList();
+      ref.read(updatesRepositoryProvider).fetchUpdates(categoryIds: list);
+    }
   }
 }

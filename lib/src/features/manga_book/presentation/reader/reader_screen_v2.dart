@@ -14,7 +14,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/app_themes/color_schemas/default_theme.dart';
 import '../../../../constants/enum.dart';
+import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
+import '../../../../utils/classes/trace/trace_ref.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart' as logger;
 import '../../../../utils/route/route_aware.dart';
@@ -40,6 +42,9 @@ class ReaderScreen2 extends HookConsumerWidget {
   final String initChapterIndex;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
+    final pipe = ref.watch(getMagicPipeProvider);
+
     final appThemeData = ref.watch(themeSchemeColorProvider);
     final initChapterIndexState = useState(initChapterIndex);
 
@@ -60,6 +65,18 @@ class ReaderScreen2 extends HookConsumerWidget {
     final chapter = ref.watch(chapterProviderWithIndex);
     final defaultReaderMode = ref.watch(readerModeKeyProvider);
     //logger.log("[Reader2] ReaderScreen2.chapter ${chapter.valueOrNull?.name}, index:${chapter.valueOrNull?.index}");
+
+    useEffect(() {
+      TraceRef.put(manga.valueOrNull?.sourceId, mangaId);
+      return;
+    }, [manga]);
+
+    final chapterList = ref.watch(mangaChapterListProvider(mangaId: mangaId));
+    final chapterRealUrl = chapterList.valueOrNull
+            ?.where((e) => "${e.index}" == initChapterIndexState.value)
+            .firstOrNull
+            ?.realUrl ??
+        manga.valueOrNull?.realUrl;
 
     final debounce = useRef<Timer?>(null);
     final onPageChanged2 = useCallback<AsyncValueSetter<PageChangedData>>(
@@ -116,6 +133,11 @@ class ReaderScreen2 extends HookConsumerWidget {
       [readerListData],
     );
 
+    final AsyncCallback? onNoNextChapter = magic.c3 ? () async {
+      logger.log("[Reader2] no next chapter");
+      pipe.invokeMethod("READER:NO_CHAPTER_AD");
+    } : null;
+
     useRouteObserver(routeObserver, didPop: () {
       logger.log("ReaderScreen did pop");
       ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
@@ -167,6 +189,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                                 scrollDirection: Axis.vertical,
                               );
                             case ReaderMode.singleHorizontalRTL:
@@ -176,6 +199,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                                 reverse: true,
                               );
                             case ReaderMode.continuousHorizontalLTR:
@@ -185,6 +209,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                                 scrollDirection: Axis.horizontal,
                               );
                             case ReaderMode.continuousHorizontalRTL:
@@ -194,6 +219,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                                 scrollDirection: Axis.horizontal,
                                 reverse: true,
                               );
@@ -204,6 +230,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                               );
                             case ReaderMode.continuousVertical:
                               return ContinuousReaderMode2(
@@ -212,6 +239,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                                 showSeparator: true,
                               );
                             case ReaderMode.webtoon:
@@ -222,9 +250,12 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 initChapter: chapterData,
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
+                                onNoNextChapter: onNoNextChapter,
                               );
                           }
                         },
+                        errorSource: "chapter-details",
+                        webViewUrl: chapterRealUrl,
                         refresh: () => ref.refresh(chapterProviderWithIndex),
                         addScaffoldWrapper: true,
                       );
