@@ -10,11 +10,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../constants/app_sizes.dart';
+import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/date_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../domain/backup/backup_model.dart';
+import '../../appearance/controller/date_format_controller.dart';
 import '../controller/backup_controller.dart';
 
 class BackupListTile extends ConsumerWidget {
@@ -36,6 +38,8 @@ class BackupListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
+    final dateFormatPref =
+        ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
@@ -47,7 +51,7 @@ class BackupListTile extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  formatLocalizedDateTime(context, backupItem.createAt ?? 0),
+                  formatLocalizedDateTime(dateFormatPref, context, backupItem.createAt ?? 0),
                   style: context.textTheme.titleSmall,
                 ),
                 Text(

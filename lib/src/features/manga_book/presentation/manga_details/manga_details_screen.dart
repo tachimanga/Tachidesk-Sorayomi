@@ -11,7 +11,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 
+import '../../../../constants/enum.dart';
 import '../../../../routes/router_config.dart';
+import '../../../../utils/classes/trace/trace_ref.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
@@ -19,14 +21,18 @@ import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../browse_center/data/source_repository/source_repository.dart';
 import '../../../browse_center/presentation/migrate/widgets/migrate_manga_dialog.dart';
+import '../../../browse_center/presentation/source_manga_list/controller/source_manga_controller.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
+import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../../settings/presentation/share/controller/share_controller.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/manga/manga_model.dart';
 import '../../widgets/chapter_actions/multi_chapters_actions_bottom_app_bar.dart';
 import 'controller/manga_details_controller.dart';
 import 'widgets/big_screen_manga_details.dart';
+import 'widgets/chapter_filter_icon_button.dart';
 import 'widgets/edit_manga_category_dialog.dart';
 import 'widgets/manga_chapter_organizer.dart';
 import 'widgets/small_screen_manga_details.dart';
@@ -39,6 +45,11 @@ class MangaDetailsScreen extends HookConsumerWidget {
   final Manga? mangaBasic;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    useEffect(() {
+      TraceRef.put(mangaBasic?.sourceId, mangaId);
+      return;
+    }, []);
+
     // Providers as Class for this screen
     final mangaProvider =
         useMemoized(() => mangaWithIdProvider(mangaId: mangaId), []);
@@ -48,6 +59,12 @@ class MangaDetailsScreen extends HookConsumerWidget {
         () => mangaChapterListWithFilterProvider(mangaId: mangaId), []);
 
     final manga = ref.watch(mangaProvider);
+
+    useEffect(() {
+      TraceRef.put(manga.valueOrNull?.sourceId, mangaId);
+      return;
+    }, [manga]);
+
     final filteredChapterList = ref.watch(chapterListFilteredProvider);
     final firstUnreadChapter = ref.watch(
       firstUnreadInFilteredChapterListProvider(mangaId: mangaId),
@@ -106,11 +123,29 @@ class MangaDetailsScreen extends HookConsumerWidget {
       }
     });
     final toast = ref.read(toastProvider(context));
+    final dateFormatPref =
+        ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
+
+    final animationController =
+        useAnimationController(duration: const Duration(seconds: 0));
+    useAnimation(animationController);
+
+    final bgColorTween = ColorTween(
+      begin: context.theme.appBarTheme.backgroundColor?.withOpacity(0),
+      end: context.theme.appBarTheme.backgroundColor?.withOpacity(1),
+    ).animate(animationController).value;
+
+    final textColorTween = ColorTween(
+      begin: context.theme.appBarTheme.foregroundColor?.withOpacity(0),
+      end: context.theme.appBarTheme.foregroundColor?.withOpacity(1),
+    ).animate(animationController).value;
+
     return WillPopScope(
       onWillPop: null,
       child: manga.showUiWhenData(
         context,
         (data) => Scaffold(
+          extendBodyBehindAppBar: !context.isTablet,
           appBar: selectedChapters.value.isNotEmpty
               ? AppBar(
                   leading: IconButton(
@@ -149,6 +184,8 @@ class MangaDetailsScreen extends HookConsumerWidget {
                 )
               : AppBar(
                   title: Text(data?.title ?? context.l10n!.manga),
+                  foregroundColor: context.isTablet ? null : textColorTween,
+                  backgroundColor: context.isTablet ? null : bgColorTween,
                   actions: [
                     AsyncIconButton(
                       onPressed: data != null
@@ -178,24 +215,27 @@ class MangaDetailsScreen extends HookConsumerWidget {
                         icon: const Icon(Icons.refresh_rounded),
                       ),
                     Builder(
-                      builder: (context) => IconButton(
-                        onPressed: () {
-                          if (context.isTablet) {
-                            Scaffold.of(context).openEndDrawer();
-                          } else {
-                            showModalBottomSheet(
-                              context: context,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: KBorderRadius.rT16.radius,
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                              builder: (_) => MangaChapterOrganizer(
-                                mangaId: mangaId,
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.filter_list_rounded),
+                      builder: (context) => ChapterFilterIconButton(
+                        mangaId: mangaId,
+                        icon: IconButton(
+                          onPressed: () {
+                            if (context.isTablet) {
+                              Scaffold.of(context).openEndDrawer();
+                            } else {
+                              showModalBottomSheet(
+                                context: context,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: KBorderRadius.rT16.radius,
+                                ),
+                                clipBehavior: Clip.hardEdge,
+                                builder: (_) => MangaChapterOrganizer(
+                                  mangaId: mangaId,
+                                ),
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.filter_list_rounded),
+                        ),
                       ),
                     ),
                     PopupMenuButton(
@@ -230,6 +270,27 @@ class MangaDetailsScreen extends HookConsumerWidget {
                           PopupMenuItem(
                             onTap: () => refresh(true),
                             child: Text(context.l10n!.refresh),
+                          ),
+                        if (data?.sourceId == "0")
+                          PopupMenuItem(
+                            onTap: () async {
+                              (await AsyncValue.guard(() async {
+                                await ref
+                                    .read(sourceRepositoryProvider)
+                                    .removeLocalManga(mangaId: mangaId);
+                                final now =
+                                    DateTime.now().millisecondsSinceEpoch;
+                                ref
+                                    .read(localSourceListRefreshSignalProvider
+                                        .notifier)
+                                    .update(now);
+                                if (context.mounted) {
+                                  context.pop();
+                                }
+                              }))
+                                  .showToastOnError(toast);
+                            },
+                            child: Text(context.l10n!.delete),
                           ),
                       ],
                     )
@@ -276,6 +337,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                       onDescriptionRefresh: mangaRefresh,
                       onListRefresh: chapterListRefresh,
                       selectedChapters: selectedChapters,
+                      dateFormatPref: dateFormatPref,
                     )
                   : SmallScreenMangaDetails(
                       chapterList: filteredChapterList,
@@ -285,6 +347,8 @@ class MangaDetailsScreen extends HookConsumerWidget {
                       onDescriptionRefresh: mangaRefresh,
                       onListRefresh: chapterListRefresh,
                       selectedChapters: selectedChapters,
+                      dateFormatPref: dateFormatPref,
+                      animationController: animationController,
                     )
               : Emoticons(
                   text: context.l10n!.noMangaFound,

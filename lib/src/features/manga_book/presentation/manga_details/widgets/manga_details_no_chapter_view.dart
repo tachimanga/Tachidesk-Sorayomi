@@ -26,10 +26,13 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
         ref.watch(mangaChapterFilterDownloadedProvider);
     final chapterFilterBookmark =
         ref.watch(mangaChapterFilterBookmarkedProvider);
+    final chapterFilterScanlators =
+        ref.watch(mangaChapterFilterScanlatorProvider(mangaId: "${manga.id}"));
 
     if (chapterFilterUnread != null ||
         chapterFilterDownloaded != null ||
-        chapterFilterBookmark != null) {
+        chapterFilterBookmark != null ||
+        chapterFilterScanlators.isNotEmpty) {
       return Emoticons(
           text: context.l10n!.noChaptersFound,
           button: TextButton(
@@ -41,6 +44,11 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
               ref
                   .read(mangaChapterFilterBookmarkedProvider.notifier)
                   .update(null);
+              ref
+                  .read(mangaChapterFilterScanlatorProvider(
+                          mangaId: "${manga.id}")
+                      .notifier)
+                  .update([]);
             },
             child: Text("${context.l10n!.reset} ${context.l10n!.filter}"),
           ));

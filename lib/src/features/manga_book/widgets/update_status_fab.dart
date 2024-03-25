@@ -17,7 +17,9 @@ import '../presentation/updates/controller/update_controller.dart';
 import 'update_status_summary_sheet.dart';
 
 class UpdateStatusFab extends ConsumerWidget {
-  const UpdateStatusFab({super.key});
+  const UpdateStatusFab({super.key, this.forLibrary});
+
+  final bool? forLibrary;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,6 +31,10 @@ class UpdateStatusFab extends ConsumerWidget {
     final selectedCategoryIds = ref.watch(categoryIdsToUpdatePrefProvider);
     final alwaysAskSelect = ref.watch(alwaysAskCategoryToUpdatePrefProvider) ??
         DBKeys.alwaysAskCategoryToUpdate.initial;
+
+    if (forLibrary == true && !running) {
+      return const SizedBox.shrink();
+    }
 
     return FloatingActionButton.extended(
       icon: showStatus || running

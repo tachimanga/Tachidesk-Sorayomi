@@ -17,10 +17,14 @@ import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/search_field.dart';
+import '../../../browse_center/presentation/migrate/controller/migrate_controller.dart';
+import '../../../manga_book/widgets/update_status_fab.dart';
 import '../../../manga_book/widgets/update_status_popup_menu.dart';
 import '../category/controller/edit_category_controller.dart';
 import 'category_manga_list.dart';
 import 'controller/library_controller.dart';
+import 'widgets/library_category_tab.dart';
+import 'widgets/library_filter_icon_button.dart';
 import 'widgets/library_manga_organizer.dart';
 
 class LibraryScreen extends HookConsumerWidget {
@@ -33,6 +37,9 @@ class LibraryScreen extends HookConsumerWidget {
     final toast = ref.watch(toastProvider(context));
     final categoryList = ref.watch(categoryControllerProvider);
     final showSearch = useState(false);
+    final existInLibraryManga =
+        ref.watch(migrateInfoProvider).valueOrNull?.existInLibraryManga == true;
+    final showMangaCount = ref.watch(libraryShowMangaCountProvider);
 
     useEffect(() {
       categoryList.showToastOnError(toast, withMicrotask: true);
@@ -60,6 +67,9 @@ class LibraryScreen extends HookConsumerWidget {
           : DefaultTabController(
               length: data!.length,
               child: Scaffold(
+                floatingActionButton: existInLibraryManga
+                    ? const UpdateStatusFab(forLibrary: true)
+                    : null,
                 appBar: AppBar(
                   title: Text(context.l10n!.library),
                   centerTitle: true,
@@ -74,10 +84,11 @@ class LibraryScreen extends HookConsumerWidget {
                           TabBar(
                             isScrollable: true,
                             tabs: data
-                                .map((e) => Tab(
-                                    text: e.id == 0
-                                        ? context.l10n!.label_default
-                                        : e.name ?? ""))
+                                .map((e) => LibraryCategoryTab(
+                                      category: e,
+                                      showMangaCount: showSearch.value ||
+                                          showMangaCount == true,
+                                    ))
                                 .toList(),
                             dividerColor: Colors.transparent,
                           ),
@@ -101,7 +112,8 @@ class LibraryScreen extends HookConsumerWidget {
                       icon: const Icon(Icons.search_rounded),
                     ),
                     Builder(
-                      builder: (context) => IconButton(
+                      builder: (context) => LibraryFilterIconButton(
+                          icon: IconButton(
                         onPressed: () {
                           if (context.isTablet) {
                             Scaffold.of(context).openEndDrawer();
@@ -117,7 +129,7 @@ class LibraryScreen extends HookConsumerWidget {
                           }
                         },
                         icon: const Icon(Icons.filter_list_rounded),
-                      ),
+                      )),
                     ),
                     Builder(
                       builder: (context) {

@@ -8,9 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
-import '../../../../../widgets/emoticons.dart';
-import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
 import 'chapter_list_tile.dart';
@@ -27,6 +26,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
     required this.onListRefresh,
     required this.onRefresh,
     required this.onDescriptionRefresh,
+    required this.dateFormatPref,
   });
   final Manga manga;
   final String mangaId;
@@ -35,6 +35,8 @@ class BigScreenMangaDetails extends ConsumerWidget {
   final AsyncValueSetter<bool> onRefresh;
   final ValueNotifier<Map<int, Chapter>> selectedChapters;
   final AsyncValue<List<Chapter>?> chapterList;
+  final DateFormatEnum dateFormatPref;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filteredChapterList = chapterList.valueOrNull;
@@ -87,6 +89,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
                                 selectedChapters.value = selectedChapters.value
                                     .toggleKey(val.id!, val);
                               },
+                              dateFormatPref: dateFormatPref,
                             );
                           },
                           itemCount: filteredChapterList!.length + 1,

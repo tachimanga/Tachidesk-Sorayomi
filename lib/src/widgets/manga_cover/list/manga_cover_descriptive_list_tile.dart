@@ -6,12 +6,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/app_sizes.dart';
 import '../../../constants/enum.dart';
 import '../../../features/manga_book/domain/manga/manga_model.dart';
 
 import '../../../features/manga_book/presentation/manga_details/manga_cover_screen.dart';
+import '../../../features/settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../grid/manga_cover_grid_tile.dart';
@@ -19,7 +21,7 @@ import '../widgets/clipboard_wrapper.dart';
 import '../widgets/manga_badges.dart';
 import '../widgets/manga_chips.dart';
 
-class MangaCoverDescriptiveListTile extends StatelessWidget {
+class MangaCoverDescriptiveListTile extends ConsumerWidget {
   const MangaCoverDescriptiveListTile({
     super.key,
     required this.manga,
@@ -46,7 +48,9 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
   final ValueChanged<String?>? onTitleClicked;
   final List<PopupMenuItem>? popupItems;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dateFormatPref =
+        ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
     final sourceName =
         " • ${manga.source?.displayName ?? context.l10n!.unknownSource}";
     return InkWell(
@@ -151,7 +155,10 @@ class MangaCoverDescriptiveListTile extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 2.0),
                         child: Text(
-                          manga.lastReadAt.toDaysAgoFromSeconds ?? "",
+                          manga.lastReadAt.toLocalizedDaysAgoFromSeconds(
+                            dateFormatPref,
+                            context,
+                          ),
                           overflow: TextOverflow.ellipsis,
                           style: context.textTheme.bodySmall,
                         ),

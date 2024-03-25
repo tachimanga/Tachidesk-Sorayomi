@@ -1,0 +1,466 @@
+{
+    "en": {
+        "title": "Get Tachimanga Premium",
+        "subTitle": "By upgrading to Tachimanga Premium, you can unlock additional features and support development.",
+        "features": [
+            "Remove all ads.",
+            "Support Trackers (MAL & Anilist).",
+            "Custom theme.",
+            "App lock.",
+            "Automatically backup.",
+            "Save pages without watermark.",
+            "Testflight access. (Please visit https://tachimanga.app/beta for more info.)",
+            "Including all premium features that will be implemented in the future."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/month"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/year"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nLifetime"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "ar": {
+        "title": "احصل على تاشيمانجا بريميوم",
+        "subTitle": "من خلال الترقية إلى تاشيمانجا بريميوم، يمكنك فتح ميزات إضافية ودعم التطوير.",
+        "features": [
+            "إزالة جميع الإعلانات.",
+            "دعم المتتبعين (MAL و Anilist).",
+            "تصميم مخصص.",
+            "قفل التطبيق",
+            "نسخ احتياطي تلقائي.",
+            "حفظ الصفحات بدون علامة مائية.",
+            "وصول إلى اختبار التطبيق. (يرجى زيارة https://tachimanga.app/beta لمزيد من المعلومات)",
+            "تشمل جميع الميزات المتميزة التي سيتم تنفيذها في المستقبل."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/شهر"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/سنة"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nمدى الحياة"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "de": {
+        "title": "Szerezd be a Tachimanga Prémiumot",
+        "subTitle": "A Tachimanga Prémiumra történő frissítéssel további funkciókat és fejlesztési támogatást érhetsz el.",
+        "features": [
+            "Az összes reklám eltávolítása.",
+            "Tracker támogatás (MAL & Anilist).",
+            "Egyedi téma.",
+            "App-Sperre.",
+            "Automatikus biztonsági mentés.",
+            "Oldalak mentése vízjel nélkül.",
+            "Tesztverzióhoz való hozzáférés (Besuchen Sie bitte https://tachimanga.app/beta für weitere Informationen)",
+            "Tartalmazza minden prémium funkciót, amelyek a jövőben lesznek bevezetve."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/hónap"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/év"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nÉlethosszig"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "es": {
+        "title": "Obtén Tachimanga Premium",
+        "subTitle": "Al actualizar a Tachimanga Premium, puedes desbloquear funciones adicionales y apoyar el desarrollo.",
+        "features": [
+            "Eliminar todos los anuncios.",
+            "Soporte de seguimiento (MAL y Anilist).",
+            "Tema personalizado.",
+            "Bloqueo de aplicaciones.",
+            "Copia de seguridad automática.",
+            "Guardar páginas sin marca de agua.",
+            "Acceso a Testflight. (Por favor visita https://tachimanga.app/beta para más información)",
+            "Incluye todas las funciones premium que se implementarán en el futuro."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/Mes"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/Año"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nde por vida"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "fr": {
+        "title": "Obtenez Tachimanga Premium",
+        "subTitle": "En passant à Tachimanga Premium, vous pouvez débloquer des fonctionnalités supplémentaires et soutenir le développement.",
+        "features": [
+            "Supprimer toutes les publicités.",
+            "Prise en charge des Trackers (MAL et Anilist).",
+            "Thème personnalisé.",
+            "Verrouillage d'application.",
+            "Sauvegarde automatique.",
+            "Enregistrer les pages sans filigrane.",
+            "Accès à Testflight (Veuillez visiter https://tachimanga.app/beta pour plus d'informations)",
+            "Inclut toutes les fonctionnalités premium qui seront mises en œuvre à l'avenir."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/Mois"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/Année"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nDurée de vie"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "hu": {
+        "title": "Szerezd be a Tachimanga Prémiumot",
+        "subTitle": "A Tachimanga Prémiumra történő frissítéssel további funkciókat és fejlesztési támogatást érhetsz el.",
+        "features": [
+            "Az összes reklám eltávolítása.",
+            "Tracker támogatás (MAL & Anilist).",
+            "Egyedi téma.",
+            "Alkalmazászár.",
+            "Automatikus biztonsági mentés.",
+            "Oldalak mentése vízjel nélkül.",
+            "Tesztverzióhoz való hozzáférés (Silakan kunjungi https://tachimanga.app/beta untuk informasi lebih lanjut)",
+            "Tartalmazza minden prémium funkciót, amelyek a jövőben lesznek bevezetve."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/hónap"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/év"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nÉlethosszig"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "id": {
+        "title": "Dapatkan Tachimanga Premium",
+        "subTitle": "Dengan mengupgrade ke Tachimanga Premium, Anda dapat membuka fitur tambahan dan mendukung perkembangan kami.",
+        "features": [
+            "Hapus semua iklan.",
+            "Dukungan Tracker (MAL & Anilist).",
+            "Tema kustom.",
+            "Kunci Aplikasi.",
+            "Backup otomatis.",
+            "Simpan halaman tanpa watermark.",
+            "Akses Tesfly (Silakan kunjungi https://tachimanga.app/beta untuk informasi lebih lanjut)",
+            "Termasuk semua fitur premium yang akan diimplementasikan di masa depan."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/bulan"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/tahun"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nSeumur hidup"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "it": {
+        "title": "Ottieni Tachimanga Premium",
+        "subTitle": "Effettuando l'upgrade a Tachimanga Premium, puoi sbloccare funzionalità aggiuntive e supportare lo sviluppo.",
+        "features": [
+            "Rimuovi tutte le pubblicità.",
+            "Supporto per Tracker (MAL & Anilist).",
+            "Tema personalizzato.",
+            "Blocco app.",
+            "Backup automatico.",
+            "Salva pagine senza watermark.",
+            "Accesso Testflight. (Visita https://tachimanga.app/beta per ulteriori informazioni)",
+            "Inclusi tutte le funzionalità premium che saranno implementate in futuro."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/mese"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/anno"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nA vita"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "pt": {
+        "title": "Obtenha Tachimanga Premium",
+        "subTitle": "Ao fazer upgrade para o Tachimanga Premium, você pode desbloquear recursos adicionais e apoiar o desenvolvimento.",
+        "features": [
+            "Remover todos os anúncios.",
+            "Suporte a rastreadores (MAL e Anilist).",
+            "Tema personalizado.",
+            "Bloqueio de aplicativos.",
+            "Backup automático.",
+            "Salvar páginas sem marca d'água.",
+            "Acesso Testflight. (Por favor visite https://tachimanga.app/beta para mais informações)",
+            "Inclui todos os recursos premium que serão implementados no futuro."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/Mês"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/Ano"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nVitalício"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "ru": {
+        "title": "Получите Tachimanga Premium",
+        "subTitle": "Приобретая Tachimanga Premium, вы можете разблокировать дополнительные функции и поддержать разработку.",
+        "features": [
+            "Удалить все рекламные объявления.",
+            "Поддержка Трекеров (MAL и Anilist).",
+            "Пользовательская тема.",
+            "Блокировка приложений.",
+            "Автоматическое резервное копирование.",
+            "Сохранение страниц без водяных знаков.",
+            "Доступ к Testflight. (Посетите https://tachimanga.app/beta для получения дополнительной информации)",
+            "Включает все премиум-функции, которые будут реализованы в будущем."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/месяц"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/год"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nпожизненный"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "th": {
+        "title": "รับ Tachimanga Premium",
+        "subTitle": "โดยการอัปเกรดไปยัง Tachimanga Premium คุณสามารถปลดล็อกคุณลักษณะเพิ่มเติมและสนับสนุนการพัฒนาได้",
+        "features": [
+            "ลบโฆษณาทั้งหมด",
+            "รองรับแทรกเกอร์ (MAL & Anilist)",
+            "ธีมที่กำหนดเอง",
+            "ล็อกแอป",
+            "สำรองข้อมูลโดยอัตโนมัติ",
+            "บันทึกหน้าโดยไม่มีลายน้ำ",
+            "เข้าถึง Testflight (โปรดเยี่ยมชม https://tachimanga.app/beta สำหรับข้อมูลเพิ่มเติม)",
+            "รวมถึงคุณลักษณะพรีเมียมทั้งหมดที่จะถูกนำมาใช้งานในอนาคต"
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/เดือน"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/ปี"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nตลอดชีพ"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "uk": {
+        "title": "Отримайте Tachimanga Premium",
+        "subTitle": "Оновивши до Tachimanga Premium, ви можете отримати додаткові функції та підтримати розробку.",
+        "features": [
+            "Видалити всю рекламу.",
+            "Підтримка трекерів (MAL і Anilist).",
+            "Спеціальна тема.",
+            "Блокування додатків.",
+            "Автоматичне резервне копіювання.",
+            "Зберегти сторінки без водяного знаку.",
+            "Доступ до Testflight. (Будь ласка, відвідайте https://tachimanga.app/beta для отримання додаткової інформації)",
+            "Включає всі преміум-функції, які будуть реалізовані у майбутньому."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/Місяць"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/Рік"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nНазавжди"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "tr": {
+        "title": "Отримайте Tachimanga Premium",
+        "subTitle": "Оновивши до Tachimanga Premium, ви можете отримати додаткові функції та підтримати розробку.",
+        "features": [
+            "Tüm reklamları kaldır.",
+            "Takipçi desteği (MAL ve Anilist).",
+            "Özel tema.",
+            "Uygulama Kilidi.",
+            "Otomatik yedekleme.",
+            "Filigran olmadan sayfaları kaydet.",
+            "Testflight erişimi. (Daha fazla bilgi için https://tachimanga.app/beta adresini ziyaret edin)",
+            "Gelecekte uygulanacak tüm premium özellikleri içerir."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/aylık"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/yıllık"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nÖmür Boyu"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "vi": {
+        "title": "Nhận Tachimanga Premium",
+        "subTitle": "Bằng cách nâng cấp lên Tachimanga Premium, bạn có thể mở khóa tính năng bổ sung và hỗ trợ cho sự phát triển.",
+        "features": [
+            "Xóa tất cả quảng cáo.",
+            "Hỗ trợ Tracker (MAL & Anilist).",
+            "Giao diện tùy chỉnh.",
+            "Khóa ứng dụng.",
+            "Sao lưu tự động.",
+            "Lưu trang không có dấu watermark.",
+            "Truy cập Testflight. (Vui lòng truy cập https://tachimanga.app/beta để biết thêm thông tin)",
+            "Bao gồm tất cả các tính năng premium sẽ được triển khai trong tương lai."
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/tháng"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/năm"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\nTrọn đời"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "zh": {
+        "title": "获取Tachimanga的专业版",
+        "subTitle": "通过升级到Tachimanga专业版，您可以解锁其他功能并支持开发。",
+        "features": [
+            "移除所有广告。",
+            "支持追踪器（MAL和Anilist）。",
+            "自定义主题。",
+            "应用锁。",
+            "自动备份。",
+            "保存无水印图片。",
+            "Testflight访问权限。（请访问 https://tachimanga.app/beta 获取更多信息）",
+            "包括在未来将实施的所有高级功能。"
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/月"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/年"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\n一次付费"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    },
+    "zh-Hant-CN": {
+        "title": "获取Tachimanga的专业版",
+        "subTitle": "通過升級到Tachimanga專業版，您可以解鎖其他功能並支持開發。",
+        "features": [
+            "移除所有廣告。",
+            "支援追蹤器（MAL和Anilist）。",
+            "自訂主題。",
+            "應用鎖。",
+            "自動備份。",
+            "保存無水印頁面。",
+            "Testflight訪問權限。（請訪問 https://tachimanga.app/beta 以獲取更多資訊）",
+            "包括在未來將實施的所有高級功能。"
+        ],
+        "list": [
+            {
+                "id": "21",
+                "priceSuffix": "/月"
+            },
+            {
+                "id": "20",
+                "priceSuffix": "/年"
+            },
+            {
+                "id": "10",
+                "priceSuffix": "\n一次付費"
+            }
+        ],
+        "ruleUrl": "https://mangacrushteam.github.io/iap.html"
+    }
+}

@@ -20,6 +20,7 @@ import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../utils/purchase.dart';
 import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
 import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../../../widgets/server_image.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/tracking/widgets/tracker_setting_widget.dart';
 import '../../../domain/manga/manga_model.dart';
@@ -31,9 +32,11 @@ class MangaDescription extends HookConsumerWidget {
     super.key,
     required this.manga,
     required this.refresh,
+    this.backgroundImageHeight,
   });
   final Manga manga;
   final AsyncCallback refresh;
+  final double? backgroundImageHeight;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(context.isTablet);
@@ -44,19 +47,57 @@ class MangaDescription extends HookConsumerWidget {
     final purchaseGate = ref.watch(purchaseGateProvider);
     final testflightFlag = ref.watch(testflightFlagProvider);
     final freeTrialFlag = ref.watch(freeTrialFlagProvider);
+    EdgeInsets padding = MediaQuery.paddingOf(context);
+
+    final mangaInfoWidget = MangaCoverDescriptiveListTile(
+      manga: manga,
+      showBadges: false,
+      enableCoverPopup: true,
+      enableTitleCopy: true,
+      enableSourceEntrance: true,
+      onTitleClicked: (query) => context.push(Routes.getGlobalSearch(query)),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MangaCoverDescriptiveListTile(
-          manga: manga,
-          showBadges: false,
-          enableCoverPopup: true,
-          enableTitleCopy: true,
-          enableSourceEntrance: true,
-          onTitleClicked: (query) =>
-              context.push(Routes.getGlobalSearch(query)),
-        ),
+        backgroundImageHeight != null
+            ? Stack(
+                children: [
+                  ServerImage(
+                    imageUrl: manga.thumbnailUrl ?? "",
+                    imageData: manga.thumbnailImg, fit: BoxFit.cover,
+                    size: Size.fromHeight(backgroundImageHeight!),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          context.theme.scaffoldBackgroundColor
+                              .withOpacity(0.9),
+                          context.theme.scaffoldBackgroundColor
+                              .withOpacity(0.7),
+                          context.theme.scaffoldBackgroundColor
+                              .withOpacity(0.9),
+                          context.theme.scaffoldBackgroundColor
+                              .withOpacity(1.0),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: padding.top,
+                        ),
+                        mangaInfoWidget,
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : mangaInfoWidget,
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -103,9 +144,7 @@ class MangaDescription extends HookConsumerWidget {
                             foregroundColor: Colors.grey,
                             padding: EdgeInsets.zero),
                     label: trackerCount != null && trackerCount > 0
-                        ? (trackerCount == 1
-                            ? Text(context.l10n!.oneTracker)
-                            : Text(context.l10n!.nTracker(trackerCount)))
+                        ? Text(context.l10n!.num_trackers(trackerCount))
                         : Text(context.l10n!.tracking),
                   ),
                 ),

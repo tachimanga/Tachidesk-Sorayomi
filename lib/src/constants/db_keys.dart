@@ -19,6 +19,7 @@ enum DBKeys {
   basicCredentials(null),
   readerMode(ReaderMode.webtoon),
   readerPadding(0.0),
+  readerPaddingLandscape(0.0),
   readerMagnifierSize(1.0),
   readerNavigationLayout(ReaderNavigationLayout.disabled),
   invertTap(false),
@@ -75,6 +76,10 @@ enum DBKeys {
   lockInterval(LockIntervalEnum.always),
   lockPasscode(''),
   secureScreen(SecureScreenEnum.off),
+  incognitoMode(false),
+  incognitoModeUsed(false),
+  dateFormat(DateFormatEnum.yMMMd),
+  libraryShowMangaCount(false),
   ;
 
   const DBKeys(this.initial);

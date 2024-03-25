@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/text_premium.dart';
 import '../constants/theme_define.dart';
@@ -60,8 +61,9 @@ class ThemeSelector extends HookConsumerWidget {
                             padding: EdgeInsets.zero,
                             borderRadius: 0,
                             onSelect: () {
-                              pipe.invokeMethod(
-                                  "LogEvent", "APPEARANCE:THEME:${pair.key}");
+                              logEvent2(pipe, "APPEARANCE:THEME:SELECT", {
+                                "name": pair.key,
+                              });
                               ref
                                   .read(themeKeyProvider.notifier)
                                   .update(pair.key);

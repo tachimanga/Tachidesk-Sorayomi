@@ -6,14 +6,29 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../../constants/db_keys.dart';
 import '../extensions/custom_extensions.dart';
+import '../log.dart';
+
+const SOCKET_DOWN_MSG = "Unexpected error occurred, please kill the app and then reopen it";
 
 class DioErrorUtil {
+
+  static const pipe = MethodChannel('MAGIC_PIPE');
+
   // general methods:------------------------------------------------------------
   /// Handles error for Dio Class
-  static String handleError(DioError? error) {
+  static String handleError(DioError? error, String url) {
     String errorDescription = "";
+    final appActive =
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    final String prefix = DBKeys.serverUrl.initial;
+    final localhost =
+        url.startsWith(prefix) && !url.contains("http", prefix.length);
+    //print("appActive=$appActive, prefix=$prefix, localhost=$localhost, url=$url");
+
     if (error is DioError) {
       switch (error.type) {
         case DioErrorType.cancel:
@@ -23,7 +38,11 @@ class DioErrorUtil {
           errorDescription = "Connection timeout";
           break;
         case DioErrorType.unknown:
-          errorDescription = "Unexpected error occurred, please kill the app and then reopen it";
+          if (appActive && localhost) {
+            errorDescription = SOCKET_DOWN_MSG;
+          } else {
+            errorDescription = "Check your Internet Connection";
+          }
           break;
         case DioErrorType.receiveTimeout:
           errorDescription = "Receive timeout";
@@ -46,7 +65,7 @@ class DioErrorUtil {
           break;
         case DioErrorType.badCertificate:
           errorDescription =
-              "Check your Internet Connection (Incorrect certificate )";
+              "Check your Internet Connection (Incorrect certificate)";
           break;
         case DioErrorType.connectionError:
           errorDescription =
@@ -64,6 +83,19 @@ class DioErrorUtil {
         msg == "Receive timeout" ||
         msg.startsWith("HTTP error ")) {
       return context.l10n!.checkInWebView(msg);
+    }
+    return msg;
+  }
+
+  static Future<String> recoverSocket(String msg) async {
+    if (msg != SOCKET_DOWN_MSG) {
+      return msg;
+    }
+    log("[Socket]recoverSocket ...");
+    final r = await pipe.invokeMethod("SOCKET:RESTART");
+    log("[Socket]recoverSocket r=$r");
+    if (r == true) {
+      return "Operation timed out, please retry.";
     }
     return msg;
   }

@@ -10,9 +10,15 @@ import '../../../../../constants/app_sizes.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 
 class ChapterSeparator extends StatelessWidget {
-  const ChapterSeparator({super.key, required this.title, required this.name});
+  const ChapterSeparator({
+    super.key,
+    required this.title,
+    required this.name,
+    this.showNoNextChapter,
+  });
   final String title;
   final String name;
+  final bool? showNoNextChapter;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -35,6 +41,13 @@ class ChapterSeparator extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             KSizedBox.h16.size,
+            if (showNoNextChapter == true) ...[
+              Text(
+                context.l10n!.noNextChapter,
+                style: context.textTheme.titleMedium,
+              ),
+              KSizedBox.h16.size,
+            ],
           ],
         ),
       ),

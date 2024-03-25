@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
+import '../../../../../constants/urls.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../global_providers/locale_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -57,17 +58,32 @@ bool emptyRepo(EmptyRepoRef ref) {
 }
 
 @riverpod
+class ExtensionTagUrl extends _$ExtensionTagUrl
+    with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() {
+    return initialize(
+        ref,
+        key: "config.extensionTagUrl",
+        initial: AppUrls.extensionTagUrl.url,
+      );
+  }
+}
+
+@riverpod
 Future<Map<String, ExtensionTag>> extensionTag(ExtensionTagRef ref) async {
   final token = CancelToken();
   ref.onDispose(token.cancel);
 
   final repo = ref.watch(repoParamProvider);
   final dioClient = ref.watch(dioClientKeyProvider);
+  final extensionTagUrl = ref.watch(extensionTagUrlProvider) ??
+      AppUrls.extensionTagUrl.url;
   ExtensionTagData? result = ExtensionTagData();
   if (repo != "DEFAULT") {
     try {
       result = (await dioClient.get<ExtensionTagData, ExtensionTagData>(
-        "https://mangacrushteam.github.io/repo_tag.json",
+        extensionTagUrl,
         decoder: (e) =>
         e is Map<String, dynamic>
             ? ExtensionTagData.fromJson(e)

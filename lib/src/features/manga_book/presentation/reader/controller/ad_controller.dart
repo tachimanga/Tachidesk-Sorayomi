@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../utils/event_util.dart';
 import '../../../../../utils/log.dart';
 
 part 'ad_controller.g.dart';
@@ -94,7 +95,9 @@ Future<BannerAdData?> bannerAdWithKey(BannerAdWithKeyRef ref, {
       // Called when an ad request failed.
       onAdFailedToLoad: (ad, err) {
         log('[AD_V2] BannerAd failed to load: $err');
-        pipe.invokeMethod("LogEvent", "LOAD_AD_ERR_${err.message}");
+        logEvent2(pipe, "LOAD_AD_ERR", {
+          "error": err.message,
+        });
         ad.dispose();
 
         completer.complete(emptyAd);

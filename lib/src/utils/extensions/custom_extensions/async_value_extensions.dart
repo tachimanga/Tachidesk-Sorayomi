@@ -36,6 +36,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     Widget Function(Widget)? wrapper,
     bool showGenericError = false,
     bool addScaffoldWrapper = false,
+    bool skipLoadingOnReload = false,
     String? errorSource,
     String? webViewUrl,
   }) {
@@ -45,6 +46,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
           body: body);
     }
     return when2(
+      skipLoadingOnReload: skipLoadingOnReload,
       data: data,
       error: (error, trace) => wrapper == null
           ? CommonErrorWidget(

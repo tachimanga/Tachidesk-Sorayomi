@@ -1,17 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_android/billing_client_wrappers.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
 
 import '../../../constants/db_keys.dart';
 import '../../../global_providers/global_providers.dart';
@@ -20,9 +15,10 @@ import '../../../utils/event_util.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/log.dart';
 import '../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../utils/mixin/state_provider_mixin.dart';
 import '../api/api_providers.dart';
 import 'model/purchase_model.dart';
-import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
+
 part 'purchase_providers.g.dart';
 
 class PurchaseData {
@@ -106,15 +102,21 @@ class PurchaseListener extends _$PurchaseListener {
         ", purchaseID:${purchaseDetails.purchaseID}");
     final verificationData = purchaseDetails.verificationData.serverVerificationData;
     log("verificationData $verificationData");
-    final verifyResult = await verify(verificationData);
-    log("verifyResult $verifyResult");
 
+    VerifyResult? verifyResult;
+    try {
+      verifyResult = await verifyRetry(verificationData);
+    } catch (e) {
+      logEvent2(pipe, "IAP:VERIFY:NET:FAIL", {"error": "$e"});
+      rethrow;
+    }
+
+    log("verifyResult $verifyResult");
     if (verifyResult?.valid != true) {
       log("purchaseDone to false");
       ref.read(purchaseDoneProvider.notifier).update(false);
       ref.read(purchaseExpireMsProvider.notifier).update(null);
-      ref.read(getMagicPipeProvider)
-          .invokeMethod("LogEvent", "VERIFY_ERR_${verifyResult?.msg}");
+      logEvent2(pipe, "IAP:VERIFY:BIZ:FAIL", {"error": "${verifyResult?.msg}"});
     } else {
       log("purchaseDone to true");
       ref.read(purchaseDoneProvider.notifier).update(true);
@@ -125,16 +127,41 @@ class PurchaseListener extends _$PurchaseListener {
     }
   }
 
-  Future<VerifyResult?> verify(String verificationData) async {
+  Future<VerifyResult?> verify(String verificationData, bool backupApi) async {
     final dioClient = ref.watch(dioClientApiProvider);
+    var url = "/verify";
+    if (backupApi) {
+      url = "https://api.tachiyomi.workers.dev/api/v1/verify";
+    }
     final result = (await dioClient.post<VerifyResult, VerifyResult?>(
-      "/verify",
+      url,
       data: {
         "verificationData": verificationData,
       },
       decoder: (e) => e is Map<String, dynamic> ? VerifyResult.fromJson(e) : null,
     )).data;
     return result;
+  }
+
+  Future<VerifyResult?> verifyRetry(String verificationData) async {
+    VerifyResult? verifyResult;
+    const max = 3;
+    for (var i = 0; i < max; i++) {
+      log("[purchase] verifyRetry, i:$i");
+      try {
+        verifyResult = await verify(verificationData, i == 2);
+        if (i > 1) {
+          logEvent2(pipe, "IAP:VERIFY:RETRY:SUCC", {"x": "$i"});
+        }
+        break;
+      } catch (e) {
+        logEvent2(pipe, "IAP:VERIFY:INNER:FAIL", {"error": "$e", "x": "$i"});
+        if (i == max - 1) {
+          rethrow;
+        }
+      }
+    }
+    return verifyResult;
   }
 }
 
@@ -160,7 +187,6 @@ class ProductPageData {
 @riverpod
 Future<ProductPageData> products(ProductsRef ref) async {
   log("purchase load products");
-
   final dioClient = ref.watch(dioClientApiProvider);
   final locale = ref.watch(userPreferLocaleProvider);
   final pipe = ref.watch(getMagicPipeProvider);
@@ -170,11 +196,16 @@ Future<ProductPageData> products(ProductsRef ref) async {
     final stopwatch = Stopwatch()..start();
     result = await queryProductList(dioClient, locale);
     stopwatch.stop();
-    logEvent2(pipe, "IAP:LOAD:API:SUCC", {"ms": "${stopwatch.elapsedMilliseconds}"});
+    final ms = stopwatch.elapsedMilliseconds;
+    logEvent2(pipe, "IAP:LOAD:API:SUCC", {
+      "ms": "$ms",
+      "x": "${ms / 100 * 100}",
+    });
   } catch (e) {
     logEvent2(pipe, "IAP:LOAD:API:FAIL", {"error": "$e"});
     rethrow;
   }
+  log("products data $result");
 
   final map = <String, ProductItem>{};
   var list = ["10", "20", "21"];
@@ -194,7 +225,11 @@ Future<ProductPageData> products(ProductsRef ref) async {
     final stopwatch = Stopwatch()..start();
     productDetailResponse = await queryProductDetails(list);
     stopwatch.stop();
-    logEvent2(pipe, "IAP:LOAD:IAP:SUCC", {"ms": "${stopwatch.elapsedMilliseconds}"});
+    final ms = stopwatch.elapsedMilliseconds;
+    logEvent2(pipe, "IAP:LOAD:IAP:SUCC", {
+      "ms": "$ms",
+      "x": "${ms / 100 * 100}",
+    });
   } catch (e) {
     logEvent2(pipe, "IAP:LOAD:IAP:FAIL", {"error": "$e"});
     rethrow;
@@ -213,6 +248,123 @@ Future<ProductPageData> products(ProductsRef ref) async {
     result,
     map
   );
+}
+
+@riverpod
+class ProductsV3 extends _$ProductsV3 {
+  Map<String, ProductDetailsResponse> iapDataMap = {};
+
+  @override
+  Future<ProductPageData> build() async {
+    log("[purchase] load products v3 build");
+    final locale = ref.watch(userPreferLocaleProvider);
+    final pipe = ref.watch(getMagicPipeProvider);
+    final apiData = ref.watch(productsApiDataProvider);
+
+    ProductListResult? result;
+    final apiCacheData = await loadProductsApiCacheData(locale, pipe);
+    if (apiData.valueOrNull != null) {
+      log("[purchase]products data from api");
+      result = apiData.valueOrNull;
+    } else {
+      log("[purchase]products data from cache");
+      result = apiCacheData;
+    }
+    log("[purchase]products data $result");
+
+    final map = <String, ProductItem>{};
+    var list = ["10", "20", "21"];
+    var keys = <String>[];
+    if (result != null && result.list != null) {
+      for (var value in result.list!) {
+        map[value.id ?? ""] = value;
+        keys.add(value.id ?? "");
+      }
+      list = keys;
+    }
+    log("[purchase]list order $list");
+    log("[purchase]product map $map");
+
+    list.sort();
+    String key = list.join(',');
+
+    ProductDetailsResponse? iapData = iapDataMap[key];
+    if (iapData == null) {
+      log("[purchase] load IAP from apple");
+      try {
+        final stopwatch = Stopwatch()..start();
+        iapData = await queryProductDetails(list);
+        iapDataMap[key] = iapData;
+        stopwatch.stop();
+        final ms = stopwatch.elapsedMilliseconds;
+        logEvent2(pipe, "IAP:LOAD:IAP:SUCC", {
+          "ms": "$ms",
+          "x": "${ms / 100 * 100}",
+        });
+      } catch (e) {
+        logEvent2(pipe, "IAP:LOAD:IAP:FAIL", {"error": "$e"});
+        rethrow;
+      }
+    } else {
+      log("[purchase] load IAP from cache");
+    }
+
+    var productDetails = <ProductDetails>[];
+    for (final id in list) {
+      final e = iapData.productDetails.firstWhereOrNull((element) => element.id == id);
+      if (e != null) {
+        productDetails.add(e);
+      }
+    }
+    log("[purchase] load done");
+
+    return ProductPageData(productDetails,
+        result,
+        map
+    );
+  }
+}
+
+@riverpod
+Future<ProductListResult?> productsApiData(ProductsApiDataRef ref) async {
+  final dioClient = ref.watch(dioClientApiProvider);
+  final locale = ref.watch(userPreferLocaleProvider);
+  final pipe = ref.watch(getMagicPipeProvider);
+  log("[purchase]load productsApiData...");
+
+  ProductListResult? result;
+  try {
+    final stopwatch = Stopwatch()..start();
+    result = await queryProductList(dioClient, locale);
+    stopwatch.stop();
+    final ms = stopwatch.elapsedMilliseconds;
+    logEvent2(pipe, "IAP:LOAD:API:SUCC", {
+      "ms": "$ms",
+      "x": "${ms / 100 * 100}",
+    });
+  } catch (e) {
+    logEvent2(pipe, "IAP:LOAD:API:FAIL", {"error": "$e"});
+    rethrow;
+  }
+  log("[purchase]load productsApiData done");
+  return result;
+}
+
+Future<ProductListResult?> loadProductsApiCacheData(Locale locale, MethodChannel pipe) async {
+  ProductListResult? result;
+  try {
+    final jsonString = await rootBundle.loadString('assets/data/products.json');
+    Map<String, dynamic> jsonMap = json.decode(jsonString);
+    final code = locale.languageCode;
+    final tag = locale.toLanguageTag();
+    final key = tag.startsWith('zh-Hant') ? "zh-Hant-CN" : code;
+    final data = jsonMap[key] ?? jsonMap['en'];
+    result = ProductListResult.fromJson(data);
+  } catch (e) {
+    log("parse json err $e");
+    logEvent2(pipe, "IAP:LOAD:API:FAIL", {"error": "$e"});
+  }
+  return result;
 }
 
 Future<ProductListResult?> queryProductList(DioClient dioClient, Locale locale) async {

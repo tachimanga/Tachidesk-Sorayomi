@@ -90,7 +90,10 @@ class CategoryMangaListWithQueryAndFilter
           return (m2.lastReadAt ?? 0).compareTo(m1.lastReadAt ?? 0) *
               sortDirToggle;
         case MangaSort.latestChapterFetchAt:
-          return (m2.latestChapterFetchAt ?? 0).compareTo(m1.latestChapterFetchAt ?? 0) *
+          return (m1.latestChapterFetchAt ?? 0).compareTo(m2.latestChapterFetchAt ?? 0) *
+              sortDirToggle;
+        case MangaSort.latestChapterUploadAt:
+          return (m1.latestChapterUploadAt ?? 0).compareTo(m2.latestChapterUploadAt ?? 0) *
               sortDirToggle;
         default:
           return 0;
@@ -180,4 +183,15 @@ class LibraryDisplayMode extends _$LibraryDisplayMode
         initial: DBKeys.libraryDisplayMode.initial,
         enumList: DisplayMode.values,
       );
+}
+
+@riverpod
+class LibraryShowMangaCount extends _$LibraryShowMangaCount
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: DBKeys.libraryShowMangaCount.name,
+    initial: DBKeys.libraryShowMangaCount.initial,
+  );
 }

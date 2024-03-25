@@ -44,16 +44,22 @@ class SearchField extends HookWidget {
             isDense: true,
             border: const OutlineInputBorder(),
             labelText: hintText ?? context.l10n!.search,
-            suffixIcon: onClose != null
-                ? IconButton(
-                    onPressed: () {
-                      onClose!();
-                      if (onChanged != null) onChanged!(null);
-                      if (onSubmitted != null) onSubmitted!(null);
-                    },
-                    icon: const Icon(Icons.close_rounded),
-                  )
-                : null,
+            suffixIcon: IconButton(
+              onPressed: () {
+                if (controller.value.text.isNotEmpty) {
+                  controller.clear();
+                  // https://github.com/flutter/flutter/issues/83171
+                  if (onChanged != null) onChanged!(null);
+                  return;
+                }
+                if (onClose != null) {
+                  onClose!();
+                  if (onChanged != null) onChanged!(null);
+                  if (onSubmitted != null) onSubmitted!(null);
+                }
+              },
+              icon: const Icon(Icons.close_rounded),
+            ),
           ),
         ),
       ),

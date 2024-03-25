@@ -14,6 +14,7 @@ import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
+import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../library/domain/category/category_model.dart';
@@ -35,8 +36,11 @@ class MangaWithId extends _$MangaWithId {
     ref.keepAlive();
 
     final pipe = ref.watch(getMagicPipeProvider);
-    final pkgName = result?.source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
-    pipe.invokeMethod("LogEvent", "READ_$pkgName");
+    logEvent2(pipe, "LOAD_MANGA", {
+      "x": result?.source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "") ?? "-",
+      "y": "${result?.source?.lang?.code}",
+      "z": "${result?.source?.id}",
+    });
     return result;
   }
 

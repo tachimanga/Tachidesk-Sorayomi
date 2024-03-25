@@ -12,6 +12,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../constants/endpoints.dart';
 import '../../../../constants/enum.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../utils/classes/trace/trace_model.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/storage/dio/dio_client.dart';
 import '../../domain/filter/filter_model.dart';
@@ -74,6 +75,14 @@ class SourceRepository {
         decoder: (e) =>
             e is Map<String, dynamic> ? MangaPage.fromJson(e) : null,
         cancelToken: cancelToken,
+        options: Options(
+          extra: {
+            "trace": TraceInfo(
+              sourceId: sourceId,
+              type: TraceType.mangaList.name,
+            )
+          },
+        ),
       ))
           .data;
     } else {
@@ -89,6 +98,14 @@ class SourceRepository {
         decoder: (e) =>
             e is Map<String, dynamic> ? MangaPage.fromJson(e) : null,
         cancelToken: cancelToken,
+        options: Options(
+          extra: {
+            "trace": TraceInfo(
+              sourceId: sourceId,
+              type: TraceType.mangaSearch.name,
+            )
+          },
+        ),
       ))
           .data;
     }
@@ -120,10 +137,10 @@ class SourceRepository {
 
 
   Future<void> installMangaFile(
-      BuildContext context, {
-        PlatformFile? file,
-        CancelToken? cancelToken,
-      }) async {
+    BuildContext context, {
+    PlatformFile? file,
+    CancelToken? cancelToken,
+  }) async {
     if ((file?.path).isBlank) {
       throw context.l10n!.errorFilePick;
     }
@@ -133,18 +150,29 @@ class SourceRepository {
     }
     return (file.path).isNotBlank
         ? (await dioClient.post(
-      "/manga/install",
-      data: FormData.fromMap({
-        'file': MultipartFile.fromFileSync(
-          file.path!,
-          filename: file.name,
-        )
-      }),
-      cancelToken: cancelToken,
-    ))
-        .data
+            "/manga/install",
+            data: FormData.fromMap({
+              'file': MultipartFile.fromFileSync(
+                file.path!,
+                filename: file.name,
+              )
+            }),
+            cancelToken: cancelToken,
+          ))
+            .data
         : null;
   }
+
+  Future<void> removeLocalManga({
+    required String mangaId,
+    CancelToken? cancelToken,
+  }) async =>
+      dioClient.delete(
+        "/manga/removeLocal",
+        queryParameters: {
+          "mangaId": mangaId,
+        },
+      );
 }
 
 @riverpod

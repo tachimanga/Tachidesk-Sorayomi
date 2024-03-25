@@ -6,28 +6,34 @@
 
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:octo_image/octo_image.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/app_sizes.dart';
 import '../../../../../../constants/endpoints.dart';
+import '../../../../../../constants/enum.dart';
+import '../../../../../../utils/classes/pair/pair_model.dart';
+import '../../../../../../utils/classes/trace/trace_model.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart' as logger;
 import '../../../../../../widgets/server_image.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
+import '../../../manga_details/controller/manga_details_controller.dart';
 import '../../controller/ad_controller.dart';
 import '../../controller/reader_controller.dart';
 import '../../controller/reader_controller_v2.dart';
-import '../page_action_widget.dart';
 import '../chapter_loading_widget.dart';
 import '../chapter_separator.dart';
 import '../interactive_wrapper.dart';
+import '../padding_server_image.dart';
+import '../page_action_widget.dart';
 import '../reader_wrapper.dart';
 
 class ContinuousReaderMode2 extends HookConsumerWidget {
@@ -39,6 +45,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     required this.readerListData,
     this.showSeparator = false,
     this.onPageChanged,
+    this.onNoNextChapter,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
   });
@@ -48,6 +55,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
   final ReaderListData readerListData;
   final bool showSeparator;
   final ValueSetter<PageChangedData>? onPageChanged;
+  final AsyncCallback? onNoNextChapter;
   final Axis scrollDirection;
   final bool reverse;
   @override
@@ -71,8 +79,20 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     final positionsListener = useMemoized(() => ItemPositionsListener.create());
     final imageSizeCache = useMemoized(() => ImageSizeCache());
 
+    final chapterPair = ref.watch(
+      getPreviousAndNextChaptersProvider(
+        mangaId: "${manga.id}",
+        chapterIndex: "${currChapter.value.index}",
+      ),
+    );
+
+    bool noNextChapter = chapterPair != null && chapterPair.first == null;
+
     useEffect(() {
       notifyPageUpdate(currentIndex, currPage, currChapter, false);
+      if (onNoNextChapter != null) {
+        notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter!);
+      }
       return;
     }, [currentIndex.value]);
     useEffect(() {
@@ -87,7 +107,8 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       if (chapter != null) {
         currChapter.value = chapter;
       }
-      logger.log("[Reader2] ContinuousReaderMode2 update currChapter to:${chapter?.name}");
+      logger.log(
+          "[Reader2] ContinuousReaderMode2 update currChapter to:${chapter?.name}");
       return;
     }, [readerListData]);
 
@@ -126,6 +147,12 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
         }
       };
     }, []);
+
+    final traceInfo = TraceInfo(
+      type: TraceType.pageImg.name,
+      sourceId: manga.sourceId,
+      mangaUrl: manga.realUrl,
+    );
 
     final isAnimationEnabled =
         ref.read(readerScrollAnimationProvider).ifNull(false);
@@ -225,6 +252,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                   appendApiToUrl: true,
                   imageUrl: imageUrl,
                   imageData: page.imageData,
+                  traceInfo: traceInfo,
                   reloadButton: true,
                   progressIndicatorBuilder: (_, __, downloadProgress) => Center(
                     child: CircularProgressIndicator(
@@ -248,6 +276,14 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                       : null,
                   imageSizeCache: imageSizeCache,
                 );
+
+                final serverImageWithPadding = PaddingServerImage(
+                  scrollDirection: scrollDirection,
+                  contextSize: context.mediaQuerySize,
+                  mangaId: manga.id.toString(),
+                  serverImage: serverImage,
+                );
+
                 final image = GestureDetector(
                   onLongPress: () {
                     showModalBottomSheet(
@@ -264,7 +300,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                       ),
                     );
                   },
-                  child: serverImage,
+                  child: serverImageWithPadding,
                 );
                 if (page.pageIndex == 0 ||
                     page.pageIndex == (pageChapter.pageCount ?? 1) - 1) {
@@ -280,6 +316,9 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                               context.l10n!.chapterNumber(
                                   pageChapter.chapterNumber ?? 0)) +
                           (pageChapter.scanlator.withPrefix(" • ") ?? ""),
+                      showNoNextChapter: noNextChapter &&
+                          page.pageIndex != 0 &&
+                          pageChapter == readerListData.chapterList.last,
                     ),
                   );
 
@@ -347,11 +386,11 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                           child: separator,
                         )
                       : separator;
+                  final double bottom = max(0, windowPadding.bottom - 14) + 120;
                   final bottomSeparator =
                       index == readerListData.totalPageCount - 1
                           ? Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: max(0, windowPadding.bottom - 14)),
+                              padding: EdgeInsets.only(bottom: bottom),
                               child: separator,
                             )
                           : separator;
@@ -399,6 +438,20 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     //     "curr chapter: ${pageChapter.index}");
     if (onPageChanged != null) {
       onPageChanged!(PageChangedData(currPage.value, flush));
+    }
+  }
+
+  void notifyNoNextChapter(
+    ValueNotifier<int> currentIndex,
+    Pair<Chapter?, Chapter?>? chapterPair,
+    AsyncCallback onNoNextChapter,
+  ) {
+    //logger.log("[Reader2] reader wrapper ${currentIndex.value}");
+    if (chapterPair != null &&
+        chapterPair.first == null &&
+        currentIndex.value + 1 == readerListData.pageList.length) {
+      //logger.log("[Reader2] no next chapter");
+      onNoNextChapter();
     }
   }
 }

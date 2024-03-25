@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../constants/navigation_bar_data.dart';
 import '../../features/settings/presentation/appearance/controller/theme_controller.dart';
 import '../../routes/router_config.dart';
+import '../../utils/extensions/custom_extensions.dart';
 
 class SmallScreenNavigationBar extends ConsumerWidget {
   const SmallScreenNavigationBar({
@@ -35,7 +36,7 @@ class SmallScreenNavigationBar extends ConsumerWidget {
     return NavigationBarTheme(
       data: NavigationBarThemeData(
         labelTextStyle: MaterialStateProperty.all(
-          const TextStyle(overflow: TextOverflow.ellipsis),
+          context.textTheme.labelSmall?.copyWith(overflow: TextOverflow.ellipsis),
         ),
       ),
       child: NavigationBar(

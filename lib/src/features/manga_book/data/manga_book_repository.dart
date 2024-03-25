@@ -10,7 +10,10 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../constants/endpoints.dart';
+import '../../../constants/enum.dart';
 import '../../../global_providers/global_providers.dart';
+import '../../../utils/classes/trace/trace_model.dart';
+import '../../../utils/classes/trace/trace_ref.dart';
 import '../../../utils/storage/dio/dio_client.dart';
 import '../../library/domain/category/category_model.dart';
 import '../domain/chapter/chapter_model.dart';
@@ -43,6 +46,14 @@ class MangaBookRepository {
         queryParameters: {"onlineFetch": onlineFetch},
         decoder: (e) => e is Map<String, dynamic> ? Manga.fromJson(e) : null,
         cancelToken: cancelToken,
+        options: Options(
+          extra: {
+            "trace": TraceInfo(
+              type: TraceType.mangaDetail.name,
+              sourceId: TraceRef.get(mangaId),
+            )
+          },
+        ),
       ))
           .data;
 
@@ -51,12 +62,22 @@ class MangaBookRepository {
   Future<Chapter?> getChapter({
     required String mangaId,
     required String chapterIndex,
+    required bool incognito,
     CancelToken? cancelToken,
   }) async =>
       (await dioClient.get<Chapter, Chapter?>(
         MangaUrl.chapterWithIndex(mangaId, chapterIndex),
+        queryParameters: {"incognito": incognito},
         decoder: (e) => e is Map<String, dynamic> ? Chapter.fromJson(e) : null,
         cancelToken: cancelToken,
+        options: Options(
+          extra: {
+            "trace": TraceInfo(
+              type: TraceType.chapterDetail.name,
+              sourceId: TraceRef.get(mangaId),
+            )
+          },
+        ),
       ))
           .data;
 
@@ -95,6 +116,14 @@ class MangaBookRepository {
         decoder: (e) =>
             e is Map<String, dynamic> ? Chapter.fromJson(e) : Chapter(),
         cancelToken: cancelToken,
+        options: Options(
+          extra: {
+            "trace": TraceInfo(
+              type: TraceType.chapterList.name,
+              sourceId: TraceRef.get(mangaId),
+            )
+          },
+        ),
       ))
           .data;
 

@@ -33,7 +33,7 @@ class SecureScreenTile extends ConsumerWidget {
         context: context,
         builder: (context) => RadioListPopup<SecureScreenEnum>(
           title: context.l10n!.secure_screen,
-          optionList: const [SecureScreenEnum.off, SecureScreenEnum.always],
+          optionList: SecureScreenEnum.values,
           optionDisplayName: (value) => value.toLocale(context),
           value: pref,
           onChange: (enumValue) async {

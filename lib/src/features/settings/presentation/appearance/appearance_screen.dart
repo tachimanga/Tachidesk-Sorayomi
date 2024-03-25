@@ -18,6 +18,7 @@ import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'constants/theme_define.dart';
 import 'controller/theme_controller.dart';
 import 'widgets/blend_level_slider_tile.dart';
+import 'widgets/data_format_select_tile.dart';
 import 'widgets/grid_cover_min_width.dart';
 import 'widgets/pure_black_dark_mode_tile.dart';
 import 'widgets/theme_select_tile.dart';
@@ -78,6 +79,7 @@ class AppearanceScreen extends HookConsumerWidget {
             ],
             SectionTitle(title: context.l10n!.displaySectionTitle),
             const GridCoverMinWidth(),
+            const DateFormatSelectTile(),
           ],
         ),
       ),

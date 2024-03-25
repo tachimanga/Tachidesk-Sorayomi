@@ -26,6 +26,7 @@ class Manga with _$Manga {
     int? lastReadAt,
     Chapter? lastChapterRead,
     int? latestChapterFetchAt,
+    int? latestChapterUploadAt,
     bool? freshData,
     List<String>? genre,
     bool? inLibrary,
@@ -69,6 +70,11 @@ class MangaMeta with _$MangaMeta {
     )
         double? readerPadding,
     @JsonKey(
+      name: "flutter_readerPadding_landscape",
+      fromJson: MangaMeta.fromJsonToDouble,
+    )
+    double? readerPaddingLandscape,
+    @JsonKey(
       name: "flutter_readerMagnifierSize",
       fromJson: MangaMeta.fromJsonToDouble,
     )
@@ -92,6 +98,7 @@ enum MangaMetaKeys {
   readerNavigationLayout("flutter_readerNavigationLayout"),
   readerMode("flutter_readerMode"),
   readerPadding("flutter_readerPadding"),
+  readerPaddingLandscape("flutter_readerPadding_landscape"),
   readerMagnifierSize("flutter_readerMagnifierSize"),
   scanlator("flutter_scanlator"),
   ;
