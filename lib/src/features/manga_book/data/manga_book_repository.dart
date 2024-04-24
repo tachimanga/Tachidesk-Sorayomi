@@ -57,6 +57,18 @@ class MangaBookRepository {
       ))
           .data;
 
+  Future<String?> getMangaRealUrl({
+    required String mangaId,
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.get<Manga, Manga?>(
+        MangaUrl.realUrl(mangaId),
+        decoder: (e) => e is Map<String, dynamic> ? Manga.fromJson(e) : null,
+        cancelToken: cancelToken,
+      ))
+          .data
+          ?.realUrl;
+
   // Chapters
 
   Future<Chapter?> getChapter({
@@ -80,6 +92,19 @@ class MangaBookRepository {
         ),
       ))
           .data;
+
+  Future<String?> getChapterRealUrl({
+    required String mangaId,
+    required String chapterIndex,
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.get<Chapter, Chapter?>(
+        MangaUrl.chapterRealUrlWithIndex(mangaId, chapterIndex),
+        decoder: (e) => e is Map<String, dynamic> ? Chapter.fromJson(e) : null,
+        cancelToken: cancelToken,
+      ))
+          .data
+          ?.realUrl;
 
   Future<void> putChapter({
     required String mangaId,
@@ -159,8 +184,8 @@ class MangaBookRepository {
       ))
           .data;
 
-  Future<void> batchDeleteHistory(List<int> mangaIds) =>
-      dioClient.delete(HistoryUrl.batchDelete, data: jsonEncode({'mangaIds': mangaIds}));
+  Future<void> batchDeleteHistory(List<int> mangaIds) => dioClient
+      .delete(HistoryUrl.batchDelete, data: jsonEncode({'mangaIds': mangaIds}));
 }
 
 @riverpod

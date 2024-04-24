@@ -7,6 +7,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +26,7 @@ import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../../widgets/radio_list_popup.dart';
+import '../../../../../widgets/text_premium.dart';
 import '../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
@@ -42,7 +44,9 @@ import '../controller/reader_controller_v2.dart';
 import '../controller/reader_setting_controller.dart';
 import 'page_number_slider.dart';
 import 'reader_navigation_layout/reader_navigation_layout.dart';
+import 'reader_page_layout/manga_page_layout_popup.dart';
 
+var lastTapDownTimestamp = 0;
 var lastScrollTimestamp = 0;
 
 class NextScrollIntent extends Intent {}
@@ -62,6 +66,7 @@ class ReaderWrapper extends HookConsumerWidget {
     required this.scrollDirection,
     this.reverse = false,
     this.initChapterIndexState,
+    this.pageLayout,
   });
   final Widget child;
   final Manga manga;
@@ -73,6 +78,7 @@ class ReaderWrapper extends HookConsumerWidget {
   final Axis scrollDirection;
   final bool reverse;
   final ValueNotifier<String>? initChapterIndexState;
+  final ReaderPageLayout? pageLayout;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -107,20 +113,20 @@ class ReaderWrapper extends HookConsumerWidget {
     }, []);
 
     final showStatusBar = ref.watch(showStatusBarModeProvider);
-    if (showStatusBar != true) {
-      useEffect(() {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-            overlays: visibility.value ? SystemUiOverlay.values : [SystemUiOverlay.bottom]
-        );
-        return;
-      }, [visibility.value]);
+    useEffect(() {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: visibility.value ? SystemUiOverlay.values : [
+            if (showStatusBar == true) SystemUiOverlay.top,
+          ]
+      );
+      return;
+    }, [visibility.value]);
 
-      useEffect(() {
-        return () {
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-        };
-      }, []);
-    }
+    useEffect(() {
+      return () {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      };
+    }, []);
 
     final mangaReaderPadding = ref.watch(readerPaddingWithMangaIdProvider(mangaId: manga.id.toString()));
     final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider);
@@ -163,6 +169,16 @@ class ReaderWrapper extends HookConsumerWidget {
         ),
       ),
       [mangaReaderMode],
+    );
+
+    final showPageLayoutPopup = useCallback(
+      () => showDialog(
+        context: context,
+        builder: (context) => MangaPageLayoutPopup(
+          manga: manga,
+        ),
+      ),
+      [manga],
     );
 
     final showReaderNavigationLayoutPopup = useCallback(
@@ -208,6 +224,17 @@ class ReaderWrapper extends HookConsumerWidget {
             showReaderModePopup();
           },
         ),
+        if (pageLayout != null) ...[
+          ListTile(
+            leading: const Icon(Icons.menu_book_outlined),
+            title: TextPremium(text: context.l10n!.page_layout),
+            subtitle: Text(pageLayout!.toLocale(context)),
+            onTap: () {
+              context.pop();
+              showPageLayoutPopup();
+            },
+          ),
+        ],
         ListTile(
           leading: const Icon(
             Icons.touch_app_rounded,
@@ -226,7 +253,7 @@ class ReaderWrapper extends HookConsumerWidget {
         ),
       ],
     );
-
+    final reverseKey = Directionality.of(context) == TextDirection.ltr ? reverse : !reverse;
     final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return Theme(
       data: context.theme.copyWith(
@@ -277,15 +304,11 @@ class ReaderWrapper extends HookConsumerWidget {
                     icon: const Icon(Icons.share_outlined),
                   ),
                   IconButton(
-                          onPressed: () async {
-                            launchUrlInWeb(
-                              context,
-                              (chapter.realUrl ?? ""),
-                              ref.read(toastProvider(context)),
-                            );
-                          },
-                          icon: const Icon(Icons.public),
-                        )
+                    onPressed: () {
+                      context.push(Routes.getWebView(chapter.realUrl ?? ""));
+                    },
+                    icon: const Icon(Icons.public),
+                  ),
                 ] : null,
               )
             : null,
@@ -356,7 +379,7 @@ class ReaderWrapper extends HookConsumerWidget {
                         )
                       ],
                     ),
-                    KSizedBox.h8.size,
+                    KSizedBox.h2.size,
                     Container(
                       color: Colors.black.withOpacity(.7),
                       padding: EdgeInsets.fromLTRB(16, 8, 16, safeAreaBottom > 0 ? max(0, safeAreaBottom - 14) : 8),
@@ -387,6 +410,12 @@ class ReaderWrapper extends HookConsumerWidget {
                             icon: const Icon(Icons.app_settings_alt_outlined),
                             onPressed: () => showReaderModePopup(),
                           ),
+                          if (pageLayout != null) ...[
+                            IconButton(
+                              icon: const Icon(Icons.menu_book_outlined),
+                              onPressed: () => showPageLayoutPopup(),
+                            ),
+                          ],
                           Builder(builder: (context) {
                             return IconButton(
                               onPressed: () {
@@ -417,9 +446,9 @@ class ReaderWrapper extends HookConsumerWidget {
         body: Shortcuts(
           shortcuts: {
             const SingleActivator(LogicalKeyboardKey.arrowLeft):
-                PreviousScrollIntent(),
+                reverseKey ? NextScrollIntent() : PreviousScrollIntent(),
             const SingleActivator(LogicalKeyboardKey.arrowRight):
-                NextScrollIntent(),
+                reverseKey ? PreviousScrollIntent() : NextScrollIntent(),
             const SingleActivator(LogicalKeyboardKey.arrowUp):
                 PreviousScrollIntent(),
             const SingleActivator(LogicalKeyboardKey.arrowDown):
@@ -428,8 +457,9 @@ class ReaderWrapper extends HookConsumerWidget {
                 PreviousScrollIntent(),
             const SingleActivator(LogicalKeyboardKey.keyS): NextScrollIntent(),
             const SingleActivator(LogicalKeyboardKey.keyA):
-                PreviousScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.keyD): NextScrollIntent(),
+                reverseKey ? NextScrollIntent() : PreviousScrollIntent(),
+            const SingleActivator(LogicalKeyboardKey.keyD):
+                reverseKey ? PreviousScrollIntent() : NextScrollIntent(),
           },
           child: Actions(
             actions: {
@@ -445,6 +475,11 @@ class ReaderWrapper extends HookConsumerWidget {
                 child:
                 NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification notification) {
+                    if (visibility.value &&
+                        notification is UserScrollNotification &&
+                        notification.direction == ScrollDirection.reverse) {
+                      visibility.value = false;
+                    }
                     if (notification is ScrollEndNotification) {
                       //print('ContinuousReaderMode Scroll End');
                       lastScrollTimestamp = DateTime.now().millisecondsSinceEpoch;
@@ -453,9 +488,11 @@ class ReaderWrapper extends HookConsumerWidget {
                   },
                   child: RepaintBoundary(
                     child: ReaderView(
-                      toggleVisibility: () {
-                        final now = DateTime.now().millisecondsSinceEpoch;
-                        final diff = now - lastScrollTimestamp;
+                      onTapDown: (e) {
+                        lastTapDownTimestamp = DateTime.now().millisecondsSinceEpoch;
+                      },
+                      onTap: () {
+                        final diff = lastTapDownTimestamp - lastScrollTimestamp;
                         //print('ContinuousReaderMode toggleVisibility diff:$diff');
                         if (diff > tapDelay) {
                           //print('ContinuousReaderMode toggleVisibility yes');
@@ -495,7 +532,8 @@ class ReaderWrapper extends HookConsumerWidget {
 class ReaderView extends HookWidget {
   const ReaderView({
     super.key,
-    required this.toggleVisibility,
+    required this.onTapDown,
+    required this.onTap,
     required this.scrollDirection,
     required this.mangaReaderPadding,
     required this.child,
@@ -505,7 +543,8 @@ class ReaderView extends HookWidget {
     required this.readerMode,
   });
 
-  final VoidCallback toggleVisibility;
+  final GestureTapDownCallback onTapDown;
+  final VoidCallback onTap;
   final Axis scrollDirection;
   final double mangaReaderPadding;
   final Widget child;
@@ -519,7 +558,8 @@ class ReaderView extends HookWidget {
     return Stack(
       children: [
         GestureDetector(
-          onTap: toggleVisibility,
+          onTap: onTap,
+          onTapDown: onTapDown,
           behavior: HitTestBehavior.translucent,
           child: child,
         ),

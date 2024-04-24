@@ -62,6 +62,25 @@ enum ReaderMode {
   }
 }
 
+
+enum ReaderPageLayout {
+  singlePage,
+  doublePage,
+  automatic,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case ReaderPageLayout.singlePage:
+        return context.l10n!.page_layout_single;
+      case ReaderPageLayout.doublePage:
+        return context.l10n!.page_layout_double;
+      case ReaderPageLayout.automatic:
+        return context.l10n!.page_layout_automatic;
+    }
+  }
+}
+
 enum ReaderNavigationLayout {
   defaultNavigation,
   lShaped,

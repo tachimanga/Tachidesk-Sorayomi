@@ -16,6 +16,7 @@ import '../../../../constants/enum.dart';
 
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../global_providers/preference_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
@@ -96,6 +97,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
     final query = useState(initialQuery);
     final showSearch = useState(initialQuery.isNotBlank);
     final controller = usePagingController<int, Manga>(firstPageKey: 1);
+    final showDirectFlag = ref.watch(showDirectFlagPrefProvider);
 
     useEffect(() {
       controller.addPageRequestListener(
@@ -122,7 +124,9 @@ class SourceMangaListScreen extends HookConsumerWidget {
       context,
       (data) => Scaffold(
         appBar: AppBar(
-          title: Text(data?.displayName ?? context.l10n!.source),
+          title: Text(
+              "${data?.direct == true && showDirectFlag == true ? "⚡" : ""}"
+              "${data?.displayName ?? context.l10n!.source}"),
           actions: [
             if (sourceId == "0") ...[
               InstallMangaFile(onSuccess: () => controller.refresh()),

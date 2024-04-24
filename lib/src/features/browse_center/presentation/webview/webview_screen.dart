@@ -4,8 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../../constants/gen/assets.gen.dart';
-
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -15,7 +13,6 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../data/settings_repository/settings_repository.dart';
-import 'webview_provider.dart';
 
 class WebViewScreen extends HookConsumerWidget {
   const WebViewScreen({

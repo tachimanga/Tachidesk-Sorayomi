@@ -82,7 +82,9 @@ class AddRepoDialog extends HookConsumerWidget {
         .showToastOnError(toast);
     addingState.value = false;
 
-    ref.read(repoUrlProvider.notifier).update(repo?.baseUrl ?? "");
+    if (repo?.baseUrl.isNotBlank == true) {
+      ref.read(repoUrlProvider.notifier).update(repo?.baseUrl ?? "");
+    }
 
     if (repo != null) {
       if (context.mounted) {

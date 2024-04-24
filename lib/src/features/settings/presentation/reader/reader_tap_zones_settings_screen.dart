@@ -10,12 +10,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/enum.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../manga_book/presentation/reader/widgets/reader_navigation_layout/reader_navigation_layout.dart';
-import 'widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import 'widgets/reader_invert_tap_tile/reader_invert_tap_tile.dart';
-import 'widgets/reader_mode_tile/reader_mode_tile.dart';
 import 'widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
-import 'widgets/reader_padding_slider/reader_padding_slider.dart';
 import 'widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
+import 'widgets/reader_show_tap_zone_tile/reader_show_tap_zone_tile.dart';
 
 class ReaderTapZonesSettingsScreen extends ConsumerWidget {
   const ReaderTapZonesSettingsScreen({super.key});
@@ -38,6 +36,7 @@ class ReaderTapZonesSettingsScreen extends ConsumerWidget {
                   if (layout != ReaderNavigationLayout.rightAndLeft) ...[
                     const ReaderInvertTapTile(),
                   ],
+                  const ReaderShowTapZonesTile(),
                 ],
                 const Divider(),
               ],

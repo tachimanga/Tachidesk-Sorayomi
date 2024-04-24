@@ -56,6 +56,7 @@ abstract class RepoUrl {
 abstract class MangaUrl {
   static String withId(int mangaId) => "$_manga/$mangaId";
   static String fullWithId(String mangaId) => "$_manga/$mangaId/full";
+  static String realUrl(String mangaId) => "$_manga/$mangaId/realUrl";
   static String thumbnail(int mangaId) => "$_manga/$mangaId/thumbnail";
   static String category(String mangaId) => "$_manga/$mangaId/category";
   static String updateCategory(String mangaId) => "$_manga/$mangaId/updateCategory";
@@ -71,6 +72,8 @@ abstract class MangaUrl {
       "$_manga/$mangaId/chapter/$chapterIndex";
   static String chapterMetaWithIndex(int mangaId, int chapterIndex) =>
       "$_manga/$mangaId/chapter/$chapterIndex/meta";
+  static String chapterRealUrlWithIndex(String mangaId, String chapterIndex) =>
+      "$_manga/$mangaId/chapter/$chapterIndex/realUrl";
   static String chapterBatch = "/chapter/batch";
   static String chapterPageWithIndex({
     required String mangaId,

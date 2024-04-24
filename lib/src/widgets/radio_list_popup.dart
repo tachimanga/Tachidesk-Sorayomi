@@ -17,18 +17,22 @@ class RadioListPopup<T> extends StatelessWidget {
     required this.optionList,
     required this.value,
     required this.onChange,
+    this.subTitle,
     this.optionDisplayName,
     this.optionDisplaySubName,
     this.showDisplaySubName,
+    this.additionWidgets,
   });
 
   final String title;
+  final String? subTitle;
   final List<T> optionList;
   final T value;
   final ValueChanged<T> onChange;
   final String Function(T)? optionDisplayName;
   final String Function(T)? optionDisplaySubName;
   final bool Function(T)? showDisplaySubName;
+  final List<Widget>? additionWidgets;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +43,11 @@ class RadioListPopup<T> extends StatelessWidget {
         optionList: optionList,
         value: value,
         onChange: onChange,
+        subTitle: subTitle,
         displayName: optionDisplayName,
         displaySubName: optionDisplaySubName,
         showDisplaySubName: showDisplaySubName,
+        additionWidgets: additionWidgets,
       ),
       actions: const [PopButton()],
     );
@@ -54,26 +60,46 @@ class RadioList<T> extends StatelessWidget {
     required this.optionList,
     required this.value,
     required this.onChange,
+    this.subTitle,
     this.displayName,
     this.displaySubName,
     this.showDisplaySubName,
+    this.additionWidgets,
   });
 
+  final String? subTitle;
   final List<T> optionList;
   final T value;
   final ValueChanged<T> onChange;
   final String Function(T)? displayName;
   final String Function(T)? displaySubName;
   final bool Function(T)? showDisplaySubName;
+  final List<Widget>? additionWidgets;
+
   @override
   Widget build(BuildContext context) {
+    final subTitleWidget = subTitle != null
+        ? Padding(
+            padding: const EdgeInsets.only(
+              left: 24.0,
+              right: 24.0,
+              bottom: 10.0,
+            ),
+            child: Text(
+              subTitle!,
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+            ),
+          )
+        : null;
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: context.height * .7),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: optionList
-              .map(
+          children: [
+            if (subTitleWidget != null) ...[subTitleWidget],
+            ...optionList.map(
                 (e) => RadioListTile<T>(
                   activeColor: context.theme.indicatorColor,
                   title: Text(
@@ -95,6 +121,8 @@ class RadioList<T> extends StatelessWidget {
                 ),
               )
               .toList(),
+            ...?additionWidgets,
+          ],
         ),
       ),
     );

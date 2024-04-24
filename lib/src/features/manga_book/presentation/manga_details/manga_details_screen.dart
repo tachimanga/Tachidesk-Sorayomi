@@ -27,6 +27,7 @@ import '../../../browse_center/presentation/source_manga_list/controller/source_
 import '../../../library/presentation/library/controller/library_controller.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../../settings/presentation/share/controller/share_controller.dart';
+import '../../data/manga_book_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/manga/manga_model.dart';
 import '../../widgets/chapter_actions/multi_chapters_actions_bottom_app_bar.dart';
@@ -140,9 +141,22 @@ class MangaDetailsScreen extends HookConsumerWidget {
       end: context.theme.appBarTheme.foregroundColor?.withOpacity(1),
     ).animate(animationController).value;
 
+    useEffect(() {
+      manga.showToastOnError(toast, withMicrotask: true);
+      return;
+    }, [manga]);
+
+    final localManga = manga.valueOrNull ?? mangaBasic;
+    final mangaHasError = !manga.isLoading && manga.hasError;
+    final mangaVO = mangaHasError &&
+            localManga != null &&
+            filteredChapterList.valueOrNull != null
+        ? AsyncData(localManga)
+        : manga;
+
     return WillPopScope(
       onWillPop: null,
-      child: manga.showUiWhenData(
+      child: mangaVO.showUiWhenData(
         context,
         (data) => Scaffold(
           extendBodyBehindAppBar: !context.isTablet,
@@ -155,6 +169,8 @@ class MangaDetailsScreen extends HookConsumerWidget {
                   title: Text(
                     context.l10n!.numSelected(selectedChapters.value.length),
                   ),
+                  foregroundColor: context.isTablet ? null : textColorTween,
+                  backgroundColor: context.isTablet ? null : bgColorTween,
                   actions: [
                     IconButton(
                       onPressed: () {
@@ -271,6 +287,16 @@ class MangaDetailsScreen extends HookConsumerWidget {
                             onTap: () => refresh(true),
                             child: Text(context.l10n!.refresh),
                           ),
+                        if (filteredChapterList.valueOrNull?.isNotEmpty == true)
+                          PopupMenuItem(
+                            onTap: () {
+                              final i = filteredChapterList.valueOrNull!.first;
+                              selectedChapters.value = {
+                                if (i.id != null) i.id!: i
+                              };
+                            },
+                            child: Text(context.l10n!.select_chapters),
+                          ),
                         if (data?.sourceId == "0")
                           PopupMenuItem(
                             onTap: () async {
@@ -360,7 +386,15 @@ class MangaDetailsScreen extends HookConsumerWidget {
         ),
         refresh: refresh,
         errorSource: "manga-details",
-        webViewUrl: manga.valueOrNull?.realUrl,
+        webViewUrlProvider: () async {
+          final url = manga.valueOrNull?.realUrl;
+          if (url?.isNotEmpty == true) {
+            return url;
+          }
+          return await ref
+              .read(mangaBookRepositoryProvider)
+              .getMangaRealUrl(mangaId: mangaId);
+        },
         wrapper: (body) => Scaffold(
           appBar: AppBar(
             title: Text(mangaBasic?.title ?? context.l10n!.manga),

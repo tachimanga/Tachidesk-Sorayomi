@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_sizes.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/server_image.dart';
@@ -40,6 +41,29 @@ class MigrateMangaListTile extends ConsumerWidget {
         ),
       ),
       title: Text(manga.title ?? ""),
+      trailing: PopupMenuButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: KBorderRadius.r16.radius,
+          ),
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                onTap: () {
+                  context.push(Routes.getManga(manga.id ?? 0));
+                },
+                child: Text(context.l10n!.migrate_action_show_manga),
+              ),
+              PopupMenuItem(
+                onTap: () {
+                  context.push(
+                    Routes.getGlobalSearch(manga.title ?? ""),
+                    extra: manga,
+                  );
+                },
+                child: Text(context.l10n!.migrate),
+              ),
+            ];
+          }),
     );
   }
 }

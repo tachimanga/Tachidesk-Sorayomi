@@ -18,6 +18,7 @@ import 'constants/enum.dart';
 import 'constants/navigation_bar_data.dart';
 import 'features/about/presentation/about/widget/file_log_tile.dart';
 import 'features/custom/inapp/purchase_providers.dart';
+import 'features/manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import 'features/settings/domain/repo/repo_model.dart';
 import 'features/settings/presentation/appearance/constants/theme_define.dart';
 import 'features/settings/presentation/appearance/controller/theme_controller.dart';
@@ -86,6 +87,9 @@ class Sorayomi extends HookConsumerWidget {
     Locale? matchLocale;
     var maxScore = 0;
     for (final locale in AppLocalizations.supportedLocales) {
+      if (locale.languageCode == 'ja') {
+        continue;
+      }
       var score = 0;
       if (locale.languageCode == systemLocale.languageCode) {
         score += 10;
@@ -234,6 +238,15 @@ class Sorayomi extends HookConsumerWidget {
         ref
             .read(incognitoModePrefProvider.notifier)
             .update(false);
+      });
+    }
+
+    if (ref.read(readerPageLayoutPrefProvider) != ReaderPageLayout.singlePage) {
+      log("reset readerPageLayoutPrefProvider");
+      Future(() {
+        ref
+            .read(readerPageLayoutPrefProvider.notifier)
+            .update(ReaderPageLayout.singlePage);
       });
     }
   }

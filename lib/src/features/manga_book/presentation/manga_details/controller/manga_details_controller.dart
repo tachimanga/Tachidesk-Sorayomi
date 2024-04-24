@@ -232,6 +232,18 @@ Chapter? firstUnreadInFilteredChapterList(
         lastReadChapter = chapter;
       }
     }
+    if (lastReadChapter?.read == true) {
+      var find = false;
+      for (final chapter in list) {
+        if (find) {
+          lastReadChapter = chapter;
+          break;
+        }
+        if (chapter == lastReadChapter) {
+          find = true;
+        }
+      }
+    }
     return lastReadChapter;
     /*
     if (isAscSorted) {

@@ -253,6 +253,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                   imageUrl: imageUrl,
                   imageData: page.imageData,
                   traceInfo: traceInfo,
+                  chapterUrl: currChapter.value.realUrl,
                   reloadButton: true,
                   progressIndicatorBuilder: (_, __, downloadProgress) => Center(
                     child: CircularProgressIndicator(

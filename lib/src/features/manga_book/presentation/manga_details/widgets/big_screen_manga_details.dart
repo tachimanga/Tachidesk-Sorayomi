@@ -10,6 +10,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../widgets/scrollbar_behavior.dart';
+import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
 import 'chapter_list_tile.dart';
@@ -55,7 +57,8 @@ class BigScreenMangaDetails extends ConsumerWidget {
           ),
           const VerticalDivider(width: 0),
           Expanded(
-            child: chapterList.showUiWhenData(
+            child: ScrollConfiguration(behavior: ScrollbarBehavior(), child:
+            chapterList.showUiWhenData(
               context,
               (data) {
                 if (data.isNotBlank) {
@@ -104,8 +107,17 @@ class BigScreenMangaDetails extends ConsumerWidget {
               },
               refresh: () => onRefresh(false),
               errorSource: "manga-details",
-              webViewUrl: manga.realUrl,
+              webViewUrlProvider: () async {
+                final url = manga.realUrl;
+                if (url?.isNotEmpty == true) {
+                  return url;
+                }
+                return await ref
+                    .read(mangaBookRepositoryProvider)
+                    .getMangaRealUrl(mangaId: mangaId);
+              },
             ),
+          ),
           ),
         ],
       ),

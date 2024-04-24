@@ -7,8 +7,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:octo_image/octo_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../constants/endpoints.dart';
 import '../constants/enum.dart';
@@ -20,11 +22,19 @@ import '../features/manga_book/presentation/reader/controller/reader_controller_
 import '../features/settings/presentation/server/widget/credential_popup/credentials_popup.dart';
 import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../global_providers/global_providers.dart';
+import '../routes/router_config.dart';
 import '../utils/classes/trace/trace_model.dart';
+import '../utils/event_util.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
+import '../utils/log.dart';
 import '../utils/misc/toast/toast.dart';
 import 'emoticons.dart';
+
+final codecMessages = <String>[
+  "Exception: Codec failed to produce an image, possibly due to invalid image data.",
+  "Exception: Invalid image data",
+];
 
 class ServerImage extends ConsumerWidget {
   const ServerImage({
@@ -33,6 +43,7 @@ class ServerImage extends ConsumerWidget {
     this.imageData,
     this.size,
     this.fit,
+    this.alignment = Alignment.center,
     this.appendApiToUrl = false,
     this.reloadButton = false,
     this.progressIndicatorBuilder,
@@ -41,13 +52,16 @@ class ServerImage extends ConsumerWidget {
     this.memCacheWidth,
     this.memCacheHeight,
     this.traceInfo,
+    this.chapterUrl,
   });
 
   final String imageUrl;
   final ImgData? imageData;
   final TraceInfo? traceInfo;
+  final String? chapterUrl;
   final Size? size;
   final BoxFit? fit;
+  final Alignment alignment;
   final bool appendApiToUrl;
   final bool reloadButton;
   final Widget Function(BuildContext, String, DownloadProgress)?
@@ -87,6 +101,28 @@ class ServerImage extends ConsumerWidget {
     final keyProvider = reloadButton ? uniqKeyProvider(baseApi) : null;
     Widget buildImgErrorWidget(ctx, url, error) {
       if (reloadButton) {
+        if (codecMessages.contains(error.toString())) {
+          return ImgError(
+            text: error.toString(),
+            traceInfo: traceInfo,
+            imageUrl: baseApi,
+            button: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    await onTapOpenButton(
+                      baseApi,
+                      traceInfo,
+                      error.toString(),
+                    );
+                  },
+                  child: Text(context.l10n!.tap_to_open),
+                ),
+              ],
+            ),
+          );
+        }
         return ImgError(
             text: error.toString(),
             traceInfo: traceInfo,
@@ -98,10 +134,25 @@ class ServerImage extends ConsumerWidget {
                   onPressed: () => ref.read(keyProvider!.notifier).reload(),
                   child: Text(context.l10n!.refresh),
                 ),
+                if (chapterUrl?.isNotEmpty == true) ...[
+                  TextButton(
+                    onPressed: () {
+                      onTapWebViewButton(
+                        context,
+                        chapterUrl,
+                        traceInfo,
+                        error.toString(),
+                      );
+                    },
+                    child: Text(context.l10n!.webView),
+                  ),
+                ],
                 if (magic.b5) ...[
                   TextButton(
                     onPressed: () {
-                      final url = userDefaults.getString("config.findAnswerUrl") ?? AppUrls.findAnswer.url;
+                      final url =
+                          userDefaults.getString("config.findAnswerUrl") ??
+                              AppUrls.findAnswer.url;
                       launchUrlInWeb(
                         context,
                         "$url?src=img&err=${error.toString()}",
@@ -119,6 +170,7 @@ class ServerImage extends ConsumerWidget {
         color: Colors.grey,
       );
     }
+
     return CachedNetworkImage(
       key: reloadButton ? ref.watch(keyProvider!) : null,
       imageUrl: baseApi,
@@ -131,6 +183,7 @@ class ServerImage extends ConsumerWidget {
       // : {"User-Agent": userAgent},
       width: size?.width,
       fit: fit ?? BoxFit.cover,
+      alignment: alignment,
       memCacheWidth: downscaleImage == true ? memCacheWidth : null,
       memCacheHeight: downscaleImage == true ? memCacheHeight : null,
       imageRenderMethodForWeb: authType == AuthType.basic && basicToken != null
@@ -149,6 +202,46 @@ class ServerImage extends ConsumerWidget {
           : buildImgErrorWidget(context, url, error),
       imageSizeCache: imageSizeCache,
     );
+  }
+
+  Future<void> onTapOpenButton(
+    String imageUrl,
+    TraceInfo? traceInfo,
+    String? error,
+  ) async {
+    final file = await DefaultCacheManager().getFileFromCache(imageUrl);
+    final path = file?.file.path;
+    final exist = path?.isNotEmpty == true;
+    log("img file path:$path");
+
+    logEvent3("READER:IMAGE:OPEN:PREVIEW", {
+      "type": traceInfo?.type,
+      "sourceId": traceInfo?.sourceId,
+      "x": traceInfo?.mangaUrl,
+      "url": imageUrl,
+      "error": "$error, e:$exist",
+    });
+
+    if (exist) {
+      await pipe.invokeMethod("READER:IMAGE:PREVIEW", {"path": path});
+    }
+  }
+
+  void onTapWebViewButton(
+    BuildContext context,
+    String? chapterUrl,
+    TraceInfo? traceInfo,
+    String? error,
+  ) {
+    final parts = error?.split(", uri = ");
+    logEvent3("READER:IMAGE:OPEN:WEBVIEW", {
+      "type": traceInfo?.type,
+      "sourceId": traceInfo?.sourceId,
+      "x": traceInfo?.mangaUrl,
+      "url": imageUrl,
+      "error": parts.firstOrNull,
+    });
+    context.push(Routes.getWebView(chapterUrl ?? ""));
   }
 }
 

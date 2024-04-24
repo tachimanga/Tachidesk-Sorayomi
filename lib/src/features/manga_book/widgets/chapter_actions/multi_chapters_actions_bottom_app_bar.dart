@@ -42,7 +42,7 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
     final selectedList = selectedChapters.value.values;
     final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return Padding(
-      padding: EdgeInsets.fromLTRB(8, 8, 8, safeAreaBottom > 0 ? max(0, safeAreaBottom - 14) : 8),
+      padding: EdgeInsets.fromLTRB(8, 8, 8, safeAreaBottom > 0 ? max(0, safeAreaBottom - 10) : 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

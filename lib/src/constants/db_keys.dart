@@ -18,11 +18,14 @@ enum DBKeys {
   authType(AuthType.none),
   basicCredentials(null),
   readerMode(ReaderMode.webtoon),
+  readerPageLayout(ReaderPageLayout.automatic),
+  readerPageLayoutSkipFirstPage(false),
   readerPadding(0.0),
   readerPaddingLandscape(0.0),
   readerMagnifierSize(1.0),
   readerNavigationLayout(ReaderNavigationLayout.disabled),
   invertTap(false),
+  showTapZones(true),
   enableFileLog(false),
   useSystemProxy(true),
   showPlus(null),
@@ -48,7 +51,7 @@ enum DBKeys {
   purchaseDone(false),
   purchaseExpireMs(0),
   purchaseToken(null),
-  serverApiUrl('https://api.tachiyomi.workers.dev'),
+  serverApiUrl('https://api.tachimanga.app'),
   autoBackup(true),
   markNeedAskRate(false),
   initLocation(null),
@@ -80,6 +83,7 @@ enum DBKeys {
   incognitoModeUsed(false),
   dateFormat(DateFormatEnum.yMMMd),
   libraryShowMangaCount(false),
+  showDirectFlag(false),
   ;
 
   const DBKeys(this.initial);

@@ -38,7 +38,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     bool addScaffoldWrapper = false,
     bool skipLoadingOnReload = false,
     String? errorSource,
-    String? webViewUrl,
+    Future<String?> Function()? webViewUrlProvider,
   }) {
     if (addScaffoldWrapper) {
       wrapper = (body) => Scaffold(
@@ -54,14 +54,14 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               showGenericError: showGenericError,
               error: error,
               src: errorSource,
-              url: webViewUrl,
+              webViewUrlProvider: webViewUrlProvider,
             )
           : wrapper(CommonErrorWidget(
               refresh: refresh,
               showGenericError: showGenericError,
               error: error,
               src: errorSource,
-              url: webViewUrl,
+              webViewUrlProvider: webViewUrlProvider,
             )),
       loading: () => wrapper == null
           ? const CenterCircularProgressIndicator()

@@ -285,8 +285,9 @@ class ProductsV3 extends _$ProductsV3 {
     log("[purchase]list order $list");
     log("[purchase]product map $map");
 
-    list.sort();
-    String key = list.join(',');
+    final sortedList = List.from(list);
+    sortedList.sort();
+    String key = sortedList.join(',');
 
     ProductDetailsResponse? iapData = iapDataMap[key];
     if (iapData == null) {
@@ -308,7 +309,7 @@ class ProductsV3 extends _$ProductsV3 {
     } else {
       log("[purchase] load IAP from cache");
     }
-
+    
     var productDetails = <ProductDetails>[];
     for (final id in list) {
       final e = iapData.productDetails.firstWhereOrNull((element) => element.id == id);
