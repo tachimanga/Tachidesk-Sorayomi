@@ -102,52 +102,52 @@ class MangaDescription extends HookConsumerWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-                Expanded(
-                  child: MangaAddLibraryButton(manga: manga, refresh: refresh),
-                ),
-                Expanded(
-                  child: TextButton.icon(
-                    onPressed: () async {
+              Expanded(
+                child: MangaAddLibraryButton(manga: manga, refresh: refresh),
+              ),
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: () async {
                       final purchase = await checkPurchase(
                           purchaseGate,
                           testflightFlag,
                           freeTrialFlag,
                           context,
                           toast);
-                      if (!purchase) {
-                        return;
-                      }
-                      if (context.mounted && !trackerAvailable) {
-                        await context.push(Routes.mangaTrackSetting);
-                        refresh();
-                        return;
-                      }
+                    if (!purchase) {
+                      return;
+                    }
+                    if (context.mounted && !trackerAvailable) {
+                      await context.push(Routes.mangaTrackSetting);
                       refresh();
-                      if (context.mounted) {
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: context.theme.cardColor,
-                          clipBehavior: Clip.hardEdge,
+                      return;
+                    }
+                    refresh();
+                    if (context.mounted) {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: context.theme.cardColor,
+                        clipBehavior: Clip.hardEdge,
                           builder: (context) =>
                               TrackerSettingWidget(
                                   mangaId: manga.id.toString(),
                                   refresh: refresh),
-                        );
-                      }
-                    },
-                    icon: trackerCount != null && trackerCount > 0
-                        ? const Icon(Icons.done_rounded)
-                        : const Icon(Icons.sync_outlined),
-                    style: trackerCount != null && trackerCount > 0
-                        ? TextButton.styleFrom(padding: EdgeInsets.zero)
-                        : TextButton.styleFrom(
-                            foregroundColor: Colors.grey,
-                            padding: EdgeInsets.zero),
-                    label: trackerCount != null && trackerCount > 0
-                        ? Text(context.l10n!.num_trackers(trackerCount))
-                        : Text(context.l10n!.tracking),
-                  ),
+                      );
+                    }
+                  },
+                  icon: trackerCount != null && trackerCount > 0
+                      ? const Icon(Icons.done_rounded)
+                      : const Icon(Icons.sync_outlined),
+                  style: trackerCount != null && trackerCount > 0
+                      ? TextButton.styleFrom(padding: EdgeInsets.zero)
+                      : TextButton.styleFrom(
+                          foregroundColor: Colors.grey,
+                          padding: EdgeInsets.zero),
+                  label: trackerCount != null && trackerCount > 0
+                      ? Text(context.l10n!.num_trackers(trackerCount))
+                      : Text(context.l10n!.tracking),
                 ),
+              ),
               if (manga.realUrl.isNotBlank)
                 Expanded(
                     child: TextButton.icon(
@@ -165,11 +165,11 @@ class MangaDescription extends HookConsumerWidget {
         if (manga.description.isNotBlank)
           Padding(
             padding: KEdgeInsets.a16.size,
-            child: Stack(
-              alignment: AlignmentDirectional.bottomStart,
+            child: DescriptionWrapper(
+              isExpanded: isExpanded.value,
               children: [
                 Text(
-                  "${manga.description}\n",
+                  "${manga.description}",
                   maxLines: isExpanded.value ? null : 3,
                 ),
                 InkWell(
@@ -241,6 +241,30 @@ class MangaDescription extends HookConsumerWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+class DescriptionWrapper extends StatelessWidget {
+  const DescriptionWrapper({
+    super.key,
+    required this.isExpanded,
+    required this.children,
+  });
+
+  final bool isExpanded;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isExpanded) {
+      return Column(
+        children: children,
+      );
+    }
+    return Stack(
+      alignment: AlignmentDirectional.bottomStart,
+      children: children,
     );
   }
 }

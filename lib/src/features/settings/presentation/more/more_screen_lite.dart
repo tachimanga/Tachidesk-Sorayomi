@@ -180,7 +180,7 @@ class MoreScreenLite extends HookConsumerWidget {
           if (magic.a4) ...[
             ListTile(
               title: Text(context.l10n!.about),
-              leading: const Icon(Icons.info_rounded),
+              leading: const Icon(Icons.info_outline),
               onTap: () => context.push(Routes.about),
             ),
           ],

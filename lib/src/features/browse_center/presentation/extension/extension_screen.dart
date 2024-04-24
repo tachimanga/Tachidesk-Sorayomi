@@ -34,6 +34,11 @@ class ExtensionScreen extends HookConsumerWidget {
     required AsyncCallback refresh,
   }) {
     if (extensions.isBlank) return <Widget>[];
+
+    final repoName = extensions![0].repoName;
+    final showRepoName =
+        extensions.any((e) => e.repoName.isNotBlank && e.repoName != repoName);
+
     return [
       SliverToBoxAdapter(
         child: ListTile(
@@ -47,7 +52,7 @@ class ExtensionScreen extends HookConsumerWidget {
             key: ValueKey(extensions[index].extensionId),
             extension: extensions[index],
             refresh: refresh,
-            showRepoName: repoId == null,
+            showRepoName: repoId == null && showRepoName,
           ),
           childCount: extensions!.length,
         ),

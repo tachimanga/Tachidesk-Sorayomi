@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/emoticons.dart';
+import '../../../../../widgets/scrollbar_behavior.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
@@ -61,7 +62,8 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
           }
           return false;
         },
-        child: CustomScrollView(
+        child: ScrollConfiguration(behavior: ScrollbarBehavior(), child:
+        CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(
@@ -113,7 +115,15 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
               },
               refresh: () => onRefresh(false),
               errorSource: "manga-details",
-              webViewUrl: manga.realUrl,
+              webViewUrlProvider: () async {
+                final url = manga.realUrl;
+                if (url?.isNotEmpty == true) {
+                  return url;
+                }
+                return await ref
+                    .read(mangaBookRepositoryProvider)
+                    .getMangaRealUrl(mangaId: mangaId);
+              },
               wrapper: (child) => SliverToBoxAdapter(
                 child: SizedBox(
                   height: context.height * .5,
@@ -124,6 +134,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
             const SliverToBoxAdapter(child: ListTile()),
           ],
         ),
+      ),
       ),
     );
   }

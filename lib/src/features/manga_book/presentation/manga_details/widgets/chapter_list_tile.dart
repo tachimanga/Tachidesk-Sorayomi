@@ -91,6 +91,11 @@ class ChapterListTile extends StatelessWidget {
                 ],
               )
             : null,
+        leading: canTapSelect
+            ? (isSelected
+                ? const Icon(Icons.check_circle)
+                : const Icon(Icons.radio_button_unchecked))
+            : null,
         trailing: (chapter.index != null && manga.id != null)
             ? DownloadStatusIcon(
                 updateData: updateData,

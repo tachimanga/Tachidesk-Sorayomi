@@ -13,6 +13,7 @@ import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_invert_tap_tile/reader_invert_tap_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_show_tap_zone_tile/reader_show_tap_zone_tile.dart';
 import 'layouts/edge_layout.dart';
 import 'layouts/kindlish_layout.dart';
 import 'layouts/l_shaped_layout.dart';
@@ -39,25 +40,40 @@ class ReaderNavigationLayoutWidget extends HookConsumerWidget {
         useAnimationController(duration: const Duration(seconds: 2));
     useAnimation(animationController);
 
+    final readerShowTapZones = ref.watch(readerShowTapZonesPrefProvider);
+
     final animationFlag = useState(0);
     useEffect(() {
       animationFlag.value = animationFlag.value + 1;
       return;
     }, [navigationLayout]);
 
+    final initiallyHidden =
+        readerShowTapZones == false && animationFlag.value <= 1;
+
     final nextColorTween = alwaysShow == true
         ? Colors.green
-        : ColorTween(begin: Colors.green).animate(animationController).value;
+        : (initiallyHidden
+            ? null
+            : ColorTween(begin: Colors.green)
+                .animate(animationController)
+                .value);
 
     final prevColorTween = alwaysShow == true
         ? Colors.blue
-        : ColorTween(begin: Colors.blue).animate(animationController).value;
+        : (initiallyHidden
+            ? null
+            : ColorTween(begin: Colors.blue)
+                .animate(animationController)
+                .value);
 
     final opacityTween = alwaysShow == true
         ? 1.0
-        : Tween<double>(begin: 1.0, end: 0.0)
-            .animate(animationController)
-            .value;
+        : (initiallyHidden
+            ? 0.0
+            : Tween<double>(begin: 1.0, end: 0.0)
+                .animate(animationController)
+                .value);
 
     useEffect(() {
       animationController.reset();

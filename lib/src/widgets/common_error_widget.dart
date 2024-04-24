@@ -28,17 +28,18 @@ class CommonErrorWidget extends HookConsumerWidget {
     this.refresh,
     this.showGenericError = false,
     this.src,
-    this.url,
+    this.webViewUrlProvider,
     required this.error,
   });
   final VoidCallback? refresh;
   final bool showGenericError;
   final Object error;
   final String? src;
-  final String? url;
+  final Future<String?> Function()? webViewUrlProvider;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.read(toastProvider(context));
     final magic = ref.watch(getMagicProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final message = showGenericError
@@ -59,7 +60,9 @@ class CommonErrorWidget extends HookConsumerWidget {
                       refresh!();
                     }
                     Timer(const Duration(milliseconds: 500), () {
-                      enableRefresh.value = true;
+                      if (context.mounted) {
+                        enableRefresh.value = true;
+                      }
                     });
                   }
                 : null,
@@ -68,13 +71,24 @@ class CommonErrorWidget extends HookConsumerWidget {
               Text(context.l10n!.refresh)
             ]),
           ),
-          if (url?.isNotEmpty ?? false) ...[
+          if (webViewUrlProvider != null) ...[
             TextButton(
-              onPressed: () {
-                context.push(Routes.getWebView(url ?? ""));
+              onPressed: () async {
+                (await AsyncValue.guard(() async {
+                  final url = await webViewUrlProvider!();
+                  if (url.isBlank) {
+                    throw Exception("Failed to get page url.");
+                  }
+                  if (context.mounted) {
+                    context.push(Routes.getWebView(url ?? ""));
+                  }
+                }))
+                    .showToastOnError(toast);
               },
-              child:
-                  Column(children: [const Icon(Icons.public), Text("WebView")]),
+              child: Column(children: [
+                const Icon(Icons.public),
+                Text(context.l10n!.webView)
+              ]),
             )
           ],
           if (magic.b5) ...[

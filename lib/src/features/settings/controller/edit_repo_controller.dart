@@ -30,3 +30,15 @@ int repoCount(RepoCountRef ref) {
   return repoList.valueOrNull?.length ?? 0;
 }
 
+@riverpod
+class RepoListWithCache extends _$RepoListWithCache {
+  @override
+  Future<List<Repo>?> build() async {
+    final token = CancelToken();
+    ref.onDispose(token.cancel);
+    final result =
+        await ref.watch(repoRepositoryProvider).getRepoList(cancelToken: token);
+    ref.keepAlive();
+    return result;
+  }
+}

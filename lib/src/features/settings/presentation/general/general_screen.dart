@@ -14,6 +14,7 @@ import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/radio_list_popup.dart';
+import '../../../custom/inapp/purchase_providers.dart';
 import 'widgets/default_tab_tile/default_tab_tile.dart';
 
 class GeneralScreen extends ConsumerWidget {
@@ -21,6 +22,15 @@ class GeneralScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final betaLocales = ['ja'];
+    final testflightFlag = ref.watch(testflightFlagProvider);
+    final locales = testflightFlag ||
+            betaLocales.contains(context.currentLocale.languageCode)
+        ? AppLocalizations.supportedLocales
+        : AppLocalizations.supportedLocales
+            .where((e) => !betaLocales.contains(e.languageCode))
+            .toList();
+
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n!.general)),
       body: ListView(
@@ -33,7 +43,7 @@ class GeneralScreen extends ConsumerWidget {
               context: context,
               builder: (context) => RadioListPopup<Locale>(
                 title: context.l10n!.appLanguage,
-                optionList: AppLocalizations.supportedLocales,
+                optionList: locales,
                 value: context.currentLocale,
                 onChange: (locale) {
                   ref.read(l10nProvider.notifier).update(locale);

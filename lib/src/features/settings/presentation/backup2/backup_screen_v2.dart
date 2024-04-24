@@ -15,6 +15,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/enum.dart';
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
@@ -364,6 +365,15 @@ class BackupScreenV2 extends HookConsumerWidget {
     if (!context.mounted) {
       return;
     }
+
+    final fileName = file?.files.single.name;
+    if (fileName?.startsWith('Tachimanga') == true &&
+        fileName?.endsWith('.zip') == true) {
+      showConfirmRestoreDialog(ref, context, loadingState, toast, msgMap,
+          path: file?.files.single.path);
+      return;
+    }
+
     showConfirmImportDialog(
         ref, context, loadingState, toast, file?.files.single, msgMap, refresh);
   }
@@ -482,6 +492,7 @@ extension BackupAsyncValueExtensions<T> on AsyncValue<T> {
     if (!isRefreshing) {
       whenOrNull(
         error: (error, stackTrace) {
+          logEvent3("BACKUP:IMPORT:FAIL", {"error": error.toString()});
           if (error.toString() ==
                   "java.lang.OutOfMemoryError: Java heap space" &&
               context.mounted) {

@@ -12,6 +12,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../constants/app_constants.dart';
+import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/endpoints.dart';
 import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/classes/pair/pair_model.dart';
@@ -27,6 +28,7 @@ import '../../../manga_details/controller/manga_details_controller.dart';
 import '../../controller/ad_controller.dart';
 import '../../controller/reader_controller.dart';
 import '../../controller/reader_controller_v2.dart';
+import '../../controller/reader_setting_controller.dart';
 import '../chapter_loading_widget.dart';
 import '../interactive_wrapper.dart';
 import '../padding_server_image.dart';
@@ -34,14 +36,14 @@ import '../page_action_widget.dart';
 import '../page_scroll_physics.dart';
 import '../reader_wrapper.dart';
 
-class SinglePageReaderMode2 extends HookConsumerWidget {
-  const SinglePageReaderMode2({
+class DoublePageReaderMode extends HookConsumerWidget {
+  const DoublePageReaderMode({
     super.key,
     required this.manga,
     required this.initChapterIndexState,
     required this.initChapter,
     required this.readerListData,
-    required this.currentIndex,
+    required this.currentRawIndex,
     required this.pageLayout,
     this.onPageChanged,
     this.onNoNextChapter,
@@ -53,12 +55,12 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
   final ValueNotifier<String> initChapterIndexState;
   final Chapter initChapter;
   final ReaderListData readerListData;
-  final ValueNotifier<int> currentIndex;
+  final ValueNotifier<int> currentRawIndex;
+  final ReaderPageLayout pageLayout;
   final ValueSetter<PageChangedData>? onPageChanged;
   final AsyncCallback? onNoNextChapter;
   final bool reverse;
   final Axis scrollDirection;
-  final ReaderPageLayout pageLayout;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,9 +70,15 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     //     log("[Reader2] SinglePageReaderMode2 dispose");
     //   };
     // }, []);
-    final initIndex = currentIndex.value;
+
+    // final skipFirstPage = ref.watch(
+    //     readerPageLayoutSkipFirstWithMangaIdProvider(mangaId: "${manga.id}"));
+
+    final rawInitIndex = currentRawIndex.value;
+    final uiInitIndex = (rawInitIndex / 2).truncate();
+
     final scrollController = usePageController(
-      initialPage: initIndex,
+      initialPage: uiInitIndex,
     );
 
     final currChapter = useState(initChapter);
@@ -78,7 +86,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     //     "initChapter: ${initChapter.name}");
 
     final currPage = useState(readerListData.pageList[min(
-      initIndex,
+      rawInitIndex,
       readerListData.pageList.length - 1,
     )]);
 
@@ -89,15 +97,15 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       ),
     );
     useEffect(() {
-      notifyPageUpdate(currentIndex, currPage, currChapter, false);
+      notifyPageUpdate(currentRawIndex, currPage, currChapter, false);
       if (onNoNextChapter != null) {
-        notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter!);
+        notifyNoNextChapter(currentRawIndex, chapterPair, onNoNextChapter!);
       }
       return;
-    }, [currentIndex.value]);
+    }, [currentRawIndex.value]);
     useEffect(() {
       return () {
-        notifyPageUpdate(currentIndex, currPage, currChapter, true);
+        notifyPageUpdate(currentRawIndex, currPage, currChapter, true);
       };
     }, []);
 
@@ -115,7 +123,11 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       listener() {
         final currentPage = scrollController.page;
         if (currentPage != null) {
-          currentIndex.value = currentPage.toInt();
+          final uiIndex = currentPage.toInt();
+          currentRawIndex.value = min(
+            uiIndex * 2 + 1,
+            readerListData.pageList.length,
+          );
         }
       }
 
@@ -149,6 +161,9 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
 
     final windowPadding =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
+
+    final itemCount = ((readerListData.pageList.length + 1) / 2).truncate() + 1;
+
     return ReaderWrapper(
       scrollDirection: scrollDirection,
       pageLayout: pageLayout,
@@ -156,8 +171,11 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       manga: manga,
       currentIndex: currPage.value.pageIndex,
       reverse: reverse,
-      onChanged: (index) => scrollController.jumpToPage(
-          readerListData.pageIndexToIndex(currPage.value.chapterIndex, index)),
+      onChanged: (index) {
+        final rawIndex =
+            readerListData.pageIndexToIndex(currPage.value.chapterIndex, index);
+        scrollController.jumpToPage((rawIndex / 2).truncate());
+      },
       initChapterIndexState: initChapterIndexState,
       onPrevious: () => scrollController.previousPage(
         duration: isAnimationEnabled ? kDuration : kInstantDuration,
@@ -185,12 +203,13 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
           reverse: reverse,
           controller: scrollController,
           allowImplicitScrolling: true,
-          itemCount: readerListData.totalPageCount + 1,
+          itemCount: itemCount,
           itemBuilder: (BuildContext context, int index) {
             //log("[Reader2]load page $index");
-            if (index > 0 && index == readerListData.totalPageCount) {
+            if (index > 0 && index == itemCount - 1) {
               //log("[Reader2]load ChapterLoadingWidget");
-              final page = readerListData.pageList[index - 1];
+              final page =
+                  readerListData.pageList[readerListData.pageList.length - 1];
               final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
               final chapterLoading = ChapterLoadingWidget(
                 mangaId: "${pageChapter.mangaId}",
@@ -201,55 +220,47 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
               return chapterLoading;
             }
 
-            final page = readerListData.pageList[index];
-            final imageUrl = MangaUrl.chapterPageWithIndex(
-              chapterIndex: "${page.chapterIndex}",
-              mangaId: "${manga.id}",
-              pageIndex: "${page.pageIndex}",
-            );
-            final serverImage = ServerImage(
-              fit: BoxFit.contain,
-              size: Size.fromHeight(context.height),
-              appendApiToUrl: true,
-              imageUrl: imageUrl,
-              imageData: page.imageData,
-              traceInfo: traceInfo,
-              chapterUrl: currChapter.value.realUrl,
-              reloadButton: true,
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  CenterCircularProgressIndicator(
-                value: downloadProgress.progress,
-              ),
-            );
+            final leftPage = readerListData.pageList[index * 2];
+            final rightPage = index * 2 + 1 < readerListData.pageList.length
+                ? readerListData.pageList[index * 2 + 1]
+                : null;
+
+            final leftImage = buildPageImageWidget(
+                leftPage,
+                context,
+                traceInfo,
+                windowPadding,
+                currChapter.value,
+                reverse ? Alignment.centerLeft : Alignment.centerRight);
+            final rightImage = rightPage != null
+                ? buildPageImageWidget(
+                    rightPage,
+                    context,
+                    traceInfo,
+                    windowPadding,
+                    currChapter.value,
+                    reverse ? Alignment.centerRight : Alignment.centerLeft)
+                : const SizedBox.shrink();
 
             final serverImageWithPadding = PaddingServerImage(
               scrollDirection: scrollDirection,
               contextSize: context.mediaQuerySize,
               mangaId: manga.id.toString(),
-              serverImage: serverImage,
-            );
-
-            final image = GestureDetector(
-              onLongPress: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: context.theme.cardColor,
-                  builder: (context) => Padding(
-                    padding: EdgeInsets.only(bottom: windowPadding.bottom),
-                    child: PageActionWidget(
-                      manga: manga,
-                      chapter: currChapter.value,
-                      imageUrl: imageUrl,
-                      imageData: page.imageData,
-                    ),
-                  ),
-                );
-              },
-              child: serverImageWithPadding,
+              serverImage: Row(
+                children: reverse
+                    ? [
+                        Expanded(child: rightImage),
+                        Expanded(child: leftImage),
+                      ]
+                    : [
+                        Expanded(child: leftImage),
+                        Expanded(child: rightImage),
+                      ],
+              ),
             );
 
             return InteractiveWrapper(
-              child: image,
+              child: serverImageWithPadding,
               onScaleChanged: (scale) {
                 // Disable paging when image is zoomed-in
                 pagingEnabled.value = scale <= 1.0;
@@ -261,15 +272,74 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     );
   }
 
+  Widget buildPageImageWidget(
+    ReaderPageData page,
+    BuildContext context,
+    TraceInfo traceInfo,
+    EdgeInsets windowPadding,
+    Chapter currChapter,
+    Alignment alignment,
+  ) {
+    final imageUrl = MangaUrl.chapterPageWithIndex(
+      chapterIndex: "${page.chapterIndex}",
+      mangaId: "${manga.id}",
+      pageIndex: "${page.pageIndex}",
+    );
+    final serverImage = ServerImage(
+      fit: BoxFit.contain,
+      alignment: alignment,
+      size: Size.fromHeight(context.height),
+      appendApiToUrl: true,
+      imageUrl: imageUrl,
+      imageData: page.imageData,
+      traceInfo: traceInfo,
+      chapterUrl: currChapter.realUrl,
+      reloadButton: true,
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CenterCircularProgressIndicator(
+        value: downloadProgress.progress,
+      ),
+    );
+
+    final image = GestureDetector(
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: context.theme.cardColor,
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(bottom: windowPadding.bottom),
+            child: PageActionWidget(
+              manga: manga,
+              chapter: currChapter,
+              imageUrl: imageUrl,
+              imageData: page.imageData,
+            ),
+          ),
+        );
+      },
+      child: serverImage,
+    );
+    return image;
+  }
+
   void notifyPageUpdate(
       ValueNotifier<int> currentIndex,
       ValueNotifier<ReaderPageData> currPage,
       ValueNotifier<Chapter> currChapter,
       bool flush) {
-    if (currentIndex.value > readerListData.pageList.length - 1) {
+    // log("[Reader2] curr currentIndex ${currentIndex.value} ");
+
+    if (readerListData.pageList.length % 2 == 0 &&
+        currentIndex.value >= readerListData.pageList.length) {
       return;
     }
-    final page = readerListData.pageList[currentIndex.value];
+
+    final index = min(
+      currentIndex.value,
+      readerListData.pageList.length - 1,
+    );
+
+    final page = readerListData.pageList[index];
     final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
     currPage.value = page;
     currChapter.value = pageChapter;
@@ -280,12 +350,11 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     }
   }
 
-
   void notifyNoNextChapter(
-      ValueNotifier<int> currentIndex,
-      Pair<Chapter?, Chapter?>? chapterPair,
-      AsyncCallback onNoNextChapter,
-      ) {
+    ValueNotifier<int> currentIndex,
+    Pair<Chapter?, Chapter?>? chapterPair,
+    AsyncCallback onNoNextChapter,
+  ) {
     //log("[Reader2] reader wrapper ${currentIndex.value}");
     if (chapterPair != null &&
         chapterPair.first == null &&
@@ -294,5 +363,4 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       onNoNextChapter();
     }
   }
-
 }

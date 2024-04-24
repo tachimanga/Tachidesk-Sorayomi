@@ -28,6 +28,7 @@ class Source with _$Source {
         Language? lang,
     String? name,
     bool? supportsLatest,
+    bool? direct,
     String? extPkgName,
   }) = _Source;
 

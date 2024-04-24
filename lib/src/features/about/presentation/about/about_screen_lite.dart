@@ -43,7 +43,7 @@ class AboutScreenLite extends HookConsumerWidget {
             title: Text(context.l10n!.clientVersion),
             subtitle:
                 Text("v${packageInfo.version}(${packageInfo.buildNumber})"),
-            leading: const Icon(Icons.translate_rounded),
+            leading: const Icon(Icons.info_outline),
           ),
           ListTile(
             title: Text(context.l10n!.changelogs),
@@ -56,7 +56,7 @@ class AboutScreenLite extends HookConsumerWidget {
           ),
           ListTile(
             title: Text(context.l10n!.help),
-            leading: const Icon(Icons.help_rounded),
+            leading: const Icon(Icons.help_outline),
             onTap: () => launchUrlInWeb(
               context,
               userDefaults.getString("config.faqUrl") ?? AppUrls.faqUrl.url,

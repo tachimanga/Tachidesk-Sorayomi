@@ -84,6 +84,7 @@ enum KEdgeInsets {
 }
 
 enum KSizedBox {
+  h2(SizedBox(height: 2)),
   h4(SizedBox(height: 4)),
   h8(SizedBox(height: 8)),
   w4(SizedBox(width: 4)),

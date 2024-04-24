@@ -15,6 +15,8 @@ import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
+import '../../../../settings/controller/edit_repo_controller.dart';
+import '../../../../settings/data/repo/repo_repository.dart';
 import '../../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../../settings/presentation/browse/widgets/show_nsfw_switch/show_nsfw_switch.dart';
 import '../../../data/extension_repository/extension_repository.dart';
@@ -54,6 +56,12 @@ String repoParam(RepoParamRef ref) {
 bool emptyRepo(EmptyRepoRef ref) {
   final magic = ref.watch(getMagicProvider);
   final repo = ref.watch(repoParamProvider);
+
+  final repoList = ref.watch(repoListWithCacheProvider);
+  if (repoList.valueOrNull?.isNotEmpty == true) {
+    return false;
+  }
+
   return magic.b4 && repo == "DEFAULT";
 }
 

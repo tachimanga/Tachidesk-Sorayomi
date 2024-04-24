@@ -102,7 +102,10 @@ extension DateTimeExtensions on DateTime {
 
   String convertToLocalizedDaysAgo(
       DateFormatEnum format, BuildContext context) {
-    Duration diff = DateTime.now().difference(this);
+    DateTime now = DateTime.now();
+    Duration diff = DateTime(now.year, now.month, now.day)
+        .difference(DateTime(year, month, day));
+
     if (diff.inDays < 1) {
       return context.l10n!.relative_time_today;
     } else if (diff.inDays < 10) {

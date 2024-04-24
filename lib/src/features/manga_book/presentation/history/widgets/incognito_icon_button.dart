@@ -36,7 +36,9 @@ class IncognitoIconButton extends HookConsumerWidget {
       return IconButton(
         onPressed: () =>
             context.push([Routes.settings, Routes.securitySettings].toPath),
-        icon: const Icon(Icons.visibility),
+        icon: ImageIcon(
+          AssetImage(Assets.icons.incognito.path),
+        ),
       );
     }
 

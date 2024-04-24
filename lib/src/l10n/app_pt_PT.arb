@@ -42,7 +42,7 @@
   "@channel": {},
   "chapterNumber": "Capítulo {number}",
   "@chapterNumber": {},
-  "chapterSortFetchedDate": "Por dados recolhidos",
+  "chapterSortFetchedDate": "Por Data de Recuperação",
   "@chapterSortFetchedDate": {},
   "chapterSortSource": "Por fonte",
   "@chapterSortSource": {},
@@ -388,9 +388,9 @@
   "@readerPadding": {
     "description": "Slider title text for Reader Padding"
   },
-  "purchaseExpireAt": "Subscrição Premium irá renovar em . ",
+  "purchaseExpireAt": "A subscrição Premium renova automaticamente em {date}.",
   "@purchaseExpireAt": {},
-  "iapFaq": "Compras na aplicação FAQ",
+  "iapFaq": "FAQ",
   "@iapFaq": {},
   "share": "Partilhar",
   "@share": {},
@@ -759,6 +759,19 @@
   "changelogs": "Alterações",
   "@changelogs": {},
   "action_sort_latest_chapter": "Último capítulo",
+  "@action_sort_latest_chapter": {},
   "tabs_header": "Abas",
-  "action_display_show_number_of_items": "Mostrar número de itens"
+  "@tabs_header": {},
+  "action_display_show_number_of_items": "Mostrar número de itens",
+  "@action_display_show_number_of_items": {},
+  "page_layout": "Layout de Página",
+  "page_layout_single": "Página Única",
+  "page_layout_double": "Página Dupla",
+  "page_layout_automatic": "Automático",
+  "page_layout_separate_first_page": "Separar primeira página",
+  "page_layout_tip": "O Layout de Página só tem efeito no modo de leitura em página.",
+  "show_tap_zones_when_start_reading": "Mostrar zonas de toque ao iniciar a leitura.",
+  "select_chapters": "Selecionar capítulos",
+  "label_watermark": "Marca de água",
+  "tap_to_open": "Toque para abrir"
 }

@@ -23,6 +23,14 @@ class PageNumberSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final slider = Slider(
+      value: min(currentValue.toDouble(), maxValue.toDouble() - 1),
+      min: 0,
+      max: maxValue.toDouble() - 1,
+      divisions: max(maxValue - 1, 1),
+      onChanged: (val) => onChanged(val.toInt()),
+    );
+
     return Card(
       color: Colors.black.withOpacity(.7),
       shape: RoundedRectangleBorder(
@@ -35,28 +43,19 @@ class PageNumberSlider extends StatelessWidget {
               ? [
                   Text("${currentValue + 1}"),
                   Expanded(
-                    child: Slider(
-                      value:
-                          min(currentValue.toDouble(), maxValue.toDouble() - 1),
-                      min: 0,
-                      max: maxValue.toDouble() - 1,
-                      divisions: max(maxValue - 1, 1),
-                      onChanged: (val) => onChanged(val.toInt()),
-                    ),
+                    child: slider,
                   ),
                   Text("$maxValue"),
                 ]
               : [
                   Text("$maxValue"),
                   Expanded(
-                    child: Slider(
-                      value: min(maxValue - 1 - currentValue.toDouble(),
-                          maxValue.toDouble() - 1),
-                      min: 0,
-                      max: maxValue.toDouble() - 1,
-                      divisions: max(maxValue - 1, 1),
-                      onChanged: (val) =>
-                          onChanged((maxValue - 1 - val).toInt()),
+                    child: Directionality(
+                      textDirection:
+                          Directionality.of(context) == TextDirection.ltr
+                              ? TextDirection.rtl
+                              : TextDirection.ltr,
+                      child: slider,
                     ),
                   ),
                   Text("${currentValue + 1}"),

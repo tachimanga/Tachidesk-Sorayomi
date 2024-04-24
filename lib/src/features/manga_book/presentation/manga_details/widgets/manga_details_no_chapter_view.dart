@@ -10,6 +10,7 @@ import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/common_error_widget.dart';
 import '../../../../../widgets/emoticons.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
+import '../../../data/manga_book_repository.dart';
 import '../controller/manga_details_controller.dart';
 
 class MangaDetailsNoChapterErrorView extends ConsumerWidget {
@@ -57,7 +58,15 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
     return CommonErrorWidget(
         refresh: refresh,
         src: "manga_details",
-        url: manga.realUrl,
+        webViewUrlProvider: () async {
+          final url = manga.realUrl;
+          if (url?.isNotEmpty == true) {
+            return url;
+          }
+          return await ref
+              .read(mangaBookRepositoryProvider)
+              .getMangaRealUrl(mangaId: "${manga.id}");
+        },
         error: context.l10n!.noChaptersFound);
   }
 }

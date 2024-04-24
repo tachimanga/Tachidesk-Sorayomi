@@ -30,6 +30,7 @@ import '../manga_details/controller/manga_details_controller.dart';
 import 'controller/reader_controller.dart';
 import 'controller/reader_controller_v2.dart';
 import 'widgets/reader_mode/continuous_reader_mode_v2.dart';
+import 'widgets/reader_mode/page_reader_mode.dart';
 import 'widgets/reader_mode/single_page_reader_mode_v2.dart';
 
 class ReaderScreen2 extends HookConsumerWidget {
@@ -75,8 +76,7 @@ class ReaderScreen2 extends HookConsumerWidget {
     final chapterRealUrl = chapterList.valueOrNull
             ?.where((e) => "${e.index}" == initChapterIndexState.value)
             .firstOrNull
-            ?.realUrl ??
-        manga.valueOrNull?.realUrl;
+            ?.realUrl;
 
     final debounce = useRef<Timer?>(null);
     final onPageChanged2 = useCallback<AsyncValueSetter<PageChangedData>>(
@@ -183,7 +183,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                           }
                           switch (data.meta?.readerMode ?? defaultReaderMode) {
                             case ReaderMode.singleVertical:
-                              return SinglePageReaderMode2(
+                              return PageReaderMode(
                                 manga: data,
                                 initChapterIndexState: initChapterIndexState,
                                 initChapter: chapterData,
@@ -193,7 +193,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 scrollDirection: Axis.vertical,
                               );
                             case ReaderMode.singleHorizontalRTL:
-                              return SinglePageReaderMode2(
+                              return PageReaderMode(
                                 manga: data,
                                 initChapterIndexState: initChapterIndexState,
                                 initChapter: chapterData,
@@ -224,7 +224,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 reverse: true,
                               );
                             case ReaderMode.singleHorizontalLTR:
-                              return SinglePageReaderMode2(
+                              return PageReaderMode(
                                 manga: data,
                                 initChapterIndexState: initChapterIndexState,
                                 initChapter: chapterData,
@@ -255,7 +255,17 @@ class ReaderScreen2 extends HookConsumerWidget {
                           }
                         },
                         errorSource: "chapter-details",
-                        webViewUrl: chapterRealUrl,
+                        webViewUrlProvider: () async {
+                          if (chapterRealUrl?.isNotEmpty == true) {
+                            return chapterRealUrl;
+                          }
+                          return await ref
+                              .read(mangaBookRepositoryProvider)
+                              .getChapterRealUrl(
+                                mangaId: mangaId,
+                                chapterIndex: initChapterIndexState.value,
+                              );
+                        },
                         refresh: () => ref.refresh(chapterProviderWithIndex),
                         addScaffoldWrapper: true,
                       );

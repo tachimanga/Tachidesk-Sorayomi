@@ -37,7 +37,7 @@ class Manga with _$Manga {
     Source? source,
     String? sourceId,
     @JsonKey(fromJson: MangaStatus.fromJson, toJson: MangaStatus.toJson)
-        MangaStatus? status,
+    MangaStatus? status,
     String? thumbnailUrl,
     String? title,
     int? unreadCount,
@@ -59,16 +59,15 @@ class MangaMeta with _$MangaMeta {
       name: "flutter_readerNavigationLayoutInvert",
       fromJson: MangaMeta.fromJsonToBool,
     )
-        bool? invertTap,
+    bool? invertTap,
     @JsonKey(name: "flutter_readerNavigationLayout")
-        ReaderNavigationLayout? readerNavigationLayout,
-    @JsonKey(name: "flutter_readerMode")
-        ReaderMode? readerMode,
+    ReaderNavigationLayout? readerNavigationLayout,
+    @JsonKey(name: "flutter_readerMode") ReaderMode? readerMode,
     @JsonKey(
       name: "flutter_readerPadding",
       fromJson: MangaMeta.fromJsonToDouble,
     )
-        double? readerPadding,
+    double? readerPadding,
     @JsonKey(
       name: "flutter_readerPadding_landscape",
       fromJson: MangaMeta.fromJsonToDouble,
@@ -78,9 +77,14 @@ class MangaMeta with _$MangaMeta {
       name: "flutter_readerMagnifierSize",
       fromJson: MangaMeta.fromJsonToDouble,
     )
-        double? readerMagnifierSize,
-    @JsonKey(name: "flutter_scanlator")
-        String? scanlator,
+    double? readerMagnifierSize,
+    @JsonKey(name: "flutter_scanlator") String? scanlator,
+    @JsonKey(name: "flutter_page_layout") ReaderPageLayout? readerPageLayout,
+    @JsonKey(
+      name: "flutter_page_layout_skip",
+      fromJson: MangaMeta.fromJsonToBool,
+    )
+    bool? readerPageLayoutSkipFirstPage,
   }) = _MangaMeta;
 
   static bool? fromJsonToBool(dynamic val) => val != null && val is String
@@ -101,6 +105,8 @@ enum MangaMetaKeys {
   readerPaddingLandscape("flutter_readerPadding_landscape"),
   readerMagnifierSize("flutter_readerMagnifierSize"),
   scanlator("flutter_scanlator"),
+  pageLayout("flutter_page_layout"),
+  pageLayoutSkipFirstPage("flutter_page_layout_skip"),
   ;
 
   const MangaMetaKeys(this.key);

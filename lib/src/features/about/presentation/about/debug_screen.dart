@@ -201,6 +201,14 @@ class DebugScreen extends HookConsumerWidget {
             onTap: () async {
               context.push([Routes.settings, 's-keyboard'].toPath);
             }),
+        ListTile(
+            title: Text("clear premium"),
+            leading: const Icon(Icons.send_rounded),
+            onTap: () async {
+              ref.read(purchaseDoneProvider.notifier).update(false);
+              ref.read(purchaseExpireMsProvider.notifier).update(null);
+
+            }),
         // ListTile(
         //     title: Text("BACKUP:LIST"),
         //     leading: const Icon(Icons.send_rounded),
@@ -255,6 +263,13 @@ class DebugScreen extends HookConsumerWidget {
           title: Text("downscale image"),
           onChanged: ref.read(downscaleImageProvider.notifier).update,
           value: ref.watch(downscaleImageProvider).ifNull(true),
+        ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("show direct flag"),
+          onChanged: ref.read(showDirectFlagPrefProvider.notifier).update,
+          value: ref.watch(showDirectFlagPrefProvider).ifNull(true),
         ),
       ]),
     );
