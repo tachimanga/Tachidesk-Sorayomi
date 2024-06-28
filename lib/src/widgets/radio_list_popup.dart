@@ -65,6 +65,7 @@ class RadioList<T> extends StatelessWidget {
     this.displaySubName,
     this.showDisplaySubName,
     this.additionWidgets,
+    this.displayWidget,
   });
 
   final String? subTitle;
@@ -72,6 +73,7 @@ class RadioList<T> extends StatelessWidget {
   final T value;
   final ValueChanged<T> onChange;
   final String Function(T)? displayName;
+  final Widget Function(T)? displayWidget;
   final String Function(T)? displaySubName;
   final bool Function(T)? showDisplaySubName;
   final List<Widget>? additionWidgets;
@@ -99,28 +101,33 @@ class RadioList<T> extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (subTitleWidget != null) ...[subTitleWidget],
-            ...optionList.map(
-                (e) => RadioListTile<T>(
-                  activeColor: context.theme.indicatorColor,
-                  title: Text(
-                    displayName != null ? displayName!(e) : e.toString(),
+            ...optionList
+                .map(
+                  (e) => RadioListTile<T>(
+                    activeColor: context.theme.indicatorColor,
+                    title: displayWidget != null
+                        ? displayWidget!(e)
+                        : Text(
+                            displayName != null
+                                ? displayName!(e)
+                                : e.toString(),
+                          ),
+                    subtitle: (showDisplaySubName != null
+                                ? showDisplaySubName!(e)
+                                : true) &&
+                            displaySubName != null
+                        ? Text(displaySubName!(e))
+                        : null,
+                    value: e,
+                    groupValue: value,
+                    onChanged: (value) {
+                      if (value != null) {
+                        onChange(value);
+                      }
+                    },
                   ),
-                  subtitle: (showDisplaySubName != null
-                              ? showDisplaySubName!(e)
-                              : true) &&
-                          displaySubName != null
-                      ? Text(displaySubName!(e))
-                      : null,
-                  value: e,
-                  groupValue: value,
-                  onChanged: (value) {
-                    if (value != null) {
-                      onChange(value);
-                    }
-                  },
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
             ...?additionWidgets,
           ],
         ),

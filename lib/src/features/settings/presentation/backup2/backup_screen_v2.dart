@@ -35,7 +35,9 @@ import 'widgets/backup_list_tile.dart';
 import 'widgets/import_backup_dialog.dart';
 
 class BackupScreenV2 extends HookConsumerWidget {
-  const BackupScreenV2({super.key});
+  const BackupScreenV2({super.key, this.importBackupFilePath});
+
+  final String? importBackupFilePath;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,6 +74,11 @@ class BackupScreenV2 extends HookConsumerWidget {
       return () {
         pipe.invokeMethod("SCREEN_ON", "0");
       };
+    }, []);
+
+    useEffect(() {
+      showImportDialogIfNeeded(context, ref, loadingState, toast, msgMap);
+      return;
     }, []);
 
     final autoBackupFrequency =
@@ -268,8 +275,7 @@ class BackupScreenV2 extends HookConsumerWidget {
       MethodChannel pipe) async {
     final toast = ref.read(toastProvider(context));
     final file = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['zip'],
+      type: FileType.any,
     );
     if ((file?.files).isBlank) {
       return;
@@ -281,9 +287,30 @@ class BackupScreenV2 extends HookConsumerWidget {
         path: file?.files.single.path);
   }
 
+  void showImportDialogIfNeeded(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> loadingState,
+    Toast toast,
+    Map<String, String> msgMap,
+  ) {
+    if (importBackupFilePath != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showConfirmRestoreDialog(ref, context, loadingState, toast, msgMap,
+            path: importBackupFilePath);
+      });
+    }
+  }
+
   void showConfirmRestoreDialog(WidgetRef ref, BuildContext context,
       ValueNotifier<bool> loadingState, Toast toast, Map<String, String> msgMap,
       {String? path, String? name}) {
+    if (path != null) {
+      if (!(path.endsWith('.zip') || path.endsWith('.tmb'))) {
+        toast.showError(context.l10n!.errorFilePickUnknownType(".tmb"));
+        return;
+      }
+    }
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -368,7 +395,8 @@ class BackupScreenV2 extends HookConsumerWidget {
 
     final fileName = file?.files.single.name;
     if (fileName?.startsWith('Tachimanga') == true &&
-        fileName?.endsWith('.zip') == true) {
+        (fileName?.endsWith('.zip') == true ||
+            fileName?.endsWith('.tmb') == true)) {
       showConfirmRestoreDialog(ref, context, loadingState, toast, msgMap,
           path: file?.files.single.path);
       return;

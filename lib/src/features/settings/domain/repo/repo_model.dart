@@ -17,6 +17,7 @@ class Repo with _$Repo {
     String? name,
     String? metaUrl,
     String? baseUrl,
+    String? homePageUrl,
   }) = _Repo;
 
   factory Repo.fromJson(Map<String, dynamic> json) =>

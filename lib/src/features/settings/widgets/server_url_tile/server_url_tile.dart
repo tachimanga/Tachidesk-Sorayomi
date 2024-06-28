@@ -36,7 +36,7 @@ class ServerUrlTile extends ConsumerWidget {
     final serverUrl = ref.watch(serverUrlProvider);
     return ListTile(
       leading: const Icon(Icons.computer_rounded),
-      title: Text(context.l10n!.serverUrl),
+      title: Text("Server URL"),
       subtitle: serverUrl.isNotBlank ? Text(serverUrl!) : null,
       onTap: () => showDialog(
         context: context,
@@ -62,7 +62,7 @@ class ServerUrlField extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useTextEditingController(text: initialUrl);
     return AlertDialog(
-      title: Text(context.l10n!.serverUrl),
+      title: Text("Server URL"),
       content: TextField(
         autofocus: true,
         controller: controller,
@@ -72,7 +72,7 @@ class ServerUrlField extends HookConsumerWidget {
         },
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          hintText: (context.l10n!.serverUrlHintText),
+          hintText: ("Enter server url"),
         ),
       ),
       actions: [

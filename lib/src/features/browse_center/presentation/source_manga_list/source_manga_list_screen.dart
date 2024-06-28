@@ -233,7 +233,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
             ),
           ),
         ),
-        endDrawer: Drawer(
+        endDrawer: context.isTablet ? Drawer(
           width: kDrawerWidth,
           child: Builder(
             builder: (context) => ShowSourceMangaFilter(
@@ -241,7 +241,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
                 sourceId: sourceId,
                 controller: controller),
           ),
-        ),
+        ) : null,
         body: RefreshIndicator(
           onRefresh: () async => controller.refresh(),
           child: SourceMangaDisplayView(controller: controller, source: data),

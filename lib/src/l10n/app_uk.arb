@@ -19,14 +19,6 @@
   "@appearance": {
     "description": "Screen title and Button text of Appearance screen"
   },
-  "authType": "Тип автентифікації",
-  "@authType": {
-    "description": "Popup title and Button text to change App Authentication"
-  },
-  "authTypeBasic": "Базова автентифікація",
-  "@authTypeBasic": {
-    "description": "Radio button text for the Basic Authentication type"
-  },
   "backup": "Резервне копіювання та відновлення",
   "@backup": {
     "description": "Screen title and Button text of Backup & Restore screen"
@@ -47,17 +39,9 @@
   "@categoryUpdate": {
     "description": "Button text to update the mangas in the Category"
   },
-  "channel": "Канал",
-  "@channel": {
-    "description": "Text title to show Channel of the Server (Stable, preview) in About Screen"
-  },
   "chapterSortUploadDate": "За датою завантаження",
   "@chapterSortUploadDate": {
     "description": "Radio button text for sort by Upload Date"
-  },
-  "checkForUpdates": "Перевірити наявність оновлень",
-  "@checkForUpdates": {
-    "description": "Button text to check for App Updates"
   },
   "clearCache": "Очистити кеш",
   "@clearCache": {
@@ -80,10 +64,6 @@
         "type": "String"
       }
     }
-  },
-  "credentials": "Облікові дані",
-  "@credentials": {
-    "description": "Popup title and Button text to enter Authentication credentials"
   },
   "current": "Поточний",
   "@current": {
@@ -129,17 +109,9 @@
   "@errorFilePick": {
     "description": "Error Description to show when user does not selected an file"
   },
-  "errorPassword": "Пароль не може бути порожнім",
-  "@errorPassword": {
-    "description": "Error Description to show that password cannot be empty"
-  },
   "errorSomethingWentWrong": "Щось пішло не так!",
   "@errorSomethingWentWrong": {
     "description": "Error Description to show that Something went wrong!"
-  },
-  "errorUserName": "Ім’я користувача не може бути порожнім",
-  "@errorUserName": {
-    "description": "Error Description to show that UserName cannot be empty"
   },
   "extensionInstalled": "Розширення встановлено!",
   "@extensionInstalled": {
@@ -181,10 +153,6 @@
   "@installingExtension": {
     "description": "Toast text to show that the extension is installing"
   },
-  "latest": "Останні",
-  "@latest": {
-    "description": "Button text to take user to the latest tab of Source manga screen"
-  },
   "manga": "Манґа",
   "@manga": {
     "description": "Screen title and Button text of Manga details screen"
@@ -192,10 +160,6 @@
   "mangaGridSize": "Розмір сітки манґи",
   "@mangaGridSize": {
     "description": "Popup title and Button text to change Manga Grid size"
-  },
-  "mangaMissingSources": "Відсутні джерела манґи",
-  "@mangaMissingSources": {
-    "description": "Group title to show the Manga Missing Sources when restoring Backup"
   },
   "mangaSortDateAdded": "Дата додавання",
   "@mangaSortDateAdded": {
@@ -385,10 +349,6 @@
   "@readerPadding": {
     "description": "Slider title text for Reader Padding"
   },
-  "reddit": "Reddit",
-  "@reddit": {
-    "description": "Reddit app title"
-  },
   "refresh": "Оновити",
   "@refresh": {
     "description": "Refresh button text"
@@ -416,14 +376,6 @@
   "search": "Пошук",
   "@search": {
     "description": "Search field hint Text"
-  },
-  "searchingForUpdates": "Пошук оновлень",
-  "@searchingForUpdates": {
-    "description": "Toast Text for searching for updates of the App/Server"
-  },
-  "server": "Сервер",
-  "@server": {
-    "description": "Text title for the server in About screen"
   },
   "serverPortHintText": "Порт сервера",
   "@serverPortHintText": {
@@ -473,10 +425,6 @@
   "@updating": {
     "description": "Button text to show that the extension is updating"
   },
-  "webUI": "Відкрити у Веб",
-  "@webUI": {
-    "description": "Button text to open in web UI"
-  },
   "whatsNew": "Що нового?",
   "@whatsNew": {
     "description": "Button text to open whats new page of app in web"
@@ -501,10 +449,6 @@
   "@addToLibrary": {
     "description": "Button text to add Manga to Library in Manga Details Screen"
   },
-  "authTypeNone": "Немає",
-  "@authTypeNone": {
-    "description": "Radio button text for no Authentication"
-  },
   "chapterNumber": "Розділ {number}",
   "@chapterNumber": {
     "description": "Text title for Chapter name in chapter list",
@@ -519,10 +463,6 @@
   "@bookmarked": {
     "description": "Checkbox text to filter bookmarked manga chapters in Manga Details screen"
   },
-  "buildTime": "Час збірки",
-  "@buildTime": {
-    "description": "Text title to show build time of Server in About Screen"
-  },
   "chapterSortFetchedDate": "За датою отримання",
   "@chapterSortFetchedDate": {
     "description": "Radio button text for sort by Fetched Date"
@@ -531,10 +471,6 @@
   "@chapterSortSource": {
     "description": "Radio button text for sort by Source"
   },
-  "checkForServerUpdates": "Перевірити наявність оновлень сервера",
-  "@checkForServerUpdates": {
-    "description": "Button text to check for Server updates"
-  },
   "clientVersion": "Версія клієнту",
   "@clientVersion": {
     "description": "Text title for the current version of the client in About screen"
@@ -542,10 +478,6 @@
   "completed": "Завершено",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
-  },
-  "missingExtension": "Відсутні розширення",
-  "@missingExtension": {
-    "description": "Group title to show the Missing Extensions when restoring Backup"
   },
   "defaultCategory": "Категорія за замовчуванням при додаванні нової манґи до бібліотеки",
   "@defaultCategory": {
@@ -637,10 +569,6 @@
   "@mangaSortLastRead": {
     "description": "Radio button text for Manga sort Type - Last Read"
   },
-  "missingTrackers": "Відсутні трекери",
-  "@missingTrackers": {
-    "description": "Group title to show the Missing Trackers when restoring Backup"
-  },
   "mangaStatusLicensed": "Ліцензовано",
   "@mangaStatusLicensed": {
     "description": "Text to show Manga Status Licensed in Manga details screen"
@@ -685,10 +613,6 @@
   "@noServerFound": {
     "description": "Text to show that no Server found in locale network"
   },
-  "password": "Пароль",
-  "@password": {
-    "description": "Title text for password field"
-  },
   "quickSearchSourceManga": "Пошук манґи \"M\" у джерелі \"S\"",
   "@quickSearchSourceManga": {
     "description": "Quick Open Hint text for searching Manga M in Source S with prefill '@S/M'"
@@ -729,10 +653,6 @@
   "@update": {
     "description": "Button text to update the extension"
   },
-  "serverUrl": "URL сервера",
-  "@serverUrl": {
-    "description": "Popup title and Button text to update Server Url"
-  },
   "themeModeSystem": "Системна",
   "@themeModeSystem": {
     "description": "Radio button text for App theme - System"
@@ -745,17 +665,9 @@
   "@webView": {
     "description": "Button text to open manga website"
   },
-  "serverUrlHintText": "URL-адреса сервера",
-  "@serverUrlHintText": {
-    "description": "Text Filed hint text to update Server Url"
-  },
   "serverPort": "Порт сервера",
   "@serverPort": {
     "description": "Popup title and Button text to update Server Port"
-  },
-  "serverVersion": "Версія сервера",
-  "@serverVersion": {
-    "description": "Text title for the current version of the Server in About screen"
   },
   "sort": "Сортувати",
   "@sort": {
@@ -784,24 +696,6 @@
   "unknownSource": "Невідоме джерело",
   "@unknownSource": {
     "description": "Text to show unknown Source in Manga details screen"
-  },
-  "userName": "Ім'я користувача",
-  "@userName": {
-    "description": "Title text for User Name field"
-  },
-  "versionAvailable": "Версія {version} доступна для {app}!!!",
-  "@versionAvailable": {
-    "description": "Text to show that there is an update to App/Server",
-    "placeholders": {
-      "app": {
-        "example": "Server",
-        "type": "String"
-      },
-      "version": {
-        "example": "v0.4.2",
-        "type": "String"
-      }
-    }
   },
   "daysAgo": "{days} днів тому",
   "@daysAgo": {
@@ -839,16 +733,12 @@
   "@discordServer": {},
   "externalRepository": "Налаштування розширення",
   "@externalRepository": {},
-  "addRepository": "Додати зовнішні розширення",
-  "@addRepository": {},
   "externalRepositoryUrl": "Адреса репозиторію розширень",
   "@externalRepositoryUrl": {},
   "externalRepositoryUrlShort": "Адреса репозиторію розширень",
   "@externalRepositoryUrlShort": {},
   "history": "Історія",
   "@history": {},
-  "useSysProxy": "Використовувати системні налаштування проксі",
-  "@useSysProxy": {},
   "clearCookies": "Очистити кукі",
   "@clearCookies": {},
   "recentlyDownloaded": "Останні завантаження",
@@ -1234,5 +1124,27 @@
   "show_tap_zones_when_start_reading": "Показати зони натискання при початку читання.",
   "select_chapters": "Вибрати глави",
   "label_watermark": "Водяний знак",
-  "tap_to_open": "Натисніть, щоб відкрити"
+  "tap_to_open": "Натисніть, щоб відкрити",
+  "labs": "Лабораторії",
+  "labsSubtitle": "Експериментальні функції",
+  "concurrent_download_short_title_num": "Одночасні завантаження: {num}",
+  "concurrent_download_short_title": "Одночасні завантаження",
+  "concurrent_download_title": "Кількість одночасних завантажень",
+  "concurrent_download_tips": "Завантаження одночасно з одного джерела протягом тривалого часу може призвести до блокування вашої IP-адреси джерелом, що може призвести до невдалих наступних завантажень та читань.",
+  "download_next_n_chapter": "{x, plural, one{Наступна глава} few{Наступні {x} глави} many{Наступні {x} глав} other{Наступні {x} глави}}",
+  "download_unread_chapters": "Усі непрочитані глави",
+  "download_all_chapters": "Усі глави",
+  "download_queue": "Черга завантаження",
+  "download_settings": "Налаштування завантаження",
+  "remove_after_read": "Видалити завантаження після читання",
+  "pinch_to_zoom": "Прищемити, щоб масштабувати",
+  "errorFilePickUnknownType": "Будь ласка, виберіть файл {suffix}",
+  "attention_label": "⚠️Увага",
+  "homepage_label": "Головна сторінка",
+  "download_limit_exceeded_title": "Перевищено обмеження завантажень",
+  "download_limit_number_title": "Ліміт завантаження - {num} розділів.",
+  "download_limit_content": "Ви можете завантажувати {freeTicket} розділів на день.\n\nПерегляд однієї реклами може збільшити цей ліміт на {ticketPerAd} розділів, і після перегляду {maxAds} реклам, немає обмежень на завантаження на день.\n\nПреміум-користувачі мають необмежені завантаження.",
+  "download_limit_increase": "Ліміт завантаження збільшено на {num}.",
+  "add_download_tips": "{x, plural, one{Додано 1 розділ в чергу завантаження.} few{Додано {x} розділи в чергу завантаження.} many{Додано {x} розділів в чергу завантаження.} other{Додано {x} розділів в чергу завантаження.}}",
+  "watch_ad_label": "Переглянути рекламу"
 }

@@ -146,7 +146,7 @@ class SourceRepository {
     }
     final name = file!.name;
     if (!(name.endsWith('.zip') || name.endsWith('.cbz') || name.endsWith('.epub'))) {
-      throw context.l10n!.errorFilePickUnknownExtension(".zip");
+      throw context.l10n!.errorFilePickUnknownType(".zip");
     }
     return (file.path).isNotBlank
         ? (await dioClient.post(

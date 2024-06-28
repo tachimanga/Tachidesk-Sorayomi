@@ -65,15 +65,6 @@ class EditCategoryDialog extends HookConsumerWidget {
                   }
                 : null,
           ),
-          // CheckboxListTile(
-          //   value: defaultCategory.value,
-          //   dense: true,
-          //   controlAffinity: ListTileControlAffinity.leading,
-          //   onChanged: (value) {
-          //     if (value != null) defaultCategory.value = value;
-          //   },
-          //   title: Text(context.l10n!.defaultCategory),
-          // )
         ],
       ),
       actions: [

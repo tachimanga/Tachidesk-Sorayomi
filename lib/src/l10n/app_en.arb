@@ -21,15 +21,6 @@
   "@appearance": {
     "description": "Screen title and Button text of Appearance screen"
   },
-  "@authType": {
-    "description": "Popup title and Button text to change App Authentication"
-  },
-  "@authTypeBasic": {
-    "description": "Radio button text for the Basic Authentication type"
-  },
-  "@authTypeNone": {
-    "description": "Radio button text for no Authentication"
-  },
   "@backup": {
     "description": "Screen title and Button text of Backup & Restore screen"
   },
@@ -42,9 +33,6 @@
   "@browse": {
     "description": "Screen title, Navigation Bar text and Button text of both Browse screen and Browse Settings Screen"
   },
-  "@buildTime": {
-    "description": "Text title to show build time of Server in About Screen"
-  },
   "@cancel": {
     "description": "Text for Cancel button in a Popup"
   },
@@ -53,9 +41,6 @@
   },
   "@categoryUpdate": {
     "description": "Button text to update the mangas in the Category"
-  },
-  "@channel": {
-    "description": "Text title to show Channel of the Server (Stable, preview) in About Screen"
   },
   "@chapterNumber": {
     "description": "Text title for Chapter name in chapter list",
@@ -71,12 +56,6 @@
   },
   "@chapterSortSource": {
     "description": "Radio button text for sort by Source"
-  },
-  "@checkForServerUpdates": {
-    "description": "Button text to check for Server updates"
-  },
-  "@checkForUpdates": {
-    "description": "Button text to check for App Updates"
   },
   "@client": {
     "description": "Text title for the name of the client in About screen"
@@ -104,9 +83,6 @@
   },
   "@createBackupTitle": {
     "description": "Button text to create backup"
-  },
-  "@credentials": {
-    "description": "Popup title and Button text to enter Authentication credentials"
   },
   "@current": {
     "description": "Text to show the currently reading chapter in Reader Screen"
@@ -174,14 +150,8 @@
       }
     }
   },
-  "@errorPassword": {
-    "description": "Error Description to show that password cannot be empty"
-  },
   "@errorSomethingWentWrong": {
     "description": "Error Description to show that Something went wrong!"
-  },
-  "@errorUserName": {
-    "description": "Error Description to show that UserName cannot be empty"
   },
   "@extensionInstalled": {
     "description": "Toast text to show that the Extension Installed successfully"
@@ -231,9 +201,6 @@
   "@languages": {
     "description": "Popup title to filter extensions based on language"
   },
-  "@latest": {
-    "description": "Button text to take user to the latest tab of Source manga screen"
-  },
   "@library": {
     "description": "Screen title and Button text of Library and Library Settings screen"
   },
@@ -242,9 +209,6 @@
   },
   "@mangaGridSize": {
     "description": "Popup title and Button text to change Manga Grid size"
-  },
-  "@mangaMissingSources": {
-    "description": "Group title to show the Manga Missing Sources when restoring Backup"
   },
   "@mangaSortAlphabetical": {
     "description": "Radio button text for Manga sort Type - Alphabetical"
@@ -278,12 +242,6 @@
   },
   "@mangaStatusUnknown": {
     "description": "Text to show Manga Status Unknown in Manga details screen"
-  },
-  "@missingExtension": {
-    "description": "Group title to show the Missing Extensions when restoring Backup"
-  },
-  "@missingTrackers": {
-    "description": "Group title to show the Missing Trackers when restoring Backup"
   },
   "@more": {
     "description": "Screen title and Navigation text of More screen"
@@ -379,9 +337,6 @@
       }
     }
   },
-  "@password": {
-    "description": "Title text for password field"
-  },
   "@pause": {
     "description": "Button text to pause downloads"
   },
@@ -445,9 +400,6 @@
   "@readerPadding": {
     "description": "Slider title text for Reader Padding"
   },
-  "@reddit": {
-    "description": "Reddit app title"
-  },
   "@refresh": {
     "description": "Refresh button text"
   },
@@ -480,21 +432,6 @@
   },
   "@search": {
     "description": "Search field hint Text"
-  },
-  "@searchingForUpdates": {
-    "description": "Toast Text for searching for updates of the App/Server"
-  },
-  "@server": {
-    "description": "Text title for the server in About screen"
-  },
-  "@serverUrl": {
-    "description": "Popup title and Button text to update Server Url"
-  },
-  "@serverUrlHintText": {
-    "description": "Text Filed hint text to update Server Url"
-  },
-  "@serverVersion": {
-    "description": "Text title for the current version of the Server in About screen"
   },
   "@settings": {
     "description": "Screen title and Button text of Settings screen"
@@ -562,25 +499,6 @@
   "@updating": {
     "description": "Button text to show that the extension is updating"
   },
-  "@userName": {
-    "description": "Title text for User Name field"
-  },
-  "@versionAvailable": {
-    "description": "Text to show that there is an update to App/Server",
-    "placeholders": {
-      "app": {
-        "example": "Server",
-        "type": "String"
-      },
-      "version": {
-        "example": "v0.4.2",
-        "type": "String"
-      }
-    }
-  },
-  "@webUI": {
-    "description": "Button text to open in web UI"
-  },
   "@webView": {
     "description": "Button text to open manga website"
   },
@@ -594,29 +512,21 @@
   "appTheme": "App Theme",
   "appTitle": "Tachimanga",
   "appearance": "Appearance",
-  "authType": "Authentication Type",
-  "authTypeBasic": "Basic Auth",
-  "authTypeNone": "None",
   "backup": "Backup & Restore",
   "badges": "Badges",
   "bookmarked": "Bookmarked",
   "browse": "Browse",
-  "buildTime": "Build time",
   "cancel": "Cancel",
   "categories": "Categories",
   "categoryUpdate": "Category Update",
-  "channel": "Channel",
   "chapterNumber": "Chapter {number}",
   "chapterSortFetchedDate": "By Fetched Date",
   "chapterSortSource": "By Source",
-  "checkForServerUpdates": "Check for Server updates",
-  "checkForUpdates": "Check for updates",
   "client": "Client",
   "clientVersion": "Client version",
   "close": "Close",
   "completed": "Completed",
   "copyMsg": "'{msg}' Copied!",
-  "credentials": "Credentials",
   "current": "Current",
   "defaultCategory": "Default category when adding new manga to library",
   "delete": "Delete",
@@ -637,9 +547,7 @@
   "errorFilePick": "File not selected!",
   "errorFilePickUnknownExtension": "Please select a file with {extensionName} extension",
   "errorLaunchURL": "Failed to open!\nCopying \"{url}\" to clipboard",
-  "errorPassword": "Password can't be empty",
   "errorSomethingWentWrong": "Something went wrong!",
-  "errorUserName": "UserName can't be empty",
   "extensionInstalled": "Extension Installed!",
   "extensionListEmpty": "Extension list is Empty",
   "extensions": "Extensions",
@@ -656,11 +564,9 @@
   "installing": "Adding",
   "installingExtension": "Adding Extension",
   "languages": "Languages",
-  "latest": "Latest",
   "library": "Library",
   "manga": "Manga",
   "mangaGridSize": "Manga Grid Size",
-  "mangaMissingSources": "Manga Missing Sources",
   "mangaSortAlphabetical": "Alphabetical",
   "mangaSortDateAdded": "Date Added",
   "mangaSortUnread": "Unread",
@@ -672,8 +578,6 @@
   "mangaStatusOngoing": "Ongoing",
   "mangaStatusPublishingFinished": "Publishing Finished",
   "mangaStatusUnknown": "Unknown",
-  "missingExtension": "Missing Extensions",
-  "missingTrackers": "Missing Trackers",
   "more": "More",
   "moveToBottom": "Move to Bottom",
   "moveToTop": "Move to top",
@@ -696,7 +600,6 @@
   "numSelected": "{num} Selected",
   "obsolete": "Obsolete",
   "page": "Page: {number}",
-  "password": "Password",
   "pause": "Pause",
   "pending": "Pending",
   "reader": "Reader",
@@ -718,7 +621,6 @@
   "readerNavigationLayoutLShaped": "L Shaped",
   "readerNavigationLayoutRightAndLeft": "Right And Left",
   "readerPadding": "Reader Padding",
-  "reddit": "Reddit",
   "refresh": "Refresh",
   "reset": "Reset",
   "resume": "Resume",
@@ -726,11 +628,6 @@
   "running": "Running",
   "save": "Save",
   "search": "Search",
-  "searchingForUpdates": "Searching for updates",
-  "server": "Server",
-  "serverUrl": "Server URL",
-  "serverUrlHintText": "Enter server url",
-  "serverVersion": "Server version",
   "settings": "Settings",
   "sort": "Sort",
   "source": "Source",
@@ -753,9 +650,6 @@
   "updates": "Updates",
   "updatesSummary": "Updates Summary",
   "updating": "Updating",
-  "userName": "User Name",
-  "versionAvailable": "Version {version} available for {app}!!",
-  "webUI": "Open in WEB",
   "webView": "Web View",
   "whatsNew": "What's New?",
   "getPremium": "Get Premium",
@@ -766,11 +660,9 @@
   "share": "Share",
   "discordServer": "Discord Server",
   "externalRepository": "Extension Settings",
-  "addRepository": "Add External Extensions",
   "externalRepositoryUrl": "Extension Repository Url",
   "externalRepositoryUrlShort": "Extension Repository Url",
   "history": "History",
-  "useSysProxy": "Use system proxy settings",
   "clearCookies": "Clear Cookies",
   "clearCache": "Clear Cache",
   "termsUrl": "Terms of Use",
@@ -973,5 +865,27 @@
   "show_tap_zones_when_start_reading": "Show tap zones when starting reading.",
   "select_chapters": "Select chapters",
   "label_watermark": "Watermark",
-  "tap_to_open": "Tap to open"
+  "tap_to_open": "Tap to open",
+  "labs": "Labs",
+  "labsSubtitle": "Experimental Features",
+  "concurrent_download_short_title_num": "Concurrent downloads: {num}",
+  "concurrent_download_short_title": "Concurrent downloads",
+  "concurrent_download_title": "Number of concurrent downloads",
+  "concurrent_download_tips": "Downloading concurrently from the same source for a long time may result in your IP being blocked by the source, causing subsequent downloads and readings to fail.",
+  "download_next_n_chapter": "{x, plural, one{Next chapter} other{Next {x} chapters}}",
+  "download_unread_chapters": "All unread chapters",
+  "download_all_chapters": "All chapters",
+  "download_queue": "Download queue",
+  "download_settings": "Download settings",
+  "remove_after_read": "Delete download after reading",
+  "pinch_to_zoom": "Pinch to zoom",
+  "errorFilePickUnknownType": "Please select a {suffix} file",
+  "attention_label": "⚠️Attention",
+  "homepage_label": "Homepage",
+  "download_limit_exceeded_title": "Download limit exceeded",
+  "download_limit_number_title": "Download limit is {num} chapters.",
+  "download_limit_content": "You can download {freeTicket} chapters per day.\n\nWatching one ad can increase this limit by {ticketPerAd} chapters, and after watching {maxAds} ads, there is no limit on downloads for the day.\n\nPremium users have unlimited downloads.",
+  "download_limit_increase": "Download limit increased by {num}.",
+  "add_download_tips": "{x, plural, one{Added 1 chapter to the download queue.} other{Added {x} chapters to the download queue.}}",
+  "watch_ad_label": "Watch Ad"
 }

@@ -18,6 +18,8 @@ import 'constants/enum.dart';
 import 'constants/navigation_bar_data.dart';
 import 'features/about/presentation/about/widget/file_log_tile.dart';
 import 'features/custom/inapp/purchase_providers.dart';
+import 'features/manga_book/presentation/downloads/controller/downloads_controller.dart';
+import 'features/manga_book/presentation/downloads/service/download_ticket_service.dart';
 import 'features/manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import 'features/settings/domain/repo/repo_model.dart';
 import 'features/settings/presentation/appearance/constants/theme_define.dart';
@@ -28,15 +30,20 @@ import 'features/settings/widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'global_providers/global_providers.dart';
 import 'global_providers/preference_providers.dart';
 import 'routes/router_config.dart';
+import 'utils/auto_delete.dart';
+import 'utils/event_util.dart';
 import 'utils/extensions/custom_extensions.dart';
 import 'utils/http_proxy.dart';
 import 'utils/log.dart';
+import 'utils/premium_reset.dart';
 
 class Sorayomi extends HookConsumerWidget {
   const Sorayomi({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    log('main app build');
+
     final routes = ref.watch(routerConfigProvider);
     final themeMode = ref.watch(themeModeKeyProvider);
     final appLocale = decideAppLocale(ref);
@@ -45,12 +52,17 @@ class Sorayomi extends HookConsumerWidget {
     final pipe = ref.watch(getMagicPipeProvider);
     setupHandler(pipe, routes, ref);
 
+    // services
+    final purchaseListener = ref.watch(purchaseListenerProvider);
+    ref.watch(downloadTicketServiceProvider);
+
     setupProxy(ref);
 
     setupLog(ref);
 
     useEffect(() {
-      resetPremiumSwitch(ref);
+      PremiumReset.instance.resetWhenStartup(ref);
+      AutoDelete.instance.triggerDelete(ref);
       return;
     }, []);
 
@@ -117,7 +129,8 @@ class Sorayomi extends HookConsumerWidget {
         log("reload sharedPreferences succ");
       }
       if (call.method == 'OPENURL') {
-        final uri = Uri.parse(call.arguments);
+        String fullUrl = call.arguments;
+        final uri = Uri.parse(fullUrl);
         //final location = goRouter.location;
         //print("location: $location");
         if (uri.host == 'tab') {
@@ -171,6 +184,18 @@ class Sorayomi extends HookConsumerWidget {
             });
           }
         }
+        // file:///private/var/mobile/Containers/Data/Application/8FDA166C-D754-4E18-9E07-E9B5B3C36AB5/Documents/Inbox/Tachimanga_backup_2024-06-15_18-37-52-181.tmb
+        if (fullUrl.startsWith("file://")) {
+          log("import file: $fullUrl");
+          if (fullUrl.endsWith(".zip") || fullUrl.endsWith(".tmb")) {
+            goRouter.go(Routes.more);
+            goRouter.push([
+              Routes.settings,
+              Routes.backup,
+            ].toPath, extra: Uri.decodeFull(fullUrl).substring(7));
+            logEvent3("BACKUP:IMPORT:FILE");
+          }
+        }
       }
       return Future.value('OK');
     });
@@ -186,68 +211,6 @@ class Sorayomi extends HookConsumerWidget {
   void setupLog(WidgetRef ref) {
     if (ref.read(fileLogProvider) == true) {
       logToNativeEnabled = true;
-    }
-  }
-
-  void resetPremiumSwitch(WidgetRef ref) {
-    final purchaseGate = ref.read(purchaseGateProvider);
-    final testflightFlag = ref.read(testflightFlagProvider);
-    if (purchaseGate || testflightFlag) {
-      return;
-    }
-    if (ref.read(themeKeyProvider) != ThemeDefine.defaultSchemeKey) {
-      log("reset themeKeyProvider");
-      Future(() {
-        ref
-            .read(themeKeyProvider.notifier)
-            .update(ThemeDefine.defaultSchemeKey);
-      });
-    }
-    if (ref.read(themePureBlackProvider) == true) {
-      log("reset themePureBlackProvider");
-      Future(() {
-        ref.read(themePureBlackProvider.notifier).update(false);
-      });
-    }
-    if (ref.read(autoBackupFrequencyProvider) != FrequencyEnum.off) {
-      log("reset autoBackupFrequencyProvider");
-      Future(() {
-        ref
-            .read(autoBackupFrequencyProvider.notifier)
-            .update(FrequencyEnum.off);
-      });
-    }
-
-    if (ref.read(lockTypePrefProvider) != LockTypeEnum.off) {
-      log("reset lockTypePrefProvider");
-      Future(() {
-        ref.read(lockTypePrefProvider.notifier).update(LockTypeEnum.off);
-      });
-    }
-    if (ref.read(secureScreenPrefProvider) != SecureScreenEnum.off) {
-      log("reset secureScreenPrefProvider");
-      Future(() {
-        ref
-            .read(secureScreenPrefProvider.notifier)
-            .update(SecureScreenEnum.off);
-      });
-    }
-    if (ref.read(incognitoModePrefProvider) == true) {
-      log("reset incognitoModePrefProvider");
-      Future(() {
-        ref
-            .read(incognitoModePrefProvider.notifier)
-            .update(false);
-      });
-    }
-
-    if (ref.read(readerPageLayoutPrefProvider) != ReaderPageLayout.singlePage) {
-      log("reset readerPageLayoutPrefProvider");
-      Future(() {
-        ref
-            .read(readerPageLayoutPrefProvider.notifier)
-            .update(ReaderPageLayout.singlePage);
-      });
     }
   }
 }

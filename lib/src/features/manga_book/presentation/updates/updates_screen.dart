@@ -16,6 +16,7 @@ import '../../../../utils/hooks/paging_controller_hook.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
+import '../../../settings/presentation/lab/controller/pip_controller.dart';
 import '../../data/updates/updates_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/chapter_page/chapter_page_model.dart';
@@ -25,6 +26,7 @@ import '../../widgets/update_status_popup_menu.dart';
 import '../reader/controller/reader_controller.dart';
 import 'controller/update_controller.dart';
 import 'widgets/chapter_manga_list_tile.dart';
+import 'widgets/updates_pip_button.dart';
 
 class UpdatesScreen extends HookConsumerWidget {
   const UpdatesScreen({super.key});
@@ -75,6 +77,13 @@ class UpdatesScreen extends HookConsumerWidget {
         DBKeys.alwaysAskCategoryToUpdate.initial;
     final dateFormatPref =
         ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
+
+    final updateStatus = ref.watch(updatesSocketProvider);
+
+    final showPipButton = ref.watch(pipBuildFlagProvider) == true &&
+        ref.watch(bgEnablePrefProvider) == true &&
+        updateStatus.valueOrNull?.running == true;
+
     return Scaffold(
       floatingActionButton:
           selectedChapters.value.isEmpty ? const UpdateStatusFab() : null,
@@ -93,6 +102,7 @@ class UpdatesScreen extends HookConsumerWidget {
               centerTitle: true,
               actions: [
                 if (!alwaysAskSelect) const UpdateSettingIcon(),
+                if (showPipButton) const UpdatesPipButton(),
                 const UpdateStatusPopupMenu()
               ],
             ),

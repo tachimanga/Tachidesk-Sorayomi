@@ -9,20 +9,6 @@ import 'package:flutter/material.dart';
 import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 
-enum AuthType {
-  none,
-  basic;
-
-  String toLocale(BuildContext context) {
-    switch (this) {
-      case AuthType.none:
-        return context.l10n!.authTypeNone;
-      case AuthType.basic:
-        return context.l10n!.authTypeBasic;
-    }
-  }
-}
-
 enum ReaderMode {
   defaultReader,
   continuousVertical,

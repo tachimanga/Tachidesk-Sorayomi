@@ -13,6 +13,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../data/downloads/downloads_repository.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter_batch/chapter_batch_model.dart';
+import '../../presentation/downloads/widgets/download_reward_ad_dialog.dart';
 
 class MultiChaptersActionIcon extends ConsumerWidget {
   const MultiChaptersActionIcon({
@@ -28,23 +29,37 @@ class MultiChaptersActionIcon extends ConsumerWidget {
   final IconData icon;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.watch(toastProvider(context));
     return IconButton(
       icon: Icon(icon),
       onPressed: () async {
-        (await AsyncValue.guard(
-          () => change == null
-              ? ref
-                  .read(downloadsRepositoryProvider)
-                  .addChaptersBatchToDownloadQueue(chapterList)
-              : ref.read(mangaBookRepositoryProvider).modifyBulkChapters(
-                    batch: ChapterBatch(
-                      chapterIds: chapterList,
-                      change: change,
-                    ),
+        if (change == null) {
+          (await AsyncValue.guard(
+            () async {
+              await showAdDialogIfNeeded(
+                context: context,
+                ref: ref,
+                chaptersCount: chapterList.length,
+                onPass: () async {
+                  await ref
+                      .read(downloadsRepositoryProvider)
+                      .addChaptersBatchToDownloadQueue(chapterList);
+                },
+              );
+            },
+          ))
+              .showToastOnError(toast);
+        } else {
+          (await AsyncValue.guard(
+            () => ref.read(mangaBookRepositoryProvider).modifyBulkChapters(
+                  batch: ChapterBatch(
+                    chapterIds: chapterList,
+                    change: change,
                   ),
-        ))
-            .showToastOnError(ref.read(toastProvider(context)));
-
+                ),
+          ))
+              .showToastOnError(toast);
+        }
         await refresh(change != null);
       },
     );

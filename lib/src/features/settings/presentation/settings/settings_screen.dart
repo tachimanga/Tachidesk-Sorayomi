@@ -56,12 +56,6 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.settings_backup_restore_rounded),
             onTap: () => context.push([Routes.settings, Routes.backup].toPath),
           ),
-          ListTile(
-            title: Text(context.l10n!.server),
-            leading: const Icon(Icons.computer_rounded),
-            onTap: () =>
-                context.push([Routes.settings, Routes.serverSettings].toPath),
-          ),
         ],
       ),
     );

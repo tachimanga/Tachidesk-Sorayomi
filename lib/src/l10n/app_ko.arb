@@ -1,0 +1,1110 @@
+{
+  "downloaded": "다운로드됨",
+  "@downloaded": {
+    "description": "Text to show downloaded chapters status in Filters  "
+  },
+  "addToLibrary": "라이브러리에 추가",
+  "@addToLibrary": {
+    "description": "Button text to add Manga to Library in Manga Details Screen"
+  },
+  "appTheme": "앱 테마",
+  "@appTheme": {
+    "description": "Popup title and Button text to change App Theme"
+  },
+  "appTitle": "Tachimanga",
+  "@appTitle": {
+    "description": "Name of the app (Tachidesk Sorayomi in native script)"
+  },
+  "appearance": "모양",
+  "@appearance": {
+    "description": "Screen title and Button text of Appearance screen"
+  },
+  "backup": "백업 & 복원",
+  "@backup": {
+    "description": "Screen title and Button text of Backup & Restore screen"
+  },
+  "badges": "배지",
+  "@badges": {
+    "description": "Checkbox Group title to enable Badges on manga Cover in Library Screen"
+  },
+  "bookmarked": "북마크함",
+  "@bookmarked": {
+    "description": "Checkbox text to filter bookmarked manga chapters in Manga Details screen"
+  },
+  "chapterSortFetchedDate": "추가된 날짜순",
+  "@chapterSortFetchedDate": {
+    "description": "Radio button text for sort by Fetched Date"
+  },
+  "chapterSortSource": "소스순",
+  "@chapterSortSource": {
+    "description": "Radio button text for sort by Source"
+  },
+  "client": "클라이언트",
+  "@client": {
+    "description": "Text title for the name of the client in About screen"
+  },
+  "clientVersion": "클라이언트 버전",
+  "@clientVersion": {
+    "description": "Text title for the current version of the client in About screen"
+  },
+  "copyMsg": "'{msg}' 복사됨!",
+  "@copyMsg": {
+    "description": "Toast text to show that the message has been copied",
+    "placeholders": {
+      "msg": {
+        "example": "Client : Tachidesk Sorayomi",
+        "type": "String"
+      }
+    }
+  },
+  "current": "지금",
+  "@current": {
+    "description": "Text to show the currently reading chapter in Reader Screen"
+  },
+  "completed": "완결됨",
+  "@completed": {
+    "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
+  },
+  "delete": "삭제",
+  "@delete": {
+    "description": "Text for delete button"
+  },
+  "deleteCategoryDescription": "이 작업은 이 카테고리의 모든 만화를 기본값으로 통합할 것입니다!",
+  "@deleteCategoryDescription": {
+    "description": "Popup description when deleting Category"
+  },
+  "deleteCategoryTitle": "정말로 삭제할까요?",
+  "@deleteCategoryTitle": {
+    "description": "Popup title when deleting Category"
+  },
+  "downloads": "다운로드",
+  "@downloads": {
+    "description": "Screen title and Navigation text of Downloads screen"
+  },
+  "edit": "편집",
+  "@edit": {
+    "description": "Popup button text to edit Category in Edit category screen"
+  },
+  "editCategory": "카테고리 편집",
+  "@editCategory": {
+    "description": "Screen title, Button text and  of Downloads screen"
+  },
+  "emptyCategory": "카테고리 이름은 비워둘 수 없습니다",
+  "@emptyCategory": {
+    "description": "Description to show that category list is empty in Edit Category screen"
+  },
+  "errorExtension": "선택한 확장 프로그램을 찾을 수 없습니다",
+  "@errorExtension": {
+    "description": "Error Description to show when user selected unknown extension from list"
+  },
+  "general": "일반",
+  "@general": {
+    "description": "Screen title and Button text of General setting screen"
+  },
+  "gitHub": "GitHub",
+  "@gitHub": {
+    "description": "GitHub app title"
+  },
+  "globalSearch": "전체 검색",
+  "@globalSearch": {
+    "description": "Screen title of Global Search screen"
+  },
+  "globalUpdate": "전체 업데이트",
+  "@globalUpdate": {
+    "description": "Button text of Global Manga Update"
+  },
+  "help": "도움",
+  "@help": {
+    "description": "Button text of help in about screen"
+  },
+  "inLibrary": "라이브러리에 있음",
+  "@inLibrary": {
+    "description": "Button and Chip text to show that the manga is in Library"
+  },
+  "install": "추가",
+  "@install": {
+    "description": "Button text to install the extension"
+  },
+  "installing": "추가중",
+  "@installing": {
+    "description": "Button text to show that the extension is installing"
+  },
+  "mangaSortLastRead": "마지막으로 읽은순",
+  "@mangaSortLastRead": {
+    "description": "Radio button text for Manga sort Type - Last Read"
+  },
+  "mangaStatusCancelled": "취소됨",
+  "@mangaStatusCancelled": {
+    "description": "Text to show Manga Status Cancelled in Manga details screen"
+  },
+  "mangaStatusCompleted": "완결됨",
+  "@mangaStatusCompleted": {
+    "description": "Text to show Manga Status Completed in Manga details screen"
+  },
+  "mangaStatusLicensed": "라이선스",
+  "@mangaStatusLicensed": {
+    "description": "Text to show Manga Status Licensed in Manga details screen"
+  },
+  "mangaStatusOnHiatus": "중단중",
+  "@mangaStatusOnHiatus": {
+    "description": "Text to show Manga Status On Hiatus in Manga details screen"
+  },
+  "mangaStatusOngoing": "연재중",
+  "@mangaStatusOngoing": {
+    "description": "Text to show Manga Status Ongoing in Manga details screen"
+  },
+  "mangaStatusPublishingFinished": "연재 종료",
+  "@mangaStatusPublishingFinished": {
+    "description": "Text to show Manga Status Publishing Finished in Manga details screen"
+  },
+  "mangaStatusUnknown": "알수없음",
+  "@mangaStatusUnknown": {
+    "description": "Text to show Manga Status Unknown in Manga details screen"
+  },
+  "more": "더보기",
+  "@more": {
+    "description": "Screen title and Navigation text of More screen"
+  },
+  "newUpdateAvailable": "새로운 업데이트 가능",
+  "@newUpdateAvailable": {
+    "description": "Popup title to show that the App/Server has and update"
+  },
+  "noCategoriesFound": "카테고리가 없습니다.\n(팁: 플러스 버튼을 눌러 라이브러리를 정리할 수 있습니다)",
+  "@noCategoriesFound": {
+    "description": "Hint text to add new Category when category list is empty"
+  },
+  "noCategoryMangaFound": "이 카테고리에서 만화를 찾을 수 없습니다.\n(팁: 검색과 필터 확인해주세요!)",
+  "@noCategoryMangaFound": {
+    "description": "Hint text to check filter when manga list is empty in Category tab in Library"
+  },
+  "noChaptersFound": "챕터를 찾을 수 없습니다",
+  "@noChaptersFound": {
+    "description": "Text to show that the Chapter list is empty in Manga details Screen"
+  },
+  "noDownloads": "다운로드 없음",
+  "@noDownloads": {
+    "description": "Text to show that there is no active downloads in Downloads Screen"
+  },
+  "noMangaFound": "만화를 찾을 수 없습니다",
+  "@noMangaFound": {
+    "description": "Text to show that the Manga list is empty"
+  },
+  "noOfChapters": "{count} 챕터",
+  "@noOfChapters": {
+    "description": "Title text to show the number of chapters in the Manga details screen",
+    "placeholders": {
+      "count": {
+        "example": "23",
+        "type": "int"
+      }
+    }
+  },
+  "noSourcesFound": "소스를 찾을 수 없습니다",
+  "@noSourcesFound": {
+    "description": "Text to show that the Source list is empty"
+  },
+  "noUpdatesAvailable": "최신 버전을 사용중입니다",
+  "@noUpdatesAvailable": {
+    "description": "Text to show that the user is using the latest version of the app"
+  },
+  "noUpdatesFound": "업데이트를 찾을 수 없습니다",
+  "@noUpdatesFound": {
+    "description": "Toast Text to show that there are no Updates available"
+  },
+  "nsfw18": "18+",
+  "@nsfw18": {
+    "description": "18+ tag Text to show in extensions list"
+  },
+  "nsfw": "NSFW 확장 프로그램 및 소스 보기",
+  "@nsfw": {
+    "description": "Switch text to show/hide the nsfw extensions"
+  },
+  "numSelected": "{num} 선택됨",
+  "@numSelected": {
+    "description": "Title text to show the number of chapters selected in the Manga details screen and Updates screen",
+    "placeholders": {
+      "num": {
+        "example": "23",
+        "type": "int"
+      }
+    }
+  },
+  "obsolete": "지원 종료",
+  "@obsolete": {
+    "description": "Text to show that the extension has become Obsolete"
+  },
+  "page": "페이지: {number}",
+  "@page": {
+    "description": "Text to show the last read Page number of the chapter in Manga details screen",
+    "placeholders": {
+      "number": {
+        "example": "23",
+        "type": "int"
+      }
+    }
+  },
+  "pause": "일시정지",
+  "@pause": {
+    "description": "Button text to pause downloads"
+  },
+  "pending": "보류중",
+  "@pending": {
+    "description": "Pending status Manga Group title in Update Summary Screen"
+  },
+  "reader": "리더",
+  "@reader": {
+    "description": "Screen title and Button text of Reader screen"
+  },
+  "readerMode": "읽기 모드",
+  "@readerMode": {
+    "description": "Popup title and Button text of Reader Mode popup"
+  },
+  "readerModeContinuousHorizontalLTR": "왼쪽에서 오른쪽으로 이어짐",
+  "@readerModeContinuousHorizontalLTR": {
+    "description": "Radio button text for Reader Mode Type - Continuous Horizontal (LTR)"
+  },
+  "readerModeContinuousHorizontalRTL": "오른쪽에서 왼쪽으로 이어짐",
+  "@readerModeContinuousHorizontalRTL": {
+    "description": "Radio button text for Reader Mode Type - Continuous Horizontal (RTL)"
+  },
+  "readerModeContinuousVertical": "위에서 아래로 이어짐",
+  "@readerModeContinuousVertical": {
+    "description": "Radio button text for Reader Mode Type - Continuous Vertical"
+  },
+  "readerModeDefaultReader": "기본",
+  "@readerModeDefaultReader": {
+    "description": "Radio button text for Reader Mode Type - Default"
+  },
+  "readerModeSingleHorizontalLTR": "왼쪽에서 오른쪽으로 넘기기",
+  "@readerModeSingleHorizontalLTR": {
+    "description": "Radio button text for Reader Mode Type - Single Horizontal (LTR)"
+  },
+  "readerModeSingleHorizontalRTL": "오른쪽에서 왼쪽으로 넘기기",
+  "@readerModeSingleHorizontalRTL": {
+    "description": "Radio button text for Reader Mode Type - Single Horizontal (RTL)"
+  },
+  "readerModeSingleVertical": "위에서 아래로 넘기기",
+  "@readerModeSingleVertical": {
+    "description": "Radio button text for Reader Mode Type - Single Vertical"
+  },
+  "readerModeWebtoon": "웹툰",
+  "@readerModeWebtoon": {
+    "description": "Radio button text for Reader Mode Type - Webtoon"
+  },
+  "readerNavigationLayout": "탭 위치",
+  "@readerNavigationLayout": {
+    "description": "Popup title and Button text of Reader Navigation Layout popup"
+  },
+  "readerNavigationLayoutDisabled": "비활성화",
+  "@readerNavigationLayoutDisabled": {
+    "description": "Radio button text for Reader Navigation Layout - Disabled"
+  },
+  "readerNavigationLayoutKindlish": "Kindle식",
+  "@readerNavigationLayoutKindlish": {
+    "description": "Radio button text for Reader Navigation Layout - Kindle-ish"
+  },
+  "readerNavigationLayoutLShaped": "L모양",
+  "@readerNavigationLayoutLShaped": {
+    "description": "Radio button text for Reader Navigation Layout - L Shaped"
+  },
+  "readerNavigationLayoutRightAndLeft": "오른쪽과 왼쪽",
+  "@readerNavigationLayoutRightAndLeft": {
+    "description": "Radio button text for Reader Navigation Layout - Right And Left"
+  },
+  "readerPadding": "리더 여백",
+  "@readerPadding": {
+    "description": "Slider title text for Reader Padding"
+  },
+  "refresh": "새로고침",
+  "@refresh": {
+    "description": "Refresh button text"
+  },
+  "reset": "초기화",
+  "@reset": {
+    "description": "Button text of reset button in source filters"
+  },
+  "resume": "계속",
+  "@resume": {
+    "description": "Button Text to resume Chapter reading/downloading"
+  },
+  "retry": "재시도",
+  "@retry": {
+    "description": "Retry Button Text"
+  },
+  "running": "실행중",
+  "@running": {
+    "description": "Running status Manga Group title in Update Summary Screen"
+  },
+  "search": "검색",
+  "@search": {
+    "description": "Search field hint Text"
+  },
+  "sort": "정렬",
+  "@sort": {
+    "description": "title of sort Tab across the app"
+  },
+  "source": "소스",
+  "@source": {
+    "description": "Screen title and Button text of source screen"
+  },
+  "sourceTypePopular": "인기",
+  "@sourceTypePopular": {
+    "description": "Tab text Popular for source screen type"
+  },
+  "start": "시작",
+  "@start": {
+    "description": "Button text start reading the manga"
+  },
+  "themeModeDark": "다크",
+  "@themeModeDark": {
+    "description": "Radio button text for App theme - Dark"
+  },
+  "themeModeLight": "라이트",
+  "@themeModeLight": {
+    "description": "Radio button text for App theme - Light"
+  },
+  "themeModeSystem": "시스템",
+  "@themeModeSystem": {
+    "description": "Radio button text for App theme - System"
+  },
+  "uninstall": "삭제",
+  "@uninstall": {
+    "description": "Button text to Uninstall the extension"
+  },
+  "uninstalling": "삭제중",
+  "@uninstalling": {
+    "description": "Button text to show that the extension is uninstalling"
+  },
+  "unknownAuthor": "알수없는 작가",
+  "@unknownAuthor": {
+    "description": "Text to show unknown author in Manga details screen"
+  },
+  "unknownManga": "알수없는 만화",
+  "@unknownManga": {
+    "description": "Text to show unknown manga in Manga details screen"
+  },
+  "unknownSource": "알수없는 소스",
+  "@unknownSource": {
+    "description": "Text to show unknown Source in Manga details screen"
+  },
+  "unread": "읽지 않음",
+  "@unread": {
+    "description": "Checkbox text to unread bookmarked manga/chapters across app"
+  },
+  "updateCompleted": "업데이트 완료",
+  "@updateCompleted": {
+    "description": "Button text to show that extension update is completed"
+  },
+  "updates": "업데이트",
+  "@updates": {
+    "description": "Screen title and Button text of Updates screen"
+  },
+  "updatesSummary": "업데이트 개요",
+  "@updatesSummary": {
+    "description": "Screen title and Button text of Updates Summary screen"
+  },
+  "updating": "업데이트중",
+  "@updating": {
+    "description": "Button text to show that the extension is updating"
+  },
+  "webView": "Web View",
+  "@webView": {
+    "description": "Button text to open manga website"
+  },
+  "whatsNew": "업데이트 정보",
+  "@whatsNew": {
+    "description": "Button text to open whats new page of app in web"
+  },
+  "getPremium": "프리미엄 구입",
+  "@getPremium": {},
+  "alreadyGetPremium": "프리미엄 구입 완료",
+  "@alreadyGetPremium": {},
+  "iapFaq": "FAQ",
+  "@iapFaq": {},
+  "restorePurchase": "구입 복원",
+  "@restorePurchase": {},
+  "share": "공유",
+  "@share": {},
+  "discordServer": "Discord 서버",
+  "@discordServer": {},
+  "externalRepository": "확장 프로그램 설정",
+  "@externalRepository": {},
+  "externalRepositoryUrlShort": "확장 프로그램 저장소 Url",
+  "@externalRepositoryUrlShort": {},
+  "history": "기록",
+  "@history": {},
+  "clearCookies": "쿠키 삭제",
+  "@clearCookies": {},
+  "termsUrl": "이용 약관",
+  "@termsUrl": {},
+  "privacyUrl": "개인 정보 보호 정책",
+  "@privacyUrl": {},
+  "recentlyDownloaded": "최근에 다운로드됨",
+  "@recentlyDownloaded": {},
+  "downloadFailed": "다운로드 실패",
+  "@downloadFailed": {},
+  "errorMessageFrom": "오류 메시지: {text}",
+  "@errorMessageFrom": {},
+  "open": "열기",
+  "@open": {},
+  "ok": "확인",
+  "@ok": {},
+  "remove": "삭제",
+  "@remove": {},
+  "logoutFrom": "{text}에서 로그아웃",
+  "@logoutFrom": {},
+  "openInBrowser": "브라우저에서 열기",
+  "@openInBrowser": {},
+  "processing": "처리중…",
+  "@processing": {},
+  "trackingStatus": "상태",
+  "@trackingStatus": {},
+  "trackingStatusReading": "읽는중",
+  "@trackingStatusReading": {},
+  "trackingStatusPlanToRead": "읽을 예정",
+  "@trackingStatusPlanToRead": {},
+  "trackingStatusCompleted": "완료",
+  "@trackingStatusCompleted": {},
+  "trackingStatusDropped": "포기함",
+  "@trackingStatusDropped": {},
+  "trackingStatusRereading": "다시 읽는중",
+  "@trackingStatusRereading": {},
+  "trackingChapter": "챕터",
+  "@trackingChapter": {},
+  "trackingScore": "점수",
+  "@trackingScore": {},
+  "trackingStartDate": "시작일",
+  "@trackingStartDate": {},
+  "operationFailTip": "조작에 실패했습니다. 한 번 더 시도해 주세요.",
+  "@operationFailTip": {},
+  "createBackupTitle": "백업 생성",
+  "@createBackupTitle": {
+    "description": "Button text to create backup"
+  },
+  "createBackupDescription": "현재 라이브러리를 복원하는 데 사용할 수 있습니다.",
+  "@createBackupDescription": {
+    "description": "Button text description to create backup"
+  },
+  "backupCreated": "백업이 생성되었습니다!",
+  "@backupCreated": {},
+  "restoring": "백업 복원중",
+  "@restoring": {
+    "description": "Toast Text to show that the backup is restoring"
+  },
+  "restored": "백업이 복원되었습니다!",
+  "@restored": {
+    "description": "Toast Text to show that the backup has been restored"
+  },
+  "importBackupTitle": "Tachiyomi/Mihon 백업 가져오기",
+  "@importBackupTitle": {},
+  "importBackupDescription": "Tachiyomi 백업 파일에서 라이브러리 가져오기",
+  "@importBackupDescription": {},
+  "autoBackupSectionTitle": "자동 백업",
+  "@autoBackupSectionTitle": {},
+  "backupsSectionTitle": "백업",
+  "@backupsSectionTitle": {},
+  "exportBackup": "내보내기",
+  "@exportBackup": {},
+  "backupNamePrefixNormal": "백업",
+  "@backupNamePrefixNormal": {},
+  "backupNamePrefixAuto": "자동 백업",
+  "@backupNamePrefixAuto": {},
+  "backupNamePrefixSchedule": "예약 백업",
+  "@backupNamePrefixSchedule": {},
+  "restoreConfirmTitle": "이 백업으로 복원하시겠습니까?",
+  "@restoreConfirmTitle": {},
+  "restoreConfirmContent": "모든 현재 데이터는 제거되고 이 백업의 데이터로 대체됩니다.",
+  "@restoreConfirmContent": {},
+  "importConfirmTitle": "Tachiyomi 백업을 가져오나요?",
+  "@importConfirmTitle": {},
+  "autoBackupTip": "백업을 복원하기 전에 자동으로 백업을 생성합니다.",
+  "@autoBackupTip": {},
+  "autoBackupTipForImport": "백업을 복원하기 전에 자동으로 백업을 생성합니다.",
+  "@autoBackupTipForImport": {},
+  "restoreSuccessTip": "백업 복원에 성공했습니다. 변경사항은 앱을 다시 시작한 후에 적용됩니다.",
+  "@restoreSuccessTip": {},
+  "byPassStart": "Cloudflare 우회 시도 중입니다",
+  "@byPassStart": {},
+  "byPassSuccess": "Cloudflare를 성공적으로 우회했습니다",
+  "@byPassSuccess": {},
+  "byPassTimeout": "Cloudflare 우회에 실패하였습니다",
+  "@byPassTimeout": {},
+  "byPassCancel": "사용자가 Cloudflare 우회를 취소했습니다",
+  "@byPassCancel": {},
+  "checkInWebView": "{msg}, WebView에서 웹사이트를 확인해주세요",
+  "@checkInWebView": {},
+  "allScanlators": "모든 스캔레이터",
+  "@allScanlators": {},
+  "scanlators": "스캔레이터",
+  "@scanlators": {},
+  "mangaSortLatestChapterFetch": "챕터를 가져온 날짜순",
+  "@mangaSortLatestChapterFetch": {},
+  "onlySearchPinSource": "핀 설정된 소스만 포함",
+  "@onlySearchPinSource": {},
+  "prevPage": "뒤로",
+  "@prevPage": {},
+  "nextPage": "앞으로",
+  "@nextPage": {},
+  "leftPage": "왼쪽",
+  "@leftPage": {},
+  "rightPage": "오른쪽",
+  "@rightPage": {},
+  "tapMenu": "메뉴",
+  "@tapMenu": {},
+  "theme_lavender": "라벤더",
+  "@theme_lavender": {},
+  "theme_midnightdusk": "황혼",
+  "@theme_midnightdusk": {},
+  "imageFileFetchFail": "이미지 다운로드에 실패했습니다.",
+  "@imageFileFetchFail": {},
+  "imageSaveWatermarkSwitch": "워터마크와 함께 이미지 저장 및 공유",
+  "@imageSaveWatermarkSwitch": {},
+  "mangaShareText": "{title} by {author}{link}\nTachimanga에서 공유",
+  "@mangaShareText": {},
+  "chapterShareText": "{title} by {author}, {chapter} {link}\nTachimanga에서 공유",
+  "@chapterShareText": {},
+  "theme_default": "기본",
+  "@theme_default": {},
+  "theme_monet": "다이내믹",
+  "@theme_monet": {},
+  "theme_greenapple": "청사과",
+  "@theme_greenapple": {},
+  "advanced": "고급",
+  "@advanced": {},
+  "advancedSubtitle": "캐시, 쿠키 및 로그 내보내기 삭제.",
+  "@advancedSubtitle": {},
+  "premiumRequired": "프리미엄이 필요합니다.",
+  "@premiumRequired": {},
+  "pref_backup_interval": "백업 빈도",
+  "@pref_backup_interval": {},
+  "off": "끄기",
+  "@off": {},
+  "on": "켜기",
+  "@on": {},
+  "update_6hour": "6시간마다",
+  "@update_6hour": {},
+  "update_12hour": "12시간마다",
+  "@update_12hour": {},
+  "update_24hour": "매일",
+  "@update_24hour": {},
+  "update_48hour": "2일마다",
+  "@update_48hour": {},
+  "update_weekly": "매주",
+  "@update_weekly": {},
+  "always_ask": "항상 묻기",
+  "@always_ask": {},
+  "contact_us": "문의하기",
+  "@contact_us": {},
+  "changelogs": "변경 내역",
+  "@changelogs": {},
+  "help_translate": "번역 지원",
+  "@help_translate": {},
+  "pref_category_security": "보안",
+  "@pref_category_security": {},
+  "lock_with_biometrics": "잠금 해제 필요",
+  "@lock_with_biometrics": {},
+  "lock_when_idle": "유휴 상태일 때 잠금",
+  "@lock_when_idle": {},
+  "lock_always": "항상",
+  "@lock_always": {},
+  "lock_never": "미사용",
+  "@lock_never": {},
+  "secure_screen": "보안 화면",
+  "@secure_screen": {},
+  "secure_screen_summary": "보안 화면은 앱 전환 시 앱 콘텐츠를 숨깁니다",
+  "@secure_screen_summary": {},
+  "pref_incognito_mode": "시크릿 모드",
+  "@pref_incognito_mode": {},
+  "pref_incognito_mode_summary": "읽기 기록 일시중지",
+  "@pref_incognito_mode_summary": {},
+  "pref_incognito_mode_on": "시크릿 모드 켜짐",
+  "@pref_incognito_mode_on": {},
+  "pref_incognito_mode_off": "시크릿 모드 꺼짐",
+  "@pref_incognito_mode_off": {},
+  "lock_type_passcode": "비밀번호",
+  "@lock_type_passcode": {},
+  "action_display_show_number_of_items": "항목 수 표시",
+  "@action_display_show_number_of_items": {},
+  "tabs_header": "탭",
+  "@tabs_header": {},
+  "page_layout": "페이지 레이아웃",
+  "@page_layout": {},
+  "about": "정보",
+  "@about": {
+    "description": "Screen title and Button text of About screen"
+  },
+  "addCategory": "카테고리 추가",
+  "@addCategory": {
+    "description": "Popup title and Button text to add new category in Edit Category Screen"
+  },
+  "appLanguage": "앱 언어",
+  "@appLanguage": {
+    "description": "Popup title and Button text to change App Language"
+  },
+  "browse": "브라우저",
+  "@browse": {
+    "description": "Screen title, Navigation Bar text and Button text of both Browse screen and Browse Settings Screen"
+  },
+  "categoryUpdate": "카테고리 업데이트",
+  "@categoryUpdate": {
+    "description": "Button text to update the mangas in the Category"
+  },
+  "cancel": "취소",
+  "@cancel": {
+    "description": "Text for Cancel button in a Popup"
+  },
+  "categories": "카테고리",
+  "@categories": {
+    "description": "Button text of edit Categories screen in Library settings screen"
+  },
+  "chapterNumber": "챕터 {number}",
+  "@chapterNumber": {
+    "description": "Text title for Chapter name in chapter list",
+    "placeholders": {
+      "number": {
+        "example": "12.5",
+        "type": "double"
+      }
+    }
+  },
+  "close": "닫기",
+  "@close": {
+    "description": "Text for close button"
+  },
+  "defaultCategory": "라이브러리에 새 만화를 추가할 때의 기본 카테고리",
+  "@defaultCategory": {
+    "description": "Checkbox description when creating a Category to add manga to the Category by Default"
+  },
+  "extensionListEmpty": "확장 목록이 비어 있습니다",
+  "@extensionListEmpty": {
+    "description": "Description to show that Extension list is empty in Extension list tab of Browse screen"
+  },
+  "discord": "Discord",
+  "@discord": {
+    "description": "Discord app title"
+  },
+  "display": "화면",
+  "@display": {
+    "description": "Text for Display tab in Library screen drawer"
+  },
+  "displayMode": "화면 표시 방식",
+  "@displayMode": {
+    "description": "Radio Group title to change manga Cover display in Library and Source Screens"
+  },
+  "displayModeDescriptiveList": "상세 리스트",
+  "@displayModeDescriptiveList": {
+    "description": "Radio button text for Manga Cover display mode - Descriptive List"
+  },
+  "displayModeGrid": "그리드",
+  "@displayModeGrid": {
+    "description": "Radio button text for Manga Cover display mode - Grid"
+  },
+  "displayModeList": "리스트",
+  "@displayModeList": {
+    "description": "Radio button text for Manga Cover display mode - List"
+  },
+  "errorFilePick": "파일이 선택되지 않았습니다!",
+  "@errorFilePick": {
+    "description": "Error Description to show when user does not selected an file"
+  },
+  "errorFilePickUnknownExtension": "{extensionName} 확장자를 가진 파일을 선택하세요",
+  "@errorFilePickUnknownExtension": {
+    "description": "Error Description to show when user selected unknown extension file"
+  },
+  "errorLaunchURL": "열지 못했습니다!\n\"{url}\"를 클립보드에 복사했습니다",
+  "@errorLaunchURL": {
+    "description": "Error Description to show when App failed to launch an URL and copied the URL to clipboard",
+    "placeholders": {
+      "url": {
+        "example": "http://sorayomi.suwayomi.org",
+        "type": "String"
+      }
+    }
+  },
+  "errorSomethingWentWrong": "무언가 잘못됐습니다!",
+  "@errorSomethingWentWrong": {
+    "description": "Error Description to show that Something went wrong!"
+  },
+  "extensionInstalled": "확장 프로그램이 설치되었습니다!",
+  "@extensionInstalled": {
+    "description": "Toast text to show that the Extension Installed successfully"
+  },
+  "extensions": "확장 프로그램",
+  "@extensions": {
+    "description": "Extension list Tab title in Browse Screen"
+  },
+  "failed": "실패",
+  "@failed": {
+    "description": "Failed status Manga Group title in Update Summary Screen"
+  },
+  "filter": "필터",
+  "@filter": {
+    "description": "title of filter Tab across the app"
+  },
+  "finished": "전부 읽음",
+  "@finished": {
+    "description": "Text to show the Currently Finished reading chapter in Reader Screen"
+  },
+  "installingExtension": "확장 프로그램을 추가중",
+  "@installingExtension": {
+    "description": "Toast text to show that the extension is installing"
+  },
+  "languages": "언어",
+  "@languages": {
+    "description": "Popup title to filter extensions based on language"
+  },
+  "library": "라이브러리",
+  "@library": {
+    "description": "Screen title and Button text of Library and Library Settings screen"
+  },
+  "mangaGridSize": "만화 그리드 크기",
+  "@mangaGridSize": {
+    "description": "Popup title and Button text to change Manga Grid size"
+  },
+  "manga": "만화",
+  "@manga": {
+    "description": "Screen title and Button text of Manga details screen"
+  },
+  "mangaSortAlphabetical": "알파벳순",
+  "@mangaSortAlphabetical": {
+    "description": "Radio button text for Manga sort Type - Alphabetical"
+  },
+  "mangaSortDateAdded": "추가순",
+  "@mangaSortDateAdded": {
+    "description": "Radio button text for Manga sort Type - Date Added"
+  },
+  "mangaSortUnread": "읽지 않음",
+  "@mangaSortUnread": {
+    "description": "Radio button text for Manga sort Type - Unread"
+  },
+  "moveToBottom": "아래로 이동",
+  "@moveToBottom": {
+    "description": "Button text to move download/category to the bottom of list"
+  },
+  "moveToTop": "위로 이동",
+  "@moveToTop": {
+    "description": "Button text to move download/category to the top of list"
+  },
+  "nameCountDisplay": "{name}: {count}",
+  "@nameCountDisplay": {
+    "description": "Text pattern to display an name and count in a string",
+    "placeholders": {
+      "name": {
+        "example": "Downloaded",
+        "type": "String"
+      },
+      "count": {
+        "example": "22",
+        "type": "int"
+      }
+    }
+  },
+  "noCategoriesFoundAlt": "카테고리가 없습니다.\n라이브러리를 정리하기 위해 설정에서 만들어주세요",
+  "@noCategoriesFoundAlt": {
+    "description": "Hint text to add new Category in Settings when category list is empty"
+  },
+  "nsfwInfo": "이것은 비공식적이거나 잠재적으로 잘못 플래그가 지정된 확장 프로그램이 앱 내에서 NSFW(18+) 콘텐츠를 표시하는 것을 방지하지 않습니다",
+  "@nsfwInfo": {
+    "description": "Hint text to show that the nsfw switch cannot prevent incorrectly flagged extensions from surfacing"
+  },
+  "noResultFound": "결과를 찾을 수 없습니다",
+  "@noResultFound": {
+    "description": "Text to show that no results found for the given search query"
+  },
+  "readerNavigationLayoutDefault": "기본",
+  "@readerNavigationLayoutDefault": {
+    "description": "Radio button text for Reader Navigation Layout - Default"
+  },
+  "readerNavigationLayoutEdge": "가장자리",
+  "@readerNavigationLayoutEdge": {
+    "description": "Radio button text for Reader Navigation Layout - Edge"
+  },
+  "readerNavigationLayoutInvert": "탭 영역 반전",
+  "@readerNavigationLayoutInvert": {
+    "description": "Switch title to invert Tap to scroll in reader screen"
+  },
+  "save": "저장",
+  "@save": {
+    "description": "Save Button Text"
+  },
+  "purchaseExpireAt": "프리미엄 구독은 {date}에 자동으로 갱신됩니다.",
+  "@purchaseExpireAt": {},
+  "clearCache": "캐시 삭제",
+  "@clearCache": {},
+  "trackingStatusOnHold": "보류중",
+  "@trackingStatusOnHold": {},
+  "imported": "백업을 가져왔습니다!",
+  "@imported": {},
+  "update": "업데이트",
+  "@update": {
+    "description": "Button text to update the extension"
+  },
+  "restoreBackupTitle": "백업 복원",
+  "@restoreBackupTitle": {
+    "description": "Button text to create backup"
+  },
+  "trackingFinishDate": "종료일",
+  "@trackingFinishDate": {},
+  "restoreBackupDescription": "백업 파일에서 라이브러리 복원",
+  "@restoreBackupDescription": {
+    "description": "Button text description to create backup"
+  },
+  "importConfirmContent": "Tachiyomi 라이브러리를 로컬 라이브러리와 병합하세요; 기존 로컬 데이터는 제거되거나 교체되지 않습니다.",
+  "@importConfirmContent": {},
+  "settings": "설정",
+  "@settings": {
+    "description": "Screen title and Button text of Settings screen"
+  },
+  "tracking": "트래킹",
+  "@tracking": {},
+  "sourceTypeFilter": "필터",
+  "@sourceTypeFilter": {
+    "description": "Tab text Filter for source screen type"
+  },
+  "sourceTypeLatest": "최신",
+  "@sourceTypeLatest": {
+    "description": "Tab text Latest for source screen type"
+  },
+  "externalRepositoryUrl": "확장 프로그램 저장소 Url",
+  "@externalRepositoryUrl": {},
+  "sources": "소스",
+  "@sources": {
+    "description": "title of Sources Tab in Browse Screen"
+  },
+  "downloadTip": "팁: 열기 버튼을 눌러 제대로 읽을 수 있는지 확인하세요.",
+  "@downloadTip": {},
+  "restoreBackup": "복원",
+  "@restoreBackup": {},
+  "logout": "로그아웃",
+  "@logout": {},
+  "addTracking": "트래킹 추가",
+  "@addTracking": {},
+  "imageSaveSuccess": "이미지가 성공적으로 저장되었습니다.",
+  "@imageSaveSuccess": {},
+  "imageSaveFail": "이미지를 저장에 실패했습니다.",
+  "@imageSaveFail": {},
+  "theme_strawberrydaiquiri": "스트로베리 다이키리",
+  "@theme_strawberrydaiquiri": {},
+  "theme_tako": "Tako",
+  "@theme_tako": {},
+  "theme_tealturquoise": "청록",
+  "@theme_tealturquoise": {},
+  "theme_yinyang": "음양",
+  "@theme_yinyang": {},
+  "theme_yotsuba": "요츠바",
+  "@theme_yotsuba": {},
+  "theme_tidalwave": "파도",
+  "@theme_tidalwave": {},
+  "themePureBlackDarkMode": "퓨어블랙 다크모드",
+  "@themePureBlackDarkMode": {},
+  "themeColorBlendLevel": "색상 혼합 수준",
+  "@themeColorBlendLevel": {},
+  "themeSectionTitle": "테마",
+  "@themeSectionTitle": {},
+  "displaySectionTitle": "디스플레이",
+  "@displaySectionTitle": {},
+  "byPassSwitch": "Cloudflare를 자동으로 우회",
+  "@byPassSwitch": {},
+  "pref_backup_slots": "최대 백업",
+  "@pref_backup_slots": {},
+  "backup_info": "다른 장소에 백업 복사본을 보관하세요.",
+  "@backup_info": {},
+  "last_auto_backup_info": "마지막으로 자동 백업한 시간: {time}",
+  "@last_auto_backup_info": {},
+  "showStatusBar": "읽을 때 상태 표시줄 표시",
+  "@showStatusBar": {},
+  "swipeRightToGoBack": "오른쪽으로 스와이프하여 뒤로가기",
+  "@swipeRightToGoBack": {},
+  "default_category_summary": "항상 묻기",
+  "@default_category_summary": {},
+  "readerAdvancedSubtitle": "제스처, 줌, 상태 바.",
+  "@readerAdvancedSubtitle": {},
+  "logsSectionTitle": "로그",
+  "@logsSectionTitle": {},
+  "cookiesCleared": "쿠키를 삭제했습니다",
+  "@cookiesCleared": {},
+  "pinned_sources": "핀됨",
+  "@pinned_sources": {},
+  "ext_updates_pending": "업데이트 대기중",
+  "@ext_updates_pending": {},
+  "other_source": "기타",
+  "@other_source": {},
+  "uninstall_confirm": "이 확장 프로그램을 삭제하시겠습니까?",
+  "@uninstall_confirm": {},
+  "extension_repo": "확장 프로그램 저장소",
+  "@extension_repo": {},
+  "one_repository": "1개의 저장소",
+  "@one_repository": {},
+  "num_repositories": "{num}개의 저장소",
+  "@num_repositories": {},
+  "add_repository": "저장소 추가",
+  "@add_repository": {},
+  "empty_repository": "아직 확장 프로그램 저장소를 추가하지 않았습니다.",
+  "@empty_repository": {},
+  "add_repo_by_name": "이름으로 추가",
+  "@add_repo_by_name": {},
+  "add_repo_by_url": "URL로 추가",
+  "@add_repo_by_url": {},
+  "add_repo_by_url_tip": "Tachimanga에 추가 저장소를 추가합니다.\n\"index.min.json\"으로 끝나는 URL이어야 합니다",
+  "@add_repo_by_url_tip": {},
+  "get_repo_meta_fail": "저장소 정보를 가져오지 못했습니다.",
+  "@get_repo_meta_fail": {},
+  "extension_usage_terms": "외부 저장소를 설정하려면 다음 계약에 동의해야 합니다.\n1. 나는 Tachimanga가 어떤 방식으로든 외부 저장소를 규제하지 않으며 Tachimanga가 외부 확장 프로그램을 사용하여 내 장치 또는 내 신원에 가해진 손상이나 피해에 대해 책임을 지지 않는다는 점을 이해하고있습니다.\n2. 나는 Tachimanga가 어떠한 외부 확장 프로그램과도 제휴하고 있지 않다는 것을 이해하고있습니다.\n3. 나는 권리가 없는 콘텐츠를 보기 위해 Tachimanga를 사용하지 않을 것에 동의합니다.",
+  "@extension_usage_terms": {},
+  "add_repo_by_name_tip": "Tachimanga에 추가 저장소를 추가합니다.\n저장소 형식은 '이름/저장소'이며, 이름은 저장소 소유자이고 저장소는 저장소 이름입니다",
+  "@add_repo_by_name_tip": {},
+  "defaultTab": "기본 탭",
+  "@defaultTab": {},
+  "always": "항상",
+  "@always": {},
+  "default_category": "기본 카테고리",
+  "@default_category": {},
+  "label_default": "기본",
+  "@label_default": {},
+  "dataUsageSectionTitle": "데이터 사용량",
+  "@dataUsageSectionTitle": {},
+  "enableLog": "로그 활성화",
+  "@enableLog": {},
+  "cacheCleared": "캐시를 삭제했습니다",
+  "@cacheCleared": {},
+  "multi_lang": "다언어",
+  "@multi_lang": {},
+  "delete_repository": "저장소 삭제",
+  "@delete_repository": {},
+  "delete_repository_content": "\"{name}\" 저장소를 삭제할까요",
+  "@delete_repository_content": {},
+  "label_add": "추가",
+  "@label_add": {},
+  "find_repository": "저장소 찾기",
+  "@find_repository": {},
+  "migrate_action_show_manga": "항목 표시",
+  "@migrate_action_show_manga": {},
+  "networkSectionTitle": "네트워크",
+  "@networkSectionTitle": {},
+  "exportLog": "로그 내보내기",
+  "@exportLog": {},
+  "lastOpenedTab": "마지막으로 연 탭",
+  "@lastOpenedTab": {},
+  "disable": "비활성화",
+  "@disable": {},
+  "disableWhenHorizontal": "가로 모드에서 비활성화",
+  "@disableWhenHorizontal": {},
+  "action_move_category": "카테고리 설정",
+  "@action_move_category": {},
+  "local_source": "로컬 소스",
+  "@local_source": {},
+  "label_adding": "추가중",
+  "@label_adding": {},
+  "get_start": "시작하기",
+  "@get_start": {},
+  "migration_dialog_what_to_include": "포함할 데이터 선택",
+  "@migration_dialog_what_to_include": {},
+  "chapters": "챕터",
+  "@chapters": {},
+  "ext_installed": "설치됨",
+  "@ext_installed": {},
+  "label_copy": "복사",
+  "@label_copy": {},
+  "migrate_action_migrate": "마이그레이션",
+  "@migrate_action_migrate": {},
+  "select_category_to_update": "업데이트할 카테고리 선택",
+  "@select_category_to_update": {},
+  "last_used_source": "마지막으로 사용",
+  "@last_used_source": {},
+  "migrate": "마이그레이션",
+  "@migrate": {},
+  "migrate_action_copy": "복사",
+  "@migrate_action_copy": {},
+  "update_all": "전부 업데이트",
+  "@update_all": {},
+  "lock_after_mins": "{x, plural, other{{x}분뒤}}",
+  "@lock_after_mins": {},
+  "lock_biometrics_unavailable": "FaceID 또는 TouchID를 사용할 수 없습니다.",
+  "@lock_biometrics_unavailable": {},
+  "unlock_title": "Tachimanga 잠금해제",
+  "@unlock_title": {},
+  "relative_time": "{x, plural, other{{x}일전}}",
+  "@relative_time": {},
+  "num_trackers": "{x, plural, other{{x}개의 트래커}}",
+  "@num_trackers": {},
+  "num_categories": "{x, plural, other{{x}개의 카테고리}}",
+  "@num_categories": {},
+  "action_sort_latest_chapter": "마지막 챕터 업데이트순",
+  "@action_sort_latest_chapter": {},
+  "page_layout_single": "단일 페이지",
+  "@page_layout_single": {},
+  "page_layout_double": "이중 페이지",
+  "@page_layout_double": {},
+  "page_layout_separate_first_page": "첫번째 페이지 분리",
+  "@page_layout_separate_first_page": {},
+  "page_layout_tip": "페이지 레이아웃은 페이지 넘김 읽기 모드에서만 유효합니다.",
+  "@page_layout_tip": {},
+  "lock_type_biometrics": "FaceID/TouchID",
+  "@lock_type_biometrics": {},
+  "pref_date_format": "날짜 형식",
+  "@pref_date_format": {},
+  "page_layout_automatic": "자동",
+  "@page_layout_automatic": {},
+  "relative_time_today": "오늘",
+  "@relative_time_today": {},
+  "show_tap_zones_when_start_reading": "읽기를 시작할 때 탭 영역을 표시합니다.",
+  "@show_tap_zones_when_start_reading": {},
+  "importSuccessTip": "백업 가져오기에 성공했습니다. 변경사항은 앱을 다시 시작한 후에 적용됩니다.",
+  "@importSuccessTip": {},
+  "invalidBackup": "잘못된 백업 파일",
+  "@invalidBackup": {},
+  "readerScrollAnimation": "페이지 전환 애니메이션",
+  "@readerScrollAnimation": {},
+  "doubleTapZoomIn": "두번 탭하여 줌",
+  "@doubleTapZoomIn": {},
+  "invalidBackupVersion": "백업을 복원하려면 최신 버전의 앱을 사용하세요.",
+  "@invalidBackupVersion": {},
+  "autoBackupFailTip": "복원하기 전에 자동 백업을 생성하지 못했습니다. 자동 백업을 취소하고 다시 시도해 주세요.",
+  "@autoBackupFailTip": {},
+  "restartApp": "앱 재시작",
+  "@restartApp": {},
+  "confirm": "확인",
+  "@confirm": {},
+  "noNextChapter": "다음 챕터가 없습니다",
+  "@noNextChapter": {},
+  "label_watermark": "워터마크",
+  "@label_watermark": {},
+  "tap_to_open": "탭하여 열기",
+  "@tap_to_open": {},
+  "select_chapters": "챕터 선택",
+  "@select_chapters": {},
+  "labs": "실험실",
+  "@labs": {},
+  "download_next_n_chapter": "{x, plural, one{다음 챕터} other{다음 {x} 챕터}}",
+  "@download_next_n_chapter": {},
+  "download_all_chapters": "모든 챕터",
+  "@download_all_chapters": {},
+  "download_queue": "다운로드 대기열",
+  "@download_queue": {},
+  "download_settings": "다운로드 설정",
+  "@download_settings": {},
+  "remove_after_read": "읽은 후 다운로드 삭제",
+  "@remove_after_read": {},
+  "labsSubtitle": "실험적 기능",
+  "@labsSubtitle": {},
+  "concurrent_download_title": "동시 다운로드 수",
+  "@concurrent_download_title": {},
+  "concurrent_download_short_title_num": "동시 다운로드 수: {num}",
+  "@concurrent_download_short_title_num": {},
+  "concurrent_download_short_title": "동시 다운로드",
+  "@concurrent_download_short_title": {},
+  "concurrent_download_tips": "장시간 동일한 소스에서 동시에 다운로드하면 소스에 의해 IP가 차단되어 후속 다운로드 및 읽기가 실패할 수 있습니다.",
+  "@concurrent_download_tips": {},
+  "download_unread_chapters": "읽지 않은 모든 챕터",
+  "@download_unread_chapters": {},
+  "pinch_to_zoom": "손가락을 모아 확대",
+  "errorFilePickUnknownType": "{suffix} 파일을 선택해주세요",
+  "attention_label": "⚠️주의",
+  "homepage_label": "홈페이지",
+  "download_limit_exceeded_title": "다운로드 한도 초과",
+  "download_limit_number_title": "다운로드 한도는 {num}장입니다.",
+  "download_limit_content": "하루에 {freeTicket}장을 다운로드할 수 있습니다.\n\n광고를 시청하면 {ticketPerAd}장씩 한도를 늘릴 수 있으며, {maxAds}회 광고를 시청한 후에는 그날의 다운로드 한도가 없어집니다.\n\n프리미엄 사용자는 무제한 다운로드 권한이 있습니다.",
+  "download_limit_increase": "다운로드 한도가 {num}으로 증가했습니다.",
+  "add_download_tips": "{x, plural, one{1개 챕터가 다운로드 대기열에 추가되었습니다.} other{{x}개 챕터가 다운로드 대기열에 추가되었습니다.}}",
+  "watch_ad_label": "광고 보기"
+}

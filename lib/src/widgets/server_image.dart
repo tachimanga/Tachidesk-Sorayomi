@@ -19,7 +19,6 @@ import '../features/manga_book/domain/img/image_error_widget.dart';
 import '../features/manga_book/domain/img/image_model.dart';
 import '../features/manga_book/domain/img/unique_key_provider.dart';
 import '../features/manga_book/presentation/reader/controller/reader_controller_v2.dart';
-import '../features/settings/presentation/server/widget/credential_popup/credentials_popup.dart';
 import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../global_providers/global_providers.dart';
 import '../routes/router_config.dart';
@@ -78,8 +77,6 @@ class ServerImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final baseUrl = ref.watch(serverUrlProvider);
-    final authType = ref.watch(authTypeKeyProvider);
-    final basicToken = ref.watch(credentialsProvider);
     final magic = ref.watch(getMagicProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final downscaleImage = ref.watch(downscaleImageProvider);
@@ -175,20 +172,12 @@ class ServerImage extends ConsumerWidget {
       key: reloadButton ? ref.watch(keyProvider!) : null,
       imageUrl: baseApi,
       height: size?.height,
-      httpHeaders: imageData?.headers ??
-          (authType == AuthType.basic && basicToken != null
-              ? {"Authorization": basicToken}
-              : null),
-      // ? {"Authorization": basicToken, "User-Agent": userAgent}
-      // : {"User-Agent": userAgent},
+      httpHeaders: imageData?.headers,
       width: size?.width,
       fit: fit ?? BoxFit.cover,
       alignment: alignment,
       memCacheWidth: downscaleImage == true ? memCacheWidth : null,
       memCacheHeight: downscaleImage == true ? memCacheHeight : null,
-      imageRenderMethodForWeb: authType == AuthType.basic && basicToken != null
-          ? ImageRenderMethodForWeb.HttpGet
-          : ImageRenderMethodForWeb.HtmlImage,
       progressIndicatorBuilder: progressIndicatorBuilder == null
           ? null
           : (context, url, progress) => wrapper != null

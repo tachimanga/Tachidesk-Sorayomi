@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
-
 import '../../../../constants/enum.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/classes/trace/trace_ref.dart';
@@ -22,7 +21,6 @@ import '../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../browse_center/data/source_repository/source_repository.dart';
-import '../../../browse_center/presentation/migrate/widgets/migrate_manga_dialog.dart';
 import '../../../browse_center/presentation/source_manga_list/controller/source_manga_controller.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
@@ -35,6 +33,7 @@ import 'controller/manga_details_controller.dart';
 import 'widgets/big_screen_manga_details.dart';
 import 'widgets/chapter_filter_icon_button.dart';
 import 'widgets/edit_manga_category_dialog.dart';
+import 'widgets/manga_chapter_download_button.dart';
 import 'widgets/manga_chapter_organizer.dart';
 import 'widgets/small_screen_manga_details.dart';
 
@@ -254,6 +253,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                         ),
                       ),
                     ),
+                    MangaChapterDownloadButton(mangaId: mangaId,),
                     PopupMenuButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: KBorderRadius.r16.radius,
@@ -322,12 +322,12 @@ class MangaDetailsScreen extends HookConsumerWidget {
                     )
                   ],
                 ),
-          endDrawer: Drawer(
+          endDrawer: context.isTablet ? Drawer(
             width: kDrawerWidth,
             child: MangaChapterOrganizer(
               mangaId: mangaId,
             ),
-          ),
+          ) : null,
           bottomSheet: selectedChapters.value.isNotEmpty
               ? MultiChaptersActionsBottomAppBar(
                   afterOptionSelected: chapterListRefresh,
