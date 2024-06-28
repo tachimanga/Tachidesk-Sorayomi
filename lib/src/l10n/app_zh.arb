@@ -27,27 +27,9 @@
   "@uninstalling": {
     "description": "Button text to show that the extension is uninstalling"
   },
-  "versionAvailable": "{app} 有更新可用 {version} ！",
-  "@versionAvailable": {
-    "description": "Text to show that there is an update to App/Server",
-    "placeholders": {
-      "app": {
-        "example": "Server",
-        "type": "String"
-      },
-      "version": {
-        "example": "v0.4.2",
-        "type": "String"
-      }
-    }
-  },
   "webView": "Web View",
   "@webView": {
     "description": "Button text to open manga website"
-  },
-  "authTypeBasic": "基本认证",
-  "@authTypeBasic": {
-    "description": "Radio button text for the Basic Authentication type"
   },
   "chapterNumber": "第 {number} 章",
   "@chapterNumber": {
@@ -81,10 +63,6 @@
   "@appearance": {
     "description": "Screen title and Button text of Appearance screen"
   },
-  "authType": "验证方式",
-  "@authType": {
-    "description": "Popup title and Button text to change App Authentication"
-  },
   "extensions": "插件",
   "@extensions": {
     "description": "Extension list Tab title in Browse Screen"
@@ -109,17 +87,9 @@
   "@addToLibrary": {
     "description": "Button text to add Manga to Library in Manga Details Screen"
   },
-  "authTypeNone": "无",
-  "@authTypeNone": {
-    "description": "Radio button text for no Authentication"
-  },
   "browse": "浏览",
   "@browse": {
     "description": "Screen title, Navigation Bar text and Button text of both Browse screen and Browse Settings Screen"
-  },
-  "buildTime": "构建时间",
-  "@buildTime": {
-    "description": "Text title to show build time of Server in About Screen"
   },
   "bookmarked": "已添加书签",
   "@bookmarked": {
@@ -133,10 +103,6 @@
   "@categoryUpdate": {
     "description": "Button text to update the mangas in the Category"
   },
-  "channel": "通道",
-  "@channel": {
-    "description": "Text title to show Channel of the Server (Stable, preview) in About Screen"
-  },
   "chapterSortFetchedDate": "按获取日期",
   "@chapterSortFetchedDate": {
     "description": "Radio button text for sort by Fetched Date"
@@ -144,10 +110,6 @@
   "chapterSortSource": "按来源",
   "@chapterSortSource": {
     "description": "Radio button text for sort by Source"
-  },
-  "checkForUpdates": "检查更新",
-  "@checkForUpdates": {
-    "description": "Button text to check for App Updates"
   },
   "client": "客户端",
   "@client": {
@@ -160,10 +122,6 @@
   "completed": "阅读过",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
-  },
-  "credentials": "认证",
-  "@credentials": {
-    "description": "Popup title and Button text to enter Authentication credentials"
   },
   "defaultCategory": "默认添加到此库",
   "@defaultCategory": {
@@ -227,14 +185,6 @@
       }
     }
   },
-  "errorPassword": "密码不能为空",
-  "@errorPassword": {
-    "description": "Error Description to show that password cannot be empty"
-  },
-  "errorUserName": "用户名不能为空",
-  "@errorUserName": {
-    "description": "Error Description to show that UserName cannot be empty"
-  },
   "extensionListEmpty": "插件列表为空",
   "@extensionListEmpty": {
     "description": "Description to show that Extension list is empty in Extension list tab of Browse screen"
@@ -291,10 +241,6 @@
   "@mangaSortUnread": {
     "description": "Radio button text for Manga sort Type - Unread"
   },
-  "mangaMissingSources": "来源未安装",
-  "@mangaMissingSources": {
-    "description": "Group title to show the Manga Missing Sources when restoring Backup"
-  },
   "mangaSortLastRead": "最近阅读",
   "@mangaSortLastRead": {
     "description": "Radio button text for Manga sort Type - Last Read"
@@ -314,10 +260,6 @@
   "mangaStatusOngoing": "连载中",
   "@mangaStatusOngoing": {
     "description": "Text to show Manga Status Ongoing in Manga details screen"
-  },
-  "missingExtension": "插件缺失",
-  "@missingExtension": {
-    "description": "Group title to show the Missing Extensions when restoring Backup"
   },
   "more": "更多",
   "@more": {
@@ -455,10 +397,6 @@
   "@readerNavigationLayoutRightAndLeft": {
     "description": "Radio button text for Reader Navigation Layout - Right And Left"
   },
-  "reddit": "Reddit",
-  "@reddit": {
-    "description": "Reddit app title"
-  },
   "update": "更新",
   "@update": {
     "description": "Button text to update the extension"
@@ -494,18 +432,6 @@
   "search": "搜索",
   "@search": {
     "description": "Search field hint Text"
-  },
-  "searchingForUpdates": "搜索更新中",
-  "@searchingForUpdates": {
-    "description": "Toast Text for searching for updates of the App/Server"
-  },
-  "server": "服务端",
-  "@server": {
-    "description": "Text title for the server in About screen"
-  },
-  "serverUrl": "服务端地址",
-  "@serverUrl": {
-    "description": "Popup title and Button text to update Server Url"
   },
   "sort": "排序",
   "@sort": {
@@ -555,14 +481,6 @@
   "@updatesSummary": {
     "description": "Screen title and Button text of Updates Summary screen"
   },
-  "userName": "用户名",
-  "@userName": {
-    "description": "Title text for User Name field"
-  },
-  "webUI": "在浏览器中打开",
-  "@webUI": {
-    "description": "Button text to open in web UI"
-  },
   "addCategory": "添加分类",
   "@addCategory": {
     "description": "Popup title and Button text to add new category in Edit Category Screen"
@@ -578,10 +496,6 @@
   "filter": "筛选",
   "@filter": {
     "description": "title of filter Tab across the app"
-  },
-  "latest": "最新",
-  "@latest": {
-    "description": "Button text to take user to the latest tab of Source manga screen"
   },
   "install": "安装",
   "@install": {
@@ -602,10 +516,6 @@
   "badges": "徽标",
   "@badges": {
     "description": "Checkbox Group title to enable Badges on manga Cover in Library Screen"
-  },
-  "checkForServerUpdates": "检查服务更新",
-  "@checkForServerUpdates": {
-    "description": "Button text to check for Server updates"
   },
   "clientVersion": "客户端版本",
   "@clientVersion": {
@@ -683,10 +593,6 @@
   "@readerMode": {
     "description": "Popup title and Button text of Reader Mode popup"
   },
-  "password": "密码",
-  "@password": {
-    "description": "Title text for password field"
-  },
   "readerModeContinuousHorizontalRTL": "从右到左(连续)",
   "@readerModeContinuousHorizontalRTL": {
     "description": "Radio button text for Reader Mode Type - Continuous Horizontal (RTL)"
@@ -695,17 +601,9 @@
   "@readerModeSingleVertical": {
     "description": "Radio button text for Reader Mode Type - Single Vertical"
   },
-  "serverUrlHintText": "服务端地址",
-  "@serverUrlHintText": {
-    "description": "Text Filed hint text to update Server Url"
-  },
   "readerNavigationLayoutDisabled": "关闭",
   "@readerNavigationLayoutDisabled": {
     "description": "Radio button text for Reader Navigation Layout - Disabled"
-  },
-  "serverVersion": "服务端版本",
-  "@serverVersion": {
-    "description": "Text title for the current version of the Server in About screen"
   },
   "source": "图源",
   "@source": {
@@ -735,10 +633,6 @@
   "@mangaStatusUnknown": {
     "description": "Text to show Manga Status Unknown in Manga details screen"
   },
-  "missingTrackers": "跟踪器缺失",
-  "@missingTrackers": {
-    "description": "Group title to show the Missing Trackers when restoring Backup"
-  },
   "getPremium": "获取专业版",
   "@getPremium": {},
   "alreadyGetPremium": "已购买专业版",
@@ -755,16 +649,12 @@
   "@discordServer": {},
   "externalRepository": "插件设置",
   "@externalRepository": {},
-  "addRepository": "添加外部插件",
-  "@addRepository": {},
   "externalRepositoryUrl": "插件仓库的地址",
   "@externalRepositoryUrl": {},
   "externalRepositoryUrlShort": "插件仓库的地址",
   "@externalRepositoryUrlShort": {},
   "history": "历史",
   "@history": {},
-  "useSysProxy": "使用系统代理设置",
-  "@useSysProxy": {},
   "clearCookies": "清除Cookies",
   "@clearCookies": {},
   "clearCache": "清除缓存",
@@ -1105,5 +995,27 @@
   "show_tap_zones_when_start_reading": "开始阅读时显示点击区域。",
   "select_chapters": "选择章节",
   "label_watermark": "水印",
-  "tap_to_open": "点击打开"
+  "tap_to_open": "点击打开",
+  "labs": "实验室",
+  "labsSubtitle": "实验性功能",
+  "concurrent_download_short_title_num": "并发下载数：{num}",
+  "concurrent_download_short_title": "并发下载",
+  "concurrent_download_title": "并发下载数量",
+  "concurrent_download_tips": "长时间从相同来源同时下载可能导致您的IP被来源封锁，导致后续下载和阅读失败。",
+  "download_next_n_chapter": "{x, plural, one{下一章} other{接下来 {x} 章}}",
+  "download_unread_chapters": "所有未读章节",
+  "download_all_chapters": "所有章节",
+  "download_queue": "下载队列",
+  "download_settings": "下载设置",
+  "remove_after_read": "阅读后删除下载",
+  "pinch_to_zoom": "捏合放大",
+  "errorFilePickUnknownType": "请选择一个{suffix}文件",
+  "attention_label": "⚠️注意",
+  "homepage_label": "主页",
+  "download_limit_exceeded_title": "下载限制已超出",
+  "download_limit_number_title": "可下载限制为{num}章。",
+  "download_limit_content": "您可以每天下载{freeTicket}章。\n\n观看广告可增加额外{ticketPerAd}章下载次数，观看{maxAds}次广告后，当天下载次数不受限制。\n\n高级用户拥有无限制下载次数。",
+  "download_limit_increase": "下载限制增加{num}。",
+  "add_download_tips": "{x, plural, one{已将1章添加到下载队列。} other{已将{x}章添加到下载队列。}}",
+  "watch_ad_label": "观看广告"
 }

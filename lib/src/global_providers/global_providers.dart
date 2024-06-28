@@ -11,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/db_keys.dart';
 import '../constants/enum.dart';
-import '../features/settings/presentation/server/widget/credential_popup/credentials_popup.dart';
 import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/mixin/shared_preferences_client_mixin.dart';
@@ -24,23 +23,9 @@ part 'global_providers.g.dart';
 DioClient dioClientKey(ref) => DioClient(
       dio: ref.watch(networkModuleProvider).provideDio(
             baseUrl: ref.watch(serverUrlProvider) ?? DBKeys.serverUrl.initial,
-            authType: ref.watch(authTypeKeyProvider) ?? DBKeys.authType.initial,
-            credentials: ref.watch(credentialsProvider),
           ),
       pipe: ref.watch(getMagicPipeProvider),
     );
-
-@riverpod
-class AuthTypeKey extends _$AuthTypeKey
-    with SharedPreferenceEnumClientMixin<AuthType> {
-  @override
-  AuthType? build() => initialize(
-        ref,
-        initial: DBKeys.authType.initial,
-        key: DBKeys.authType.name,
-        enumList: AuthType.values,
-      );
-}
 
 class Magic {
   bool a0 = true; // enable repo tag, show broken status

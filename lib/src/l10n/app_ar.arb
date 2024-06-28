@@ -23,18 +23,6 @@
   "@appTitle": {
     "description": "Name of the app (Tachimanga in native script)"
   },
-  "authType": "نوع المصادقة",
-  "@authType": {
-    "description": "Popup title and Button text to change App Authentication"
-  },
-  "authTypeBasic": "مصادقة أساسية",
-  "@authTypeBasic": {
-    "description": "Radio button text for the Basic Authentication type"
-  },
-  "authTypeNone": "بلا",
-  "@authTypeNone": {
-    "description": "Radio button text for no Authentication"
-  },
   "backup": "النسخ الاحتياطي و الاستعادة",
   "@backup": {
     "description": "Screen title and Button text of Backup & Restore screen"
@@ -50,10 +38,6 @@
   "browse": "تصفح",
   "@browse": {
     "description": "Screen title, Navigation Bar text and Button text of both Browse screen and Browse Settings Screen"
-  },
-  "buildTime": "تاريخ بناء الخادم",
-  "@buildTime": {
-    "description": "Text title to show build time of Server in About Screen"
   },
   "cacheCleared": "تم تنظيف الملفات المؤقتة",
   "@cacheCleared": {
@@ -84,14 +68,6 @@
   "chapterSortSource": "حسب المصدر",
   "@chapterSortSource": {
     "description": "Radio button text for sort by Source"
-  },
-  "checkForServerUpdates": "تحقق من وجود تحديثات الخادم",
-  "@checkForServerUpdates": {
-    "description": "Button text to check for Server updates"
-  },
-  "checkForUpdates": "تحقق من وجود تحديثات",
-  "@checkForUpdates": {
-    "description": "Button text to check for App Updates"
   },
   "clearCache": "تنظيف الملفات المؤقتة",
   "@clearCache": {
@@ -126,10 +102,6 @@
   "current": "الحالي",
   "@current": {
     "description": "Text to show the currently reading chapter in Reader Screen"
-  },
-  "credentials": "الشهادات",
-  "@credentials": {
-    "description": "Popup title and Button text to enter Authentication credentials"
   },
   "delete": "حذف",
   "@delete": {
@@ -179,10 +151,6 @@
   "@errorExtension": {
     "description": "Error Description to show when user selected unknown extension from list"
   },
-  "errorPassword": "كلمة السر فارغة",
-  "@errorPassword": {
-    "description": "Error Description to show that password cannot be empty"
-  },
   "downloaded": "منزلة",
   "@downloaded": {
     "description": "Text to show downloaded chapters status in Filters  "
@@ -194,10 +162,6 @@
   "errorSomethingWentWrong": "هناك خطأ ما!",
   "@errorSomethingWentWrong": {
     "description": "Error Description to show that Something went wrong!"
-  },
-  "errorUserName": "اسم المستخدم فارغ",
-  "@errorUserName": {
-    "description": "Error Description to show that UserName cannot be empty"
   },
   "extensionInstalled": "تم تحميل الإضافة!",
   "@extensionInstalled": {
@@ -214,10 +178,6 @@
   "cancel": "إلغاء",
   "@cancel": {
     "description": "Text for Cancel button in a Popup"
-  },
-  "channel": "النوع",
-  "@channel": {
-    "description": "Text title to show Channel of the Server (Stable, preview) in About Screen"
   },
   "chapterSortUploadDate": "حسب تاريخ الإضافة",
   "@chapterSortUploadDate": {
@@ -305,10 +265,6 @@
   "@install": {
     "description": "Button text to install the extension"
   },
-  "latest": "الأخير",
-  "@latest": {
-    "description": "Button text to take user to the latest tab of Source manga screen"
-  },
   "noUpdatesAvailable": "أنت تستخدم أحدث إصدار",
   "@noUpdatesAvailable": {
     "description": "Text to show that the user is using the latest version of the app"
@@ -344,10 +300,6 @@
   "mangaGridSize": "حجم شبكة المانجا",
   "@mangaGridSize": {
     "description": "Popup title and Button text to change Manga Grid size"
-  },
-  "mangaMissingSources": "مصادر المانجا المفقودة",
-  "@mangaMissingSources": {
-    "description": "Group title to show the Manga Missing Sources when restoring Backup"
   },
   "mangaSortAlphabetical": "أبجدي",
   "@mangaSortAlphabetical": {
@@ -388,14 +340,6 @@
   "mangaStatusUnknown": "غير معروف",
   "@mangaStatusUnknown": {
     "description": "Text to show Manga Status Unknown in Manga details screen"
-  },
-  "missingExtension": "إضافات مفقودة",
-  "@missingExtension": {
-    "description": "Group title to show the Missing Extensions when restoring Backup"
-  },
-  "missingTrackers": "التتبعات مفقودة",
-  "@missingTrackers": {
-    "description": "Group title to show the Missing Trackers when restoring Backup"
   },
   "more": "أكثر",
   "@more": {
@@ -477,10 +421,6 @@
   "@readerScrollAnimation": {
     "description": "Switch title to Disable scroll animation in reader screen"
   },
-  "reddit": "Reddit",
-  "@reddit": {
-    "description": "Reddit app title"
-  },
   "refresh": "تحديث",
   "@refresh": {
     "description": "Refresh button text"
@@ -496,10 +436,6 @@
   "retry": "أعد المحاولة",
   "@retry": {
     "description": "Retry Button Text"
-  },
-  "serverVersion": "إصدار السيرفر",
-  "@serverVersion": {
-    "description": "Text title for the current version of the Server in About screen"
   },
   "sort": "ترتيب",
   "@sort": {
@@ -568,10 +504,6 @@
         "type": "int"
       }
     }
-  },
-  "password": "كلمة المرور",
-  "@password": {
-    "description": "Title text for password field"
   },
   "pause": "إيقاف",
   "@pause": {
@@ -657,22 +589,6 @@
   "@search": {
     "description": "Search field hint Text"
   },
-  "searchingForUpdates": "البحث عن التحديثات",
-  "@searchingForUpdates": {
-    "description": "Toast Text for searching for updates of the App/Server"
-  },
-  "server": "سيرفر",
-  "@server": {
-    "description": "Text title for the server in About screen"
-  },
-  "serverUrl": "عنوان السيرفر",
-  "@serverUrl": {
-    "description": "Popup title and Button text to update Server Url"
-  },
-  "serverUrlHintText": "أدخل عنوان السيرفر",
-  "@serverUrlHintText": {
-    "description": "Text Filed hint text to update Server Url"
-  },
   "serverPort": "منفذ السيرفر",
   "@serverPort": {
     "description": "Popup title and Button text to update Server Port"
@@ -733,14 +649,6 @@
   "@updating": {
     "description": "Button text to show that the extension is updating"
   },
-  "userName": "اسم المستخدم",
-  "@userName": {
-    "description": "Title text for User Name field"
-  },
-  "webUI": "فتح في المتصفح",
-  "@webUI": {
-    "description": "Button text to open in web UI"
-  },
   "webView": "عرض الموقع",
   "@webView": {
     "description": "Button text to open manga website"
@@ -756,20 +664,6 @@
   "unknownAuthor": "مؤلف مجهول",
   "@unknownAuthor": {
     "description": "Text to show unknown author in Manga details screen"
-  },
-  "versionAvailable": "الإصدار {version} متاح لـ {app}!!",
-  "@versionAvailable": {
-    "description": "Text to show that there is an update to App/Server",
-    "placeholders": {
-      "app": {
-        "example": "Server",
-        "type": "String"
-      },
-      "version": {
-        "example": "v0.4.2",
-        "type": "String"
-      }
-    }
   },
   "quickSearchCategoryManga": "اذهب إلى المانجا 'M' في الفئة 'C'",
   "@quickSearchCategoryManga": {
@@ -831,16 +725,12 @@
   "@discordServer": {},
   "externalRepository": "إعدادات المصادر",
   "@externalRepository": {},
-  "addRepository": "إضافة مصادر خارجية",
-  "@addRepository": {},
   "externalRepositoryUrl": "عنوان مستودع المصادر",
   "@externalRepositoryUrl": {},
   "externalRepositoryUrlShort": "عنوان مستودع المصادر",
   "@externalRepositoryUrlShort": {},
   "history": "التاريخ",
   "@history": {},
-  "useSysProxy": "استخدام إعدادات وكيل النظام",
-  "@useSysProxy": {},
   "clearCookies": "مسح ملفات تعريف الارتباط",
   "@clearCookies": {},
   "recentlyDownloaded": "تنزل مؤخراً",
@@ -907,7 +797,7 @@
   "@restoring": {},
   "restored": "تم استعادة النسخة الاحتياطية!",
   "@restored": {},
-  "importBackupTitle": "استيراد نسخة احتياطية Tachiyomi",
+  "importBackupTitle": "استيراد نسخة احتياطية tachiyomi/mihon",
   "@importBackupTitle": {},
   "importBackupDescription": "استيراد المكتبة من ملف النسخ الاحتياطية الخاص بـ Tachiyomi",
   "@importBackupDescription": {},
@@ -1218,13 +1108,47 @@
   "action_display_show_number_of_items": "إظهار عدد العناصر",
   "@action_display_show_number_of_items": {},
   "page_layout": "تخطيط الصفحة",
+  "@page_layout": {},
   "page_layout_single": "صفحة واحدة",
+  "@page_layout_single": {},
   "page_layout_double": "صفحة مزدوجة",
+  "@page_layout_double": {},
   "page_layout_automatic": "تلقائي",
+  "@page_layout_automatic": {},
   "page_layout_separate_first_page": "فصل الصفحة الأولى",
+  "@page_layout_separate_first_page": {},
   "page_layout_tip": "تأثير تخطيط الصفحة يحدث فقط في وضع القراءة الدفقية.",
+  "@page_layout_tip": {},
   "show_tap_zones_when_start_reading": "إظهار مناطق الضغط عند بدء القراءة.",
+  "@show_tap_zones_when_start_reading": {},
   "select_chapters": "حدد الفصول",
+  "@select_chapters": {},
   "label_watermark": "علامة مائية",
-  "tap_to_open": "انقر لفتح"
+  "@label_watermark": {},
+  "tap_to_open": "انقر لفتح",
+  "@tap_to_open": {},
+  "labsSubtitle": "المميزات التجريبية‎",
+  "@labsSubtitle": {},
+  "labs": "مختبر",
+  "@labs": {},
+  "concurrent_download_short_title_num": "التنزيلات المتزامنة: {num}",
+  "concurrent_download_short_title": "التنزيلات المتزامنة",
+  "concurrent_download_title": "عدد التنزيلات المتزامنة",
+  "concurrent_download_tips": "قد يؤدي التنزيل المتزامن لفترة طويلة من نفس المصدر إلى حظر الآي بي الخاص بك من قبل المصدر، مما يؤدي إلى فشل التنزيلات والقراءات التالية.",
+  "download_next_n_chapter": "{x, plural, one{الفصل التالي} other{التالي {x} فصول}}",
+  "download_unread_chapters": "جميع الفصول غير المقروءة",
+  "download_all_chapters": "جميع الفصول",
+  "download_queue": "قائمة التنزيل",
+  "download_settings": "إعدادات التنزيل",
+  "remove_after_read": "حذف التنزيل بعد القراءة",
+  "pinch_to_zoom": "قرص للتكبير",
+  "errorFilePickUnknownType": "يرجى اختيار ملف {suffix}",
+  "attention_label": "⚠️ تنبيه",
+  "homepage_label": "الصفحة الرئيسية",
+  "download_limit_exceeded_title": "تجاوز الحد الأقصى للتنزيل",
+  "download_limit_number_title": "حد التنزيل هو {num} فصول.",
+  "download_limit_content": "يمكنك تنزيل {freeTicket} فصول يومياً.\n\nمشاهدة إعلان واحد يمكن أن يزيد هذا الحد بـ {ticketPerAd} فصول، وبعد مشاهدة {maxAds} إعلانًا، لا يوجد حد للتنزيل في اليوم.\n\nالمستخدمون المميزون لديهم عدم حدود للتنزيل.",
+  "download_limit_increase": "تم زيادة حد التنزيل بمقدار {num}.",
+  "add_download_tips": "{x, plural, one{تمت إضافة فصل واحد إلى قائمة التنزيل.} other{تمت إضافة {x} فصول إلى قائمة التنزيل.}}",
+  "watch_ad_label": "مشاهدة الإعلان"
 }

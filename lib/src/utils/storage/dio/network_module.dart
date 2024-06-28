@@ -24,8 +24,6 @@ parseJson(String text) => compute(_parseAndDecode, text);
 class DioNetworkModule {
   Dio provideDio({
     required String baseUrl,
-    required AuthType authType,
-    String? credentials,
   }) {
     final dio = Dio();
     (dio.transformer as BackgroundTransformer).jsonDecodeCallback = parseJson;
@@ -35,26 +33,7 @@ class DioNetworkModule {
       ..options.connectTimeout = Endpoints.connectionTimeout
       ..options.receiveTimeout = Endpoints.receiveTimeout
       ..options.contentType = Headers.jsonContentType
-      ..options.headers = {'Content-Type': 'application/json; charset=utf-8'}
-      ..interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            if (authType == AuthType.basic) {
-              if (credentials.isNotBlank) {
-                options.headers.putIfAbsent(
-                  "Authorization",
-                  () => credentials,
-                );
-              } else {
-                if (kDebugMode) {
-                  print('credential is null');
-                }
-              }
-            }
-            return handler.next(options);
-          },
-        ),
-      );
+      ..options.headers = {'Content-Type': 'application/json; charset=utf-8'};
     if (kDebugMode) {
       dio.interceptors.add(LogInterceptor(
         responseBody: true,

@@ -137,10 +137,11 @@ class ReaderWrapper extends HookConsumerWidget {
     final effectNavigationLayout = mangaReaderNavigationLayout == ReaderNavigationLayout.defaultNavigation
         ? globeLayout : mangaReaderNavigationLayout;
 
-    final globeReaderMode = ref.watch(readerModeKeyProvider) ?? ReaderMode.webtoon;
+    final globalReaderMode = ref.watch(readerModeKeyProvider) ?? ReaderMode.webtoon;
+
     final mangaReaderMode = manga.meta?.readerMode ?? ReaderMode.defaultReader;
     final effectReaderMode = mangaReaderMode == ReaderMode.defaultReader
-        ? globeReaderMode : mangaReaderMode;
+        ? globalReaderMode : mangaReaderMode;
 
     final showReaderModePopup = useCallback(
       () => showDialog(
@@ -150,9 +151,9 @@ class ReaderWrapper extends HookConsumerWidget {
           optionDisplayName: (value) => value.toLocale(context),
           showDisplaySubName: (value) {
             return value == ReaderMode.defaultReader &&
-                globeReaderMode != ReaderMode.defaultReader;
+                globalReaderMode != ReaderMode.defaultReader;
           },
-          optionDisplaySubName: (value) => globeReaderMode.toLocale(context),
+          optionDisplaySubName: (value) => globalReaderMode.toLocale(context),
           value: mangaReaderMode,
           title: context.l10n!.readerMode,
           onChange: (enumValue) async {
@@ -315,7 +316,7 @@ class ReaderWrapper extends HookConsumerWidget {
         extendBodyBehindAppBar: true,
         extendBody: true,
         endDrawerEnableOpenDragGesture: false,
-        endDrawer: Drawer(width: kDrawerWidth, child: quickSettings),
+        endDrawer: context.isTablet ? Drawer(width: kDrawerWidth, child: quickSettings) : null,
         bottomSheet: visibility.value
             ? ExcludeFocus(
                 child: Column(

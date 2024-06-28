@@ -47,10 +47,6 @@
   "@categoryUpdate": {
     "description": "Button text to update the mangas in the Category"
   },
-  "channel": "Canal",
-  "@channel": {
-    "description": "Text title to show Channel of the Server (Stable, preview) in About Screen"
-  },
   "chapterNumber": "Chapitre {number}",
   "@chapterNumber": {
     "description": "Text title for Chapter name in chapter list",
@@ -73,14 +69,6 @@
   "@chapterSortUploadDate": {
     "description": "Radio button text for sort by Upload Date"
   },
-  "checkForServerUpdates": "Vérifier les mises à jour du serveur",
-  "@checkForServerUpdates": {
-    "description": "Button text to check for Server updates"
-  },
-  "checkForUpdates": "Vérifier les mises à jour",
-  "@checkForUpdates": {
-    "description": "Button text to check for App Updates"
-  },
   "clearCache": "Effacer le cache",
   "@clearCache": {
     "description": "Button text for clear cache in General Settings screen"
@@ -101,7 +89,7 @@
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
   },
-  "copyMsg": "« {msg} » copié !",
+  "copyMsg": "«{msg}» copié !",
   "@copyMsg": {
     "description": "Toast text to show that the message has been copied",
     "placeholders": {
@@ -169,17 +157,9 @@
       }
     }
   },
-  "errorPassword": "Le mot de passe ne peut pas être vide",
-  "@errorPassword": {
-    "description": "Error Description to show that password cannot be empty"
-  },
   "errorSomethingWentWrong": "Une erreur s'est produite !",
   "@errorSomethingWentWrong": {
     "description": "Error Description to show that Something went wrong!"
-  },
-  "errorUserName": "Le nom d'utilisateur ne peut pas être vide",
-  "@errorUserName": {
-    "description": "Error Description to show that UserName cannot be empty"
   },
   "extensionInstalled": "Extension installée !",
   "@extensionInstalled": {
@@ -197,7 +177,7 @@
   "@failed": {
     "description": "Failed status Manga Group title in Update Summary Screen"
   },
-  "filter": "Filtrer",
+  "filter": "Filtres",
   "@filter": {
     "description": "title of filter Tab across the app"
   },
@@ -232,10 +212,6 @@
   "install": "Installer",
   "@install": {
     "description": "Button text to install the extension"
-  },
-  "latest": "Le plus récent",
-  "@latest": {
-    "description": "Button text to take user to the latest tab of Source manga screen"
   },
   "library": "Bibliothèque",
   "@library": {
@@ -272,14 +248,6 @@
   "mangaStatusUnknown": "Inconnu",
   "@mangaStatusUnknown": {
     "description": "Text to show Manga Status Unknown in Manga details screen"
-  },
-  "missingExtension": "Extensions manquantes",
-  "@missingExtension": {
-    "description": "Group title to show the Missing Extensions when restoring Backup"
-  },
-  "missingTrackers": "Pisteurs manquants",
-  "@missingTrackers": {
-    "description": "Group title to show the Missing Trackers when restoring Backup"
   },
   "more": "Plus",
   "@more": {
@@ -413,10 +381,6 @@
   "@readerPadding": {
     "description": "Slider title text for Reader Padding"
   },
-  "reddit": "Reddit",
-  "@reddit": {
-    "description": "Reddit app title"
-  },
   "refresh": "Actualiser",
   "@refresh": {
     "description": "Refresh button text"
@@ -424,24 +388,6 @@
   "reset": "Réinitialiser",
   "@reset": {
     "description": "Button text of reset button in source filters"
-  },
-  "versionAvailable": "Version {version} disponible pour l'application {app} !",
-  "@versionAvailable": {
-    "description": "Text to show that there is an update to App/Server",
-    "placeholders": {
-      "app": {
-        "example": "Server",
-        "type": "String"
-      },
-      "version": {
-        "example": "v0.4.2",
-        "type": "String"
-      }
-    }
-  },
-  "webUI": "Ouvrir sur le Web",
-  "@webUI": {
-    "description": "Button text to open in web UI"
   },
   "webView": "Vue Web",
   "@webView": {
@@ -459,10 +405,6 @@
   "@appLanguage": {
     "description": "Popup title and Button text to change App Language"
   },
-  "credentials": "Identifiants",
-  "@credentials": {
-    "description": "Popup title and Button text to enter Authentication credentials"
-  },
   "defaultCategory": "Catégorie par défaut lors de l'ajout d'un nouveau manga à la bibliothèque",
   "@defaultCategory": {
     "description": "Checkbox description when creating a Category to add manga to the Category by Default"
@@ -471,10 +413,6 @@
   "@displayMode": {
     "description": "Radio Group title to change manga Cover display in Library and Source Screens"
   },
-  "authType": "Type d'authentification",
-  "@authType": {
-    "description": "Popup title and Button text to change App Authentication"
-  },
   "badges": "Badges",
   "@badges": {
     "description": "Checkbox Group title to enable Badges on manga Cover in Library Screen"
@@ -482,14 +420,6 @@
   "appearance": "Apparence",
   "@appearance": {
     "description": "Screen title and Button text of Appearance screen"
-  },
-  "authTypeNone": "Aucune",
-  "@authTypeNone": {
-    "description": "Radio button text for no Authentication"
-  },
-  "buildTime": "Temps d'exécution",
-  "@buildTime": {
-    "description": "Text title to show build time of Server in About Screen"
   },
   "displayModeDescriptiveList": "Liste descriptive",
   "@displayModeDescriptiveList": {
@@ -502,10 +432,6 @@
   "displayModeList": "Liste",
   "@displayModeList": {
     "description": "Radio button text for Manga Cover display mode - List"
-  },
-  "authTypeBasic": "Authentification simple",
-  "@authTypeBasic": {
-    "description": "Radio button text for the Basic Authentication type"
   },
   "backup": "Sauvegarde et restauration",
   "@backup": {
@@ -539,10 +465,6 @@
   "@mangaSortDateAdded": {
     "description": "Radio button text for Manga sort Type - Date Added"
   },
-  "mangaMissingSources": "Sources manquantes des mangas",
-  "@mangaMissingSources": {
-    "description": "Group title to show the Manga Missing Sources when restoring Backup"
-  },
   "mangaStatusCancelled": "Annulé",
   "@mangaStatusCancelled": {
     "description": "Text to show Manga Status Cancelled in Manga details screen"
@@ -554,10 +476,6 @@
   "moveToTop": "Déplacer vers le haut",
   "@moveToTop": {
     "description": "Button text to move download/category to the top of list"
-  },
-  "password": "Mot de passe",
-  "@password": {
-    "description": "Title text for password field"
   },
   "pending": "En attente",
   "@pending": {
@@ -611,10 +529,6 @@
   "@reader": {
     "description": "Screen title and Button text of Reader screen"
   },
-  "searchingForUpdates": "Recherche de mises à jour",
-  "@searchingForUpdates": {
-    "description": "Toast Text for searching for updates of the App/Server"
-  },
   "readerModeContinuousHorizontalLTR": "Horizontal en continu (De gauche à droite)",
   "@readerModeContinuousHorizontalLTR": {
     "description": "Radio button text for Reader Mode Type - Continuous Horizontal (LTR)"
@@ -631,10 +545,6 @@
   "@resume": {
     "description": "Button Text to resume Chapter reading/downloading"
   },
-  "serverUrl": "URL du serveur",
-  "@serverUrl": {
-    "description": "Popup title and Button text to update Server Url"
-  },
   "retry": "Réessayer",
   "@retry": {
     "description": "Retry Button Text"
@@ -646,18 +556,6 @@
   "search": "Rechercher",
   "@search": {
     "description": "Search field hint Text"
-  },
-  "server": "Serveur",
-  "@server": {
-    "description": "Text title for the server in About screen"
-  },
-  "serverUrlHintText": "Saisissez l'URL du serveur",
-  "@serverUrlHintText": {
-    "description": "Text Filed hint text to update Server Url"
-  },
-  "serverVersion": "Version du serveur",
-  "@serverVersion": {
-    "description": "Text title for the current version of the Server in About screen"
   },
   "sourceTypeFilter": "Filtrer",
   "@sourceTypeFilter": {
@@ -682,10 +580,6 @@
   "updatesSummary": "Récapitulatif des mises à jour",
   "@updatesSummary": {
     "description": "Screen title and Button text of Updates Summary screen"
-  },
-  "userName": "Nom d'utilisateur",
-  "@userName": {
-    "description": "Title text for User Name field"
   },
   "save": "Enregistrer",
   "@save": {
@@ -775,16 +669,12 @@
   "@discordServer": {},
   "externalRepository": "Paramètres de l'extension",
   "@externalRepository": {},
-  "addRepository": "Ajouter des extensions externes",
-  "@addRepository": {},
-  "externalRepositoryUrl": "URL du référentiel d'extensions",
+  "externalRepositoryUrl": "URL du répertoire d'extensions",
   "@externalRepositoryUrl": {},
-  "externalRepositoryUrlShort": "URL du référentiel d'extensions",
+  "externalRepositoryUrlShort": "URL du répertoire d'extensions",
   "@externalRepositoryUrlShort": {},
   "history": "Historique",
   "@history": {},
-  "useSysProxy": "Utiliser les paramètres de proxy système",
-  "@useSysProxy": {},
   "clearCookies": "Effacer les cookies",
   "@clearCookies": {},
   "recentlyDownloaded": "Récemment téléchargé",
@@ -811,7 +701,7 @@
   "@addTracking": {},
   "openInBrowser": "Ouvrir dans le navigateur",
   "@openInBrowser": {},
-  "processing": "Traitement",
+  "processing": "Traitement en cours…",
   "@processing": {},
   "trackingStatus": "Statut",
   "@trackingStatus": {},
@@ -851,7 +741,7 @@
   "@restoring": {},
   "restored": "Sauvegarde restaurée !",
   "@restored": {},
-  "importBackupTitle": "Importer la sauvegarde Tachiyomi",
+  "importBackupTitle": "Importer la sauvegarde Tachiyomi/Mihon",
   "@importBackupTitle": {},
   "importBackupDescription": "Importer la bibliothèque depuis le fichier de sauvegarde Tachiyomi",
   "@importBackupDescription": {},
@@ -955,7 +845,7 @@
   "@theme_tako": {},
   "theme_tealturquoise": "Bleu canard et turquoise",
   "@theme_tealturquoise": {},
-  "theme_yinyang": "Yin & Yang",
+  "theme_yinyang": "Yin et Yang",
   "@theme_yinyang": {},
   "theme_yotsuba": "Yotsuba",
   "@theme_yotsuba": {},
@@ -1047,37 +937,37 @@
   "@exportLog": {},
   "cookiesCleared": "Cookies effacés",
   "@cookiesCleared": {},
-  "extension_repo": "Dépôts d'extension",
+  "extension_repo": "Répertoire d'extension",
   "@extension_repo": {},
-  "one_repository": "1 dépôt",
+  "one_repository": "1 répetoire",
   "@one_repository": {},
-  "num_repositories": "{num} dépôts",
+  "num_repositories": "{num} répertoires",
   "@num_repositories": {},
-  "add_repository": "Ajouter un dépôt",
+  "add_repository": "Ajouter un répertoire",
   "@add_repository": {},
-  "empty_repository": "Vous n'avez pas encore ajouté de dépôt d'extension.",
+  "empty_repository": "Vous n'avez pas encore ajouté de répertoire d'extension.",
   "@empty_repository": {},
   "add_repo_by_name": "Par nom",
   "@add_repo_by_name": {},
-  "add_repo_by_name_tip": "Ajoutez des dépôts supplémentaires à Tachimanga.\nLe format d'un dépôt est 'nomdutilisateur/depo', où 'nomdutilisateur' est le propriétaire du dépôt et 'depo' est le nom du dépôt.",
+  "add_repo_by_name_tip": "Ajoutez des répertoires supplémentaires à Tachimanga.\nLe format d'un répertoire est 'pseudo/répertoire’, où 'pseudo' est le propriétaire du répertoire et 'répertoire' est le nom du répertoire",
   "@add_repo_by_name_tip": {},
   "add_repo_by_url": "Par URL",
   "@add_repo_by_url": {},
-  "add_repo_by_url_tip": "Ajoutez des dépôts supplémentaires à Tachimanga.\nIl s'agit d'une URL se terminant par \"index.min.json\".",
+  "add_repo_by_url_tip": "Ajoutez des répertoires supplémentaires à Tachimanga.\nIl s'agit d'une URL se terminant par \"index.min.json\"",
   "@add_repo_by_url_tip": {},
-  "get_repo_meta_fail": "Échec de la récupération des informations du dépôt.",
+  "get_repo_meta_fail": "Échec de la récupération des informations du répertoire.",
   "@get_repo_meta_fail": {},
-  "delete_repository": "Supprimer le dépôt",
+  "delete_repository": "Supprimer le répertoire",
   "@delete_repository": {},
-  "delete_repository_content": "Voulez-vous supprimer le dépôt \"{name}\" ?",
+  "delete_repository_content": "Souhaitez-vous supprimer le répertoire \"{name}\" ?",
   "@delete_repository_content": {},
   "label_add": "Ajouter",
   "@label_add": {},
   "label_adding": "Ajout en cours",
   "@label_adding": {},
-  "extension_usage_terms": "Pour définir des dépôts externes, vous devez accepter l'accord suivant :\n1. Je comprends que Tachimanga ne régule d'aucune manière les dépôts externes et que Tachimanga n'est pas responsable des dommages ou des préjudices causés à mon appareil ou à mon identité par l'utilisation d'extensions externes.\n2. Je comprends que Tachimanga n'est affilié à aucune extension externe.\n3. J'accepte de ne pas utiliser Tachimanga pour consulter du contenu pour lequel je n'ai pas les droits.",
+  "extension_usage_terms": "Pour définir des répertoires externes, vous devez accepter l'accord suivant :\n1. Je comprends que Tachimanga ne régule d'aucune manière les répertoires externes et que Tachimanga n'est pas responsable des dommages ou des préjudices causés à mon appareil ou à mon identité par l'utilisation d'extensions externes.\n2. Je comprends que Tachimanga n'est affilié à aucune extension externe.\n3. J'accepte de ne pas utiliser Tachimanga pour consulter du contenu pour lequel je n'ai pas les droits.",
   "@extension_usage_terms": {},
-  "find_repository": "Trouver un dépôt",
+  "find_repository": "Trouver un répertoire",
   "@find_repository": {},
   "uninstall_confirm": "Voulez-vous désinstaller cette extension ?",
   "@uninstall_confirm": {},
@@ -1166,13 +1056,42 @@
   "action_display_show_number_of_items": "Afficher le nombre d’entrées",
   "@action_display_show_number_of_items": {},
   "page_layout": "Disposition de la page",
+  "@page_layout": {},
   "page_layout_single": "Page simple",
+  "@page_layout_single": {},
   "page_layout_double": "Double page",
+  "@page_layout_double": {},
   "page_layout_automatic": "Automatique",
+  "@page_layout_automatic": {},
   "page_layout_separate_first_page": "Séparer la première page",
+  "@page_layout_separate_first_page": {},
   "page_layout_tip": "La disposition de la page n'a d'effet que en mode de lecture paginé.",
-  "show_tap_zones_when_start_reading": "Afficher les zones de tapotement au début de la lecture.",
   "select_chapters": "Sélectionner des chapitres",
   "label_watermark": "Filigrane",
-  "tap_to_open": "Appuyez pour ouvrir"
+  "tap_to_open": "Appuyez pour ouvrir",
+  "@page_layout_tip": {},
+  "show_tap_zones_when_start_reading": "Afficher les zones de tapotement au début de la lecture.",
+  "@show_tap_zones_when_start_reading": {},
+  "labs": "Laboratoires",
+  "labsSubtitle": "Fonctionnalités expérimentales",
+  "concurrent_download_short_title_num": "Téléchargements simultanés : {num}",
+  "concurrent_download_short_title": "Téléchargements simultanés",
+  "concurrent_download_title": "Nombre de téléchargements simultanés",
+  "concurrent_download_tips": "Télécharger de manière simultanée à partir de la même source pendant une longue période peut entraîner le blocage de votre adresse IP par la source, provoquant ainsi des échecs de téléchargement et de lecture ultérieurs.",
+  "download_next_n_chapter": "{x, plural, one{Chapitre suivant} other{Les {x} prochains chapitres}}",
+  "download_unread_chapters": "Tous les chapitres non lus",
+  "download_all_chapters": "Tous les chapitres",
+  "download_queue": "File d'attente de téléchargement",
+  "download_settings": "Paramètres de téléchargement",
+  "remove_after_read": "Supprimer le téléchargement après lecture",
+  "pinch_to_zoom": "Pincer pour zoomer",
+  "errorFilePickUnknownType": "Veuillez sélectionner un fichier {suffix}",
+  "attention_label": "⚠️Attention",
+  "homepage_label": "Page d'accueil",
+  "download_limit_exceeded_title": "Limite de téléchargement dépassée",
+  "download_limit_number_title": "La limite de téléchargement est de {num} chapitres.",
+  "download_limit_content": "Vous pouvez télécharger {freeTicket} chapitres par jour.\n\nRegarder une publicité peut augmenter cette limite de {ticketPerAd} chapitres, et après avoir regardé {maxAds} publicités, il n'y a pas de limite de téléchargement pour la journée.\n\nLes utilisateurs premium bénéficient de téléchargements illimités.",
+  "download_limit_increase": "Limite de téléchargement augmentée de {num}.",
+  "add_download_tips": "{x, plural, one{Ajouté 1 chapitre à la file de téléchargement.} other{Ajouté {x} chapitres à la file de téléchargement.}}",
+  "watch_ad_label": "Regarder la publicité"
 }

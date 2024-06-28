@@ -15,11 +15,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_sizes.dart';
 
+import '../../../../../constants/db_keys.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
+import '../../../../settings/presentation/reader/widgets/reader_pinch_to_zoom_tile/reader_pinch_to_zoom_tile.dart';
 import '../../../data/downloads/downloads_repository.dart';
 import '../../../domain/downloads_queue/downloads_queue_model.dart';
 import '../../manga_details/controller/manga_details_controller.dart';
@@ -66,6 +68,8 @@ class InteractiveWrapper extends HookConsumerWidget {
       });
 
     final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider);
+    final pinchToZoom =
+        ref.watch(readerPinchToZoomProvider) ?? DBKeys.pinchToZoom.initial;
 
     return GestureDetector(
       onDoubleTapDown: doubleTapZoomIn == true ?
@@ -98,6 +102,7 @@ class InteractiveWrapper extends HookConsumerWidget {
         transformationController: transformationController,
         minScale: minScale,
         maxScale: maxScale,
+        scaleEnabled: pinchToZoom,
         child: child,
         onInteractionEnd: (scaleEndDetails) {
           double scale = transformationController.value.getMaxScaleOnAxis();

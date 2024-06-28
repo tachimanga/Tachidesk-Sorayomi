@@ -143,10 +143,10 @@ class LibraryScreen extends HookConsumerWidget {
                   ],
                 ),
                 endDrawerEnableOpenDragGesture: false,
-                endDrawer: const Drawer(
+                endDrawer: context.isTablet ? const Drawer(
                   width: kDrawerWidth,
                   child: LibraryMangaOrganizer(),
-                ),
+                ) : null,
                 body: data.isBlank
                     ? Emoticons(
                         text: context.l10n!.noCategoriesFound,

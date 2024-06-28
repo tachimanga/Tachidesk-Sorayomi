@@ -11,7 +11,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants/enum.dart';
 import '../constants/navigation_bar_data.dart';
-import '../features/about/presentation/about/about_screen.dart';
 import '../features/about/presentation/about/about_screen_lite.dart';
 import '../features/about/presentation/about/debug_keyboard_screen.dart';
 import '../features/about/presentation/about/debug_screen.dart';
@@ -39,21 +38,20 @@ import '../features/manga_book/presentation/updates/updates_screen.dart';
 import '../features/settings/domain/repo/repo_model.dart';
 import '../features/settings/presentation/advanced/advanced_screen.dart';
 import '../features/settings/presentation/appearance/appearance_screen.dart';
-import '../features/settings/presentation/backup/backup_screen.dart';
 import '../features/settings/presentation/backup2/backup_screen_v2.dart';
 import '../features/settings/presentation/browse/browse_settings_screen.dart';
 import '../features/settings/presentation/browse/edit_repo_screen.dart';
 import '../features/settings/presentation/browse/extension_detail_screen.dart';
+import '../features/settings/presentation/downloads/download_setting_screen.dart';
 import '../features/settings/presentation/general/general_screen.dart';
 import '../features/settings/presentation/general/widgets/default_tab_tile/default_tab_tile.dart';
+import '../features/settings/presentation/lab/labs_screen.dart';
 import '../features/settings/presentation/library/library_settings_screen.dart';
-import '../features/settings/presentation/more/more_screen.dart';
 import '../features/settings/presentation/more/more_screen_lite.dart';
 import '../features/settings/presentation/reader/reader_settings_screen.dart';
 import '../features/settings/presentation/reader/reader_tap_zones_settings_screen.dart';
 import '../features/settings/presentation/reader/widgets/reader_advanced_setting/reader_advanced_screen.dart';
 import '../features/settings/presentation/security/security_setting_screen.dart';
-import '../features/settings/presentation/server/server_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
 import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
 import '../features/settings/presentation/tracking/tracking_manga_search_screen.dart';
@@ -85,6 +83,7 @@ abstract class Routes {
   static const appearanceSettings = 's-appearance';
   static const generalSettings = 's-general';
   static const advancedSettings = 's-advanced';
+  static const labsSettings = 's-labs';
   static const debugSettings = 's-debug';
   static const backup = 'backup';
   static const settings = '/settings';
@@ -97,6 +96,7 @@ abstract class Routes {
   static const readerTapZones = 'tapZones';
   static const trackingSettings = 'tracking';
   static const securitySettings = 'security';
+  static const downloadSettings = '/downloadSettings';
   static const reader = '/reader/:mangaId/:chapterIndex';
   static getReader(String mangaId, String chapterIndex) =>
       '/reader/$mangaId/$chapterIndex';
@@ -296,10 +296,6 @@ GoRouter routerConfig(ref) {
             ],
           ),
           GoRoute(
-            path: Routes.serverSettings,
-            builder: (context, state) => const ServerScreen(),
-          ),
-          GoRoute(
             path: Routes.readerSettings,
             builder: (context, state) => const ReaderSettingsScreen(),
             routes: [
@@ -328,6 +324,10 @@ GoRouter routerConfig(ref) {
               GoRoute(
                 path: Routes.advancedSettings,
                 builder: (context, state) => const AdvancedScreen(),
+              ),
+              GoRoute(
+                path: Routes.labsSettings,
+                builder: (context, state) => const LabsScreen(),
               ),
             ],
           ),
@@ -362,7 +362,9 @@ GoRouter routerConfig(ref) {
           ),
           GoRoute(
             path: Routes.backup,
-            builder: (context, state) => const BackupScreenV2(),
+            builder: (context, state) => BackupScreenV2(
+              importBackupFilePath: state.extra as String?,
+            ),
           ),
           GoRoute(
             path: Routes.securitySettings,
@@ -379,6 +381,11 @@ GoRouter routerConfig(ref) {
         path: Routes.downloaded,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const DownloadedScreen(),
+      ),
+      GoRoute(
+        path: Routes.downloadSettings,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DownloadSettingScreen(),
       ),
       GoRoute(
         path: Routes.goWebView,

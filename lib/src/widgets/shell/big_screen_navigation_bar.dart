@@ -14,6 +14,7 @@ import '../../constants/navigation_bar_data.dart';
 import '../../features/settings/presentation/appearance/controller/theme_controller.dart';
 import '../../routes/router_config.dart';
 import '../../utils/extensions/custom_extensions.dart';
+import '../../utils/premium_reset.dart';
 
 class BigScreenNavigationBar extends ConsumerWidget {
   const BigScreenNavigationBar({
@@ -78,6 +79,7 @@ class BigScreenNavigationBar extends ConsumerWidget {
           .toList(),
       selectedIndex: NavigationBarData.indexWherePathOrZero(selectedScreen),
       onDestinationSelected: (value) {
+        PremiumReset.instance.resetWhenSwitchTab(selectedScreen, ref);
         final target = NavigationBarData.navList[value].path;
         context.go(target);
         onDestinationSelected(target);

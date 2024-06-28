@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
+import '../reader_pinch_to_zoom_tile/reader_pinch_to_zoom_tile.dart';
 import '../show_status_bar_tile/show_status_bar_tile.dart';
 import '../swipe_right_back_tile/swipe_right_back_tile.dart';
 
@@ -24,6 +25,7 @@ class ReaderAdvancedScreen extends ConsumerWidget {
         children: const [
           SwipeRightBackTile(),
           ReaderDoubleTapZoomInTile(),
+          ReaderPinchToZoomTile(),
           ShowStatusBarTile(),
         ],
       ),

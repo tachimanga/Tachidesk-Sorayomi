@@ -34,13 +34,16 @@ class $AssetsIconsGen {
   AssetGenImage get lightIcon =>
       const AssetGenImage('assets/icons/light_icon.png');
 
+  /// File path: assets/icons/pip.png
+  AssetGenImage get pip => const AssetGenImage('assets/icons/pip.png');
+
   /// File path: assets/icons/previous_done.png
   AssetGenImage get previousDone =>
       const AssetGenImage('assets/icons/previous_done.png');
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [darkIcon, incognito, lightIcon, previousDone];
+      [darkIcon, incognito, lightIcon, pip, previousDone];
 }
 
 class Assets {

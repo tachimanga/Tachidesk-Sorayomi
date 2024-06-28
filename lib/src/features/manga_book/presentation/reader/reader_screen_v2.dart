@@ -11,11 +11,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../constants/app_sizes.dart';
-import '../../../../constants/app_themes/color_schemas/default_theme.dart';
 import '../../../../constants/enum.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
+import '../../../../utils/auto_delete.dart';
 import '../../../../utils/classes/trace/trace_ref.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart' as logger;
@@ -31,7 +30,6 @@ import 'controller/reader_controller.dart';
 import 'controller/reader_controller_v2.dart';
 import 'widgets/reader_mode/continuous_reader_mode_v2.dart';
 import 'widgets/reader_mode/page_reader_mode.dart';
-import 'widgets/reader_mode/single_page_reader_mode_v2.dart';
 
 class ReaderScreen2 extends HookConsumerWidget {
   const ReaderScreen2({
@@ -64,8 +62,12 @@ class ReaderScreen2 extends HookConsumerWidget {
 
     final manga = ref.watch(mangaProvider);
     final chapter = ref.watch(chapterProviderWithIndex);
-    final defaultReaderMode = ref.watch(readerModeKeyProvider);
     //logger.log("[Reader2] ReaderScreen2.chapter ${chapter.valueOrNull?.name}, index:${chapter.valueOrNull?.index}");
+
+    final globalReaderMode = ref.watch(readerModeKeyProvider) ?? ReaderMode.webtoon;
+    final mangaReaderMode = manga.valueOrNull?.meta?.readerMode ?? ReaderMode.defaultReader;
+    final readerMode = mangaReaderMode == ReaderMode.defaultReader
+        ? globalReaderMode : mangaReaderMode;
 
     useEffect(() {
       TraceRef.put(manga.valueOrNull?.sourceId, mangaId);
@@ -116,6 +118,10 @@ class ReaderScreen2 extends HookConsumerWidget {
                   ),
                 ),
           );
+
+          if (isReadingCompeted && currChapter.downloaded == true) {
+            AutoDelete.instance.addToDeleteList(ref, currChapter);
+          }
         }
 
         final finalDebounce = debounce.value;
@@ -140,12 +146,15 @@ class ReaderScreen2 extends HookConsumerWidget {
 
     useRouteObserver(routeObserver, didPop: () {
       logger.log("ReaderScreen did pop");
+
+      // trigger auto delete
+      AutoDelete.instance.triggerDelete(ref);
+
       ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
     });
 
     final swipeRightMode =
         ref.watch(swipeRightBackPrefProvider) ?? SwipeRightToGoBackMode.always;
-    final readerMode = manga.valueOrNull?.meta?.readerMode ?? defaultReaderMode;
     final disableSwipeRight =
         swipeRightMode == SwipeRightToGoBackMode.disable ||
             (swipeRightMode == SwipeRightToGoBackMode.disableWhenHorizontal &&
@@ -181,7 +190,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                     refresh: () => ref.refresh(chapterProviderWithIndex),
                                     error: "No Pages found"));
                           }
-                          switch (data.meta?.readerMode ?? defaultReaderMode) {
+                          switch (readerMode) {
                             case ReaderMode.singleVertical:
                               return PageReaderMode(
                                 manga: data,

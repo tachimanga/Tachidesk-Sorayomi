@@ -6,39 +6,25 @@
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:system_proxy/system_proxy.dart';
-
-import '../../../../constants/app_sizes.dart';
-import '../../../../constants/gen/assets.gen.dart';
-import '../../../../constants/urls.dart';
 
 import '../../../../global_providers/global_providers.dart';
 import '../../../../global_providers/preference_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/http_proxy.dart';
-import '../../../../utils/launch_url_in_web.dart';
-import '../../../../utils/misc/toast/toast.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../../manga_book/presentation/reader/controller/reader_controller_v2.dart';
 import '../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../settings/widgets/server_url_tile/server_url_tile.dart';
-import '../../data/about_repository.dart';
-import '../../domain/about/about_model.dart';
-import '../../domain/server_update/server_update_model.dart';
 import 'controllers/about_controller.dart';
-import 'widget/app_update_dialog.dart';
 import 'widget/clipboard_list_tile.dart';
 import 'widget/file_log_tile.dart';
-import 'widget/media_launch_button.dart';
 
 class DebugScreen extends HookConsumerWidget {
   const DebugScreen({super.key});
@@ -66,7 +52,7 @@ class DebugScreen extends HookConsumerWidget {
         SwitchListTile(
           controlAffinity: ListTileControlAffinity.trailing,
           secondary: const Icon(Icons.switch_left_rounded),
-          title: Text(context.l10n!.useSysProxy),
+          title: Text("Use system proxy settings"),
           onChanged: (value) async {
             ref.read(useSystemProxyProvider.notifier).update(value);
             final proxy = await SystemProxy.getProxySettings();

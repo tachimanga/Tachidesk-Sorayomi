@@ -1,0 +1,22 @@
+{
+  "addCategory": "വിഭാഗം ചേർക്കുക",
+  "@addCategory": {
+    "description": "Popup title and Button text to add new category in Edit Category Screen"
+  },
+  "addToLibrary": "ലൈബ്രറിയിലേക്ക് ചേർക്കുക",
+  "@addToLibrary": {
+    "description": "Button text to add Manga to Library in Manga Details Screen"
+  },
+  "appLanguage": "അപ്ലിക്കേഷൻ ഭാഷ",
+  "@appLanguage": {
+    "description": "Popup title and Button text to change App Language"
+  },
+  "appTitle": "താച്ചിമാംഗ",
+  "@appTitle": {
+    "description": "Name of the app (Tachidesk Sorayomi in native script)"
+  },
+  "appearance": "രൂപം",
+  "@appearance": {
+    "description": "Screen title and Button text of Appearance screen"
+  }
+}

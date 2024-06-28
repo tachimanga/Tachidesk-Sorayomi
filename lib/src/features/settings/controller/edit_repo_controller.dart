@@ -20,7 +20,10 @@ class RepoController extends _$RepoController {
     ref.onDispose(token.cancel);
     final result =
         await ref.watch(repoRepositoryProvider).getRepoList(cancelToken: token);
-    return result;
+    final list = result
+        ?.map((e) => e.copyWith(homePageUrl: baseUrlToSourceUrl(e.baseUrl)))
+        .toList();
+    return list;
   }
 }
 
@@ -41,4 +44,22 @@ class RepoListWithCache extends _$RepoListWithCache {
     ref.keepAlive();
     return result;
   }
+}
+
+String? baseUrlToSourceUrl(String? baseUrl) {
+  String? finalBaseUrl;
+  if (baseUrl != null) {
+    RegExp regex = RegExp(r"https://.*?github.*?/(.*?)/(.*?)/");
+    Match? match = regex.firstMatch(baseUrl);
+    if (match != null) {
+      String username = match.group(1)!;
+      String repo = match.group(2)!;
+      if (username == "keiyoushi" && repo == "extensions") {
+        finalBaseUrl = "https://github.com/keiyoushi/tachiyomi-extensions-source";
+      } else {
+        finalBaseUrl = "https://github.com/$username/$repo";
+      }
+    }
+  }
+  return finalBaseUrl;
 }

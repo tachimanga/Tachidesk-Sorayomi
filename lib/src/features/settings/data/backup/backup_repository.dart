@@ -39,7 +39,7 @@ class BackupRepository {
       throw context.l10n!.errorFilePick;
     }
     if (!(file!.name.endsWith('.proto.gz') || file.name.endsWith('.tachibk'))) {
-      throw context.l10n!.errorFilePickUnknownExtension(".proto.gz or .tachibk");
+      throw context.l10n!.errorFilePickUnknownType(".proto.gz or .tachibk");
     }
     return (await dioClient.post<BackupMissing, BackupMissing?>(
       ImportUrl.import,

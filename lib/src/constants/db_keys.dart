@@ -15,7 +15,6 @@ enum DBKeys {
   extensionLanguageFilter(["installed", "update", "en", "all"]),
   sourceLastUsed(null),
   themeMode(ThemeMode.system),
-  authType(AuthType.none),
   basicCredentials(null),
   readerMode(ReaderMode.webtoon),
   readerPageLayout(ReaderPageLayout.automatic),
@@ -57,6 +56,7 @@ enum DBKeys {
   initLocation(null),
   scrollAnimation(false),
   doubleTapZoomIn(true),
+  pinchToZoom(true),
   pinSourceIdList(<String>[]),
   onlySearchPinSource(false),
   disableBypass(false),
@@ -84,6 +84,10 @@ enum DBKeys {
   dateFormat(DateFormatEnum.yMMMd),
   libraryShowMangaCount(false),
   showDirectFlag(false),
+  bgEnable(false),
+  downloadTaskInParallel(1),
+  deleteDownloadAfterRead(0),
+  deleteDownloadAfterReadTodoList(<String>[]),
   ;
 
   const DBKeys(this.initial);

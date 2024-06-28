@@ -21,6 +21,8 @@ import '../data/downloads/downloads_repository.dart';
 import '../data/manga_book_repository.dart';
 import '../domain/chapter/chapter_model.dart';
 import '../domain/chapter_batch/chapter_batch_model.dart';
+import '../presentation/downloads/service/download_ticket_service.dart';
+import '../presentation/downloads/widgets/download_reward_ad_dialog.dart';
 
 class DownloadStatusIcon extends HookConsumerWidget {
   const DownloadStatusIcon({
@@ -48,6 +50,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
 
   Future toggleChapterToQueue(
     Toast toast,
+    BuildContext context,
     WidgetRef ref, {
     bool isAdd = false,
     bool isRemove = false,
@@ -61,7 +64,17 @@ class DownloadStatusIcon extends HookConsumerWidget {
           await repo.removeChapterFromDownloadQueue(mangaId, chapter.index!);
         }
         if (isAdd || isError) {
-          await repo.addChapterToDownloadQueue(mangaId, chapter.index!);
+          if (!context.mounted) {
+            return;
+          }
+          await showAdDialogIfNeeded(
+            context: context,
+            ref: ref,
+            chaptersCount: 1,
+            onPass: () async {
+              await repo.addChapterToDownloadQueue(mangaId, chapter.index!);
+            },
+          );
         }
       }))
           .showToastOnError(toast);
@@ -85,7 +98,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
       }
       return;
     }, [download?.state]);
-    
+
     if (isLoading.value) {
       return Padding(
         padding: KEdgeInsets.h8.size,
@@ -121,7 +134,8 @@ class DownloadStatusIcon extends HookConsumerWidget {
                           TextButton(
                             onPressed: () {
                               context.pop();
-                              toggleChapterToQueue(toast, ref, isError: true);
+                              toggleChapterToQueue(toast, context, ref,
+                                  isError: true);
                             },
                             child: Text(context.l10n!.retry),
                           ),
@@ -134,7 +148,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
               )
             : IconButton(
                 onPressed: () =>
-                    toggleChapterToQueue(toast, ref, isRemove: true),
+                    toggleChapterToQueue(toast, context, ref, isRemove: true),
                 icon: MiniCircularProgressIndicator(
                   value: download.progress == 0 ? null : download.progress,
                   color: context.iconColor,
@@ -162,7 +176,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
             icon: const Icon(Icons.download_for_offline_outlined),
             onPressed: () {
               pipe.invokeMethod("LogEvent", "DOWN_ADD_CHAPTER");
-              toggleChapterToQueue(toast, ref, isAdd: true);
+              toggleChapterToQueue(toast, context, ref, isAdd: true);
             },
           );
         }

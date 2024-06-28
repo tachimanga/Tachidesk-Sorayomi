@@ -13,6 +13,7 @@ import '../../constants/navigation_bar_data.dart';
 import '../../features/settings/presentation/appearance/controller/theme_controller.dart';
 import '../../routes/router_config.dart';
 import '../../utils/extensions/custom_extensions.dart';
+import '../../utils/premium_reset.dart';
 
 class SmallScreenNavigationBar extends ConsumerWidget {
   const SmallScreenNavigationBar({
@@ -43,6 +44,7 @@ class SmallScreenNavigationBar extends ConsumerWidget {
         backgroundColor: dark && pureBlackMode == true ? Colors.black : null,
         selectedIndex: NavigationBarData.indexWherePathOrZero(selectedScreen),
         onDestinationSelected: (value) {
+          PremiumReset.instance.resetWhenSwitchTab(selectedScreen, ref);
           final target = NavigationBarData.navList[value].path;
           context.go(target);
           onDestinationSelected(target);

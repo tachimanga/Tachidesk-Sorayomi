@@ -70,17 +70,10 @@ class WebViewScreen extends HookConsumerWidget {
     });
 
     final pipe = ref.watch(getMagicPipeProvider);
-    final settingsRepository = ref.watch(settingsRepositoryProvider);
     useRouteObserver(routeObserver, didPop: () async {
       log("WebViewScreen did pop");
       final json = await pipe.invokeMethod("GetCookies");
       log("GetCookies $json");
-      try {
-        final result = await settingsRepository.uploadSettings(json: json);
-        log("uploadCookies succ");
-      } catch (e) {
-        log("uploadCookies err $e");
-      }
       // if (context.mounted && json is String && json.contains("cf_clearance=")) {
       //   final snackBar = SnackBar(
       //     content: Text("cf_clearance detected, please click the retry button."),
