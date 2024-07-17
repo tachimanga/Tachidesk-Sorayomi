@@ -577,7 +577,7 @@
   "@newUpdateAvailable": {
     "description": "Popup title to show that the App/Server has and update"
   },
-  "noCategoriesFound": "У вас немає жодної категорії. \n(Порада: натисніть кнопку \"Плюс\", щоб створити категорію для впорядкування бібліотеки)",
+  "noCategoriesFound": "У вас немає жодної категорії.",
   "@noCategoriesFound": {
     "description": "Hint text to add new Category when category list is empty"
   },
@@ -1146,5 +1146,30 @@
   "download_limit_content": "Ви можете завантажувати {freeTicket} розділів на день.\n\nПерегляд однієї реклами може збільшити цей ліміт на {ticketPerAd} розділів, і після перегляду {maxAds} реклам, немає обмежень на завантаження на день.\n\nПреміум-користувачі мають необмежені завантаження.",
   "download_limit_increase": "Ліміт завантаження збільшено на {num}.",
   "add_download_tips": "{x, plural, one{Додано 1 розділ в чергу завантаження.} few{Додано {x} розділи в чергу завантаження.} many{Додано {x} розділів в чергу завантаження.} other{Додано {x} розділів в чергу завантаження.}}",
-  "watch_ad_label": "Переглянути рекламу"
+  "watch_ad_label": "Переглянути рекламу",
+  "backup_created_content": "Ви також повинні зберігати копії резервних копій в інших місцях.\nЗверніть увагу, що завантажений вміст та локальні джерела не включені у резервне копіювання.",
+  "display_as_single_page": "Показати як одну сторінку",
+  "clear_last_hour": "Остання година",
+  "clear_today": "Сьогодні",
+  "clear_today_and_yesterday": "Сьогодні та вчора",
+  "clear_all_time": "Увесь час",
+  "start_reading": "Почати читати",
+  "continue_reading_chapter": "Продовжувати читання {title}",
+  "icon_section_title": "Іконка",
+  "app_icon_title": "Іконка додатка",
+  "app_icon_author": "Розроблено {author}",
+  "classic_start_reading_button": "Класична кнопка почати читання",
+  "long_press_action_menu": "Меню дій при довгому натисканні",
+  "app_icon_update_tip": "Якщо піктограма не оновилася успішно, ви можете зачекати трохи або просто перезапустити пристрій.",
+  "update_running_text": "Оновлення {title}",
+  "update_completed_text": "Оновлення завершено. Успішно {x}, не вдалося {y}.",
+  "new_category": "Нова категорія",
+  "add_manga_to": "Додати мангу до...",
+  "add_to_default_category": "Додати до категорії за замовчуванням",
+  "add_to_category": "Додати до {category}",
+  "add_to_categories": "{x, plural, one{Додати до категорії} other{Додати до {x} категорій}}}",
+  "move_manga_to": "Перемістити мангу до...",
+  "keep_in_default_category": "Залишити в категорії за замовчуванням",
+  "move_to_category": "Перемістити до {category}",
+  "move_to_categories": "{x, plural, one{Перемістити до категорії} other{Перемістити до {x} категорій}}}"
 }

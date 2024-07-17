@@ -96,6 +96,8 @@ extension DateTimeExtensions on DateTime {
         end: lastDayOfFinYear,
       );
 
+  int get secondsSinceEpoch => millisecondsSinceEpoch ~/ 1000;
+
 // /////////////////////////////////////////////////////////////////////////////
 
   static DateTime max(DateTime a, DateTime b) => a.compareTo(b) > 0 ? a : b;

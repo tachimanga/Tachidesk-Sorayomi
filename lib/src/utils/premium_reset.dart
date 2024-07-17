@@ -1,10 +1,12 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../constants/app_constants.dart';
 import '../constants/enum.dart';
 import '../features/custom/inapp/purchase_providers.dart';
 import '../features/manga_book/presentation/downloads/controller/downloads_controller.dart';
 import '../features/manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import '../features/settings/presentation/appearance/constants/theme_define.dart';
+import '../features/settings/presentation/appearance/controller/app_icon_controller.dart';
 import '../features/settings/presentation/appearance/controller/theme_controller.dart';
 import '../features/settings/presentation/backup2/controller/auto_backup_controller.dart';
 import '../features/settings/presentation/security/controller/security_controller.dart';
@@ -54,6 +56,12 @@ class PremiumReset {
       log("reset themePureBlackProvider");
       Future(() {
         ref.read(themePureBlackProvider.notifier).update(false);
+      });
+    }
+    if (ref.read(appIconKeyPrefProvider) != kDefaultAppIconKey) {
+      log("reset appIconKeyPrefProvider");
+      Future(() {
+        ref.read(appIconKeyPrefProvider.notifier).update(kDefaultAppIconKey);
       });
     }
     if (ref.read(autoBackupFrequencyProvider) != FrequencyEnum.off) {

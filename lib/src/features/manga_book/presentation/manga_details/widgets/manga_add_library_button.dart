@@ -64,7 +64,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
                     context: context,
                     builder: (context) => EditMangaCategoryDialog(
                       mangaId: "${manga.id}",
-                      title: "${manga.title}",
+                      manga: manga,
                     ),
                   );
                   invokeRefresh(ref);
@@ -87,7 +87,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
           context: context,
           builder: (context) => EditMangaCategoryDialog(
             mangaId: "${manga.id}",
-            title: "${manga.title}",
+            manga: manga,
           ),
         );
         invokeRefresh(ref);

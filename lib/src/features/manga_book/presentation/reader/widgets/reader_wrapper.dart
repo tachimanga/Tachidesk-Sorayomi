@@ -393,9 +393,9 @@ class ReaderWrapper extends HookConsumerWidget {
                               icon: chapter.bookmarked!
                                   ? Icons.bookmark_rounded
                                   : Icons.bookmark_outline_rounded,
-                              chapterIndex: "${chapter.index!}",
-                              mangaId: "${manga.id}",
-                              chapterPut: ChapterPut(
+                              chapterPut: ChapterModifyInput(
+                                mangaId: manga.id,
+                                chapterId: chapter.id,
                                 bookmarked: !chapter.bookmarked!,
                               ),
                               refresh: () async {

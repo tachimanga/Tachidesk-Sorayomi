@@ -58,11 +58,10 @@ class MangaPageLayoutPopup extends HookConsumerWidget {
       }, []);
     }
 
-    // final skipFirstPageProvider =
-    //     readerPageLayoutSkipFirstWithMangaIdProvider(mangaId: "${manga.id}");
-    // final effectSkipFirstPage = ref.watch(skipFirstPageProvider);
+    final skipFirstPageProvider =
+        readerPageLayoutSkipFirstWithMangaIdProvider(mangaId: "${manga.id}");
+    final effectSkipFirstPage = ref.watch(skipFirstPageProvider);
 
-    //print("UPDATE MangaMeta $effectPageLayout");
     return RadioListPopup<ReaderPageLayout>(
       title: context.l10n!.page_layout,
       optionList: ReaderPageLayout.values,
@@ -76,27 +75,27 @@ class MangaPageLayoutPopup extends HookConsumerWidget {
           ref.read(layoutProvider.notifier).updateLocal(value);
         }
       },
-      // additionWidgets: [
-      //   Padding(
-      //     padding: const EdgeInsets.only(
-      //       top: 10.0,
-      //       left: 10.0,
-      //       right: 10.0,
-      //     ),
-      //     child: SwitchListTile(
-      //       controlAffinity: ListTileControlAffinity.trailing,
-      //       title: Text(
-      //         context.l10n!.page_layout_separate_first_page,
-      //       ),
-      //       onChanged: ref.read(skipFirstPageProvider.notifier).update,
-      //       value: effectSkipFirstPage,
-      //     ),
-      //   ),
-      // ],
       additionWidgets: [
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 10.0,
+            left: 10.0,
+            right: 10.0,
+          ),
+          child: SwitchListTile(
+            controlAffinity: ListTileControlAffinity.trailing,
+            title: Text(
+              context.l10n!.page_layout_separate_first_page,
+            ),
+            onChanged: effectPageLayout != ReaderPageLayout.singlePage
+                ? ref.read(skipFirstPageProvider.notifier).update
+                : null,
+            value: effectSkipFirstPage,
+          ),
+        ),
         if (premiumPageLayout) ...[
           const PremiumRequiredTile(),
-        ]
+        ],
       ],
     );
   }

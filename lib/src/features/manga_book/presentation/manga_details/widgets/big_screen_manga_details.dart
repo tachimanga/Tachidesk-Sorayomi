@@ -52,6 +52,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
               child: MangaDescription(
                 manga: manga,
                 refresh: () => onDescriptionRefresh(false),
+                enableStartReading: selectedChapters.value.isEmpty,
               ),
             ),
           ),

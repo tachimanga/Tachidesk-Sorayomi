@@ -87,16 +87,6 @@ class MangaChapterList extends _$MangaChapterList {
     ref.keepAlive();
     state = result;
   }
-
-  void updateChapter(int index, Chapter chapter) {
-    try {
-      final newList = [...?state.valueOrNull];
-      newList[index] = chapter;
-      state = AsyncData<List<Chapter>?>(newList).copyWithPrevious(state);
-    } catch (e) {
-      //
-    }
-  }
 }
 
 @riverpod
@@ -193,19 +183,22 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   }
 
   int applyChapterSort(Chapter m1, Chapter m2) {
-    final sortDirToggle = (sortedDirection ? 1 : -1);
     switch (sortedBy) {
       case ChapterSort.fetchedDate:
-        return (m1.fetchedAt ?? 0).compareTo(m2.fetchedAt ?? 0) * sortDirToggle;
+        return (m1.fetchedAt ?? 0).compareTo(m2.fetchedAt ?? 0);
       case ChapterSort.source:
-        return (m1.index ?? 0).compareTo(m2.index ?? 0) * sortDirToggle;
+        return (m1.index ?? 0).compareTo(m2.index ?? 0);
       default:
         return 0;
     }
   }
 
   return chapterList.copyWithData(
-    (data) => [...?data?.where(applyChapterFilter)]..sort(applyChapterSort),
+    (data) {
+      final list = [...?data?.where(applyChapterFilter)]
+        ..sort(applyChapterSort);
+      return sortedDirection ? list : list.reversed.toList();
+    },
   );
 }
 
@@ -236,7 +229,7 @@ Chapter? firstUnreadInFilteredChapterList(
       var find = false;
       for (final chapter in list) {
         if (find) {
-          lastReadChapter = chapter;
+          lastReadChapter = chapter.copyWith(resumeFlag: true);
           break;
         }
         if (chapter == lastReadChapter) {
@@ -245,15 +238,6 @@ Chapter? firstUnreadInFilteredChapterList(
       }
     }
     return lastReadChapter;
-    /*
-    if (isAscSorted) {
-      return filteredList
-          .firstWhereOrNull((element) => !element.read.ifNull(true));
-    } else {
-      return filteredList
-          .lastWhereOrNull((element) => !element.read.ifNull(true));
-    }
-    */
   }
 }
 

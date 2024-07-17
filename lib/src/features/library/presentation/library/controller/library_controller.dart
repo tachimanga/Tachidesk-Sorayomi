@@ -76,33 +76,32 @@ class CategoryMangaListWithQueryAndFilter
     }
 
     int applyMangaSort(Manga m1, Manga m2) {
-      final sortDirToggle = (sortedDirection ? 1 : -1);
       switch (sortedBy) {
         case MangaSort.alphabetical:
-          return (m1.title ?? "").compareTo(m2.title ?? "") * sortDirToggle;
+          return (m1.title ?? "").compareTo(m2.title ?? "");
         case MangaSort.unread:
-          return (m1.unreadCount ?? 0).compareTo(m2.unreadCount ?? 0) *
-              sortDirToggle;
+          return (m1.unreadCount ?? 0).compareTo(m2.unreadCount ?? 0);
         case MangaSort.dateAdded:
-          return (m1.inLibraryAt ?? 0).compareTo(m2.inLibraryAt ?? 0) *
-              sortDirToggle;
+          return (m1.inLibraryAt ?? 0).compareTo(m2.inLibraryAt ?? 0);
         case MangaSort.lastRead:
-          return (m2.lastReadAt ?? 0).compareTo(m1.lastReadAt ?? 0) *
-              sortDirToggle;
+          return (m2.lastReadAt ?? 0).compareTo(m1.lastReadAt ?? 0);
         case MangaSort.latestChapterFetchAt:
-          return (m1.latestChapterFetchAt ?? 0).compareTo(m2.latestChapterFetchAt ?? 0) *
-              sortDirToggle;
+          return (m1.latestChapterFetchAt ?? 0)
+              .compareTo(m2.latestChapterFetchAt ?? 0);
         case MangaSort.latestChapterUploadAt:
-          return (m1.latestChapterUploadAt ?? 0).compareTo(m2.latestChapterUploadAt ?? 0) *
-              sortDirToggle;
+          return (m1.latestChapterUploadAt ?? 0)
+              .compareTo(m2.latestChapterUploadAt ?? 0);
         default:
           return 0;
       }
     }
 
     return mangaList.map<AsyncValue<List<Manga>?>>(
-      data: (e) => AsyncData(e.valueOrNull?.where(applyMangaFilter).toList()
-        ?..sort(applyMangaSort)),
+      data: (e) {
+        final list = e.valueOrNull?.where(applyMangaFilter).toList()
+          ?..sort(applyMangaSort);
+        return AsyncData(sortedDirection ? list : list?.reversed.toList());
+      },
       error: (e) => e,
       loading: (e) => e,
     );
@@ -190,8 +189,8 @@ class LibraryShowMangaCount extends _$LibraryShowMangaCount
     with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
-    ref,
-    key: DBKeys.libraryShowMangaCount.name,
-    initial: DBKeys.libraryShowMangaCount.initial,
-  );
+        ref,
+        key: DBKeys.libraryShowMangaCount.name,
+        initial: DBKeys.libraryShowMangaCount.initial,
+      );
 }

@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../constants/endpoints.dart';
@@ -53,12 +54,14 @@ class DownloadsRepository {
         WebSocketChannel.connect(Uri.parse(url + DownloaderUrl.downloads));
 
     return Pair<Stream<Downloads>, AsyncCallback>(
-      first: channel.stream.asyncMap<Downloads>(
-        (event) => compute<String, Downloads>(
-          (s) => Downloads.fromJson(json.decode(s)),
-          event,
-        ),
-      ),
+      first: channel.stream
+          .throttle(const Duration(milliseconds: 300), trailing: true)
+          .asyncMap<Downloads>(
+            (event) => compute<String, Downloads>(
+              (s) => Downloads.fromJson(json.decode(s)),
+              event,
+            ),
+          ),
       second: channel.sink.close,
     );
   }

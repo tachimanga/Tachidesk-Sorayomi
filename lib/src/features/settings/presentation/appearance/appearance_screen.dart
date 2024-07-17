@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_constants.dart';
+import '../../../../constants/db_keys.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -16,7 +18,9 @@ import '../../../../widgets/section_title.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'constants/theme_define.dart';
+import 'controller/app_icon_controller.dart';
 import 'controller/theme_controller.dart';
+import 'widgets/app_icon_select_tile.dart';
 import 'widgets/blend_level_slider_tile.dart';
 import 'widgets/data_format_select_tile.dart';
 import 'widgets/grid_cover_min_width.dart';
@@ -34,16 +38,19 @@ class AppearanceScreen extends HookConsumerWidget {
 
     final themeKey = ref.watch(themeKeyProvider);
     final pureBlackMode = ref.watch(themePureBlackProvider);
+    final appIconKey = ref.watch(appIconKeyPrefProvider);
 
     final premiumTheme = !purchaseGate &&
         !testflightFlag &&
         themeKey != ThemeDefine.defaultSchemeKey;
     final premiumBlackMode =
         !purchaseGate && !testflightFlag && pureBlackMode == true;
+    final premiumIcon =
+        !purchaseGate && !testflightFlag && appIconKey != kDefaultAppIconKey;
 
     final brightness = Theme.of(context).brightness;
     return WillPopScope(
-      onWillPop: premiumTheme || premiumBlackMode
+      onWillPop: premiumTheme || premiumBlackMode || premiumIcon
           ? () async {
               if (premiumTheme) {
                 pipe.invokeMethod("LogEvent", "APPEARANCE:THEME:RESET");
@@ -54,6 +61,12 @@ class AppearanceScreen extends HookConsumerWidget {
               if (premiumBlackMode) {
                 pipe.invokeMethod("LogEvent", "APPEARANCE:BLACK:RESET");
                 ref.read(themePureBlackProvider.notifier).update(false);
+              }
+              if (premiumIcon) {
+                pipe.invokeMethod("LogEvent", "APPEARANCE:ICON:RESET");
+                ref
+                    .read(appIconKeyPrefProvider.notifier)
+                    .update(kDefaultAppIconKey);
               }
               return true;
             }
@@ -76,6 +89,11 @@ class AppearanceScreen extends HookConsumerWidget {
             ],
             if (brightness == Brightness.light || pureBlackMode != true) ...[
               const BlendLevelSlider(),
+            ],
+            SectionTitle(title: context.l10n!.icon_section_title),
+            const AppIconSelectTile(),
+            if (premiumIcon) ...[
+              const PremiumRequiredTile(),
             ],
             SectionTitle(title: context.l10n!.displaySectionTitle),
             const GridCoverMinWidth(),

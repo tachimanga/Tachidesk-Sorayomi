@@ -27,7 +27,6 @@ import 'service/download_ticket_service.dart';
 import 'widgets/download_pip_button.dart';
 import 'widgets/download_progress_list_tile.dart';
 import 'widgets/download_reward_ad_dialog.dart';
-import 'widgets/downloads_fab.dart';
 import 'widgets/downloads_parallel_button.dart';
 import 'widgets/downloads_task_button.dart';
 

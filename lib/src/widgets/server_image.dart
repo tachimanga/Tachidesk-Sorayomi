@@ -48,8 +48,8 @@ class ServerImage extends ConsumerWidget {
     this.progressIndicatorBuilder,
     this.wrapper,
     this.imageSizeCache,
-    this.memCacheWidth,
-    this.memCacheHeight,
+    this.decodeWidth,
+    this.decodeHeight,
     this.traceInfo,
     this.chapterUrl,
   });
@@ -69,10 +69,10 @@ class ServerImage extends ConsumerWidget {
   final ImageSizeCache? imageSizeCache;
 
   /// Will resize the image in memory to have a certain width using [ResizeImage]
-  final int? memCacheWidth;
+  final int? decodeWidth;
 
   /// Will resize the image in memory to have a certain height using [ResizeImage]
-  final int? memCacheHeight;
+  final int? decodeHeight;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -168,6 +168,13 @@ class ServerImage extends ConsumerWidget {
       );
     }
 
+    final memCacheWidth = decodeWidth != null && downscaleImage == true
+        ? (decodeWidth! * context.devicePixelRatio).toInt()
+        : null;
+    final memCacheHeight = decodeHeight != null && downscaleImage == true
+        ? (decodeHeight! * context.devicePixelRatio).toInt()
+        : null;
+
     return CachedNetworkImage(
       key: reloadButton ? ref.watch(keyProvider!) : null,
       imageUrl: baseApi,
@@ -176,8 +183,8 @@ class ServerImage extends ConsumerWidget {
       width: size?.width,
       fit: fit ?? BoxFit.cover,
       alignment: alignment,
-      memCacheWidth: downscaleImage == true ? memCacheWidth : null,
-      memCacheHeight: downscaleImage == true ? memCacheHeight : null,
+      memCacheWidth: memCacheWidth,
+      memCacheHeight: memCacheHeight,
       progressIndicatorBuilder: progressIndicatorBuilder == null
           ? null
           : (context, url, progress) => wrapper != null
@@ -241,11 +248,16 @@ class ServerImageWithCpi extends StatelessWidget {
     required this.outerSize,
     required this.innerSize,
     required this.isLoading,
+    this.decodeWidth,
+    this.decodeHeight,
   });
   final bool isLoading;
   final Size outerSize;
   final Size innerSize;
   final String url;
+  final int? decodeWidth;
+  final int? decodeHeight;
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -261,10 +273,17 @@ class ServerImageWithCpi extends StatelessWidget {
                 ServerImage(
                   imageUrl: url,
                   size: innerSize,
+                  decodeWidth: decodeWidth,
+                  decodeHeight: decodeHeight,
                 )
               ],
             ),
           )
-        : ServerImage(imageUrl: url, size: outerSize);
+        : ServerImage(
+            imageUrl: url,
+            size: outerSize,
+            decodeWidth: decodeWidth,
+            decodeHeight: decodeHeight,
+          );
   }
 }

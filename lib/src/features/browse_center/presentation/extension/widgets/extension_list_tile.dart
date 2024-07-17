@@ -56,6 +56,7 @@ class ExtensionListTile extends HookConsumerWidget {
           outerSize: const Size.square(48),
           innerSize: const Size.square(24),
           isLoading: isLoading.value,
+          decodeWidth: 48,
         ),
       ),
       title: Text(

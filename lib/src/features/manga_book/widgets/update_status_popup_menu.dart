@@ -15,7 +15,7 @@ import '../../library/presentation/category/controller/edit_category_controller.
 import '../data/updates/updates_repository.dart';
 import '../presentation/updates/controller/update_controller.dart';
 import 'select_category_to_update_dialog.dart';
-import 'update_status_summary_sheet.dart';
+import 'update_status_summary_sheet_v2.dart';
 
 class UpdateStatusPopupMenu extends ConsumerWidget {
   const UpdateStatusPopupMenu({
@@ -74,7 +74,7 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
           if (showSummaryButton)
             PopupMenuItem(
               onTap: () => Future.microtask(
-                () => showUpdateStatusSummaryBottomSheet(context),
+                () => showUpdateStatusSummaryBottomSheetV2(context),
               ),
               child: Text(
                 context.l10n!.updatesSummary,

@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../controller/edit_category_controller.dart';
 import 'edit_category_dialog.dart';
@@ -18,8 +19,10 @@ class CategoryCreateFab extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.watch(toastProvider(context));
     final isLoading = useState(false);
-    return FloatingActionButton.extended(
+
+    return IconButton(
       onPressed: isLoading.value
           ? null
           : () {
@@ -27,23 +30,51 @@ class CategoryCreateFab extends HookConsumerWidget {
                 context: context,
                 builder: (context) => EditCategoryDialog(
                   editCategory: (newCategory) async {
-                    try {
-                      isLoading.value = true;
+                    isLoading.value = true;
+                    (await AsyncValue.guard(() async {
                       await ref
                           .read(categoryControllerProvider.notifier)
                           .editCategory(newCategory);
+                    }))
+                        .showToastOnError(toast);
+                    if (context.mounted) {
                       isLoading.value = false;
-                    } catch (e) {
-                      //
                     }
                   },
                 ),
               );
             },
-      label: Text(context.l10n!.addCategory),
       icon: isLoading.value
           ? MiniCircularProgressIndicator(color: context.iconColor)
           : const Icon(Icons.add_rounded),
+    );
+  }
+}
+
+class CategoryCreateTextButton extends HookConsumerWidget {
+  const CategoryCreateTextButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.watch(toastProvider(context));
+    return TextButton.icon(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) => EditCategoryDialog(
+            editCategory: (newCategory) async {
+              (await AsyncValue.guard(() async {
+                await ref
+                    .read(categoryControllerProvider.notifier)
+                    .editCategory(newCategory);
+              }))
+                  .showToastOnError(toast);
+            },
+          ),
+        );
+      },
+      icon: const Icon(Icons.add_circle_rounded),
+      label: Text(context.l10n!.new_category),
     );
   }
 }

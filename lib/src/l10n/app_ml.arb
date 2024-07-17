@@ -18,5 +18,17 @@
   "appearance": "രൂപം",
   "@appearance": {
     "description": "Screen title and Button text of Appearance screen"
+  },
+  "badges": "ബാഡ്ജുകൾ",
+  "@badges": {
+    "description": "Checkbox Group title to enable Badges on manga Cover in Library Screen"
+  },
+  "bookmarked": "ബുക്ക്‌മാർക്ക് ചെയ്തു",
+  "@bookmarked": {
+    "description": "Checkbox text to filter bookmarked manga chapters in Manga Details screen"
+  },
+  "cancel": "റദ്ദാക്കുക",
+  "@cancel": {
+    "description": "Text for Cancel button in a Popup"
   }
 }

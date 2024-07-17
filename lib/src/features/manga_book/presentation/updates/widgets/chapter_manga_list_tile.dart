@@ -38,6 +38,7 @@ class ChapterMangaListTile extends StatelessWidget {
       onSecondaryTap:
           pair.chapter != null ? () => toggleSelect(pair.chapter!) : null,
       child: ListTile(
+        contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 6.0),
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -66,6 +67,7 @@ class ChapterMangaListTile extends StatelessWidget {
             child: ServerImage(
               imageUrl: pair.manga?.thumbnailUrl ?? "",
               size: const Size.square(48),
+              decodeWidth: 48,
             ),
           ),
         ),

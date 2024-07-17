@@ -13,6 +13,7 @@ import '../../../../constants/app_sizes.dart';
 import '../../../../constants/enum.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/classes/trace/trace_ref.dart';
+import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
@@ -23,7 +24,10 @@ import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.d
 import '../../../browse_center/data/source_repository/source_repository.dart';
 import '../../../browse_center/presentation/source_manga_list/controller/source_manga_controller.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
+import '../../../settings/controller/remote_blacklist_controller.dart';
+import '../../../settings/data/config/remote_blacklist_config.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
+import '../../../settings/presentation/reader/widgets/reader_classic_start_button_tile/reader_classic_start_button_tile.dart';
 import '../../../settings/presentation/share/controller/share_controller.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
@@ -35,6 +39,8 @@ import 'widgets/chapter_filter_icon_button.dart';
 import 'widgets/edit_manga_category_dialog.dart';
 import 'widgets/manga_chapter_download_button.dart';
 import 'widgets/manga_chapter_organizer.dart';
+import 'widgets/manga_start_read_fab.dart';
+import 'widgets/manga_start_read_icon.dart';
 import 'widgets/small_screen_manga_details.dart';
 
 class MangaDetailsScreen extends HookConsumerWidget {
@@ -57,6 +63,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
         useMemoized(() => mangaChapterListProvider(mangaId: mangaId), []);
     final chapterListFilteredProvider = useMemoized(
         () => mangaChapterListWithFilterProvider(mangaId: mangaId), []);
+    final classicStartButton = ref.watch(readerClassicStartButtonProvider);
 
     final manga = ref.watch(mangaProvider);
 
@@ -66,11 +73,14 @@ class MangaDetailsScreen extends HookConsumerWidget {
     }, [manga]);
 
     final filteredChapterList = ref.watch(chapterListFilteredProvider);
-    final firstUnreadChapter = ref.watch(
-      firstUnreadInFilteredChapterListProvider(mangaId: mangaId),
-    );
-
     final selectedChapters = useState<Map<int, Chapter>>({});
+
+    final blacklistConfig = ref.read(blacklistConfigProvider);
+    final blackState = useState(false);
+    useEffect(() {
+      blackState.value = _checkMangaIsBlack(manga.valueOrNull, blacklistConfig);
+      return;
+    }, [manga]);
 
     // Refresh manga
     final mangaRefresh = useCallback(
@@ -168,8 +178,12 @@ class MangaDetailsScreen extends HookConsumerWidget {
                   title: Text(
                     context.l10n!.numSelected(selectedChapters.value.length),
                   ),
-                  foregroundColor: context.isTablet ? null : textColorTween,
-                  backgroundColor: context.isTablet ? null : bgColorTween,
+                  foregroundColor:
+                      context.theme.appBarTheme.foregroundColor?.withOpacity(1),
+                  backgroundColor: context.isTablet
+                      ? context.theme.appBarTheme.backgroundColor
+                          ?.withOpacity(1)
+                      : bgColorTween,
                   actions: [
                     IconButton(
                       onPressed: () {
@@ -202,6 +216,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                   foregroundColor: context.isTablet ? null : textColorTween,
                   backgroundColor: context.isTablet ? null : bgColorTween,
                   actions: [
+                    if (context.isTablet) MangaStartReadIcon(mangaId: mangaId),
                     AsyncIconButton(
                       onPressed: data != null
                           ? () async {
@@ -253,7 +268,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    MangaChapterDownloadButton(mangaId: mangaId,),
+                    MangaChapterDownloadButton(mangaId: mangaId),
                     PopupMenuButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: KBorderRadius.r16.radius,
@@ -265,7 +280,10 @@ class MangaDetailsScreen extends HookConsumerWidget {
                             await showDialog(
                               context: context,
                               builder: (context) =>
-                                  EditMangaCategoryDialog(mangaId: mangaId),
+                                  EditMangaCategoryDialog(
+                                    mangaId: mangaId,
+                                    manga: data,
+                                  ),
                             );
                             mangaRefresh();
                           },
@@ -322,38 +340,29 @@ class MangaDetailsScreen extends HookConsumerWidget {
                     )
                   ],
                 ),
-          endDrawer: context.isTablet ? Drawer(
-            width: kDrawerWidth,
-            child: MangaChapterOrganizer(
-              mangaId: mangaId,
-            ),
-          ) : null,
+          endDrawer: context.isTablet
+              ? Drawer(
+                  width: kDrawerWidth,
+                  child: MangaChapterOrganizer(
+                    mangaId: mangaId,
+                  ),
+                )
+              : null,
           bottomSheet: selectedChapters.value.isNotEmpty
               ? MultiChaptersActionsBottomAppBar(
-                  afterOptionSelected: chapterListRefresh,
+                  afterOptionSelected: (Map<int, Chapter> prev) async {
+                    await chapterListRefresh();
+                  },
                   selectedChapters: selectedChapters,
                 )
               : null,
           floatingActionButton:
-              firstUnreadChapter != null && selectedChapters.value.isEmpty
-                  ? FloatingActionButton.extended(
-                      label: Text(
-                        data?.lastChapterRead?.index != null
-                            ? context.l10n!.resume
-                            : context.l10n!.start,
-                      ),
-                      icon: const Icon(Icons.play_arrow_rounded),
-                      onPressed: () {
-                        context.push(
-                          Routes.getReader(
-                            "${firstUnreadChapter.mangaId ?? mangaId}",
-                            "${firstUnreadChapter.index ?? 0}",
-                          ),
-                        );
-                      },
+              classicStartButton == true && selectedChapters.value.isEmpty
+                  ? MangaStartReadFab(
+                      mangaId: mangaId,
                     )
                   : null,
-          body: data != null
+          body: data != null && !blackState.value
               ? context.isTablet
                   ? BigScreenMangaDetails(
                       chapterList: filteredChapterList,
@@ -430,5 +439,21 @@ class MangaDetailsScreen extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _checkMangaIsBlack(
+    Manga? manga,
+    BlacklistConfig blacklistConfig,
+  ) {
+    if (manga?.realUrl != null
+        && blacklistConfig.blackMangaUrlList?.isNotEmpty == true) {
+      final url = manga?.realUrl;
+      final black = blacklistConfig.blackMangaUrlList?.contains(url) == true;
+      if (black) {
+        logEvent3("BLACK:MANGA:URL", {"x": url});
+        return true;
+      }
+    }
+    return false;
   }
 }

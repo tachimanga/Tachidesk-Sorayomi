@@ -33,13 +33,11 @@ class ChapterWithId extends _$ChapterWithId {
     required String mangaId,
     required String chapterIndex,
   }) async {
-    final incognito = ref.read(incognitoModePrefProvider) == true;
-    log('[Reader2] ChapterWithId. $mangaId#$chapterIndex create, incognito:$incognito');
+    log('[Reader2] ChapterWithId. $mangaId#$chapterIndex create');
     ref.onDispose(() => log('[Reader2] ChapterWithId. $mangaId#$chapterIndex dispose'));
     final result = await ref.watch(mangaBookRepositoryProvider).getChapter(
           mangaId: mangaId,
           chapterIndex: chapterIndex,
-        incognito: incognito,
         );
     updateReaderListState(result);
     return result;
@@ -59,8 +57,7 @@ class ChapterWithId extends _$ChapterWithId {
     required String chapterIndex,
     required bool nextPage,
   }) async {
-    final incognito = ref.read(incognitoModePrefProvider) == true;
-    log('[Reader2] loadChapter nextPage:$nextPage, incognito:$incognito');
+    log('[Reader2] loadChapter nextPage:$nextPage');
     final token = CancelToken();
     ref.onDispose(token.cancel);
     state = const AsyncValue.loading();
@@ -68,7 +65,6 @@ class ChapterWithId extends _$ChapterWithId {
             () => ref.watch(mangaBookRepositoryProvider).getChapter(
           mangaId: mangaId,
           chapterIndex: chapterIndex,
-              incognito: incognito,
         ));
 
     updateReaderListState(result.valueOrNull, nextPage);
@@ -76,12 +72,9 @@ class ChapterWithId extends _$ChapterWithId {
   }
 
   void updateReaderListState(Chapter? chapter, [bool reset=false]) {
-    if (ref.read(useReader2Provider) != true) {
-      return;
-    }
     if (chapter != null) {
-      final listProvider = readerListStateWithMangeIdProvider(mangaId: mangaId);
-      ref.read(listProvider.notifier).upsertChapter(chapter, reset);
+      final chapterProvider = readerChapterStateWithMangeIdProvider(mangaId: mangaId);
+      ref.read(chapterProvider.notifier).upsertChapter(chapter, reset);
     }
   }
 

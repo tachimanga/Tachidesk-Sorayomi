@@ -4,28 +4,20 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'constants/app_themes/color_schemas/default_theme.dart';
-import 'constants/enum.dart';
 import 'constants/navigation_bar_data.dart';
 import 'features/about/presentation/about/widget/file_log_tile.dart';
 import 'features/custom/inapp/purchase_providers.dart';
-import 'features/manga_book/presentation/downloads/controller/downloads_controller.dart';
 import 'features/manga_book/presentation/downloads/service/download_ticket_service.dart';
-import 'features/manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import 'features/settings/domain/repo/repo_model.dart';
-import 'features/settings/presentation/appearance/constants/theme_define.dart';
 import 'features/settings/presentation/appearance/controller/theme_controller.dart';
-import 'features/settings/presentation/backup2/controller/auto_backup_controller.dart';
-import 'features/settings/presentation/security/controller/security_controller.dart';
 import 'features/settings/widgets/theme_mode_tile/theme_mode_tile.dart';
 import 'global_providers/global_providers.dart';
 import 'global_providers/preference_providers.dart';
@@ -62,7 +54,7 @@ class Sorayomi extends HookConsumerWidget {
 
     useEffect(() {
       PremiumReset.instance.resetWhenStartup(ref);
-      AutoDelete.instance.triggerDelete(ref);
+      ref.read(autoDeleteProvider.notifier).triggerDelete();
       return;
     }, []);
 
@@ -156,6 +148,7 @@ class Sorayomi extends HookConsumerWidget {
               Routes.editRepo
             ].toPath, extra: param);
 
+            closeSafariViewControllerIfNeeded();
             pipe.invokeMethod("LogEvent2", <String, Object?>{
               'eventName': 'REPO:ADD:BY_MANGA',
               'parameters': <String, String?>{
@@ -176,6 +169,7 @@ class Sorayomi extends HookConsumerWidget {
               Routes.editRepo
             ].toPath, extra: param);
 
+            closeSafariViewControllerIfNeeded();
             pipe.invokeMethod("LogEvent2", <String, Object?>{
               'eventName': 'REPO:ADD:BY_YOMI',
               'parameters': <String, String?>{
@@ -199,6 +193,10 @@ class Sorayomi extends HookConsumerWidget {
       }
       return Future.value('OK');
     });
+  }
+
+  void closeSafariViewControllerIfNeeded() {
+    closeInAppWebView();
   }
 
   void setupProxy(WidgetRef ref) {

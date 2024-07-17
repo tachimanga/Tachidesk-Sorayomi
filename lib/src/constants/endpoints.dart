@@ -75,6 +75,8 @@ abstract class MangaUrl {
   static String chapterRealUrlWithIndex(String mangaId, String chapterIndex) =>
       "$_manga/$mangaId/chapter/$chapterIndex/realUrl";
   static String chapterBatch = "/chapter/batch";
+  static String chapterBatchQuery = "/chapter/batchQuery";
+  static String chapterModify = "$_manga/chapter/modify";
   static String chapterPageWithIndex({
     required String mangaId,
     required String chapterIndex,
@@ -88,6 +90,7 @@ abstract class MangaUrl {
 abstract class HistoryUrl {
   static const String list = "/history/list";
   static const String batchDelete = "/history/batch";
+  static const String clear = "/history/clear";
 }
 
 abstract class TrackingUrl {

@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../routes/router_config.dart';
+import '../../../../../../utils/event_util.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart';
 import '../../../../../../utils/misc/toast/toast.dart';
@@ -17,6 +18,8 @@ import '../../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../widgets/pop_button.dart';
 import '../../../../../browse_center/presentation/extension/controller/extension_controller.dart';
 import '../../../../controller/edit_repo_controller.dart';
+import '../../../../controller/remote_blacklist_controller.dart';
+import '../../../../data/config/remote_blacklist_config.dart';
 import '../../../../data/repo/repo_repository.dart';
 import '../../../../domain/repo/repo_model.dart';
 import '../repo_setting/repo_url_tile.dart';
@@ -61,12 +64,14 @@ class AddRepoDialog extends HookConsumerWidget {
 
     FocusManager.instance.primaryFocus?.unfocus();
     final toast = ref.read(toastProvider(context));
+    final blacklist = ref.read(blacklistConfigProvider);
     final param = AddRepoParam(repoName: repoName, metaUrl: metaUrl);
     log("submitAddRepo param:${param.toJson()}");
     addingState.value = true;
     Repo? repo;
     final failTipText = context.l10n!.get_repo_meta_fail;
     (await AsyncValue.guard(() async {
+      _checkBlacklist(param, blacklist, failTipText);
       try {
         await ref.read(repoRepositoryProvider).checkRepo(param: param);
       } catch (e) {
@@ -247,5 +252,32 @@ class AddRepoDialog extends HookConsumerWidget {
         ),
       ],
     );
+  }
+
+  void _checkBlacklist(
+    AddRepoParam param,
+    BlacklistConfig blacklistConfig,
+    String commonErrStr,
+  ) {
+    if (blacklistConfig.blackRepoUrlList?.isNotEmpty == true) {
+      if (param.repoName != null) {
+        final name = param.repoName;
+        final black = blacklistConfig.blackRepoUrlList?.contains(name) == true;
+        log('repo name:$name, black:$black');
+        if (black) {
+          logEvent3("BLACK:REPO:NAME", {"x": name});
+          throw commonErrStr;
+        }
+      }
+      if (param.metaUrl != null) {
+        final url = param.metaUrl;
+        final black = blacklistConfig.blackRepoUrlList?.contains(url) == true;
+        log('repo metaUrl:$url, black:$black');
+        if (black) {
+          logEvent3("BLACK:REPO:URL", {"x": url});
+          throw commonErrStr;
+        }
+      }
+    }
   }
 }

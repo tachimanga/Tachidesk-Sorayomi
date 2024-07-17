@@ -15,34 +15,28 @@ import '../../domain/chapter_patch/chapter_put_model.dart';
 
 class SingleChapterActionIcon extends ConsumerWidget {
   const SingleChapterActionIcon({
-    required this.chapterIndex,
-    required this.mangaId,
     this.icon,
     this.imageIcon,
     required this.chapterPut,
     required this.refresh,
     super.key,
   }) : assert(imageIcon != null || icon != null);
-  final String chapterIndex;
-  final String mangaId;
-  final ChapterPut chapterPut;
+  final ChapterModifyInput chapterPut;
   final AsyncCallback refresh;
   final IconData? icon;
   final ImageIcon? imageIcon;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.watch(toastProvider(context));
     return IconButton(
       icon: imageIcon ?? Icon(icon),
       onPressed: () async {
         (await AsyncValue.guard(
-          () => ref.read(mangaBookRepositoryProvider).putChapter(
-                mangaId: mangaId,
-                chapterIndex: chapterIndex,
-                patch: chapterPut,
+          () => ref.read(mangaBookRepositoryProvider).chapterModify(
+                input: chapterPut,
               ),
         ))
-            .showToastOnError(ref.read(toastProvider(context)));
-
+            .showToastOnError(toast);
         await refresh();
       },
     );

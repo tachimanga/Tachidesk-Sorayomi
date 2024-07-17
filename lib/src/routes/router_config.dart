@@ -32,7 +32,6 @@ import '../features/manga_book/presentation/downloads/downloads_screen.dart';
 import '../features/manga_book/presentation/history/history_screen.dart';
 import '../features/manga_book/presentation/manga_details/manga_details_screen.dart';
 import '../features/manga_book/presentation/reader/controller/reader_controller_v2.dart';
-import '../features/manga_book/presentation/reader/reader_screen.dart';
 import '../features/manga_book/presentation/reader/reader_screen_v2.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
 import '../features/settings/domain/repo/repo_model.dart';
@@ -241,15 +240,9 @@ GoRouter routerConfig(ref) {
         path: Routes.reader,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          if (ref.read(useReader2Provider) == true) {
-            return ReaderScreen2(
-              mangaId: state.params['mangaId'] ?? '',
-              initChapterIndex: state.params['chapterIndex'] ?? '',
-            );
-          }
-          return ReaderScreen(
+          return ReaderScreen2(
             mangaId: state.params['mangaId'] ?? '',
-            chapterIndex: state.params['chapterIndex'] ?? '',
+            initChapterIndex: state.params['chapterIndex'] ?? '',
           );
         },
       ),

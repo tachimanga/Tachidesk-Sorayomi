@@ -37,7 +37,7 @@ class ConfirmDialog extends ConsumerWidget {
             const SizedBox(
               width: 15,
             ),
-            TextButton(
+            ElevatedButton(
                 onPressed: onConfirm, child: Text(context.l10n!.confirm)),
           ],
         )

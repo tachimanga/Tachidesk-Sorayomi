@@ -119,7 +119,7 @@
   "@close": {
     "description": "Text for close button"
   },
-  "completed": "阅读过",
+  "completed": "完成",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
   },
@@ -557,7 +557,7 @@
   "@moveToTop": {
     "description": "Button text to move download/category to the top of list"
   },
-  "noCategoriesFound": "尚无任何分类。\n（提示：轻触加号按钮创建一个分类来管理你的书架）",
+  "noCategoriesFound": "尚无任何分类。",
   "@noCategoriesFound": {
     "description": "Hint text to add new Category when category list is empty"
   },
@@ -1017,5 +1017,30 @@
   "download_limit_content": "您可以每天下载{freeTicket}章。\n\n观看广告可增加额外{ticketPerAd}章下载次数，观看{maxAds}次广告后，当天下载次数不受限制。\n\n高级用户拥有无限制下载次数。",
   "download_limit_increase": "下载限制增加{num}。",
   "add_download_tips": "{x, plural, one{已将1章添加到下载队列。} other{已将{x}章添加到下载队列。}}",
-  "watch_ad_label": "观看广告"
+  "watch_ad_label": "观看广告",
+  "backup_created_content": "您还应该在其他地方备份副本。\n请注意，下载的内容和本地来源不包含在备份中。",
+  "display_as_single_page": "作为单页显示",
+  "clear_last_hour": "上个小时",
+  "clear_today": "今天",
+  "clear_today_and_yesterday": "今天和昨天",
+  "clear_all_time": "所有时间",
+  "start_reading": "开始阅读",
+  "continue_reading_chapter": "继续阅读 {title}",
+  "icon_section_title": "图标",
+  "app_icon_title": "应用图标",
+  "app_icon_author": "由{author}设计",
+  "classic_start_reading_button": "经典开始阅读按钮",
+  "long_press_action_menu": "长按动作菜单",
+  "app_icon_update_tip": "如果图标更新不成功，则可以等一会儿或简单地重新启动设备。",
+  "update_running_text": "正在更新 {title}",
+  "update_completed_text": "更新完成。成功：{x}，失败：{y}。",
+  "new_category": "新分类",
+  "add_manga_to": "添加漫画到...",
+  "add_to_default_category": "添加到默认分类",
+  "add_to_category": "添加到 {category}",
+  "add_to_categories": "{x, plural, one{添加到分类} other{添加到 {x} 个分类}}}",
+  "move_manga_to": "移动漫画到...",
+  "keep_in_default_category": "保留在默认分类中",
+  "move_to_category": "移动到 {category}",
+  "move_to_categories": "{x, plural, one{移动到分类} other{移动到 {x} 个分类}}}"
 }

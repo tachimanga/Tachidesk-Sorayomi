@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
 
@@ -174,6 +175,23 @@ class PurchaseService {
 
   static Future<void> restorePurchases() async {
     await InAppPurchase.instance.restorePurchases();
+  }
+
+  static Future<void> clearTransactions() async {
+    log("clearTransactions...");
+    try {
+      final transactions = await SKPaymentQueueWrapper().transactions();
+      for (final transaction in transactions) {
+        await SKPaymentQueueWrapper().finishTransaction(transaction);
+      }
+      log("clearTransactions done");
+    } catch (e) {
+      logEvent3(
+        "IAP_TAP_CLEAR_ERROR",
+        {"error": (e is SKError) ? "${e.userInfo}" : e.toString()},
+      );
+      log("clearTransactions err:$e");
+    }
   }
 }
 
@@ -485,4 +503,26 @@ class PurchaseSelectIndex extends _$PurchaseSelectIndex {
   void update(int d) {
     state = d;
   }
+}
+
+@riverpod
+class ClearQueueBeforeBuy extends _$ClearQueueBeforeBuy
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: "config.clearQueueBeforeBuy",
+        initial: false,
+      );
+}
+
+@riverpod
+class ClearQueueBeforeRestore extends _$ClearQueueBeforeRestore
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: "config.clearQueueBeforeRestore",
+        initial: false,
+      );
 }

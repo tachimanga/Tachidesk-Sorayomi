@@ -23,6 +23,7 @@ import '../../../../settings/widgets/server_url_tile/server_url_tile.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/img/image_model.dart';
 import '../../../domain/manga/manga_model.dart';
+import '../controller/reader_controller_v2.dart';
 
 class PageActionWidget extends HookConsumerWidget {
   const PageActionWidget({
@@ -30,13 +31,15 @@ class PageActionWidget extends HookConsumerWidget {
     required this.manga,
     required this.chapter,
     required this.imageUrl,
-    this.imageData,
+    required this.page,
+    this.doublePageMode,
   });
 
   final Manga manga;
   final Chapter chapter;
   final String imageUrl;
-  final ImgData? imageData;
+  final ReaderPageData page;
+  final bool? doublePageMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,6 +75,11 @@ class PageActionWidget extends HookConsumerWidget {
         }
       },
     );
+
+    final singlePageSetProvider =
+        readerSinglePageSetWithMangeIdProvider(mangaId: "${manga.id}");
+    final singlePageSet = ref.watch(singlePageSetProvider);
+    final singlePageKey = "${page.chapterIndex}#${page.pageIndex}";
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -121,6 +129,26 @@ class PageActionWidget extends HookConsumerWidget {
                 .showToastOnError(toast);
           },
         ),
+        if (doublePageMode == true) ...[
+          SwitchListTile(
+            controlAffinity: ListTileControlAffinity.trailing,
+            secondary: const Icon(Icons.menu_book_outlined),
+            title: Text(
+              context.l10n!.display_as_single_page,
+            ),
+            onChanged: (value) {
+              if (value) {
+                singlePageSet.add(singlePageKey);
+              } else {
+                singlePageSet.remove(singlePageKey);
+              }
+              ref
+                  .read(singlePageSetProvider.notifier)
+                  .update({...singlePageSet});
+            },
+            value: singlePageSet.contains(singlePageKey),
+          ),
+        ],
       ],
     );
   }
@@ -129,7 +157,7 @@ class PageActionWidget extends HookConsumerWidget {
       String? baseUrl, Map<String, String> msgMap) async {
     final key = buildImageUrl(
         imageUrl: imageUrl,
-        imageData: imageData,
+        imageData: page.imageData,
         baseUrl: baseUrl,
         appendApiToUrl: true);
     log("get file url:$key");

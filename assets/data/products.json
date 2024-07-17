@@ -5,7 +5,7 @@
         "features": [
             "Remove all ads.",
             "Support Trackers (MAL & Anilist).",
-            "Custom theme.",
+            "Custom themes and App icons.",
             "App lock and incognito mode.",
             "Double page layout.",
             "Concurrent downloads and automatic deletion after reading.",
@@ -37,7 +37,7 @@
         "features": [
             "إزالة جميع الإعلانات.",
             "دعم المتتبعين (MAL و Anilist).",
-            "تصميم مخصص.",
+            "الثيمات المخصصة وأيقونات التطبيقات.",
             "قفل التطبيق والوضع الخفي.",
             "تخطيط الصفحة المزدوجة.",
             "التنزيلات المتزامنة والحذف التلقائي بعد القراءة.",
@@ -69,7 +69,7 @@
         "features": [
             "Entfernen Sie alle Werbeanzeigen.",
             "Unterstützung für Tracker (MAL & Anilist).",
-            "Benutzerdefiniertes Design.",
+            "Benutzerdefinierte Themen und App-Symbole.",
             "App-Sperre und Inkognito-Modus.",
             "Doppelseitenlayout.",
             "Gleichzeitige Downloads und automatisches Löschen nach dem Lesen.",
@@ -101,7 +101,7 @@
         "features": [
             "Eliminar todos los anuncios.",
             "Soporte de seguimiento (MAL y Anilist).",
-            "Tema personalizado.",
+            "Temas personalizados e iconos de aplicaciones.",
             "Bloqueo de aplicaciones y modo incógnito.",
             "Diseño de doble página.",
             "Descargas simultáneas y eliminación automática después de la lectura.",
@@ -133,7 +133,7 @@
         "features": [
             "Supprimer toutes les publicités.",
             "Prise en charge des Trackers (MAL et Anilist).",
-            "Thème personnalisé.",
+            "Thèmes personnalisés et icônes d'application.",
             "Verrouillage des applications et mode incognito.",
             "Mise en page double page.",
             "Téléchargements simultanés et suppression automatique après lecture.",
@@ -165,7 +165,7 @@
         "features": [
             "Az összes reklám eltávolítása.",
             "Tracker támogatás (MAL & Anilist).",
-            "Egyedi téma.",
+            "Egyedi témák és alkalmazás ikonok.",
             "Alkalmazás zárolása és inkognitó mód.",
             "Kétoldalas elrendezés.",
             "Egyszerre több letöltés és automatikus törlés olvasás után.",
@@ -197,7 +197,7 @@
         "features": [
             "Hapus semua iklan.",
             "Dukungan Tracker (MAL & Anilist).",
-            "Tema kustom.",
+            "Tema kustom dan ikon aplikasi.",
             "Kunci Aplikasi dan Mode Penyamaran.",
             "Tata letak halaman ganda.",
             "Download bersamaan dan penghapusan otomatis setelah dibaca.",
@@ -229,7 +229,7 @@
         "features": [
             "Rimuovi tutte le pubblicità.",
             "Supporto per Tracker (MAL & Anilist).",
-            "Tema personalizzato.",
+            "Temi personalizzati e icone dell'app.",
             "Blocco dell'app e modalità incognito.",
             "Layout a doppia pagina.",
             "Download simultanei ed eliminazione automatica dopo la lettura.",
@@ -261,7 +261,7 @@
         "features": [
             "Remover todos os anúncios.",
             "Suporte a rastreadores (MAL e Anilist).",
-            "Tema personalizado.",
+            "Temas personalizados e ícones de aplicativos.",
             "Bloqueio de aplicativos e modo incógnito.",
             "Layout de página dupla.",
             "Downloads simultâneos e eliminação automática após a leitura.",
@@ -293,7 +293,7 @@
         "features": [
             "Удалить все рекламные объявления.",
             "Поддержка Трекеров (MAL и Anilist).",
-            "Пользовательская тема.",
+            "Настройка тем и значков приложений.",
             "Блокировка приложения и режим инкогнито.",
             "Макет двух страниц.",
             "Одновременные загрузки и автоматическое удаление после прочтения.",
@@ -325,7 +325,7 @@
         "features": [
             "ลบโฆษณาทั้งหมด",
             "รองรับแทรกเกอร์ (MAL & Anilist)",
-            "ธีมที่กำหนดเอง",
+            "ธีมและไอคอนแอปพลิเคชั่นที่กำหนดเอง.",
             "การล็อคแอปพลิเคชั่น และโหมดซ่อน",
             "เค้าโครงหน้าที่สอง.",
             "ดาวน์โหลดพร้อมกันและลบอัตโนมัติหลังจากอ่าน.",
@@ -357,7 +357,7 @@
         "features": [
             "Видалити всю рекламу.",
             "Підтримка трекерів (MAL і Anilist).",
-            "Спеціальна тема.",
+            "Призначені застосовуються до зміни тем і значків.",
             "Блокування додатків та режим інкогніто.",
             "Двостороннє розміщення.",
             "Одночасні завантаження та автоматичне видалення після читання.",
@@ -389,7 +389,7 @@
         "features": [
             "Tüm reklamları kaldır.",
             "Takipçi desteği (MAL ve Anilist).",
-            "Özel tema.",
+            "Özel temalar ve Uygulama simgeleri.",
             "Uygulama Kilidi ve Gizli Modu.",
             "Çift sayfa düzeni.",
             "Eş zamanlı indirmeler ve okuduktan sonra otomatik silme.",
@@ -421,7 +421,7 @@
         "features": [
             "Xóa tất cả quảng cáo.",
             "Hỗ trợ Tracker (MAL & Anilist).",
-            "Giao diện tùy chỉnh.",
+            "Chủ đề tùy chỉnh và biểu tượng ứng dụng.",
             "Khóa ứng dụng và Chế độ ẩn danh.",
             "Bố cục trang đôi.",
             "Tải xuống đồng thời và xóa tự động sau khi đọc.",
@@ -453,7 +453,7 @@
         "features": [
             "移除所有广告。",
             "支持追踪器（MAL和Anilist）。",
-            "自定义主题。",
+            "自定义主题和应用图标。",
             "应用锁和隐身模式。",
             "双页布局。",
             "并发下载和阅读后自动删除。",
@@ -485,7 +485,7 @@
         "features": [
             "移除所有廣告。",
             "支援追蹤器（MAL和Anilist）。",
-            "自訂主題。",
+            "自訂主題和應用程式圖示。",
             "應用鎖和隱身模式。",
             "雙頁佈局。",
             "並發下載和閱讀後自動刪除。",

@@ -21,3 +21,20 @@ class ChapterPut with _$ChapterPut {
   factory ChapterPut.fromJson(Map<String, dynamic> json) =>
       _$ChapterPutFromJson(json);
 }
+
+@freezed
+class ChapterModifyInput with _$ChapterModifyInput {
+  factory ChapterModifyInput({
+    int? mangaId,
+    int? chapterId,
+    bool? read,
+    bool? bookmarked,
+    bool? markPrevRead,
+    int? lastPageRead,
+    bool? incognito,
+  }) = _ChapterModifyInput;
+
+  factory ChapterModifyInput.fromJson(Map<String, dynamic> json) =>
+      _$ChapterModifyInputFromJson(json);
+}
+

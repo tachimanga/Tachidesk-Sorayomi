@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/db_keys.dart';
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -32,7 +33,15 @@ class AdvancedScreen extends ConsumerWidget {
     final magic = ref.watch(getMagicProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n!.advanced)),
+      appBar: AppBar(
+        title: Text(context.l10n!.advanced),
+        actions: [
+          TextButton(
+            onPressed: () => _resetSettings(ref),
+            child: Text(context.l10n!.reset),
+          ),
+        ],
+      ),
       body: ListView(
         children: [
           SectionTitle(title: context.l10n!.dataUsageSectionTitle),
@@ -87,5 +96,12 @@ class AdvancedScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _resetSettings(WidgetRef ref) {
+    ref
+        .read(byPassSwitchProvider.notifier)
+        .update(DBKeys.disableBypass.initial);
+    ref.read(fileLogProvider.notifier).update(DBKeys.enableFileLog.initial);
   }
 }

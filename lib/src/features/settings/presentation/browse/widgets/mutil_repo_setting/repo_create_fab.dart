@@ -25,11 +25,10 @@ class RepoCreateFab extends HookConsumerWidget {
           icon: const Icon(Icons.add_circle_rounded),
           label: Text(context.l10n!.add_repository));
     }
-    return FloatingActionButton.extended(
+    return IconButton(
       onPressed: () {
         showAddRepoDialog(context, ref);
       },
-      label: Text(context.l10n!.add_repository),
       icon: const Icon(Icons.add_rounded),
     );
   }

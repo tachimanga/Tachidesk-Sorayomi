@@ -9,23 +9,25 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../../../../constants/app_sizes.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
-import '../../../../utils/misc/toast/toast.dart';
+import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../library/presentation/category/controller/edit_category_controller.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
-import '../../../settings/presentation/lab/controller/pip_controller.dart';
+import '../../data/manga_book_repository.dart';
 import '../../data/updates/updates_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/chapter_page/chapter_page_model.dart';
 import '../../widgets/chapter_actions/multi_chapters_actions_bottom_app_bar.dart';
 import '../../widgets/update_status_fab.dart';
 import '../../widgets/update_status_popup_menu.dart';
-import '../reader/controller/reader_controller.dart';
 import 'controller/update_controller.dart';
 import 'widgets/chapter_manga_list_tile.dart';
+import 'widgets/update_status_list_tile.dart';
 import 'widgets/updates_pip_button.dart';
 
 class UpdatesScreen extends HookConsumerWidget {
@@ -64,6 +66,7 @@ class UpdatesScreen extends HookConsumerWidget {
     final controller =
         usePagingController<int, ChapterMangaPair>(firstPageKey: 0);
     final updatesRepository = ref.watch(updatesRepositoryProvider);
+    final mangaBookRepository = ref.watch(mangaBookRepositoryProvider);
     useEffect(() {
       controller.addPageRequestListener((pageKey) => _fetchPage(
             updatesRepository,
@@ -78,15 +81,21 @@ class UpdatesScreen extends HookConsumerWidget {
     final dateFormatPref =
         ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
 
-    final updateStatus = ref.watch(updatesSocketProvider);
+    final showPipButton = ref.watch(updateShowPipButtonProvider);
 
-    final showPipButton = ref.watch(pipBuildFlagProvider) == true &&
-        ref.watch(bgEnablePrefProvider) == true &&
-        updateStatus.valueOrNull?.running == true;
+    final refreshSignal = ref.watch(updateRefreshSignalProvider);
+    useEffect(() {
+      if (refreshSignal) {
+        controller.refresh();
+      }
+      return;
+    }, [refreshSignal]);
+
+    final updateRunning = ref.watch(updateRunningProvider);
+    final categoryListValue = ref.watch(categoryControllerProvider);
+    final showUpdateStatus = ref.watch(showUpdateStatusProvider);
 
     return Scaffold(
-      floatingActionButton:
-          selectedChapters.value.isEmpty ? const UpdateStatusFab() : null,
       appBar: selectedChapters.value.isNotEmpty
           ? AppBar(
               leading: IconButton(
@@ -100,6 +109,14 @@ class UpdatesScreen extends HookConsumerWidget {
           : AppBar(
               title: Text(context.l10n!.updates),
               centerTitle: true,
+              bottom: showUpdateStatus
+                  ? PreferredSize(
+                      preferredSize: kCalculateAppBarBottomSizeV2(
+                        showUpdateStatus: showUpdateStatus,
+                      ),
+                      child: const UpdateStatusListTile(),
+                    )
+                  : null,
               actions: [
                 if (!alwaysAskSelect) const UpdateSettingIcon(),
                 if (showPipButton) const UpdatesPipButton(),
@@ -109,13 +126,26 @@ class UpdatesScreen extends HookConsumerWidget {
       bottomSheet: selectedChapters.value.isNotEmpty
           ? MultiChaptersActionsBottomAppBar(
               selectedChapters: selectedChapters,
-              afterOptionSelected: () async => controller.refresh(),
+              afterOptionSelected: (Map<int, Chapter> prev) async {
+                final chapterIds = [...prev.keys];
+                await _refreshChaptersData(
+                  chapterIds,
+                  mangaBookRepository,
+                  controller,
+                );
+              },
             )
           : null,
       body: RefreshIndicator(
         onRefresh: () async {
           selectedChapters.value = <int, Chapter>{};
           controller.refresh();
+          if (!updateRunning && !showUpdateStatus) {
+            categoryListValue.whenOrNull(data: (categoryList) {
+              fetchUpdates(context, ref, categoryList);
+              return;
+            });
+          }
         },
         child: PagedListView(
           pagingController: controller,
@@ -127,13 +157,23 @@ class UpdatesScreen extends HookConsumerWidget {
                 child: Text(context.l10n!.retry),
               ),
             ),
-            noItemsFoundIndicatorBuilder: (context) => Emoticons(
-              text: context.l10n!.noUpdatesFound,
-              button: TextButton(
-                onPressed: () => controller.refresh(),
-                child: Text(context.l10n!.refresh),
-              ),
-            ),
+            noItemsFoundIndicatorBuilder: (context) => updateRunning
+                ? const CenterCircularProgressIndicator()
+                : Emoticons(
+                    text: context.l10n!.noUpdatesFound,
+                    button: TextButton(
+                      onPressed: () {
+                        controller.refresh();
+                        if (!updateRunning && !showUpdateStatus) {
+                          categoryListValue.whenOrNull(data: (categoryList) {
+                            fetchUpdates(context, ref, categoryList);
+                            return;
+                          });
+                        }
+                      },
+                      child: Text(context.l10n!.refresh),
+                    ),
+                  ),
             itemBuilder: (context, item, index) {
               int? previousDate;
               try {
@@ -145,25 +185,13 @@ class UpdatesScreen extends HookConsumerWidget {
               final chapterTile = ChapterMangaListTile(
                 pair: item,
                 updatePair: () async {
-                  if (item.manga?.id == null || item.chapter?.index == null) {
-                    return;
-                  } else {
-                    final chapter = ref
-                        .refresh(chapterWithIdProvider(
-                          mangaId: "${item.manga!.id!}",
-                          chapterIndex: "${item.chapter!.index!}",
-                        ))
-                        .valueOrToast(ref.read(toastProvider(context)));
-                    try {
-                      controller.itemList = [...?controller.itemList]
-                        ..replaceRange(index, index + 1, [
-                          item.copyWith(
-                            chapter: chapter ?? item.chapter,
-                          )
-                        ]);
-                    } catch (e) {
-                      //
-                    }
+                  if (item.chapter?.id != null) {
+                    final chapterIds = [item.chapter!.id!];
+                    await _refreshChaptersData(
+                      chapterIds,
+                      mangaBookRepository,
+                      controller,
+                    );
                   }
                 },
                 isSelected:
@@ -198,5 +226,30 @@ class UpdatesScreen extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _refreshChaptersData(
+    List<int> chapterIds,
+    MangaBookRepository mangaBookRepository,
+    PagingController<int, ChapterMangaPair> controller,
+  ) async {
+    final chapterList =
+        await mangaBookRepository.batchQueryChapter(chapterIds: chapterIds);
+    final chaptersMap = <int?, Chapter>{};
+    chapterList?.forEach((item) {
+      chaptersMap[item.id] = item;
+    });
+
+    final itemList = controller.itemList?.map((e) {
+      final chapterId = e.chapter?.id;
+      if (chapterId != null) {
+        final chapter = chaptersMap[chapterId];
+        if (chapter != null) {
+          return e.copyWith(chapter: chapter);
+        }
+      }
+      return e;
+    }).toList();
+    controller.itemList = itemList;
   }
 }

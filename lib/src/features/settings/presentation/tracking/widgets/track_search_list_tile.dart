@@ -62,7 +62,10 @@ class TrackSearchListTile extends ConsumerWidget {
                   child: SizedBox(
                     width: 80,
                     height: 120,
-                    child: ServerImage(imageUrl: trackSearch.coverUrl ?? ""),
+                    child: ServerImage(
+                      imageUrl: trackSearch.coverUrl ?? "",
+                      decodeWidth: 80,
+                    ),
                   ),
                 ),
                 const SizedBox(

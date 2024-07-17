@@ -29,6 +29,7 @@ class ExtensionDescriptiveListTile extends StatelessWidget {
             height: 120,
             child: ServerImage(
               imageUrl: extension.iconUrl ?? "",
+              decodeWidth: 120,
             ),
           ),
           Text(

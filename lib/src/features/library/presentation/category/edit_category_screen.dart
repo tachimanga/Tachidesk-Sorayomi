@@ -14,6 +14,7 @@ import '../../../../widgets/emoticons.dart';
 import 'controller/edit_category_controller.dart';
 import 'widgets/category_create_fab.dart';
 import 'widgets/category_tile.dart';
+import 'widgets/edit_category_dialog.dart';
 
 class EditCategoryScreen extends HookConsumerWidget {
   const EditCategoryScreen({super.key});
@@ -33,10 +34,10 @@ class EditCategoryScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.editCategory),
+        actions: const [
+          CategoryCreateFab(),
+        ],
       ),
-      floatingActionButton: categoryList.asError?.error != null
-          ? null
-          : const CategoryCreateFab(),
       body: categoryList.showUiWhenData(
         context,
         (data) {
@@ -44,10 +45,7 @@ class EditCategoryScreen extends HookConsumerWidget {
               (data.isSingletonList && data?.firstOrNull?.id == 0)) {
             return Emoticons(
               text: context.l10n!.noCategoriesFound,
-              button: TextButton(
-                onPressed: () => ref.refresh(categoryControllerProvider.future),
-                child: Text(context.l10n!.refresh),
-              ),
+              button: const CategoryCreateTextButton(),
             );
           } else {
             final isDefaultInCategoryList = data!.first.id == 0;

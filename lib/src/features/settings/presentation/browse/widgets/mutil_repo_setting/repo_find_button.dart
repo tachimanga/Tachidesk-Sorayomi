@@ -28,7 +28,7 @@ class RepoFindButton extends HookConsumerWidget {
     }
     return TextButton.icon(
       onPressed: () {
-        launchUrlInWeb(
+        launchUrlInSafari(
           context,
           userDefaults.getString("config.repoFindUrl") ??
               AppUrls.findRepositories.url,

@@ -7,9 +7,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -23,7 +23,6 @@ import '../../global_providers/global_providers.dart';
 import '../../global_providers/preference_providers.dart';
 import '../../utils/extensions/custom_extensions.dart';
 import '../../utils/log.dart';
-import '../../utils/misc/toast/toast.dart';
 import 'big_screen_navigation_bar.dart';
 import 'small_screen_navigation_bar.dart';
 
@@ -36,6 +35,7 @@ class ShellScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pipe = ref.watch(getMagicPipeProvider);
     final extensionUpdate = ref.watch(extensionUpdateProvider);
     final extensionUpdateCount =
         extensionUpdate.valueOrNull?.isGreaterThan(0) == true
@@ -60,6 +60,7 @@ class ShellScreen extends HookConsumerWidget {
                   onDestinationSelected: (value) {
                     log("[initLocation]onDestinationSelected $value");
                     ref.read(initLocationProvider.notifier).update(value);
+                    _sendScreenView(pipe, value);
                   },
                   extensionUpdateCount: extensionUpdateCount,
                 ),
@@ -76,10 +77,21 @@ class ShellScreen extends HookConsumerWidget {
               onDestinationSelected: (value) {
                 log("[initLocation]onDestinationSelected $value");
                 ref.read(initLocationProvider.notifier).update(value);
+                _sendScreenView(pipe, value);
               },
               extensionUpdateCount: extensionUpdateCount,
             ),
           );
+  }
+
+  void _sendScreenView(MethodChannel pipe, String screenName) {
+    pipe.invokeMethod<void>('Analytics#logEvent', <String, Object?>{
+      'eventName': 'screen_view',
+      'parameters': <String, String?>{
+        'screen_name': screenName,
+        'screen_class': 'Flutter',
+      },
+    });
   }
 
   void setupHandler(BuildContext context, WidgetRef ref) {
@@ -120,7 +132,10 @@ class ShellScreen extends HookConsumerWidget {
           log("repoUpdateStr data: $data");
           data.forEach((key, value) {
             if (value is String) {
-              final param = UpdateByMetaUrlParam(metaUrl: key, targetMetaUrl: value);
+              final param = UpdateByMetaUrlParam(
+                metaUrl: key,
+                targetMetaUrl: value,
+              );
               ref.read(repoRepositoryProvider).updateByMetaUrl(param: param);
             }
           });

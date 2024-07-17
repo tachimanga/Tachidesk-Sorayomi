@@ -35,6 +35,19 @@ class MangaBookRepository {
   Future<void> modifyBulkChapters({ChapterBatch? batch}) =>
       dioClient.post(MangaUrl.chapterBatch, data: batch?.toJson());
 
+  Future<List<Chapter>?> batchQueryChapter({
+    required List<int> chapterIds,
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.post<List<Chapter>, Chapter>(
+        MangaUrl.chapterBatchQuery,
+        data: {"chapterIds": chapterIds},
+        decoder: (e) =>
+            e is Map<String, dynamic> ? Chapter.fromJson(e) : Chapter(),
+        cancelToken: cancelToken,
+      ))
+          .data;
+
   // Mangas
   Future<Manga?> getManga({
     required String mangaId,
@@ -74,12 +87,10 @@ class MangaBookRepository {
   Future<Chapter?> getChapter({
     required String mangaId,
     required String chapterIndex,
-    required bool incognito,
     CancelToken? cancelToken,
   }) async =>
       (await dioClient.get<Chapter, Chapter?>(
         MangaUrl.chapterWithIndex(mangaId, chapterIndex),
-        queryParameters: {"incognito": incognito},
         decoder: (e) => e is Map<String, dynamic> ? Chapter.fromJson(e) : null,
         cancelToken: cancelToken,
         options: Options(
@@ -106,15 +117,13 @@ class MangaBookRepository {
           .data
           ?.realUrl;
 
-  Future<void> putChapter({
-    required String mangaId,
-    required String chapterIndex,
-    required ChapterPut patch,
+  Future<void> chapterModify({
+    required ChapterModifyInput input,
     CancelToken? cancelToken,
   }) async =>
-      (await dioClient.put<Chapter, Chapter?>(
-        MangaUrl.chapterWithIndex(mangaId, chapterIndex),
-        data: FormData.fromMap(patch.toJson()),
+      (await dioClient.post<Chapter, Chapter?>(
+        MangaUrl.chapterModify,
+        data: jsonEncode(input.toJson()),
         cancelToken: cancelToken,
       ));
 
@@ -186,6 +195,11 @@ class MangaBookRepository {
 
   Future<void> batchDeleteHistory(List<int> mangaIds) => dioClient
       .delete(HistoryUrl.batchDelete, data: jsonEncode({'mangaIds': mangaIds}));
+
+  Future<void> clearHistory(int lastReadAt) => dioClient.delete(
+      HistoryUrl.clear,
+      data: jsonEncode(
+          lastReadAt == -1 ? {'clearAll': true} : {'lastReadAt': lastReadAt}));
 }
 
 @riverpod

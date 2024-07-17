@@ -87,6 +87,7 @@ class DownloadsParallelDialog extends HookConsumerWidget {
     final limitState = useState(limit);
     final settingsRepository = ref.watch(settingsRepositoryProvider);
     final toast = ref.watch(toastProvider(context));
+    final magic = ref.watch(getMagicProvider);
 
     final purchaseGate = ref.watch(purchaseGateProvider);
     final testflightFlag = ref.watch(testflightFlagProvider);
@@ -106,7 +107,7 @@ class DownloadsParallelDialog extends HookConsumerWidget {
           if (premiumOption) ...[
             const PremiumRequiredTile(),
           ],
-          if (!premiumOption && limitState.value > 1) ...[
+          if (!premiumOption && limitState.value > 1 && magic.b7) ...[
             Text(
               context.l10n!.concurrent_download_tips,
               style: context.textTheme.bodySmall,
@@ -117,7 +118,7 @@ class DownloadsParallelDialog extends HookConsumerWidget {
       onConfirm: premiumOption
           ? null
           : () async {
-              if (limitState.value > 1) {
+              if (limitState.value > 1 && magic.b7) {
                 final confirmResult = await showDialog(
                     context: context,
                     builder: (ctx) {

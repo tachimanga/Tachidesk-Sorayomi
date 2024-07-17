@@ -19,6 +19,7 @@ class UpdateStatus with _$UpdateStatus {
     UpdateStatusMap? statusMap,
     bool? running,
     int? numberOfJobs,
+    int? completeTimestamp,
   }) = _UpdateStatus;
 
   int get total => numberOfJobs ?? 0;

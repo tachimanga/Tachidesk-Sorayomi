@@ -85,7 +85,7 @@
   "@close": {
     "description": "Text for close button"
   },
-  "completed": "مكتملة",
+  "completed": "مكتمل",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
   },
@@ -357,7 +357,7 @@
   "@newUpdateAvailable": {
     "description": "Popup title to show that the App/Server has and update"
   },
-  "noCategoriesFound": "ليس لديك أي فئات. \n(نصيحة: اضغط على زر علامة الزائد لإنشاء فئة لتنظيم مكتبتك)",
+  "noCategoriesFound": "ليس لديك أي فئات.",
   "@noCategoriesFound": {
     "description": "Hint text to add new Category when category list is empty"
   },
@@ -1150,5 +1150,30 @@
   "download_limit_content": "يمكنك تنزيل {freeTicket} فصول يومياً.\n\nمشاهدة إعلان واحد يمكن أن يزيد هذا الحد بـ {ticketPerAd} فصول، وبعد مشاهدة {maxAds} إعلانًا، لا يوجد حد للتنزيل في اليوم.\n\nالمستخدمون المميزون لديهم عدم حدود للتنزيل.",
   "download_limit_increase": "تم زيادة حد التنزيل بمقدار {num}.",
   "add_download_tips": "{x, plural, one{تمت إضافة فصل واحد إلى قائمة التنزيل.} other{تمت إضافة {x} فصول إلى قائمة التنزيل.}}",
-  "watch_ad_label": "مشاهدة الإعلان"
+  "watch_ad_label": "مشاهدة الإعلان",
+  "backup_created_content": "يجب عليك الاحتفاظ بنسخ احتياطية في أماكن أخرى أيضًا.\nيرجى ملاحظة أن المحتوى الذي تم تنزيله والمصادر المحلية ليست مشمولة في النسخ الاحتياطي.",
+  "display_as_single_page": "عرض كصفحة واحدة",
+  "clear_last_hour": "الساعة الأخيرة",
+  "clear_today": "اليوم",
+  "clear_today_and_yesterday": "اليوم والأمس",
+  "clear_all_time": "كل الوقت",
+  "start_reading": "ابدأ القراءة",
+  "continue_reading_chapter": "متابعة القراءة {title}",
+  "icon_section_title": "رمز",
+  "app_icon_title": "رمز التطبيق",
+  "app_icon_author": "مصمم بواسطة {author}",
+  "classic_start_reading_button": "زر البدء الكلاسيكي بالقراءة",
+  "long_press_action_menu": "قائمة إجراءات الضغط المطول",
+  "app_icon_update_tip": "إذا لم يتم تحديث الرمز بنجاح، يمكنك الانتظار لبعض الوقت أو إعادة تشغيل الجهاز ببساطة.",
+  "update_running_text": "جارٍ التحديث {title}",
+  "update_completed_text": "تم التحديث. نجاح {x}، فشل {y}.",
+  "new_category": "فئة جديدة",
+  "add_manga_to": "أضف مانغا إلى...",
+  "add_to_default_category": "أضف إلى الفئة الافتراضية",
+  "add_to_category": "أضف إلى {category}",
+  "add_to_categories": "{x, plural, one{أضف إلى الفئة} other{أضف إلى {x} فئات}}}",
+  "move_manga_to": "انقل المانغا إلى...",
+  "keep_in_default_category": "احتفظ بالفئة الافتراضية",
+  "move_to_category": "انقل إلى {category}",
+  "move_to_categories": "{x, plural, one{انقل إلى الفئة} other{انقل إلى {x} فئات}}}"
 }

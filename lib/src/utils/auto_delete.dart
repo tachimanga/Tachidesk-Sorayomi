@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../features/manga_book/data/manga_book_repository.dart';
 import '../features/manga_book/domain/chapter/chapter_model.dart';
@@ -6,20 +7,28 @@ import '../features/manga_book/domain/chapter_batch/chapter_batch_model.dart';
 import '../features/manga_book/presentation/downloads/controller/downloads_controller.dart';
 import 'log.dart';
 
-class AutoDelete {
-  static AutoDelete instance = AutoDelete();
+part 'auto_delete.g.dart';
 
-  void addToDeleteList(WidgetRef ref, Chapter chapter) {
+@riverpod
+class AutoDelete extends _$AutoDelete {
+  @override
+  int build() {
+    log("[Download]AutoDelete init");
+    ref.keepAlive();
+    return 0;
+  }
+
+  void addToDeleteList(Chapter chapter) {
     Future(() {
       try {
-        addToDeleteList0(ref, chapter);
+        addToDeleteList0(chapter);
       } catch (e) {
         log("[Download]addToDeleteList error $e");
       }
     });
   }
 
-  void addToDeleteList0(WidgetRef ref, Chapter chapter) {
+  void addToDeleteList0(Chapter chapter) {
     final enable = ref.read(deleteDownloadAfterReadPrefProvider) == 1;
     if (!enable) {
       log("[Download]auto delete disable");
@@ -34,17 +43,17 @@ class AutoDelete {
     log("[Download]addToDeleteList, list=$todoSet");
   }
 
-  void triggerDelete(WidgetRef ref) {
+  void triggerDelete() {
     Future(() {
       try {
-        triggerDelete0(ref);
+        triggerDelete0();
       } catch (e) {
         log("[Download]triggerDelete error $e");
       }
     });
   }
 
-  void triggerDelete0(WidgetRef ref) {
+  void triggerDelete0() {
     final enable = ref.read(deleteDownloadAfterReadPrefProvider) == 1;
     if (!enable) {
       log("[Download]auto delete disable");
@@ -56,7 +65,9 @@ class AutoDelete {
         .read(deleteDownloadAfterReadTodoListProvider.notifier)
         .update(<String>[]);
     log("[Download]triggerDelete, list=$todoList");
-
+    if (todoList.isEmpty) {
+      return;
+    }
     final chapterIds = todoList.map((e) => int.parse(e)).toList();
     ref.read(mangaBookRepositoryProvider).modifyBulkChapters(
           batch: ChapterBatch(

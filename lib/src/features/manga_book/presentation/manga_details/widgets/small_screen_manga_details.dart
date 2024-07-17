@@ -71,6 +71,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
                 child: MangaDescription(
                   manga: manga,
                   refresh: () => onDescriptionRefresh(false),
+                  enableStartReading: selectedChapters.value.isEmpty,
                   backgroundImageHeight: backgroundImageHeight,
                 ),
               ),

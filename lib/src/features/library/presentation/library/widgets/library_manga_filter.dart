@@ -24,7 +24,7 @@ class LibraryMangaFilter extends ConsumerWidget {
           onChanged: ref.read(libraryMangaFilterUnreadProvider.notifier).update,
         ),
         CustomCheckboxListTile(
-          title: context.l10n!.completed,
+          title: context.l10n!.mangaStatusCompleted,
           provider: libraryMangaFilterCompletedProvider,
           onChanged:
               ref.read(libraryMangaFilterCompletedProvider.notifier).update,

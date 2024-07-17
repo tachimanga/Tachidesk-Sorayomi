@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../constants/app_constants.dart';
 import '../../../constants/app_sizes.dart';
 import '../../../constants/enum.dart';
 import '../../../features/manga_book/domain/manga/manga_model.dart';
@@ -65,6 +66,7 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
               width: 120,
               height: 160,
               child: MangaCoverGridTile(
+                decodeWidth: kMangaCoverDecodeWidth,
                 manga: manga,
                 showBadges: false,
                 showTitle: false,

@@ -51,7 +51,7 @@ void processTestflight(bool purchaseGate, bool testflightFlag,
                 completer.complete(false);
               },
             ),
-            TextButton(
+            ElevatedButton(
               child: const Text('OK'),
               onPressed: () {
                 context.pop();
@@ -77,10 +77,10 @@ void processTestflight(bool purchaseGate, bool testflightFlag,
                 context.pop();
               },
             ),
-            TextButton(
+            ElevatedButton(
               child: const Text('OK'),
               onPressed: () {
-                launchUrlInWeb(
+                launchUrlInSafari(
                   context,
                   AppUrls.appstore.url,
                   toast,

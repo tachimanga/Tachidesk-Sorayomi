@@ -29,7 +29,12 @@ class RewardAdsConfigJson extends _$RewardAdsConfigJson
 RewardAdsConfig rewardAdsConfig(RewardAdsConfigRef ref) {
   final s = ref.watch(rewardAdsConfigJsonProvider) ?? "{}";
   ref.keepAlive();
-  final c = RewardAdsConfig.fromJson(json.decode(s));
+  var c = RewardAdsConfig();
+  try {
+    c = RewardAdsConfig.fromJson(json.decode(s));
+  } catch (e) {
+    log("rewardAdsConfig parse error:$e");
+  }
   log("[AD]rewardAdsConfig:$c, json:$s");
   return c;
 }

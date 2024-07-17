@@ -41,7 +41,7 @@ class GridCoverMinWidth extends ConsumerWidget {
       onChanged: (val) =>
           ref.read(gridMinWidthProvider.notifier).update(val.roundToDouble()),
       min: 100,
-      max: 999,
+      max: context.width,
     );
   }
 }

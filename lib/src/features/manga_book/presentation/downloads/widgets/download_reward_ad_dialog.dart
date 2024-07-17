@@ -100,7 +100,7 @@ class DownloadRewardAdDialog extends HookConsumerWidget {
         config.ticketPerAd ?? 0,
       )),
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: isLoading.value
               ? null
               : () async {

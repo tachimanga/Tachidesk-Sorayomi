@@ -336,7 +336,7 @@ class RadioListConfirmPopup<T> extends HookConsumerWidget {
       ),
       actions: [
         const PopButton(),
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             onConfirm(v.value);
           },
@@ -389,7 +389,7 @@ class NumberPickerPopup extends HookConsumerWidget {
       ),
       actions: [
         const PopButton(),
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             onConfirm(v.value);
           },

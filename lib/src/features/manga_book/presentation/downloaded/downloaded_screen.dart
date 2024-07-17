@@ -63,7 +63,6 @@ class DownloadedScreen extends HookConsumerWidget {
                     }
                   },
                   showBadges: false,
-                  showLastReadChapter: true,
                   popupItems: [
                     PopupMenuItem(
                       child: Text(context.l10n!.delete),

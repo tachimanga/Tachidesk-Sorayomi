@@ -39,7 +39,7 @@ Future<void> main() async {
 
   // imageCache
   PaintingBinding.instance.imageCache.maximumSize = 100;
-  PaintingBinding.instance.imageCache.maximumSizeBytes = 30 << 20; // 30 MiB;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20; // 30 MiB;
 
   runAppBlock() =>
       runApp(

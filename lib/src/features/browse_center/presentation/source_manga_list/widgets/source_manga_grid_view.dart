@@ -10,12 +10,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../../constants/app_sizes.dart';
-
+import '../../../../../constants/db_keys.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
-import '../../../../../widgets/emoticons.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
+import '../../../../manga_book/data/manga_book_repository.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
+import '../../../../manga_book/presentation/manga_details/controller/manga_details_controller.dart';
+import '../../../../manga_book/presentation/manga_details/widgets/edit_manga_category_dialog.dart';
 import '../../../../settings/presentation/appearance/widgets/grid_cover_min_width.dart';
 import '../../../domain/source/source_model.dart';
 import 'source_page_error_view.dart';
@@ -26,12 +29,13 @@ class SourceMangaGridView extends ConsumerWidget {
   final Source? source;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final coverWidth =
+        ref.watch(gridMinWidthProvider) ?? DBKeys.gridMangaCoverWidth.initial;
     return PagedGridView(
       pagingController: controller,
       builderDelegate: PagedChildBuilderDelegate<Manga>(
-        firstPageErrorIndicatorBuilder: (context) => SourcePageErrorView(
-            controller: controller,
-            source: source),
+        firstPageErrorIndicatorBuilder: (context) =>
+            SourcePageErrorView(controller: controller, source: source),
         noItemsFoundIndicatorBuilder: (context) => SourcePageErrorView(
             controller: controller,
             source: source,
@@ -41,12 +45,34 @@ class SourceMangaGridView extends ConsumerWidget {
           showDarkOverlay: item.inLibrary.ifNull(),
           onPressed: () {
             if (item.id != null) {
-              context.push(Routes.getManga(item.id!), extra: item.copyWith(source: source));
+              context.push(
+                Routes.getManga(item.id!),
+                extra: item.copyWith(source: source),
+              );
             }
           },
+          onLongPress: () async {
+            if (item.id != null) {
+              if (item.inLibrary == true) {
+                await ref
+                    .read(mangaBookRepositoryProvider)
+                    .removeMangaFromLibrary("${item.id}");
+              } else {
+                await showDialog(
+                  context: context,
+                  builder: (context) => EditMangaCategoryDialog(
+                    mangaId: "${item.id}",
+                    manga: item,
+                  ),
+                );
+              }
+              await refreshMangaAfterEditCategory(ref, controller, item, index);
+            }
+          },
+          decodeWidth: coverWidth.ceil(),
         ),
       ),
-      gridDelegate: mangaCoverGridDelegate(ref.watch(gridMinWidthProvider)),
+      gridDelegate: mangaCoverGridDelegate(coverWidth),
     );
   }
 }

@@ -239,13 +239,6 @@ class DebugScreen extends HookConsumerWidget {
         SwitchListTile(
           controlAffinity: ListTileControlAffinity.trailing,
           secondary: const Icon(Icons.switch_left_rounded),
-          title: Text("enable ReaderV2"),
-          onChanged: ref.read(useReader2Provider.notifier).update,
-          value: ref.watch(useReader2Provider).ifNull(true),
-        ),
-        SwitchListTile(
-          controlAffinity: ListTileControlAffinity.trailing,
-          secondary: const Icon(Icons.switch_left_rounded),
           title: Text("downscale image"),
           onChanged: ref.read(downscaleImageProvider.notifier).update,
           value: ref.watch(downscaleImageProvider).ifNull(true),

@@ -23,6 +23,7 @@ import '../../../../widgets/common_error_widget.dart';
 import '../../../settings/presentation/appearance/controller/theme_controller.dart';
 import '../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
 import '../../../settings/presentation/reader/widgets/swipe_right_back_tile/swipe_right_back_tile.dart';
+import '../../../settings/presentation/security/controller/security_controller.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter_patch/chapter_put_model.dart';
 import '../manga_details/controller/manga_details_controller.dart';
@@ -59,6 +60,7 @@ class ReaderScreen2 extends HookConsumerWidget {
         []);
 
     final mangaBookRepository = ref.read(mangaBookRepositoryProvider);
+    final autoDeleteService = ref.read(autoDeleteProvider.notifier);
 
     final manga = ref.watch(mangaProvider);
     final chapter = ref.watch(chapterProviderWithIndex);
@@ -69,12 +71,16 @@ class ReaderScreen2 extends HookConsumerWidget {
     final readerMode = mangaReaderMode == ReaderMode.defaultReader
         ? globalReaderMode : mangaReaderMode;
 
+    final incognito = ref.read(incognitoModePrefProvider) == true;
+
     useEffect(() {
       TraceRef.put(manga.valueOrNull?.sourceId, mangaId);
       return;
     }, [manga]);
 
-    final chapterList = ref.watch(mangaChapterListProvider(mangaId: mangaId));
+    final chapterListProvider = mangaChapterListProvider(mangaId: mangaId);
+    final chapterListNotifier = ref.read(chapterListProvider.notifier);
+    final chapterList = ref.watch(chapterListProvider);
     final chapterRealUrl = chapterList.valueOrNull
             ?.where((e) => "${e.index}" == initChapterIndexState.value)
             .firstOrNull
@@ -95,10 +101,8 @@ class ReaderScreen2 extends HookConsumerWidget {
           return;
         }
 
-        if (currChapter.read == true ||
-            currentPage.pageIndex <=
-                currChapter.lastPageRead.ifNullOrNegative(0)) {
-          //logger.log("[Reader2] no need update");
+        if (currChapter.read == true) {
+          // logger.log("[Reader2] no need update");
           return;
         }
 
@@ -108,19 +112,20 @@ class ReaderScreen2 extends HookConsumerWidget {
                   currChapter.pageCount.ifNullOrNegative(0);
           // logger.log("[Reader2] updateLastRead "
           //     "isRead:$isReadingCompeted index:${currentPage.pageIndex}");
-          await AsyncValue.guard(
-            () => mangaBookRepository.putChapter(
-                  mangaId: mangaId,
-                  chapterIndex: "${currentPage.chapterIndex}",
-                  patch: ChapterPut(
-                    lastPageRead: isReadingCompeted ? 0 : currentPage.pageIndex,
-                    read: isReadingCompeted,
-                  ),
-                ),
+          final input = ChapterModifyInput(
+            mangaId: manga.valueOrNull?.id,
+            chapterId: currentPage.chapterId,
+            lastPageRead: isReadingCompeted ? 0 : currentPage.pageIndex,
+            read: isReadingCompeted,
+            incognito: incognito,
           );
-
+          await AsyncValue.guard(
+                  () => mangaBookRepository.chapterModify(input: input));
+          if (flush) {
+            chapterListNotifier.refresh();
+          }
           if (isReadingCompeted && currChapter.downloaded == true) {
-            AutoDelete.instance.addToDeleteList(ref, currChapter);
+            autoDeleteService.addToDeleteList(currChapter);
           }
         }
 
@@ -148,9 +153,7 @@ class ReaderScreen2 extends HookConsumerWidget {
       logger.log("ReaderScreen did pop");
 
       // trigger auto delete
-      AutoDelete.instance.triggerDelete(ref);
-
-      ref.invalidate(mangaChapterListProvider(mangaId: mangaId));
+      autoDeleteService.triggerDelete();
     });
 
     final swipeRightMode =

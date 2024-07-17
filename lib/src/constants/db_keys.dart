@@ -57,6 +57,8 @@ enum DBKeys {
   scrollAnimation(false),
   doubleTapZoomIn(true),
   pinchToZoom(true),
+  longPressActionMenu(true),
+  classicStartButton(false),
   pinSourceIdList(<String>[]),
   onlySearchPinSource(false),
   disableBypass(false),
@@ -88,6 +90,7 @@ enum DBKeys {
   downloadTaskInParallel(1),
   deleteDownloadAfterRead(0),
   deleteDownloadAfterReadTodoList(<String>[]),
+  appIconKey('default'),
   ;
 
   const DBKeys(this.initial);

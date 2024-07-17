@@ -82,6 +82,7 @@ class DownloadProgressListTile extends HookConsumerWidget {
                     child: ServerImage(
                       imageUrl: download.manga!.thumbnailUrl!,
                       size: const Size.square(56),
+                      decodeWidth: 56,
                     ),
                   ),
                 ),

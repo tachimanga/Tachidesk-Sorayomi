@@ -15,6 +15,18 @@ Future<void> launchUrlInWeb(BuildContext context, String url,
     [Toast? toast]) async {
   if (!await launchUrl(
     Uri.parse(url),
+    mode: LaunchMode.platformDefault,
+    webOnlyWindowName: "_blank",
+  )) {
+    await Clipboard.setData(ClipboardData(text: url));
+    if (context.mounted) toast?.showError(context.l10n!.errorLaunchURL(url));
+  }
+}
+
+Future<void> launchUrlInSafari(BuildContext context, String url,
+    [Toast? toast]) async {
+  if (!await launchUrl(
+    Uri.parse(url),
     mode: LaunchMode.externalApplication,
     webOnlyWindowName: "_blank",
   )) {

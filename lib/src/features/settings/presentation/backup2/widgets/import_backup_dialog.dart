@@ -56,7 +56,7 @@ class ImportBackupDialog extends HookConsumerWidget {
         title: Text(context.l10n!.imported),
         content: Text(context.l10n!.importSuccessTip),
         actions: <Widget>[
-          TextButton(
+          ElevatedButton(
             child: Text(context.l10n!.restartApp),
             onPressed: () {
               ref.read(getMagicPipeProvider).invokeMethod("BACKUP:RESTART");
@@ -70,7 +70,7 @@ class ImportBackupDialog extends HookConsumerWidget {
       return AlertDialog(
         title: Text(backupStatus.valueOrNull?.message ?? "Import failed"),
         actions: <Widget>[
-          TextButton(
+          ElevatedButton(
             child: Text(context.l10n!.ok),
             onPressed: () {
               context.pop();

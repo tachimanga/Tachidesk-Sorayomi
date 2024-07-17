@@ -97,7 +97,7 @@ class WebViewScreen extends HookConsumerWidget {
         ) ,
         actions: [
           IconButton(
-            onPressed: () => launchUrlInWeb(context, url ?? "", toast),
+            onPressed: () => launchUrlInSafari(context, url ?? "", toast),
             icon: const Icon(Icons.public),
           ),
         ],

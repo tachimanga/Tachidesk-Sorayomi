@@ -40,7 +40,7 @@ class SelectCategoryToUpdateDialog extends HookConsumerWidget {
       contentPadding: KEdgeInsets.h8v16.size,
       actions: [
         const PopButton(),
-        TextButton(
+        ElevatedButton(
           onPressed: () async {
             if (onSelectCategory != null) {
               onSelectCategory!(selectedCategoryIds ?? []);

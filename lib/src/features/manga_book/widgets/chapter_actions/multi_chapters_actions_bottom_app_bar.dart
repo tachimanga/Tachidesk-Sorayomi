@@ -28,15 +28,16 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
   });
 
   final ValueNotifier<Map<int, Chapter>> selectedChapters;
-  final AsyncCallback afterOptionSelected;
+  final AsyncValueSetter<Map<int, Chapter>> afterOptionSelected;
 
   List<int> get chapterList => selectedChapters.value.keys.toList();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     refresh([bool triggerAfterOption = true]) async {
+      final prev = selectedChapters.value;
       selectedChapters.value = <int, Chapter>{};
-      if (triggerAfterOption) await afterOptionSelected();
+      if (triggerAfterOption) await afterOptionSelected(prev);
     }
 
     final selectedList = selectedChapters.value.values;
@@ -62,14 +63,15 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
             ),
           if (selectedList.isSingletonList)
             SingleChapterActionIcon(
-              chapterIndex:
-                  "${selectedChapters.value[chapterList.first]?.index}",
-              mangaId: "${selectedChapters.value[chapterList.first]?.mangaId}",
               imageIcon: ImageIcon(
                 Assets.icons.previousDone.provider(),
                 color: context.theme.cardTheme.color,
               ),
-              chapterPut: ChapterPut(markPrevRead: true),
+              chapterPut: ChapterModifyInput(
+                mangaId: selectedChapters.value[chapterList.first]?.mangaId,
+                chapterId: selectedChapters.value[chapterList.first]?.id,
+                markPrevRead: true,
+              ),
               refresh: refresh,
             ),
           if (selectedList.any((e) => !(e.read.ifNull())))

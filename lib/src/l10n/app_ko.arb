@@ -61,7 +61,7 @@
   "@current": {
     "description": "Text to show the currently reading chapter in Reader Screen"
   },
-  "completed": "완결됨",
+  "completed": "완료",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
   },
@@ -169,7 +169,7 @@
   "@newUpdateAvailable": {
     "description": "Popup title to show that the App/Server has and update"
   },
-  "noCategoriesFound": "카테고리가 없습니다.\n(팁: 플러스 버튼을 눌러 라이브러리를 정리할 수 있습니다)",
+  "noCategoriesFound": "카테고리가 없습니다.",
   "@noCategoriesFound": {
     "description": "Hint text to add new Category when category list is empty"
   },
@@ -1106,5 +1106,30 @@
   "download_limit_content": "하루에 {freeTicket}장을 다운로드할 수 있습니다.\n\n광고를 시청하면 {ticketPerAd}장씩 한도를 늘릴 수 있으며, {maxAds}회 광고를 시청한 후에는 그날의 다운로드 한도가 없어집니다.\n\n프리미엄 사용자는 무제한 다운로드 권한이 있습니다.",
   "download_limit_increase": "다운로드 한도가 {num}으로 증가했습니다.",
   "add_download_tips": "{x, plural, one{1개 챕터가 다운로드 대기열에 추가되었습니다.} other{{x}개 챕터가 다운로드 대기열에 추가되었습니다.}}",
-  "watch_ad_label": "광고 보기"
+  "watch_ad_label": "광고 보기",
+  "backup_created_content": "백업을 다른 곳에도 보관하는 것이 좋습니다.\n다운로드한 콘텐츠와 로컬 소스는 백업에 포함되지 않습니다.",
+  "display_as_single_page": "단일 페이지로 표시",
+  "clear_last_hour": "최근 1시간",
+  "clear_today": "오늘",
+  "clear_today_and_yesterday": "오늘과 어제",
+  "clear_all_time": "모든 시간",
+  "start_reading": "독서 시작",
+  "continue_reading_chapter": "{title} 계속 읽기",
+  "icon_section_title": "아이콘",
+  "app_icon_title": "앱 아이콘",
+  "app_icon_author": "{author}이(가) 디자인",
+  "classic_start_reading_button": "고전적인 시작 읽기 버튼",
+  "long_press_action_menu": "길게 누르면 작동 메뉴",
+  "app_icon_update_tip": "아이콘이 성공적으로 업데이트되지 않으면 잠시 기다리거나 단순히 기기를 다시 시작할 수 있습니다.",
+  "update_running_text": "{title} 업데이트 중",
+  "update_completed_text": "업데이트 완료. 성공 {x}, 실패 {y}.",
+  "new_category": "새 카테고리",
+  "add_manga_to": "만화를 추가할 위치...",
+  "add_to_default_category": "기본 카테고리에 추가",
+  "add_to_category": "{category}에 추가",
+  "add_to_categories": "{x, plural, one{카테고리에 추가} other{{x}개의 카테고리에 추가}}}",
+  "move_manga_to": "만화를 이동할 위치...",
+  "keep_in_default_category": "기본 카테고리에 유지",
+  "move_to_category": "{category}로 이동",
+  "move_to_categories": "{x, plural, one{카테고리로 이동} other{{x}개의 카테고리로 이동}}}"
 }

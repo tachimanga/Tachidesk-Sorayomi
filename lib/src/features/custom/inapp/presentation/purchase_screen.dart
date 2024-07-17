@@ -15,6 +15,7 @@ import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
@@ -222,6 +223,7 @@ class RestoreButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.watch(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
+    final clearBeforeRestore = ref.watch(clearQueueBeforeRestoreProvider);
 
     final commonErrStr = context.l10n!.errorSomethingWentWrong;
     return TextButton(
@@ -233,6 +235,9 @@ class RestoreButton extends ConsumerWidget {
             gravity: ToastGravity.CENTER,
             toastDuration: const Duration(seconds: 60));
         try {
+          if (clearBeforeRestore == true) {
+            await PurchaseService.clearTransactions();
+          }
           final ret = await PurchaseService.restorePurchases();
         } catch (e) {
           toast.close();
@@ -243,6 +248,10 @@ class RestoreButton extends ConsumerWidget {
                 "SKError{code: ${e.code}, domain: ${e.domain}, userInfo: ${e.userInfo}";
           }
           log("restorePurchases detail:$detail");
+          logEvent3(
+            "IAP_TAP_RESTORE_ERROR",
+            {"error": (e is SKError) ? "${e.userInfo}" : e.toString()},
+          );
           toast.showError("$commonErrStr\n$detail");
         }
       },
@@ -267,6 +276,7 @@ class PurchaseButton extends ConsumerWidget {
     final purchaseGate = ref.watch(purchaseGateProvider);
     final pipe = ref.watch(getMagicPipeProvider);
     final commonErrStr = context.l10n!.errorSomethingWentWrong;
+    final clearBeforeBuy = ref.watch(clearQueueBeforeBuyProvider);
     return Container(
       padding: const EdgeInsets.fromLTRB(11, 0, 11, 0),
       child: FilledButton(
@@ -278,10 +288,22 @@ class PurchaseButton extends ConsumerWidget {
                     "LogEvent", "IAP_TAP_BUY_${selectedIndex.value}");
                 try {
                   final param = PurchaseParam(productDetails: curr);
+                  if (clearBeforeBuy == true) {
+                    await PurchaseService.clearTransactions();
+                  }
                   final ret = await PurchaseService.purchase(param);
                 } catch (e) {
+                  var detail = e.toString();
+                  if (e is SKError) {
+                    detail =
+                        "SKError{code: ${e.code}, domain: ${e.domain}, userInfo: ${e.userInfo}";
+                  }
+                  logEvent3(
+                    "IAP_TAP_BUY_ERROR",
+                    {"error": (e is SKError) ? "${e.userInfo}" : e.toString()},
+                  );
                   log("purchase err:$e");
-                  toast.showError(commonErrStr);
+                  toast.showError("$commonErrStr\n$detail");
                 }
               },
         style: FilledButton.styleFrom(

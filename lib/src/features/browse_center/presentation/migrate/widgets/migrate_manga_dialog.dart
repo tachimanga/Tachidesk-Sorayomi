@@ -70,7 +70,7 @@ class MigrateMangaDialog extends HookConsumerWidget {
           },
           child: Text(context.l10n!.migrate_action_copy),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: () async {
             await doMigrate(
                 migratingState,

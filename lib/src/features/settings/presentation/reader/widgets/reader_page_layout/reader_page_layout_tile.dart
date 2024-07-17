@@ -25,24 +25,63 @@ class ReaderPageLayoutTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageLayout = ref.watch(readerPageLayoutPrefProvider) ??
         DBKeys.readerPageLayout.initial;
+
     return ListTile(
       leading: const Icon(Icons.menu_book_outlined),
       title: TextPremium(text: context.l10n!.page_layout),
       subtitle: pageLayout != null ? Text(pageLayout.toLocale(context)) : null,
       onTap: () => showDialog(
         context: context,
-        builder: (context) => RadioListPopup<ReaderPageLayout>(
-          title: context.l10n!.page_layout,
-          subTitle: context.l10n!.page_layout_tip,
-          optionList: ReaderPageLayout.values,
-          optionDisplayName: (value) => value.toLocale(context),
-          value: pageLayout,
-          onChange: (enumValue) async {
-            ref.read(readerPageLayoutPrefProvider.notifier).update(enumValue);
-            if (context.mounted) context.pop();
-          },
-        ),
+        builder: (context) => const GlobalPageLayoutPopup(),
       ),
+    );
+  }
+}
+
+class GlobalPageLayoutPopup extends ConsumerWidget {
+  const GlobalPageLayoutPopup({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageLayout = ref.watch(readerPageLayoutPrefProvider) ??
+        DBKeys.readerPageLayout.initial;
+
+    final globalSkipFirstPage =
+        ref.watch(readerPageLayoutSkipFirstPagePrefProvider) ??
+            DBKeys.readerPageLayoutSkipFirstPage.initial;
+    return RadioListPopup<ReaderPageLayout>(
+      title: context.l10n!.page_layout,
+      subTitle: context.l10n!.page_layout_tip,
+      optionList: ReaderPageLayout.values,
+      optionDisplayName: (value) => value.toLocale(context),
+      value: pageLayout,
+      onChange: (enumValue) async {
+        ref.read(readerPageLayoutPrefProvider.notifier).update(enumValue);
+        if (context.mounted) context.pop();
+      },
+      additionWidgets: [
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 10.0,
+            left: 10.0,
+            right: 10.0,
+          ),
+          child: SwitchListTile(
+            controlAffinity: ListTileControlAffinity.trailing,
+            title: Text(
+              context.l10n!.page_layout_separate_first_page,
+            ),
+            onChanged: pageLayout != ReaderPageLayout.singlePage
+                ? ref
+                    .read(readerPageLayoutSkipFirstPagePrefProvider.notifier)
+                    .update
+                : null,
+            value: globalSkipFirstPage,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -254,8 +254,9 @@ class BackupScreenV2 extends HookConsumerWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(context.l10n!.backupCreated),
+          content: Text(context.l10n!.backup_created_content),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
               child: Text(context.l10n!.ok),
               onPressed: () {
                 context.pop();
@@ -326,7 +327,7 @@ class BackupScreenV2 extends HookConsumerWidget {
                     ctx.pop();
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text(context.l10n!.confirm),
                   onPressed: () async {
                     ctx.pop();
@@ -363,7 +364,7 @@ class BackupScreenV2 extends HookConsumerWidget {
               ? context.l10n!.restoreSuccessTip
               : context.l10n!.importSuccessTip),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
               child: Text(context.l10n!.restartApp),
               onPressed: () {
                 ref.read(getMagicPipeProvider).invokeMethod("BACKUP:RESTART");
@@ -429,7 +430,7 @@ class BackupScreenV2 extends HookConsumerWidget {
                     ctx.pop();
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text(context.l10n!.confirm),
                   onPressed: () async {
                     ctx.pop();
@@ -532,7 +533,7 @@ extension BackupAsyncValueExtensions<T> on AsyncValue<T> {
                   content: const Text(
                       "When creating a backup of Tachiyomi, only backup Library, Categories, and Tracking, then retry."),
                   actions: <Widget>[
-                    TextButton(
+                    ElevatedButton(
                       child: const Text('OK'),
                       onPressed: () {
                         context.pop();

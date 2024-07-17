@@ -87,6 +87,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/data/products.json
+    - assets/data/icons.json
   # This section identifies your Flutter project as a module meant for
   # embedding in a native host app.  These identifiers should _not_ ordinarily
   # be changed after generation - they are used to ensure that the tooling can

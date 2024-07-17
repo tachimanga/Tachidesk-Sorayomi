@@ -99,7 +99,11 @@ class MangaGenreChip extends HookConsumerWidget {
           ));
         }
       },
-      child: Chip(label: Text(genre)),
+      child: Chip(
+        label: Text(genre),
+        labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+        padding: const EdgeInsets.all(4.0),
+      ),
     );
   }
 }

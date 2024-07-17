@@ -32,7 +32,7 @@ class Chapter with _$Chapter {
     int? uploadDate,
     String? url,
     Map<int, ImgData>? pageData,
-    // bool? fromCache,
+    bool? resumeFlag,
   }) = _Chapter;
 
   factory Chapter.fromJson(Map<String, dynamic> json) =>

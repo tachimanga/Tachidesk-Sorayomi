@@ -20,6 +20,7 @@ import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart';
 import '../../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../widgets/server_image.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_long_press_tile/reader_long_press_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
@@ -41,7 +42,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     required this.initChapterIndexState,
     required this.initChapter,
     required this.readerListData,
-    required this.currentIndex,
+    required this.sharedPageIndex,
     required this.pageLayout,
     this.onPageChanged,
     this.onNoNextChapter,
@@ -53,7 +54,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
   final ValueNotifier<String> initChapterIndexState;
   final Chapter initChapter;
   final ReaderListData readerListData;
-  final ValueNotifier<int> currentIndex;
+  final ObjectRef<int> sharedPageIndex;
   final ValueSetter<PageChangedData>? onPageChanged;
   final AsyncCallback? onNoNextChapter;
   final bool reverse;
@@ -68,6 +69,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     //     log("[Reader2] SinglePageReaderMode2 dispose");
     //   };
     // }, []);
+    final currentIndex = useState(sharedPageIndex.value);
     final initIndex = currentIndex.value;
     final scrollController = usePageController(
       initialPage: initIndex,
@@ -89,7 +91,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       ),
     );
     useEffect(() {
-      notifyPageUpdate(currentIndex, currPage, currChapter, false);
+      notifyPageUpdate(context, currentIndex, currPage, currChapter, false);
       if (onNoNextChapter != null) {
         notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter!);
       }
@@ -97,9 +99,9 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     }, [currentIndex.value]);
     useEffect(() {
       return () {
-        notifyPageUpdate(currentIndex, currPage, currChapter, true);
+        notifyPageUpdate(context, currentIndex, currPage, currChapter, true);
       };
-    }, []);
+    }, [readerListData]);
 
     useEffect(() {
       final chapter = readerListData.chapterList.firstWhereOrNull(
@@ -146,6 +148,8 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     final pointCount = useState(0);
     final isAnimationEnabled =
         ref.read(readerScrollAnimationProvider).ifNull(false);
+    final longPressEnable =
+        ref.watch(readerLongPressActionMenuPrefProvider) != false;
 
     final windowPadding =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
@@ -229,7 +233,8 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
               serverImage: serverImage,
             );
 
-            final image = GestureDetector(
+            final image = buildGestureDetector(
+              longPressEnable: longPressEnable,
               onLongPress: () {
                 showModalBottomSheet(
                   context: context,
@@ -240,7 +245,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
                       manga: manga,
                       chapter: currChapter.value,
                       imageUrl: imageUrl,
-                      imageData: page.imageData,
+                      page: page,
                     ),
                   ),
                 );
@@ -262,6 +267,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
   }
 
   void notifyPageUpdate(
+      BuildContext context,
       ValueNotifier<int> currentIndex,
       ValueNotifier<ReaderPageData> currPage,
       ValueNotifier<Chapter> currChapter,
@@ -269,10 +275,13 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     if (currentIndex.value > readerListData.pageList.length - 1) {
       return;
     }
+    sharedPageIndex.value = currentIndex.value;
     final page = readerListData.pageList[currentIndex.value];
     final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
-    currPage.value = page;
-    currChapter.value = pageChapter;
+    if (context.mounted) {
+      currPage.value = page;
+      currChapter.value = pageChapter;
+    }
     // log("[Reader2] curr page ${page.pageIndex} "
     //     "curr chapter: ${pageChapter.index}");
     if (onPageChanged != null) {
@@ -280,12 +289,11 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     }
   }
 
-
   void notifyNoNextChapter(
-      ValueNotifier<int> currentIndex,
-      Pair<Chapter?, Chapter?>? chapterPair,
-      AsyncCallback onNoNextChapter,
-      ) {
+    ValueNotifier<int> currentIndex,
+    Pair<Chapter?, Chapter?>? chapterPair,
+    AsyncCallback onNoNextChapter,
+  ) {
     //log("[Reader2] reader wrapper ${currentIndex.value}");
     if (chapterPair != null &&
         chapterPair.first == null &&
@@ -295,4 +303,14 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     }
   }
 
+  Widget buildGestureDetector({
+    required bool longPressEnable,
+    required GestureLongPressCallback onLongPress,
+    required Widget child,
+  }) {
+    if (!longPressEnable) {
+      return child;
+    }
+    return GestureDetector(onLongPress: onLongPress, child: child);
+  }
 }

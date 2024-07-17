@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
+import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
 
 import '../../../../routes/router_config.dart';
@@ -19,6 +20,8 @@ import '../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_list_tile.dart';
 import '../../../manga_book/presentation/manga_details/widgets/edit_manga_category_dialog.dart';
+import '../../../manga_book/presentation/updates/controller/update_controller.dart';
+import '../../../manga_book/widgets/update_status_fab.dart';
 import '../../../settings/presentation/appearance/widgets/grid_cover_min_width.dart';
 import 'controller/library_controller.dart';
 
@@ -31,11 +34,24 @@ class CategoryMangaList extends HookConsumerWidget {
         categoryMangaListWithQueryAndFilterProvider(categoryId: categoryId);
     final mangaList = ref.watch(provider);
     final displayMode = ref.watch(libraryDisplayModeProvider);
+    final coverWidth =
+        ref.watch(gridMinWidthProvider) ?? DBKeys.gridMangaCoverWidth.initial;
+    final updateRunning = ref.watch(updateRunningProvider);
+    final showUpdateStatus = ref.watch(showUpdateStatusProvider);
     refresh() => ref.invalidate(categoryMangaListProvider(categoryId));
     useEffect(() {
       if (!mangaList.isLoading) refresh();
       return;
     }, []);
+
+    final refreshSignal = ref.watch(updateRefreshSignalProvider);
+    useEffect(() {
+      if (refreshSignal) {
+        refresh();
+      }
+      return;
+    }, [refreshSignal]);
+
     return mangaList.showUiWhenData(
       context,
       (data) {
@@ -52,8 +68,7 @@ class CategoryMangaList extends HookConsumerWidget {
         switch (displayMode) {
           case DisplayMode.grid:
             mangaList = GridView.builder(
-              gridDelegate:
-                  mangaCoverGridDelegate(ref.watch(gridMinWidthProvider)),
+              gridDelegate: mangaCoverGridDelegate(coverWidth),
               itemCount: data?.length ?? 0,
               itemBuilder: (context, index) => MangaCoverGridTile(
                 onLongPress: () async {
@@ -62,7 +77,7 @@ class CategoryMangaList extends HookConsumerWidget {
                       context: context,
                       builder: (context) => EditMangaCategoryDialog(
                         mangaId: "${data[index].id}",
-                        title: data[index].title,
+                        manga: data[index],
                       ),
                     );
                     refresh();
@@ -79,6 +94,7 @@ class CategoryMangaList extends HookConsumerWidget {
                 },
                 showCountBadges: true,
                 showDarkOverlay: false,
+                decodeWidth: coverWidth.ceil(),
               ),
             );
             break;
@@ -101,7 +117,7 @@ class CategoryMangaList extends HookConsumerWidget {
                       context: context,
                       builder: (context) => EditMangaCategoryDialog(
                         mangaId: "${data[index].id}",
-                        title: data[index].title,
+                        manga: data[index],
                       ),
                     );
                     refresh();
@@ -130,7 +146,7 @@ class CategoryMangaList extends HookConsumerWidget {
                       context: context,
                       builder: (context) => EditMangaCategoryDialog(
                         mangaId: "${data[index].id}",
-                        title: data[index].title,
+                        manga: data[index],
                       ),
                     );
                     refresh();
@@ -143,7 +159,12 @@ class CategoryMangaList extends HookConsumerWidget {
           default:
         }
         return RefreshIndicator(
-          onRefresh: () async => refresh(),
+          onRefresh: () async {
+            refresh();
+            if (!updateRunning && !showUpdateStatus) {
+              fireUpdate(ref, ["$categoryId"]);
+            }
+          },
           child: mangaList,
         );
       },

@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
 
 import '../../../../../routes/router_config.dart';
@@ -26,17 +27,21 @@ import '../../../../settings/presentation/tracking/widgets/tracker_setting_widge
 import '../../../domain/manga/manga_model.dart';
 import 'manga_add_library_button.dart';
 import 'manga_genre_chip.dart';
+import 'manga_start_read_button.dart';
 
 class MangaDescription extends HookConsumerWidget {
   const MangaDescription({
     super.key,
     required this.manga,
     required this.refresh,
+    required this.enableStartReading,
     this.backgroundImageHeight,
   });
   final Manga manga;
   final AsyncCallback refresh;
+  final bool enableStartReading;
   final double? backgroundImageHeight;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isExpanded = useState(context.isTablet);
@@ -68,6 +73,7 @@ class MangaDescription extends HookConsumerWidget {
                     imageUrl: manga.thumbnailUrl ?? "",
                     imageData: manga.thumbnailImg, fit: BoxFit.cover,
                     size: Size.fromHeight(backgroundImageHeight!),
+                    decodeWidth: kMangaCoverDecodeWidth,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -240,6 +246,19 @@ class MangaDescription extends HookConsumerWidget {
               ),
             ),
           ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            const SizedBox(width: 15),
+            Expanded(
+              child: MangaStartReadButton(
+                mangaId: "${manga.id}",
+                enable: enableStartReading,
+              ),
+            ),
+            const SizedBox(width: 15),
+          ],
+        )
       ],
     );
   }

@@ -63,7 +63,10 @@ class DownloadStatusIcon extends HookConsumerWidget {
         if (isRemove || isError) {
           await repo.removeChapterFromDownloadQueue(mangaId, chapter.index!);
         }
-        if (isAdd || isError) {
+        if (isError) {
+          await repo.addChapterToDownloadQueue(mangaId, chapter.index!);
+        }
+        if (isAdd) {
           if (!context.mounted) {
             return;
           }
@@ -131,7 +134,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
                             },
                             child: Text(context.l10n!.open),
                           ),
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
                               context.pop();
                               toggleChapterToQueue(toast, context, ref,

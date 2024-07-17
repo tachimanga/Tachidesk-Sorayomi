@@ -51,44 +51,56 @@ class SourceShortSearch extends StatelessWidget {
         mangaList.showUiWhenData(
           context,
           (data) => data.isEmpty
-              ? Padding(
-                  padding: KEdgeInsets.h16v4.size,
-                  child: Text(context.l10n!.noResultFound),
+              ? Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Center(
+                    child: Text(
+                      context.l10n!.noResultFound,
+                      style: context.textTheme.bodyLarge
+                          ?.copyWith(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 )
-              : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for (final i in data)
-                        SizedBox(
-                          width: 144,
-                          height: 192,
-                          child: MangaCoverGridTile(
-                            manga: i,
-                            showDarkOverlay: i.inLibrary.ifNull(),
-                            onPressed: () {
-                              if (migrateSrcManga != null &&
-                                  migrateSrcManga!.id != i.id) {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => MigrateMangaDialog(
-                                    srcManga: migrateSrcManga!,
-                                    destManga: i,
-                                  ),
-                                );
-                                return;
-                              }
-                              if (i.id != null) {
-                                context.push(Routes.getManga(i.id!));
-                              }
-                            },
-                          ),
-                        ),
-                    ],
+              : SizedBox(
+                  height: 192,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildItem(context, data[index]);
+                    },
                   ),
                 ),
         ),
       ],
+    );
+  }
+
+  Widget _buildItem(BuildContext context, Manga i) {
+    return SizedBox(
+      width: 144,
+      height: 192,
+      child: MangaCoverGridTile(
+        manga: i,
+        showDarkOverlay: i.inLibrary.ifNull(),
+        decodeWidth: 144,
+        onPressed: () {
+          if (migrateSrcManga != null && migrateSrcManga!.id != i.id) {
+            showDialog(
+              context: context,
+              builder: (context) => MigrateMangaDialog(
+                srcManga: migrateSrcManga!,
+                destManga: i,
+              ),
+            );
+            return;
+          }
+          if (i.id != null) {
+            context.push(Routes.getManga(i.id!));
+          }
+        },
+      ),
     );
   }
 }

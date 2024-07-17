@@ -18,6 +18,8 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/search_field.dart';
 import '../../../browse_center/presentation/migrate/controller/migrate_controller.dart';
+import '../../../manga_book/presentation/updates/controller/update_controller.dart';
+import '../../../manga_book/presentation/updates/widgets/update_status_list_tile.dart';
 import '../../../manga_book/widgets/update_status_fab.dart';
 import '../../../manga_book/widgets/update_status_popup_menu.dart';
 import '../category/controller/edit_category_controller.dart';
@@ -37,9 +39,8 @@ class LibraryScreen extends HookConsumerWidget {
     final toast = ref.watch(toastProvider(context));
     final categoryList = ref.watch(categoryControllerProvider);
     final showSearch = useState(false);
-    final existInLibraryManga =
-        ref.watch(migrateInfoProvider).valueOrNull?.existInLibraryManga == true;
     final showMangaCount = ref.watch(libraryShowMangaCountProvider);
+    final showUpdateStatus = ref.watch(showUpdateStatusProvider);
 
     useEffect(() {
       categoryList.showToastOnError(toast, withMicrotask: true);
@@ -67,9 +68,6 @@ class LibraryScreen extends HookConsumerWidget {
           : DefaultTabController(
               length: data!.length,
               child: Scaffold(
-                floatingActionButton: existInLibraryManga
-                    ? const UpdateStatusFab(forLibrary: true)
-                    : null,
                 appBar: AppBar(
                   title: Text(context.l10n!.library),
                   centerTitle: true,
@@ -77,6 +75,7 @@ class LibraryScreen extends HookConsumerWidget {
                     preferredSize: kCalculateAppBarBottomSizeV2(
                       showTabBar: data.length.isGreaterThan(1),
                       showTextField: showSearch.value,
+                      showUpdateStatus: showUpdateStatus,
                     ),
                     child: Column(
                       children: [
@@ -103,6 +102,7 @@ class LibraryScreen extends HookConsumerWidget {
                               onClose: () => showSearch.value = false,
                             ),
                           ),
+                        if (showUpdateStatus) const UpdateStatusListTile(),
                       ],
                     ),
                   ),
@@ -147,24 +147,14 @@ class LibraryScreen extends HookConsumerWidget {
                   width: kDrawerWidth,
                   child: LibraryMangaOrganizer(),
                 ) : null,
-                body: data.isBlank
-                    ? Emoticons(
-                        text: context.l10n!.noCategoriesFound,
-                        button: TextButton(
-                          onPressed: () =>
-                              ref.refresh(categoryControllerProvider),
-                          child: Text(context.l10n!.refresh),
-                        ),
-                      )
-                    : Padding(
-                        padding: KEdgeInsets.h8.size,
-                        child: TabBarView(
-                          children: data
-                              .map((e) =>
-                                  CategoryMangaList(categoryId: e.id ?? 0))
-                              .toList(),
-                        ),
-                      ),
+                body: Padding(
+                  padding: KEdgeInsets.h8.size,
+                  child: TabBarView(
+                    children: data
+                        .map((e) => CategoryMangaList(categoryId: e.id ?? 0))
+                        .toList(),
+                  ),
+                ),
               ),
             ),
       refresh: () => ref.refresh(categoryControllerProvider),

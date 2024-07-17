@@ -44,6 +44,7 @@ class SourceListTile extends ConsumerWidget {
         child: ServerImage(
           imageUrl: source.iconUrl ?? "",
           size: const Size.square(48),
+          decodeWidth: 48,
         ),
       ),
       title: localSource

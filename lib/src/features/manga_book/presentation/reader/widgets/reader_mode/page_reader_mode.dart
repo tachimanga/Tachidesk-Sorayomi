@@ -11,11 +11,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../../utils/log.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
 import '../../controller/reader_controller_v2.dart';
 import '../../controller/reader_setting_controller.dart';
-import 'double_page_reader_mode.dart';
+import 'double_page_reader_mode_v2.dart';
 import 'single_page_reader_mode_v2.dart';
 
 class PageReaderMode extends HookConsumerWidget {
@@ -47,20 +48,20 @@ class PageReaderMode extends HookConsumerWidget {
     final doublePage = pageLayout == ReaderPageLayout.doublePage ||
         (pageLayout == ReaderPageLayout.automatic &&
             context.width > context.height);
-    //print("[ReaderV2]effectPageLayout:$pageLayout");
+    log("[ReaderV2] PageReaderMode build effectPageLayout:$pageLayout");
 
     final initIndex = initChapter.read == true
         ? 0
         : (initChapter.lastPageRead).ifNullOrNegative(0);
-    final currentIndex = useState(initIndex);
+    final sharedPageIndex = useRef(initIndex);
 
     return doublePage
-        ? DoublePageReaderMode(
+        ? DoublePageReaderModeV2(
             manga: manga,
             initChapterIndexState: initChapterIndexState,
             initChapter: initChapter,
             readerListData: readerListData,
-            currentRawIndex: currentIndex,
+            sharedPageIndex: sharedPageIndex,
             pageLayout: pageLayout,
             onPageChanged: onPageChanged,
             onNoNextChapter: onNoNextChapter,
@@ -72,7 +73,7 @@ class PageReaderMode extends HookConsumerWidget {
             initChapterIndexState: initChapterIndexState,
             initChapter: initChapter,
             readerListData: readerListData,
-            currentIndex: currentIndex,
+            sharedPageIndex: sharedPageIndex,
             pageLayout: pageLayout,
             onPageChanged: onPageChanged,
             onNoNextChapter: onNoNextChapter,

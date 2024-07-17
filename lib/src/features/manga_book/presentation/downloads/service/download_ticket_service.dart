@@ -161,6 +161,11 @@ class DownloadTicketService extends _$DownloadTicketService {
         logEvent3("REWARD:FATAL:ERROR",
             {"error": "onAdFailedToShowFullScreenContent"});
         ad.dispose();
+        if (config.skipWhenError == true) {
+          logEvent3("REWARD:SKIP:WHEN:ERROR");
+          onAdDismiss(false, true);
+          return;
+        }
         onAdDismiss(false, false);
       },
       // Called when the ad dismissed full screen content.

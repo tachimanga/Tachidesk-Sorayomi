@@ -22,6 +22,7 @@ import '../../../../../../utils/classes/trace/trace_model.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart' as logger;
 import '../../../../../../widgets/server_image.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_long_press_tile/reader_long_press_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
@@ -89,7 +90,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     bool noNextChapter = chapterPair != null && chapterPair.first == null;
 
     useEffect(() {
-      notifyPageUpdate(currentIndex, currPage, currChapter, false);
+      notifyPageUpdate(context, currentIndex, currPage, currChapter, false);
       if (onNoNextChapter != null) {
         notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter!);
       }
@@ -97,9 +98,9 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     }, [currentIndex.value]);
     useEffect(() {
       return () {
-        notifyPageUpdate(currentIndex, currPage, currChapter, true);
+        notifyPageUpdate(context, currentIndex, currPage, currChapter, true);
       };
-    }, []);
+    }, [readerListData]);
 
     useEffect(() {
       final chapter = readerListData.chapterList.firstWhereOrNull(
@@ -156,6 +157,8 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
 
     final isAnimationEnabled =
         ref.read(readerScrollAnimationProvider).ifNull(false);
+    final longPressEnable =
+        ref.watch(readerLongPressActionMenuPrefProvider) != false;
 
     final pointCount = useState(0);
     final windowPadding =
@@ -269,12 +272,6 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                         : null,
                     child: child,
                   ),
-                  memCacheWidth: scrollDirection == Axis.vertical
-                      ? (context.width * context.devicePixelRatio).toInt()
-                      : null,
-                  memCacheHeight: scrollDirection != Axis.vertical
-                      ? (context.height * context.devicePixelRatio).toInt()
-                      : null,
                   imageSizeCache: imageSizeCache,
                 );
 
@@ -285,7 +282,8 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                   serverImage: serverImage,
                 );
 
-                final image = GestureDetector(
+                final image = buildGestureDetector(
+                  longPressEnable: longPressEnable,
                   onLongPress: () {
                     showModalBottomSheet(
                       context: context,
@@ -296,7 +294,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                           manga: manga,
                           chapter: currChapter.value,
                           imageUrl: imageUrl,
-                          imageData: page.imageData,
+                          page: page,
                         ),
                       ),
                     );
@@ -427,14 +425,17 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
   }
 
   void notifyPageUpdate(
+      BuildContext context,
       ValueNotifier<int> currentIndex,
       ValueNotifier<ReaderPageData> currPage,
       ValueNotifier<Chapter> currChapter,
       bool flush) {
     final page = readerListData.pageList[currentIndex.value];
     final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
-    currPage.value = page;
-    currChapter.value = pageChapter;
+    if (context.mounted) {
+      currPage.value = page;
+      currChapter.value = pageChapter;
+    }
     // logger.log("[Reader2] curr page ${page.pageIndex} "
     //     "curr chapter: ${pageChapter.index}");
     if (onPageChanged != null) {
@@ -454,5 +455,16 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       //logger.log("[Reader2] no next chapter");
       onNoNextChapter();
     }
+  }
+
+  Widget buildGestureDetector({
+    required bool longPressEnable,
+    required GestureLongPressCallback onLongPress,
+    required Widget child,
+  }) {
+    if (!longPressEnable) {
+      return child;
+    }
+    return GestureDetector(onLongPress: onLongPress, child: child);
   }
 }

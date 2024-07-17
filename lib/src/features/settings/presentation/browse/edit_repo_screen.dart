@@ -54,23 +54,20 @@ class EditRepoScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.extension_repo),
-        actions: magic.b7 == true
-            ? [
-                IconButton(
-                  onPressed: () => launchUrlInWeb(
-                      context,
-                      userDefaults.getString("config.repoHelpUrl") ??
-                          AppUrls.repositoriesHelp.url,
-                      toast),
-                  icon: const Icon(Icons.help_rounded),
-                ),
-              ]
-            : null,
+        actions: [
+          const RepoCreateFab(),
+          if (magic.b7 == true) ...[
+            IconButton(
+              onPressed: () => launchUrlInWeb(
+                  context,
+                  userDefaults.getString("config.repoHelpUrl") ??
+                      AppUrls.repositoriesHelp.url,
+                  toast),
+              icon: const Icon(Icons.help_rounded),
+            ),
+          ],
+        ],
       ),
-      floatingActionButton: repoList.asError?.error != null ||
-              repoList.valueOrNull?.isEmpty == true
-          ? null
-          : const RepoCreateFab(),
       body: repoList.showUiWhenData(
         context,
         (data) {

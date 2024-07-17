@@ -23,6 +23,7 @@ import '../../../../widgets/pop_button.dart';
 import '../../../../widgets/search_field.dart';
 import '../../data/manga_book_repository.dart';
 import 'controller/history_controller.dart';
+import 'widgets/history_clear_icon_button.dart';
 import 'widgets/incognito_icon_button.dart';
 
 class HistoryScreen extends HookConsumerWidget {
@@ -79,6 +80,9 @@ class HistoryScreen extends HookConsumerWidget {
           IconButton(
             onPressed: () => showSearch.value = true,
             icon: const Icon(Icons.search_rounded),
+          ),
+          HistoryClearIconButton(
+            refresh: refresh,
           ),
         ],
       ),
