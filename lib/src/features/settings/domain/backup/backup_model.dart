@@ -18,6 +18,10 @@ class BackupItem with _$BackupItem {
     int? updateAt,
     int? size,
     int? type,
+    bool? cloudBackup,
+    bool? remoteBackup,
+    bool? downloaded,
+    double? downloadProgress,
   }) = _BackupItem;
 
   factory BackupItem.fromJson(Map<String, dynamic> json) =>

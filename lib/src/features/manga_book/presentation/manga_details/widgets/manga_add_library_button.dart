@@ -41,8 +41,6 @@ class MangaAddLibraryButton extends HookConsumerWidget {
   final AsyncCallback refresh;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alwaysAsk =
-        ref.watch(defaultCategoryPrefProvider) == kCategoryAlwaysAskValue;
     return AsyncTextButtonIcon(
       onPressed: () async {
         final val = await AsyncValue.guard(() async {
@@ -51,30 +49,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
                 .read(mangaBookRepositoryProvider)
                 .removeMangaFromLibrary("${manga.id}");
           } else {
-            if (alwaysAsk) {
-              final categoryList =
-                  await ref.watch(categoryControllerProvider.future);
-              final existCustomCategory = categoryList
-                      ?.where((e) => e.id != null && e.id != 0)
-                      .isNotEmpty ==
-                  true;
-              if (existCustomCategory) {
-                if (context.mounted) {
-                  await showDialog(
-                    context: context,
-                    builder: (context) => EditMangaCategoryDialog(
-                      mangaId: "${manga.id}",
-                      manga: manga,
-                    ),
-                  );
-                  invokeRefresh(ref);
-                }
-                return;
-              }
-            }
-            await ref
-                .read(mangaBookRepositoryProvider)
-                .addMangaToLibrary("${manga.id}");
+            await showAddToCategoryDialogIfNeeded(context, ref, manga);
           }
           await invokeRefresh(ref);
         });

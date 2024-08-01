@@ -67,9 +67,9 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     //     print("[Reader2] ContinuousReaderMode2 dispose");
     //   };
     // }, []);
-    final initIndex = initChapter.read == true
-        ? 0
-        : (initChapter.lastPageRead).ifNullOrNegative(0);
+    final lastPageRead = max(0,
+        min(initChapter.lastPageRead ?? 0, (initChapter.pageCount ?? 1) - 1));
+    final initIndex = initChapter.read == true ? 0 : lastPageRead;
     final currentIndex = useState(initIndex);
     final currChapter = useState(initChapter);
     // logger.log("[Reader2] ContinuousReaderMode2 currChapter.state ${currChapter.value.name} "

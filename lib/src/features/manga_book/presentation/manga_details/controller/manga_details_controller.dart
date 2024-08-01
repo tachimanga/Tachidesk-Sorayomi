@@ -35,8 +35,7 @@ class MangaWithId extends _$MangaWithId {
         .getManga(mangaId: mangaId, cancelToken: token);
     ref.keepAlive();
 
-    final pipe = ref.watch(getMagicPipeProvider);
-    logEvent2(pipe, "LOAD_MANGA", {
+    logEvent3("LOAD_MANGA", {
       "x": result?.source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "") ?? "-",
       "y": "${result?.source?.lang?.code}",
       "z": "${result?.source?.id}",
@@ -56,6 +55,10 @@ class MangaWithId extends _$MangaWithId {
     );
     ref.keepAlive();
     state = result;
+  }
+
+  void updateManga(Manga manga) {
+    state = AsyncData(manga);
   }
 }
 

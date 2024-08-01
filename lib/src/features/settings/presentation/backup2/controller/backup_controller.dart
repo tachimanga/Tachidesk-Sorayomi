@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import '../../../../../constants/db_keys.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../data/backup/backup_repository.dart';
 import '../../../domain/backup/backup_model.dart';
@@ -85,6 +88,18 @@ class BackupAction {
       throw Exception(convertBackupMessage(msgMap, result.message));
     }
   }
+
+  Future<void> downloadBackup(
+    String backupName,
+    Map<String, String> msgMap,
+  ) async {
+    final str =
+        await pipe.invokeMethod("BACKUP:DOWNLOAD", {"name": backupName});
+    final result = BackupResult.fromJson(json.decode(str));
+    if (result.succ != true) {
+      throw Exception(convertBackupMessage(msgMap, result.message));
+    }
+  }
 }
 
 @riverpod
@@ -108,5 +123,43 @@ class BackupSocket extends _$BackupSocket {
     final pair = ref.watch(backupRepositoryProvider).socketUpdates();
     ref.onDispose(pair.second);
     return pair.first;
+  }
+}
+
+@riverpod
+class CloudBackupSocket extends _$CloudBackupSocket {
+  late StreamController<int> controller;
+  int counter = 0;
+
+  @override
+  Stream<int> build() {
+    controller = StreamController<int>();
+    return controller.stream
+        .throttle(const Duration(milliseconds: 300), trailing: true);
+  }
+
+  void notify() {
+    log("[Cloud]cloud backup on notify");
+    controller.add(counter++);
+  }
+}
+
+@riverpod
+class BackupToCloudPref extends _$BackupToCloudPref
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: DBKeys.backupToCloud.name,
+        initial: DBKeys.backupToCloud.initial,
+      );
+}
+
+@riverpod
+class CanUseCloud extends _$CanUseCloud {
+  @override
+  Future<bool> build() async {
+    final value = await pipe.invokeMethod("BACKUP:CLOUD:CANUSE");
+    return value;
   }
 }

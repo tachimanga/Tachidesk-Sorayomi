@@ -32,6 +32,7 @@ import 'widgets/auto_backup_frequency_tile.dart';
 import 'widgets/auto_backup_latest_tile.dart';
 import 'widgets/auto_backup_limit_tile.dart';
 import 'widgets/backup_list_tile.dart';
+import 'widgets/backup_to_cloud_tile.dart';
 import 'widgets/import_backup_dialog.dart';
 
 class BackupScreenV2 extends HookConsumerWidget {
@@ -69,10 +70,29 @@ class BackupScreenV2 extends HookConsumerWidget {
       return;
     }, [backupList]);
 
+    final refreshSignal = ref.watch(cloudBackupSocketProvider);
+    useEffect(() {
+      final value = refreshSignal.valueOrNull;
+      log("[Cloud]refresh backup list, value:$value");
+      if (value != null) {
+        Future(() {
+          refresh();
+        });
+      }
+      return;
+    }, [refreshSignal]);
+
     useEffect(() {
       pipe.invokeMethod("SCREEN_ON", "1");
       return () {
         pipe.invokeMethod("SCREEN_ON", "0");
+      };
+    }, []);
+
+    useEffect(() {
+      pipe.invokeMethod("BACKUP:CLOUD:START");
+      return () {
+        pipe.invokeMethod("BACKUP:CLOUD:STOP");
       };
     }, []);
 
@@ -93,6 +113,10 @@ class BackupScreenV2 extends HookConsumerWidget {
 
     final latestAutoBackupItem =
         backupList.valueOrNull?.firstWhereOrNull((e) => e.type == 2);
+
+    final fakeBackupToCloud = useState(false);
+    final premiumBackupToCloud =
+        !purchaseGate && !testflightFlag && fakeBackupToCloud.value;
 
     return WillPopScope(
         onWillPop: premiumAlertForAutoBackup || loadingState.value == true
@@ -208,6 +232,14 @@ class BackupScreenV2 extends HookConsumerWidget {
                               if (premiumAlertForAutoBackup) ...[
                                 const PremiumRequiredTile(),
                               ],
+                              SectionTitle(title: context.l10n!.iCloud_label),
+                              (purchaseGate || testflightFlag)
+                                  ? const BackupToCloudTile()
+                                  : FakeBackupToCloudTile(
+                                      backupToCloud: fakeBackupToCloud),
+                              if (premiumBackupToCloud) ...[
+                                const PremiumRequiredTile(),
+                              ],
                               const Divider(),
                             ],
                           );
@@ -231,6 +263,23 @@ class BackupScreenV2 extends HookConsumerWidget {
                                   showConfirmRestoreDialog(
                                       ref, context, loadingState, toast, msgMap,
                                       name: data[index].name);
+                                },
+                                onShare: () async {
+                                  if (loadingState.value) {
+                                    return;
+                                  }
+                                  pipe.invokeMethod(
+                                      "LogEvent", "BACKUP:EXPORT");
+                                  loadingState.value = true;
+                                  (await AsyncValue.guard(() async {
+                                    await ref
+                                        .read(backupActionProvider)
+                                        .exportBackup(
+                                            data[index].name ?? "", msgMap);
+                                    await refresh();
+                                  }))
+                                      .showToastOnError(toast);
+                                  loadingState.value = false;
                                 },
                                 msgMap: msgMap,
                               ),

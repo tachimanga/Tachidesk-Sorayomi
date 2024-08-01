@@ -71,12 +71,12 @@ class AppIconSelectTile extends HookConsumerWidget {
                       logEvent3("ICON:SET:ERROR", {"error": r});
                       throw r;
                     }
+                    if (context.mounted) {
+                      showTipAlertIfNeeded(context);
+                    }
                   }
                   logEvent3("ICON:SET:$value");
                   ref.read(appIconKeyPrefProvider.notifier).update(value);
-                  if (context.mounted) {
-                    showTipAlertIfNeeded(context);
-                  }
                 },
               ))
                   .showToastOnError(toast);

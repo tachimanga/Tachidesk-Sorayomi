@@ -6,15 +6,18 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/date_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../domain/backup/backup_model.dart';
 import '../../appearance/controller/date_format_controller.dart';
 import '../controller/backup_controller.dart';
@@ -26,12 +29,14 @@ class BackupListTile extends ConsumerWidget {
     required this.refresh,
     required this.loadingState,
     required this.onConfirm,
+    required this.onShare,
     required this.msgMap,
   });
   final BackupItem backupItem;
   final AsyncCallback refresh;
   final ValueNotifier<bool> loadingState;
   final VoidCallback onConfirm;
+  final VoidCallback onShare;
   final Map<String, String> msgMap;
 
   @override
@@ -51,14 +56,35 @@ class BackupListTile extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  formatLocalizedDateTime(dateFormatPref, context, backupItem.createAt ?? 0),
+                  formatLocalizedDateTime(
+                      dateFormatPref, context, backupItem.createAt ?? 0),
                   style: context.textTheme.titleSmall,
                 ),
-                Text(
-                    "${buildBackupTitle(context, backupItem)} "
-                    "${formatFileSize(backupItem.size ?? 0)}",
+                Text.rich(
+                  TextSpan(
+                    text:
+                        "${backupItem.cloudBackup == true ? "${context.l10n!.iCloud_label} " : ""}"
+                        "${buildBackupTitle(context, backupItem)} "
+                        "${formatFileSize(backupItem.size ?? 0)}"
+                        "${backupItem.remoteBackup == true ? " " : ""}",
                     style: context.textTheme.labelSmall
-                        ?.copyWith(color: Colors.grey)),
+                        ?.copyWith(color: Colors.grey),
+                    children: [
+                      if (backupItem.remoteBackup == true) ...[
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(
+                            backupItem.downloaded == true
+                                ? Icons.cloud_done_outlined
+                                : Icons.cloud_download_outlined,
+                            size: context.textTheme.labelSmall?.fontSize,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -68,24 +94,54 @@ class BackupListTile extends ConsumerWidget {
             ),
             itemBuilder: (context) => [
               PopupMenuItem(
-                onTap: loadingState.value ? null : onConfirm,
+                onTap: loadingState.value
+                    ? null
+                    : () async {
+                        if (backupItem.remoteBackup == true &&
+                            backupItem.downloaded != true) {
+                          (await AsyncValue.guard(() async {
+                            await ref
+                                .read(backupActionProvider)
+                                .downloadBackup(backupItem.name ?? "", msgMap);
+                            if (context.mounted) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => BackupDownloadingDialog(
+                                  name: backupItem.name ?? "",
+                                  onComplete: onConfirm,
+                                ),
+                              );
+                            }
+                          }))
+                              .showToastOnError(toast);
+                          return;
+                        }
+                        onConfirm();
+                      },
                 child: Text(context.l10n!.restoreBackup),
               ),
               PopupMenuItem(
                 onTap: () async {
-                  if (loadingState.value) {
+                  if (backupItem.remoteBackup == true &&
+                      backupItem.downloaded != true) {
+                    (await AsyncValue.guard(() async {
+                      await ref
+                          .read(backupActionProvider)
+                          .downloadBackup(backupItem.name ?? "", msgMap);
+                      if (context.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => BackupDownloadingDialog(
+                            name: backupItem.name ?? "",
+                            onComplete: onShare,
+                          ),
+                        );
+                      }
+                    }))
+                        .showToastOnError(toast);
                     return;
                   }
-                  pipe.invokeMethod("LogEvent", "BACKUP:EXPORT");
-                  loadingState.value = true;
-                  (await AsyncValue.guard(() async {
-                    await ref
-                        .read(backupActionProvider)
-                        .exportBackup(backupItem.name ?? "", msgMap);
-                    await refresh();
-                  }))
-                      .showToastOnError(toast);
-                  loadingState.value = false;
+                  onShare();
                 },
                 child: Text(context.l10n!.exportBackup),
               ),
@@ -144,5 +200,58 @@ class BackupListTile extends ConsumerWidget {
       prefix = context.l10n!.backupNamePrefixSchedule;
     }
     return prefix;
+  }
+}
+
+class BackupDownloadingDialog extends HookConsumerWidget {
+  const BackupDownloadingDialog({
+    super.key,
+    required this.name,
+    required this.onComplete,
+  });
+  final String name;
+  final VoidCallback onComplete;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final list = ref.watch(backupListProvider);
+    final backupItem =
+        list.valueOrNull.firstWhereOrNull((element) => element.name == name);
+
+    useEffect(() {
+      final progress = backupItem?.downloadProgress ?? 0;
+      log("[Cloud]download progress $progress");
+      if (progress >= 100) {
+        Future(() {
+          context.pop();
+          onComplete();
+        });
+      }
+      return;
+    }, [backupItem]);
+
+    return AlertDialog(
+      title: Text(context.l10n!.downloading_from_iCloud),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(
+            height: 5,
+          ),
+          CircularProgressIndicator(
+            value: (backupItem?.downloadProgress ?? 0) > 0
+                ? (backupItem?.downloadProgress ?? 0) / 100.0
+                : null,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          child: Text(context.l10n!.cancel),
+          onPressed: () {
+            context.pop();
+          },
+        ),
+      ],
+    );
   }
 }

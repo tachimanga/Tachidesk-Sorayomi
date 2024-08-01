@@ -17,6 +17,7 @@ import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/log.dart';
 import '../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../utils/mixin/state_provider_mixin.dart';
+import '../../../utils/premium_reset.dart';
 import '../api/api_providers.dart';
 import 'model/purchase_model.dart';
 
@@ -125,6 +126,7 @@ class PurchaseListener extends _$PurchaseListener {
       ref.read(purchaseTokenProvider.notifier).update(verifyResult?.token);
       ref.read(getMagicPipeProvider)
           .invokeMethod("LogEvent", "VERIFY_SUCC");
+      PremiumReset.instance.setupWhenPurchase(ref);
     }
   }
 

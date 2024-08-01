@@ -19,6 +19,7 @@ import '../../features/manga_book/data/downloads/downloads_repository.dart';
 import '../../features/manga_book/data/updates/updates_repository.dart';
 import '../../features/settings/data/repo/repo_repository.dart';
 import '../../features/settings/domain/repo/repo_model.dart';
+import '../../features/settings/presentation/backup2/controller/backup_controller.dart';
 import '../../global_providers/global_providers.dart';
 import '../../global_providers/preference_providers.dart';
 import '../../utils/extensions/custom_extensions.dart';
@@ -59,6 +60,7 @@ class ShellScreen extends HookConsumerWidget {
                   selectedScreen: GoRouter.of(context).location,
                   onDestinationSelected: (value) {
                     log("[initLocation]onDestinationSelected $value");
+                    _popModalPopupIfNeeded(context, ref);
                     ref.read(initLocationProvider.notifier).update(value);
                     _sendScreenView(pipe, value);
                   },
@@ -76,6 +78,7 @@ class ShellScreen extends HookConsumerWidget {
               selectedScreen: GoRouter.of(context).location,
               onDestinationSelected: (value) {
                 log("[initLocation]onDestinationSelected $value");
+                _popModalPopupIfNeeded(context, ref);
                 ref.read(initLocationProvider.notifier).update(value);
                 _sendScreenView(pipe, value);
               },
@@ -94,6 +97,13 @@ class ShellScreen extends HookConsumerWidget {
     });
   }
 
+  void _popModalPopupIfNeeded(BuildContext context, WidgetRef ref) {
+    if (context.canPop() && ref.read(initLocationProvider) != '/more') {
+      log("onDestinationSelected popModalPopupIfNeeded");
+      context.pop();
+    }
+  }
+
   void setupHandler(BuildContext context, WidgetRef ref) {
     final notifyChannel = ref.watch(notifyChannelProvider);
     useEffect(() {
@@ -110,6 +120,11 @@ class ShellScreen extends HookConsumerWidget {
                     timeInSecForIosWeb: code == BypassStatus.start ? 5 : 2);
               }
             }
+          }
+        }
+        if (call.method == 'CLOUD_BACKUP_UPDATE') {
+          if (context.mounted) {
+            ref.read(cloudBackupSocketProvider.notifier).notify();
           }
         }
         return Future.value('OK');

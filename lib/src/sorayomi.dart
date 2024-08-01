@@ -119,6 +119,7 @@ class Sorayomi extends HookConsumerWidget {
       if (call.method == 'UPDATE_MAGIC') {
         await ref.read(sharedPreferencesProvider).reload();
         log("reload sharedPreferences succ");
+        ref.read(magicAdUnitIdProvider.notifier).update(call.arguments);
       }
       if (call.method == 'OPENURL') {
         String fullUrl = call.arguments;

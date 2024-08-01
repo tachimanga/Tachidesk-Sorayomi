@@ -58,13 +58,7 @@ class SourceMangaGridView extends ConsumerWidget {
                     .read(mangaBookRepositoryProvider)
                     .removeMangaFromLibrary("${item.id}");
               } else {
-                await showDialog(
-                  context: context,
-                  builder: (context) => EditMangaCategoryDialog(
-                    mangaId: "${item.id}",
-                    manga: item,
-                  ),
-                );
+                await showAddToCategoryDialogIfNeeded(context, ref, item);
               }
               await refreshMangaAfterEditCategory(ref, controller, item, index);
             }

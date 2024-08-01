@@ -9,7 +9,9 @@ import '../features/settings/presentation/appearance/constants/theme_define.dart
 import '../features/settings/presentation/appearance/controller/app_icon_controller.dart';
 import '../features/settings/presentation/appearance/controller/theme_controller.dart';
 import '../features/settings/presentation/backup2/controller/auto_backup_controller.dart';
+import '../features/settings/presentation/backup2/controller/backup_controller.dart';
 import '../features/settings/presentation/security/controller/security_controller.dart';
+import '../features/settings/presentation/share/controller/share_controller.dart';
 import '../routes/router_config.dart';
 import 'log.dart';
 
@@ -100,6 +102,38 @@ class PremiumReset {
         ref
             .read(readerPageLayoutPrefProvider.notifier)
             .update(ReaderPageLayout.singlePage);
+      });
+    }
+  }
+
+  void setupWhenPurchase(Ref ref) {
+    try {
+      log("[Premium]setupWhenPurchase");
+      _setupWhenPurchase(ref);
+    } catch (e) {
+      log("[Premium]setupWhenPurchase error $e");
+    }
+  }
+
+  void _setupWhenPurchase(Ref ref) {
+    log("[Premium]_setupWhenPurchase");
+    final purchaseGate = ref.read(purchaseGateProvider);
+    final testflightFlag = ref.read(testflightFlagProvider);
+    if (!purchaseGate && !testflightFlag) {
+      return;
+    }
+
+    if (ref.read(backupToCloudPrefProvider) != true) {
+      log("set backupToCloudPrefProvider");
+      Future(() {
+        ref.read(backupToCloudPrefProvider.notifier).update(true);
+      });
+    }
+
+    if (ref.read(watermarkSwitchProvider) != false) {
+      log("set watermarkSwitchProvider");
+      Future(() {
+        ref.read(watermarkSwitchProvider.notifier).update(false);
       });
     }
   }
