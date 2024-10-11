@@ -12,6 +12,7 @@ import '../../../../../constants/app_sizes.dart';
 
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/manga_cover_util.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../data/downloads/downloads_repository.dart';
@@ -81,6 +82,8 @@ class DownloadProgressListTile extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: ServerImage(
                       imageUrl: download.manga!.thumbnailUrl!,
+                      imageData: download.manga?.thumbnailImg,
+                      extInfo: CoverExtInfo.build(download.manga),
                       size: const Size.square(56),
                       decodeWidth: 56,
                     ),

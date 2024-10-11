@@ -7,6 +7,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:octo_image/octo_image.dart';
@@ -23,19 +24,22 @@ import '../features/settings/widgets/server_url_tile/server_url_tile.dart';
 import '../global_providers/global_providers.dart';
 import '../routes/router_config.dart';
 import '../utils/classes/trace/trace_model.dart';
+import '../utils/cover/cover_cache_manager.dart';
 import '../utils/event_util.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
 import '../utils/log.dart';
+import '../utils/manga_cover_util.dart';
 import '../utils/misc/toast/toast.dart';
 import 'emoticons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final codecMessages = <String>[
   "Exception: Codec failed to produce an image, possibly due to invalid image data.",
   "Exception: Invalid image data",
 ];
 
-class ServerImage extends ConsumerWidget {
+class ServerImage extends HookConsumerWidget {
   const ServerImage({
     super.key,
     required this.imageUrl,
@@ -50,14 +54,15 @@ class ServerImage extends ConsumerWidget {
     this.imageSizeCache,
     this.decodeWidth,
     this.decodeHeight,
+    this.maxDecodeWidth,
+    this.maxDecodeHeight,
     this.traceInfo,
     this.chapterUrl,
+    this.extInfo,
   });
 
   final String imageUrl;
   final ImgData? imageData;
-  final TraceInfo? traceInfo;
-  final String? chapterUrl;
   final Size? size;
   final BoxFit? fit;
   final Alignment alignment;
@@ -74,12 +79,20 @@ class ServerImage extends ConsumerWidget {
   /// Will resize the image in memory to have a certain height using [ResizeImage]
   final int? decodeHeight;
 
+  /// decode pixels limit
+  final double? maxDecodeWidth;
+  final double? maxDecodeHeight;
+
+  // extra fields
+  final TraceInfo? traceInfo;
+  final String? chapterUrl;
+  final Map<String, String>? extInfo;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final baseUrl = ref.watch(serverUrlProvider);
-    final magic = ref.watch(getMagicProvider);
-    final userDefaults = ref.watch(sharedPreferencesProvider);
     final downscaleImage = ref.watch(downscaleImageProvider);
+    final downscalePageImage = ref.watch(downscalePageProvider);
 
     var baseApi =
         "${Endpoints.baseApi(baseUrl: baseUrl, appendApiToUrl: appendApiToUrl)}"
@@ -91,82 +104,9 @@ class ServerImage extends ConsumerWidget {
     if (imageData?.url != null) {
       baseApi = imageData!.url!;
     }
-    // const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
-    // print("baseApi: " + baseApi);
     // CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
 
-    final keyProvider = reloadButton ? uniqKeyProvider(baseApi) : null;
-    Widget buildImgErrorWidget(ctx, url, error) {
-      if (reloadButton) {
-        if (codecMessages.contains(error.toString())) {
-          return ImgError(
-            text: error.toString(),
-            traceInfo: traceInfo,
-            imageUrl: baseApi,
-            button: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () async {
-                    await onTapOpenButton(
-                      baseApi,
-                      traceInfo,
-                      error.toString(),
-                    );
-                  },
-                  child: Text(context.l10n!.tap_to_open),
-                ),
-              ],
-            ),
-          );
-        }
-        return ImgError(
-            text: error.toString(),
-            traceInfo: traceInfo,
-            imageUrl: baseApi,
-            button: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () => ref.read(keyProvider!.notifier).reload(),
-                  child: Text(context.l10n!.refresh),
-                ),
-                if (chapterUrl?.isNotEmpty == true) ...[
-                  TextButton(
-                    onPressed: () {
-                      onTapWebViewButton(
-                        context,
-                        chapterUrl,
-                        traceInfo,
-                        error.toString(),
-                      );
-                    },
-                    child: Text(context.l10n!.webView),
-                  ),
-                ],
-                if (magic.b5) ...[
-                  TextButton(
-                    onPressed: () {
-                      final url =
-                          userDefaults.getString("config.findAnswerUrl") ??
-                              AppUrls.findAnswer.url;
-                      launchUrlInWeb(
-                        context,
-                        "$url?src=img&err=${error.toString()}",
-                        ref.read(toastProvider(context)),
-                      );
-                    },
-                    child: Text(context.l10n!.help),
-                  )
-                ],
-              ],
-            ));
-      }
-      return const Icon(
-        Icons.broken_image_rounded,
-        color: Colors.grey,
-      );
-    }
+    final keyState = useState(UniqueKey());
 
     final memCacheWidth = decodeWidth != null && downscaleImage == true
         ? (decodeWidth! * context.devicePixelRatio).toInt()
@@ -175,8 +115,17 @@ class ServerImage extends ConsumerWidget {
         ? (decodeHeight! * context.devicePixelRatio).toInt()
         : null;
 
+    bool enableMaxDecode = downscalePageImage == true &&
+        (decodeWidth == null && decodeHeight == null);
+    final maxDecodePixelWidth = maxDecodeWidth != null && enableMaxDecode
+        ? (maxDecodeWidth! * context.devicePixelRatio).toInt()
+        : null;
+    final maxDecodePixelHeight = maxDecodeHeight != null && enableMaxDecode
+        ? (maxDecodeHeight! * context.devicePixelRatio).toInt()
+        : null;
+
     return CachedNetworkImage(
-      key: reloadButton ? ref.watch(keyProvider!) : null,
+      key: keyState.value,
       imageUrl: baseApi,
       height: size?.height,
       httpHeaders: imageData?.headers,
@@ -193,10 +142,102 @@ class ServerImage extends ConsumerWidget {
       fadeInDuration: Duration.zero,
       fadeOutDuration: Duration.zero,
       placeholderFadeInDuration: Duration.zero,
-      errorWidget: (context, url, error) => wrapper != null
-          ? wrapper!(buildImgErrorWidget(context, url, error))
-          : buildImgErrorWidget(context, url, error),
+      errorWidget: (ctx, url, error) => wrapper != null
+          ? wrapper!(buildErrorWidget(context, ref, keyState, error, baseApi))
+          : buildErrorWidget(context, ref, keyState, error, baseApi),
       imageSizeCache: imageSizeCache,
+      cacheManager: buildCacheManager(extInfo),
+      extInfo: extInfo,
+      maxDecodePixelWidth: maxDecodePixelWidth,
+      maxDecodePixelHeight: maxDecodePixelHeight,
+    );
+  }
+
+  CacheManager? buildCacheManager(Map<String, String>? extInfo) {
+    if (CoverExtInfo.fetchMangaId(extInfo) != null) {
+      return CoverCacheManager();
+    }
+    return null;
+  }
+
+  Widget buildErrorWidget(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<UniqueKey> keyState,
+    dynamic error,
+    String baseApi,
+  ) {
+    if (!reloadButton) {
+      return const Icon(
+        Icons.broken_image_rounded,
+        color: Colors.grey,
+      );
+    }
+
+    final magic = ref.read(getMagicProvider);
+    final userDefaults = ref.read(sharedPreferencesProvider);
+    if (codecMessages.contains(error.toString())) {
+      return ImgError(
+        text: error.toString(),
+        traceInfo: traceInfo,
+        imageUrl: baseApi,
+        button: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () async {
+                await onTapOpenButton(
+                  baseApi,
+                  traceInfo,
+                  error.toString(),
+                );
+              },
+              child: Text(context.l10n!.tap_to_open),
+            ),
+          ],
+        ),
+      );
+    }
+    return ImgError(
+      text: error.toString(),
+      traceInfo: traceInfo,
+      imageUrl: baseApi,
+      button: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () => keyState.value = (UniqueKey()),
+            child: Text(context.l10n!.refresh),
+          ),
+          if (chapterUrl?.isNotEmpty == true) ...[
+            TextButton(
+              onPressed: () {
+                onTapWebViewButton(
+                  context,
+                  chapterUrl,
+                  traceInfo,
+                  error.toString(),
+                );
+              },
+              child: Text(context.l10n!.webView),
+            ),
+          ],
+          if (magic.b5) ...[
+            TextButton(
+              onPressed: () {
+                final url = userDefaults.getString("config.findAnswerUrl") ??
+                    AppUrls.findAnswer.url;
+                launchUrlInWeb(
+                  context,
+                  "$url?src=img&err=${error.toString()}",
+                  ref.read(toastProvider(context)),
+                );
+              },
+              child: Text(context.l10n!.help),
+            )
+          ],
+        ],
+      ),
     );
   }
 

@@ -283,7 +283,7 @@
   "@newUpdateAvailable": {
     "description": "Popup title to show that the App/Server has and update"
   },
-  "noCategoryMangaFound": "未找到匹配项\n提示：检查搜索或更改筛选条件",
+  "noCategoryMangaFound": "分类为空",
   "@noCategoryMangaFound": {
     "description": "Hint text to check filter when manga list is empty in Category tab in Library"
   },
@@ -575,7 +575,7 @@
       }
     }
   },
-  "noUpdatesFound": "最近没有更新",
+  "noUpdatesFound": "没有最新章节",
   "@noUpdatesFound": {
     "description": "Toast Text to show that there are no Updates available"
   },
@@ -1133,7 +1133,7 @@
   "@long_press_action_menu": {},
   "app_icon_update_tip": "如果图标更新不成功，则可以等一会儿或简单地重新启动设备。",
   "@app_icon_update_tip": {},
-  "update_running_text": "正在更新 {title}",
+  "update_running_text": "正在更新: {title}",
   "@update_running_text": {},
   "update_completed_text": "更新完成。成功：{x}，失败：{y}。",
   "@update_completed_text": {},
@@ -1164,5 +1164,47 @@
   "downloading_from_iCloud": "正在从iCloud下载",
   "@downloading_from_iCloud": {},
   "iCloud_unavailable_tip": "iCloud Drive 不可用。请在系统设置中打开iCloud Drive。如需更多帮助，请访问 https://tachimanga.app/icloud",
-  "@iCloud_unavailable_tip": {}
+  "@iCloud_unavailable_tip": {},
+  "downloading_running_text": "正在下载 {running} 之 {total}",
+  "@downloading_running_text": {},
+  "edit_cover": "编辑封面",
+  "@edit_cover": {},
+  "set_as_cover": "设为封面",
+  "@set_as_cover": {},
+  "cover_updated": "封面已更新",
+  "@cover_updated": {},
+  "save_image_user_denied_msg": "访问被拒绝，请在系统设置中允许Tachimanga访问您的相册。",
+  "@save_image_user_denied_msg": {},
+  "set_as_default": "设为默认",
+  "@set_as_default": {},
+  "reset_to_default": "重置为默认",
+  "@reset_to_default": {},
+  "library_is_empty": "您的图书馆是空的。\n从浏览选项卡添加漫画。",
+  "@library_is_empty": {},
+  "history_is_empty": "最近没有阅读任何内容。",
+  "@history_is_empty": {},
+  "downloaded_is_empty": "最近没有下载。",
+  "@downloaded_is_empty": {},
+  "reset_filters": "重置过滤器",
+  "@reset_filters": {},
+  "repo_not_exist": "插件仓库不存在。",
+  "@repo_not_exist": {},
+  "disagree_label": "不同意",
+  "@disagree_label": {},
+  "agree_label": "同意",
+  "@agree_label": {},
+  "log_enable_tips": "成功启用日志记录。更改将在重新启动应用程序后生效。",
+  "@log_enable_tips": {},
+  "manga_auto_refresh_title": "自动刷新",
+  "@manga_auto_refresh_title": {},
+  "manga_auto_refresh_desc": "查看标题时检查新章节.",
+  "@manga_auto_refresh_desc": {},
+  "migration_dialog_tips": "迁移不包含已下载章节。",
+  "@migration_dialog_tips": {},
+  "premium_month_price": "{price}/月",
+  "@premium_month_price": {},
+  "premium_year_price": "{price}/年",
+  "@premium_year_price": {},
+  "premium_month_price_only": "仅{price}/月",
+  "@premium_month_price_only": {}
 }

@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/enum.dart';
 
@@ -40,6 +41,8 @@ class ReaderModeTile extends ConsumerWidget {
       leading: const Icon(Icons.app_settings_alt_rounded),
       subtitle: readerMode != null ? Text(readerMode.toLocale(context)) : null,
       title: Text(context.l10n!.readerMode),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<ReaderMode>(

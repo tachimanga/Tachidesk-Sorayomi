@@ -17,6 +17,7 @@ class Downloads with _$Downloads {
   factory Downloads({
     List<DownloadsQueue>? queue,
     String? status,
+    int? finishCount,
   }) = _Downloads;
 
   factory Downloads.fromJson(Map<String, dynamic> json) =>

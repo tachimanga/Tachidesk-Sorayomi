@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import 'controller/migrate_controller.dart';
 import 'widgets/migrate_source_list_tile.dart';
 
@@ -53,6 +54,8 @@ class MigrateScreen extends HookConsumerWidget {
         return RefreshIndicator(
           onRefresh: refresh,
           child: ListView.builder(
+            controller: mainPrimaryScrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
             itemCount: data.length,
             itemBuilder: (context, index) => MigrateSourceListTile(
               migrateSource: data[index],

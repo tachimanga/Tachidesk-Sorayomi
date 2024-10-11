@@ -25,6 +25,9 @@ class ShareAction {
     if (code != null) {
       return "${msgMap[code]}($message)";
     }
+    if (message?.contains("3311") == true) {
+      return msgMap["save_image_user_denied_msg"] ?? message ?? "";
+    }
     return message ?? "";
   }
 

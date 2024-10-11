@@ -20,6 +20,7 @@ import '../../../../../widgets/highlighted_container.dart';
 import '../../../data/downloads/downloads_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../downloads/widgets/download_reward_ad_dialog.dart';
+import '../controller/manga_chapter_controller.dart';
 import '../controller/manga_details_controller.dart';
 
 class MangaChapterDownloadButton extends HookConsumerWidget {
@@ -30,7 +31,8 @@ class MangaChapterDownloadButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.watch(toastProvider(context));
-    final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
+    final isAscSorted = ref.watch(
+            mangaChapterSortDirectionWithMangaIdProvider(mangaId: mangaId)) ??
         DBKeys.chapterSortDirection.initial;
     final filteredList = ref
         .watch(mangaChapterListWithFilterProvider(mangaId: mangaId))

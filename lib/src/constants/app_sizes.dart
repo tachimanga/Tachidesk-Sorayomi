@@ -29,11 +29,13 @@ Size kCalculateAppBarBottomSizeV2({
   bool showTabBar = false,
   bool showCheckBox = false,
   bool showUpdateStatus = false,
+  bool showDownloadStatus = false,
 }) {
   final height = (showTextField ? kTextFieldHeight : 0.0) +
       (showTabBar ? kTabBarHeight : 0.0) +
       (showCheckBox ? kMinInteractiveDimension : 0.0) +
-      (showUpdateStatus ? kUpdateStatusHeight : 0.0);
+      (showUpdateStatus ? kUpdateStatusHeight : 0.0) +
+      (showDownloadStatus ? kUpdateStatusHeight : 0.0);
   return Size.fromHeight(height);
 }
 

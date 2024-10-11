@@ -25,10 +25,14 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
     super.key,
     required this.selectedChapters,
     required this.afterOptionSelected,
+    this.enableSafeArea = true,
+    this.showDownload = true,
   });
 
   final ValueNotifier<Map<int, Chapter>> selectedChapters;
   final AsyncValueSetter<Map<int, Chapter>> afterOptionSelected;
+  final bool enableSafeArea;
+  final bool showDownload;
 
   List<int> get chapterList => selectedChapters.value.keys.toList();
 
@@ -43,7 +47,7 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
     final selectedList = selectedChapters.value.values;
     final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
     return Padding(
-      padding: EdgeInsets.fromLTRB(8, 8, 8, safeAreaBottom > 0 ? max(0, safeAreaBottom - 10) : 8),
+      padding: EdgeInsets.fromLTRB(8, 8, 8, enableSafeArea && safeAreaBottom > 0 ? max(0, safeAreaBottom - 10) : 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -88,7 +92,7 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
               change: ChapterChange(isRead: false),
               refresh: refresh,
             ),
-          if (selectedList.any((e) => !(e.downloaded.ifNull())))
+          if (showDownload && selectedList.any((e) => !(e.downloaded.ifNull())))
             MultiChaptersActionIcon(
               icon: Icons.download_sharp,
               chapterList: <int>[
@@ -97,7 +101,7 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
               ],
               refresh: refresh,
             ),
-          if (selectedList.any((e) => e.downloaded.ifNull()))
+          if (showDownload && selectedList.any((e) => e.downloaded.ifNull()))
             MultiChaptersActionIcon(
               icon: Icons.delete_sharp,
               chapterList: chapterList,

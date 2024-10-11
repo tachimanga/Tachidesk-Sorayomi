@@ -19,7 +19,7 @@
   "@appTheme": {
     "description": "Popup title and Button text to change App Theme"
   },
-  "appTitle": "تاتشيمانجا",
+  "appTitle": "تاتشي مانجا",
   "@appTitle": {
     "description": "Name of the app (Tachimanga in native script)"
   },
@@ -51,7 +51,7 @@
   "@categoryUpdate": {
     "description": "Button text to update the mangas in the Category"
   },
-  "chapterNumber": "الفصل {number}",
+  "chapterNumber": "{number} الفصل",
   "@chapterNumber": {
     "description": "Text title for Chapter name in chapter list",
     "placeholders": {
@@ -107,7 +107,7 @@
   "@delete": {
     "description": "Text for delete button"
   },
-  "deleteCategoryDescription": "سيؤدي إلى دمج جميع المانجا في هذه الفئة إلى الافتراضية!",
+  "deleteCategoryDescription": "سيؤدي هذا التغير إلى دمج جميع المانجا في هذه الفئة إلى الافتراضية!",
   "@deleteCategoryDescription": {
     "description": "Popup description when deleting Category"
   },
@@ -269,7 +269,7 @@
   "@noUpdatesAvailable": {
     "description": "Text to show that the user is using the latest version of the app"
   },
-  "noUpdatesFound": "لم يتم العثور على تحديثات",
+  "noUpdatesFound": "لا توجد فصول جديدة",
   "@noUpdatesFound": {
     "description": "Toast Text to show that there are no Updates available"
   },
@@ -365,7 +365,7 @@
   "@noCategoriesFoundAlt": {
     "description": "Hint text to add new Category in Settings when category list is empty"
   },
-  "noCategoryMangaFound": "لم يتم العثور على مانجا في هذه الفئة. \n(نصيحة: تحقق من البحث والفلاتر!)",
+  "noCategoryMangaFound": "الفئة فارغة",
   "@noCategoryMangaFound": {
     "description": "Hint text to check filter when manga list is empty in Category tab in Library"
   },
@@ -1129,7 +1129,7 @@
   "@tap_to_open": {},
   "labsSubtitle": "المميزات التجريبية‎",
   "@labsSubtitle": {},
-  "labs": "مختبر",
+  "labs": "مختبرات",
   "@labs": {},
   "concurrent_download_short_title_num": "التنزيلات المتزامنة: {num}",
   "@concurrent_download_short_title_num": {},
@@ -1199,7 +1199,7 @@
   "@long_press_action_menu": {},
   "app_icon_update_tip": "إذا لم يتم تحديث الرمز بنجاح، يمكنك الانتظار لبعض الوقت أو إعادة تشغيل الجهاز ببساطة.",
   "@app_icon_update_tip": {},
-  "update_running_text": "جارٍ التحديث {title}",
+  "update_running_text": "جار التحديث: {title}",
   "@update_running_text": {},
   "update_completed_text": "تم التحديث. نجاح {x}، فشل {y}.",
   "@update_completed_text": {},
@@ -1230,5 +1230,47 @@
   "downloading_from_iCloud": "التحميل من iCloud",
   "@downloading_from_iCloud": {},
   "iCloud_unavailable_tip": "خدمة iCloud غير متوفرة. يرجى تشغيل iCloud في إعدادات النظام. للحصول على مزيد من المساعدة، قم بزيارة https://tachimanga.app/icloud",
-  "@iCloud_unavailable_tip": {}
+  "@iCloud_unavailable_tip": {},
+  "downloading_running_text": "جار التحميل {running} من {total}",
+  "@downloading_running_text": {},
+  "edit_cover": "تعديل الغلاف",
+  "@edit_cover": {},
+  "set_as_cover": "تعيين كغلاف",
+  "@set_as_cover": {},
+  "cover_updated": "تم تحديث الغلاف",
+  "@cover_updated": {},
+  "save_image_user_denied_msg": "تم الرفض, يرجى السماح لـ Tachimanga بالوصول إلى ألبومات الصور الخاصة بك في إعدادات النظام.",
+  "@save_image_user_denied_msg": {},
+  "set_as_default": "تعيين كافتراضي",
+  "@set_as_default": {},
+  "reset_to_default": "إعادة تعيين إلى الوضع الافتراضي",
+  "@reset_to_default": {},
+  "library_is_empty": "مكتبتك فارغة.\nأضف مانغا من علامة التصفح.",
+  "@library_is_empty": {},
+  "history_is_empty": "لم تقرأ شيئًا مؤخرًا.",
+  "@history_is_empty": {},
+  "downloaded_is_empty": "لا توجد تنزيلات حديثة.",
+  "@downloaded_is_empty": {},
+  "reset_filters": "إعادة ضبط الفلاتر",
+  "@reset_filters": {},
+  "repo_not_exist": "مستودع التمديد غير موجود.",
+  "@repo_not_exist": {},
+  "disagree_label": "عدم الموافقة",
+  "@disagree_label": {},
+  "agree_label": "موافقة",
+  "@agree_label": {},
+  "log_enable_tips": "تم تمكين تسجيل البيانات بنجاح. سيتم تطبيق التغييرات بعد إعادة تشغيل التطبيق.",
+  "@log_enable_tips": {},
+  "manga_auto_refresh_title": "التحديث التلقائي",
+  "@manga_auto_refresh_title": {},
+  "manga_auto_refresh_desc": "فحص الفصول الجديدة أثناء عرض العنوان.",
+  "@manga_auto_refresh_desc": {},
+  "migration_dialog_tips": "الفصل(أو الفصول) المُحملة لا تنتقل مع الهجرة.",
+  "@migration_dialog_tips": {},
+  "premium_month_price": "{price}/شهر",
+  "@premium_month_price": {},
+  "premium_year_price": "{price}/سنة",
+  "@premium_year_price": {},
+  "premium_month_price_only": "فقط {price}/شهر",
+  "@premium_month_price_only": {}
 }

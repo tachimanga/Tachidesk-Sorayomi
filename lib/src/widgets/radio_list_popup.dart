@@ -87,9 +87,13 @@ class RadioList<T> extends StatelessWidget {
               right: 24.0,
               bottom: 10.0,
             ),
-            child: Text(
-              subTitle!,
-              style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+            child: SizedBox(
+              width: double.infinity,
+              child: Text(
+                subTitle!,
+                style:
+                    context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+              ),
             ),
           )
         : null;

@@ -151,6 +151,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     final longPressEnable =
         ref.watch(readerLongPressActionMenuPrefProvider) != false;
 
+    const decodeFactor = 2;
     final windowPadding =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
     return ReaderWrapper(
@@ -224,6 +225,12 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
                   CenterCircularProgressIndicator(
                 value: downloadProgress.progress,
               ),
+              maxDecodeWidth: scrollDirection != Axis.vertical
+                  ? context.width * decodeFactor
+                  : null,
+              maxDecodeHeight: scrollDirection == Axis.vertical
+                  ? context.height * decodeFactor
+                  : null,
             );
 
             final serverImageWithPadding = PaddingServerImage(

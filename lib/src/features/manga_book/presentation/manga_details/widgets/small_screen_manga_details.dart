@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/emoticons.dart';
@@ -16,7 +17,10 @@ import '../../../../../widgets/scrollbar_behavior.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
+import 'chapter_filter_icon_button.dart';
 import 'chapter_list_tile.dart';
+import 'manga_chapter_list_header.dart';
+import 'manga_chapter_organizer.dart';
 import 'manga_description.dart';
 import 'manga_details_no_chapter_view.dart';
 
@@ -32,6 +36,8 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
     required this.onListRefresh,
     required this.dateFormatPref,
     required this.animationController,
+    required this.showCoverRefreshIndicator,
+    required this.refreshIndicatorKey,
   });
   final String mangaId;
   final Manga manga;
@@ -42,6 +48,8 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
   final AsyncValueSetter<bool> onDescriptionRefresh;
   final DateFormatEnum dateFormatPref;
   final AnimationController animationController;
+  final bool showCoverRefreshIndicator;
+  final ObjectRef<GlobalKey<RefreshIndicatorState>> refreshIndicatorKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +60,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
     final backgroundImageHeight = padding.top + 8 * 2 + 160;
 
     return RefreshIndicator(
+      key: refreshIndicatorKey.value,
       edgeOffset: kToolbarHeight,
       onRefresh: () => onRefresh(true),
       child: NotificationListener<ScrollNotification>(
@@ -62,8 +71,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
           }
           return false;
         },
-        child: ScrollConfiguration(behavior: ScrollbarBehavior(), child:
-        CustomScrollView(
+        child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(
@@ -72,15 +80,15 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
                   manga: manga,
                   refresh: () => onDescriptionRefresh(false),
                   enableStartReading: selectedChapters.value.isEmpty,
+                  showCoverRefreshIndicator: showCoverRefreshIndicator,
                   backgroundImageHeight: backgroundImageHeight,
                 ),
               ),
             ),
             SliverToBoxAdapter(
-              child: ListTile(
-                title: Text(
-                  context.l10n!.noOfChapters(filteredChapterList?.length ?? 0),
-                ),
+              child: MangaChapterListHeader(
+                mangaId: mangaId,
+                chapterCount: filteredChapterList?.length ?? 0,
               ),
             ),
             chapterList.showUiWhenData(
@@ -135,7 +143,6 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
             const SliverToBoxAdapter(child: ListTile()),
           ],
         ),
-      ),
       ),
     );
   }

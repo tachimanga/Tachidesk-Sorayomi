@@ -30,7 +30,6 @@ enum AppUrls {
   localSourceHelp(url: "https://tachimanga.app/help/guides/local-source.html"),
   changelogs(url: "https://tachimanga.app/docs/changelogs.html"),
   appstore(url: "https://apps.apple.com/us/app/tachimanga/id6447486175"),
-  extensionTagUrl(url: "https://tachimanga.app/assets/repo_tag.json"),
   sorayomiLatestReleaseApiUrl(
     url:
         "https://api.github.com/repos/Suwayomi/Tachidesk-Sorayomi/releases/latest",

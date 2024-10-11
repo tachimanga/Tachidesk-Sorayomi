@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_constants.dart';
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
@@ -23,7 +24,7 @@ class GeneralScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final betaLocales = ['ja','ko','ml'];
+    final betaLocales = ['ml'];
     final testflightFlag = ref.watch(testflightFlagProvider);
     final locales = testflightFlag ||
             betaLocales.contains(context.currentLocale.languageCode)
@@ -41,6 +42,8 @@ class GeneralScreen extends ConsumerWidget {
             leading: const Icon(Icons.translate_rounded),
             title: Text(context.l10n!.appLanguage),
             subtitle: Text(getLanguageNameFormLocale(context.currentLocale)),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => showDialog(
               context: context,
               builder: (context) => RadioListPopup<Locale>(
@@ -61,6 +64,8 @@ class GeneralScreen extends ConsumerWidget {
             leading: const Icon(Icons.code_rounded),
             title: Text(context.l10n!.advanced),
             subtitle: Text(context.l10n!.advancedSubtitle),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => context.push([
               Routes.settings,
               Routes.generalSettings,
@@ -72,6 +77,8 @@ class GeneralScreen extends ConsumerWidget {
               leading: const Icon(Icons.science),
               title: Text(context.l10n!.labs),
               subtitle: Text(context.l10n!.labsSubtitle),
+              contentPadding: kSettingPadding,
+              trailing: kSettingTrailing,
               onTap: () => context.push([
                 Routes.settings,
                 Routes.generalSettings,

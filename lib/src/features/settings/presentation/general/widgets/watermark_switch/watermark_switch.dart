@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../global_providers/global_providers.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/misc/toast/toast.dart';
@@ -29,6 +30,7 @@ class WatermarkSwitchTile extends ConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.branding_watermark_outlined),
       title: TextPremium(text: context.l10n!.imageSaveWatermarkSwitch),
+      contentPadding: kSettingPadding,
       onChanged: (value) async {
         pipe.invokeMethod("LogEvent", "READER:WATERMARK:$value");
         if (value == false) {

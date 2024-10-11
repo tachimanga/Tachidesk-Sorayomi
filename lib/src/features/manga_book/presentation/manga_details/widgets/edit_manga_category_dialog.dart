@@ -14,6 +14,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../routes/router_config.dart';
+import '../../../../../utils/cover/cover_cache_manager.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../widgets/pop_button.dart';
@@ -94,6 +95,7 @@ class EditMangaCategoryDialog extends HookConsumerWidget {
                   customCategoryList,
                   currKeys,
                   mangaInLibrary,
+                  manga,
                 ),
               ),
             ],
@@ -155,6 +157,7 @@ class EditMangaCategoryDialog extends HookConsumerWidget {
     List<model.Category>? customCategoryList,
     Set<String> currKeys,
     bool mangaInLibrary,
+    Manga? manga,
   ) {
     return ElevatedButton(
       onPressed: () async {
@@ -166,6 +169,9 @@ class EditMangaCategoryDialog extends HookConsumerWidget {
         });
         await ref.read(provider.notifier).refresh();
         ref.read(categoryControllerProvider.notifier).reloadCategories();
+        if (manga != null) {
+          CoverCacheManager().onAddToLibrary(manga);
+        }
         if (context.mounted) {
           context.pop();
         }
@@ -247,6 +253,7 @@ Future<void> showAddToCategoryDialogIfNeeded(
     }
   }
   await ref.read(mangaBookRepositoryProvider).addMangaToLibrary("${manga.id}");
+  CoverCacheManager().onAddToLibrary(manga);
 }
 
 Future<void> refreshMangaAfterEditCategory(

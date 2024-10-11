@@ -21,6 +21,7 @@ import '../../../../library/domain/category/category_model.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
+import 'manga_chapter_controller.dart';
 
 part 'manga_details_controller.g.dart';
 
@@ -34,16 +35,10 @@ class MangaWithId extends _$MangaWithId {
         .watch(mangaBookRepositoryProvider)
         .getManga(mangaId: mangaId, cancelToken: token);
     ref.keepAlive();
-
-    logEvent3("LOAD_MANGA", {
-      "x": result?.source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "") ?? "-",
-      "y": "${result?.source?.lang?.code}",
-      "z": "${result?.source?.id}",
-    });
     return result;
   }
 
-  Future<void> refresh([bool onlineFetch = false]) async {
+  Future<Manga?> refresh([bool onlineFetch = false]) async {
     final token = CancelToken();
     ref.onDispose(token.cancel);
     final result = await AsyncValue.guard(
@@ -55,6 +50,7 @@ class MangaWithId extends _$MangaWithId {
     );
     ref.keepAlive();
     state = result;
+    return result.valueOrNull;
   }
 
   void updateManga(Manga manga) {
@@ -134,11 +130,11 @@ class MangaChapterFilterScanlator extends _$MangaChapterFilterScanlator {
     final str = json.encode(ScanlatorMeta(list: scanlators));
     //print("MangaChapterFilterScanlator update: $str");
     await AsyncValue.guard(
-          () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
-        mangaId: mangaId,
-        key: MangaMetaKeys.scanlator.key,
-        value: str,
-      ),
+      () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
+            mangaId: mangaId,
+            key: MangaMetaKeys.scanlator.key,
+            value: str,
+          ),
     );
     ref.invalidate(mangaWithIdProvider(mangaId: mangaId));
     state = scanlators;
@@ -151,15 +147,22 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   required String mangaId,
 }) {
   final chapterList = ref.watch(mangaChapterListProvider(mangaId: mangaId));
-  final chapterFilterUnread = ref.watch(mangaChapterFilterUnreadProvider);
-  final chapterFilterDownloaded =
-      ref.watch(mangaChapterFilterDownloadedProvider);
-  final chapterFilterBookmark = ref.watch(mangaChapterFilterBookmarkedProvider);
-  final sortedBy = ref.watch(mangaChapterSortProvider);
-  final sortedDirection =
-      ref.watch(mangaChapterSortDirectionProvider).ifNull(true);
+  // filter options
+  final chapterFilterUnread =
+      ref.watch(mangaChapterFilterUnreadWithMangaIdProvider(mangaId: mangaId));
+  final chapterFilterDownloaded = ref
+      .watch(mangaChapterFilterDownloadedWithMangaIdProvider(mangaId: mangaId));
+  final chapterFilterBookmark = ref
+      .watch(mangaChapterFilterBookmarkedWithMangaIdProvider(mangaId: mangaId));
+  // sort options
+  final sortedBy =
+      ref.watch(mangaChapterSortWithMangaIdProvider(mangaId: mangaId));
+  final sortedDirection = ref
+      .watch(mangaChapterSortDirectionWithMangaIdProvider(mangaId: mangaId))
+      .ifNull(true);
+  // scanlators
   final chapterFilterScanlators =
-    ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
+      ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
   final selectedScanlatorSet = {...chapterFilterScanlators};
 
   bool applyChapterFilter(Chapter chapter) {
@@ -178,8 +181,8 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
       return false;
     }
 
-    if (selectedScanlatorSet.isNotEmpty
-        && !selectedScanlatorSet.contains(chapter.scanlator)) {
+    if (selectedScanlatorSet.isNotEmpty &&
+        !selectedScanlatorSet.contains(chapter.scanlator)) {
       return false;
     }
     return true;
@@ -210,7 +213,8 @@ Chapter? firstUnreadInFilteredChapterList(
   FirstUnreadInFilteredChapterListRef ref, {
   required String mangaId,
 }) {
-  final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
+  final isAscSorted = ref.watch(
+          mangaChapterSortDirectionWithMangaIdProvider(mangaId: mangaId)) ??
       DBKeys.chapterSortDirection.initial;
   final filteredList = ref
       .watch(mangaChapterListWithFilterProvider(mangaId: mangaId))
@@ -250,7 +254,8 @@ Pair<Chapter?, Chapter?>? getPreviousAndNextChapters(
   required String mangaId,
   required String chapterIndex,
 }) {
-  final isAscSorted = ref.watch(mangaChapterSortDirectionProvider) ??
+  final isAscSorted = ref.watch(
+          mangaChapterSortDirectionWithMangaIdProvider(mangaId: mangaId)) ??
       DBKeys.chapterSortDirection.initial;
   final filteredList = ref
       .watch(mangaChapterListWithFilterProvider(mangaId: mangaId))

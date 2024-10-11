@@ -17,6 +17,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import '../../../settings/presentation/browse/widgets/mutil_repo_setting/repo_help_button.dart';
 import '../extension/controller/extension_controller.dart';
 import 'controller/source_controller.dart';
@@ -84,6 +85,8 @@ class SourceScreen extends HookConsumerWidget {
         return RefreshIndicator(
           onRefresh: refresh,
           child: CustomScrollView(
+            controller: mainPrimaryScrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               if (lastUsed.isNotBlank) ...[
                 SliverToBoxAdapter(

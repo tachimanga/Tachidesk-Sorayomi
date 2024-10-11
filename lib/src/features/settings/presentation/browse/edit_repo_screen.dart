@@ -90,9 +90,14 @@ class EditRepoScreen extends HookConsumerWidget {
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index == data.length) {
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 30),
-                      child: RepoFindButton(),
+                    return const Column(
+                      children: [
+                        SizedBox(
+                          height: 15,
+                        ),
+                        RepoCreateFab(textButtonStyle: true),
+                        RepoFindButton(),
+                      ],
                     );
                   }
                   final repo = data[index];
@@ -112,7 +117,7 @@ class EditRepoScreen extends HookConsumerWidget {
   }
 
   void showImportRepoIfNeeded(BuildContext context, WidgetRef ref) {
-    https: //stackoverflow.com/questions/74721839/how-do-you-show-a-dialog-snackbar-inside-a-useeffect-on-flutter
+    // https://stackoverflow.com/questions/74721839/how-do-you-show-a-dialog-snackbar-inside-a-useeffect-on-flutter
     if (urlSchemeAddRepo != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showDialog(

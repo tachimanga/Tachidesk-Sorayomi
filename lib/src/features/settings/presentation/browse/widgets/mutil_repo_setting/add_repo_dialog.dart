@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../global_providers/global_providers.dart';
 import '../../../../../../routes/router_config.dart';
 import '../../../../../../utils/event_util.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
@@ -23,6 +24,7 @@ import '../../../../data/config/remote_blacklist_config.dart';
 import '../../../../data/repo/repo_repository.dart';
 import '../../../../domain/repo/repo_model.dart';
 import '../repo_setting/repo_url_tile.dart';
+import 'add_repo_agreement_dialog.dart';
 
 class AddRepoDialog extends HookConsumerWidget {
   const AddRepoDialog({
@@ -39,7 +41,33 @@ class AddRepoDialog extends HookConsumerWidget {
     WidgetRef ref,
     ValueNotifier<bool> addingState,
   ) async {
-    log("submitAddRepo repoName:$repoName, metaUrl:$metaUrl");
+    final parts = context.l10n!.extension_usage_terms.split("\n");
+    //print("[DEBUG]parts $parts");
+    if (parts.length != 4) {
+      doSubmitAddRepo(repoName, metaUrl, context, ref, addingState);
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (innerCtx) => AddRepoDialogAgreementDialog(
+        parts: parts,
+        onAgreed: () {
+          innerCtx.pop();
+          doSubmitAddRepo(repoName, metaUrl, context, ref, addingState);
+        },
+      ),
+    );
+  }
+
+  Future<void> doSubmitAddRepo(
+    String? repoName,
+    String? metaUrl,
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> addingState,
+  ) async {
+    log("[REPO]submitAddRepo repoName:$repoName, metaUrl:$metaUrl");
+    final userDefaults = ref.read(sharedPreferencesProvider);
     if (repoName != null) {
       repoName = repoName.trim();
     }
@@ -49,6 +77,9 @@ class AddRepoDialog extends HookConsumerWidget {
     if (!(repoName?.isNotBlank == true || metaUrl?.isNotBlank == true)) {
       return;
     }
+    final logRepoName = repoName;
+    final logMetaUrl = metaUrl;
+
     if (metaUrl == null &&
         repoName?.startsWith("http") == true &&
         repoName?.endsWith("index.min.json") == true) {
@@ -66,16 +97,21 @@ class AddRepoDialog extends HookConsumerWidget {
     final toast = ref.read(toastProvider(context));
     final blacklist = ref.read(blacklistConfigProvider);
     final param = AddRepoParam(repoName: repoName, metaUrl: metaUrl);
-    log("submitAddRepo param:${param.toJson()}");
+    log("[REPO]submitAddRepo param:${param.toJson()}");
     addingState.value = true;
     Repo? repo;
     final failTipText = context.l10n!.get_repo_meta_fail;
+    final repoNotExistText = context.l10n!.repo_not_exist;
     (await AsyncValue.guard(() async {
       _checkBlacklist(param, blacklist, failTipText);
       try {
         await ref.read(repoRepositoryProvider).checkRepo(param: param);
       } catch (e) {
-        throw Exception('$failTipText\n${e.toString()}');
+        var detail = e.toString();
+        if (detail.startsWith("HTTP error 4")) {
+          detail = repoNotExistText;
+        }
+        throw Exception('$failTipText\n$detail');
       }
       repo = await ref.read(repoRepositoryProvider).createRepo(param: param);
       await ref.refresh(repoControllerProvider.future);
@@ -108,18 +144,24 @@ class AddRepoDialog extends HookConsumerWidget {
       'parameters': <String, String?>{
         'repoName': param.repoName,
         'metaUrl': param.metaUrl,
+        'x': logRepoName,
+        'y': logMetaUrl,
       },
     });
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final byName = useState(true);
     final repoName = useTextEditingController();
     final repoMetaUrl = useTextEditingController();
     final addingState = useState(false);
     final repoNameEmpty = useState(false);
     final repoMetaUrlEmpty = useState(false);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    final byUrlFirst = userDefaults.getString("config.byUrlFirst") == "1";
+    final byUrlOnly = userDefaults.getString("config.byUrlOnly") == "1";
+    final byName = useState(!byUrlFirst);
+    log("[REPO]byUrlFirst $byUrlFirst");
 
     if (urlSchemeAddRepo != null) {
       final name = urlSchemeAddRepo?.repoName?.isNotEmpty == true
@@ -185,49 +227,93 @@ class AddRepoDialog extends HookConsumerWidget {
                   enabled: !addingState.value,
                   decoration: InputDecoration(
                     hintText: "https://example.com/repo/index.min.json",
+                    hintStyle: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
                     errorText: repoMetaUrlEmpty.value ? "" : null,
                     border: const OutlineInputBorder(),
                   ),
                 ),
-          Row(
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Radio(
-                    value: true,
-                    visualDensity: VisualDensity.compact,
-                    groupValue: byName.value,
-                    onChanged: (value) {
-                      if (value == true) {
-                        byName.value = true;
-                      }
-                    },
-                  ),
-                  Text(context.l10n!.add_repo_by_name)
-                ],
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Radio(
-                    value: false,
-                    visualDensity: VisualDensity.compact,
-                    groupValue: byName.value,
-                    onChanged: (value) {
-                      if (value == false) {
-                        byName.value = false;
-                      }
-                    },
-                  ),
-                  Text(context.l10n!.add_repo_by_url)
-                ],
-              ),
-            ],
-          ),
+          if (!byUrlFirst) ...[
+            Row(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Radio(
+                      value: true,
+                      visualDensity: VisualDensity.compact,
+                      groupValue: byName.value,
+                      onChanged: (value) {
+                        if (value == true) {
+                          byName.value = true;
+                        }
+                      },
+                    ),
+                    Text(context.l10n!.add_repo_by_name)
+                  ],
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Radio(
+                      value: false,
+                      visualDensity: VisualDensity.compact,
+                      groupValue: byName.value,
+                      onChanged: (value) {
+                        if (value == false) {
+                          byName.value = false;
+                        }
+                      },
+                    ),
+                    Text(context.l10n!.add_repo_by_url)
+                  ],
+                ),
+              ],
+            ),
+          ],
+          if (byUrlFirst && !byUrlOnly) ...[
+            Row(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Radio(
+                      value: false,
+                      visualDensity: VisualDensity.compact,
+                      groupValue: byName.value,
+                      onChanged: (value) {
+                        if (value == false) {
+                          byName.value = false;
+                        }
+                      },
+                    ),
+                    Text(context.l10n!.add_repo_by_url)
+                  ],
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Radio(
+                      value: true,
+                      visualDensity: VisualDensity.compact,
+                      groupValue: byName.value,
+                      onChanged: (value) {
+                        if (value == true) {
+                          byName.value = true;
+                        }
+                      },
+                    ),
+                    Text(context.l10n!.add_repo_by_name)
+                  ],
+                ),
+              ],
+            ),
+          ],
         ],
       ),
       actions: [
@@ -237,13 +323,19 @@ class AddRepoDialog extends HookConsumerWidget {
               ? null
               : () {
                   if (byName.value) {
-                    repoNameEmpty.value = repoName.text.isBlank;
-                    submitAddRepo(
-                        repoName.text, null, context, ref, addingState);
+                    final blank = repoName.text.isBlank;
+                    repoNameEmpty.value = blank;
+                    if (!blank) {
+                      submitAddRepo(
+                          repoName.text, null, context, ref, addingState);
+                    }
                   } else {
-                    repoMetaUrlEmpty.value = repoMetaUrl.text.isBlank;
-                    submitAddRepo(
-                        null, repoMetaUrl.text, context, ref, addingState);
+                    final blank = repoMetaUrl.text.isBlank;
+                    repoMetaUrlEmpty.value = blank;
+                    if (!blank) {
+                      submitAddRepo(
+                          null, repoMetaUrl.text, context, ref, addingState);
+                    }
                   }
                 },
           child: Text(addingState.value
@@ -263,7 +355,7 @@ class AddRepoDialog extends HookConsumerWidget {
       if (param.repoName != null) {
         final name = param.repoName;
         final black = blacklistConfig.blackRepoUrlList?.contains(name) == true;
-        log('repo name:$name, black:$black');
+        log('[REPO]repo name:$name, black:$black');
         if (black) {
           logEvent3("BLACK:REPO:NAME", {"x": name});
           throw commonErrStr;
@@ -272,7 +364,7 @@ class AddRepoDialog extends HookConsumerWidget {
       if (param.metaUrl != null) {
         final url = param.metaUrl;
         final black = blacklistConfig.blackRepoUrlList?.contains(url) == true;
-        log('repo metaUrl:$url, black:$black');
+        log('[REPO]repo metaUrl:$url, black:$black');
         if (black) {
           logEvent3("BLACK:REPO:URL", {"x": url});
           throw commonErrStr;

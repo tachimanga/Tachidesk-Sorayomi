@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -39,6 +40,8 @@ class LockSettingTile extends ConsumerWidget {
       ),
       subtitle: Text(lockTypePref.toLocale(context)),
       leading: const Icon(Icons.fingerprint_rounded),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<LockTypeEnum>(

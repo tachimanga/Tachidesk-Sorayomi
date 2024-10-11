@@ -10,27 +10,36 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/sort_list_tile.dart';
-import '../controller/manga_details_controller.dart';
+import '../controller/manga_chapter_controller.dart';
 
 class MangaChapterSortTile extends ConsumerWidget {
   const MangaChapterSortTile({
     super.key,
     required this.sortType,
+    required this.mangaId,
   });
   final ChapterSort sortType;
+  final String mangaId;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sortedBy = ref.watch(mangaChapterSortProvider);
-    final sortedDirection = ref.watch(mangaChapterSortDirectionProvider);
+    final mangaIdSortedByProvider =
+        mangaChapterSortWithMangaIdProvider(mangaId: mangaId);
+    final sortedBy = ref.watch(mangaIdSortedByProvider);
+
+    final mangaIdSortedDirectionProvider =
+        mangaChapterSortDirectionWithMangaIdProvider(mangaId: mangaId);
+    final sortedDirection = ref.watch(mangaIdSortedDirectionProvider);
+
     return SortListTile(
       selected: sortType == sortedBy,
       title: Text(sortType.toLocale(context)),
       ascending: sortedDirection.ifNull(true),
       onChanged: (bool? value) => ref
-          .read(mangaChapterSortDirectionProvider.notifier)
+          .read(mangaIdSortedDirectionProvider.notifier)
           .update(!(sortedDirection.ifNull())),
       onSelected: () =>
-          ref.read(mangaChapterSortProvider.notifier).update(sortType),
+          ref.read(mangaIdSortedByProvider.notifier).update(sortType),
     );
   }
 }

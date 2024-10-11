@@ -47,6 +47,7 @@ class Manga with _$Manga {
     MangaMeta? meta,
     ImgData? thumbnailImg,
     List<MangaTracker>? trackers,
+    String? updateStrategy,
   }) = _Manga;
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);
@@ -85,6 +86,19 @@ class MangaMeta with _$MangaMeta {
       fromJson: MangaMeta.fromJsonToBool,
     )
     bool? readerPageLayoutSkipFirstPage,
+    // manga chapter sort options
+    @JsonKey(name: "flutter_chapterSort") ChapterSort? chapterSort,
+    @JsonKey(
+      name: "flutter_chapterSortDirection",
+      fromJson: MangaMeta.fromJsonToBool,
+    )
+    bool? chapterSortDirection,
+    // manga chapter filter options
+    @JsonKey(name: "flutter_chapterFilterDownloaded")
+    TriState? chapterFilterDownloaded,
+    @JsonKey(name: "flutter_chapterFilterUnread") TriState? chapterFilterUnread,
+    @JsonKey(name: "flutter_chapterFilterBookmarked")
+    TriState? chapterFilterBookmarked,
   }) = _MangaMeta;
 
   static bool? fromJsonToBool(dynamic val) => val != null && val is String
@@ -107,6 +121,11 @@ enum MangaMetaKeys {
   scanlator("flutter_scanlator"),
   pageLayout("flutter_page_layout"),
   pageLayoutSkipFirstPage("flutter_page_layout_skip"),
+  chapterSort("flutter_chapterSort"),
+  chapterSortDirection("flutter_chapterSortDirection"),
+  chapterFilterDownloaded("flutter_chapterFilterDownloaded"),
+  chapterFilterUnread("flutter_chapterFilterUnread"),
+  chapterFilterBookmarked("flutter_chapterFilterBookmarked"),
   ;
 
   const MangaMetaKeys(this.key);

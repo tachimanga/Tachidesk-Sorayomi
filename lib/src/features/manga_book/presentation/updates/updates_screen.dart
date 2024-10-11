@@ -16,6 +16,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import '../../../library/presentation/category/controller/edit_category_controller.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../data/manga_book_repository.dart';
@@ -134,6 +135,7 @@ class UpdatesScreen extends HookConsumerWidget {
                   controller,
                 );
               },
+              enableSafeArea: false,
             )
           : null,
       body: RefreshIndicator(
@@ -149,6 +151,8 @@ class UpdatesScreen extends HookConsumerWidget {
         },
         child: PagedListView(
           pagingController: controller,
+          scrollController: mainPrimaryScrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           builderDelegate: PagedChildBuilderDelegate<ChapterMangaPair>(
             firstPageErrorIndicatorBuilder: (context) => Emoticons(
               text: controller.error.toString(),

@@ -44,9 +44,9 @@ class LibraryScreen extends HookConsumerWidget {
 
     useEffect(() {
       categoryList.showToastOnError(toast, withMicrotask: true);
-      if (categoryList.valueOrNull?.isNotEmpty == true
-          && magic.b8
-          && ref.read(markNeedAskRateProvider) == true) {
+      if (categoryList.valueOrNull?.isNotEmpty == true &&
+          magic.b8 &&
+          ref.read(markNeedAskRateProvider) == true) {
         Future(() {
           ref.read(markNeedAskRateProvider.notifier).update(false);
         });
@@ -143,15 +143,20 @@ class LibraryScreen extends HookConsumerWidget {
                   ],
                 ),
                 endDrawerEnableOpenDragGesture: false,
-                endDrawer: context.isTablet ? const Drawer(
-                  width: kDrawerWidth,
-                  child: LibraryMangaOrganizer(),
-                ) : null,
+                endDrawer: context.isTablet
+                    ? const Drawer(
+                        width: kDrawerWidth,
+                        child: LibraryMangaOrganizer(),
+                      )
+                    : null,
                 body: Padding(
                   padding: KEdgeInsets.h8.size,
                   child: TabBarView(
                     children: data
-                        .map((e) => CategoryMangaList(categoryId: e.id ?? 0))
+                        .map((e) => CategoryMangaList(
+                              categoryId: e.id ?? 0,
+                              categoryCount: data.length,
+                            ))
                         .toList(),
                   ),
                 ),

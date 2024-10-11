@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../global_providers/global_providers.dart';
@@ -38,6 +39,7 @@ class ShowNSFWTile extends ConsumerWidget {
       title: Text(
         context.l10n!.nsfw,
       ),
+      contentPadding: kSettingPadding,
       onChanged: ref.read(showNSFWProvider.notifier).update,
       value: ref.watch(showNSFWProvider).ifNull(magic.a7),
     );

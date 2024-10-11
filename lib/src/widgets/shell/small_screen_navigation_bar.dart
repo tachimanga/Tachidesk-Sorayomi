@@ -34,11 +34,18 @@ class SmallScreenNavigationBar extends ConsumerWidget {
         : const Offset(-12, -4);
     final pureBlackMode = ref.watch(themePureBlackProvider);
     final bool dark = Theme.of(context).brightness == Brightness.dark;
+    final selectedColor = Theme.of(context).colorScheme.primary;
+    const iconSize = 26.0;
+
     return NavigationBarTheme(
       data: NavigationBarThemeData(
-        labelTextStyle: MaterialStateProperty.all(
-          context.textTheme.labelSmall?.copyWith(overflow: TextOverflow.ellipsis),
-        ),
+        labelTextStyle: MaterialStateProperty.resolveWith((states) {
+          return context.textTheme.labelSmall?.copyWith(
+            overflow: TextOverflow.ellipsis,
+            color:
+                states.contains(MaterialState.selected) ? selectedColor : null,
+          );
+        }),
       ),
       child: NavigationBar(
         backgroundColor: dark && pureBlackMode == true ? Colors.black : null,
@@ -49,6 +56,7 @@ class SmallScreenNavigationBar extends ConsumerWidget {
           context.go(target);
           onDestinationSelected(target);
         },
+        height: 74,
         destinations: NavigationBarData.navList
             .map<NavigationDestination>(
               (e) => NavigationDestination(
@@ -56,11 +64,11 @@ class SmallScreenNavigationBar extends ConsumerWidget {
                     ? Badge(
                         label: Text("$extensionUpdateCount"),
                         offset: badgeOffset,
-                        child: Icon(e.icon),
+                        child: Icon(e.icon, size: iconSize),
                       )
-                    : Icon(e.icon),
+                    : Icon(e.icon, size: iconSize),
                 label: e.label(context),
-                selectedIcon: Icon(e.activeIcon),
+                selectedIcon: Icon(e.activeIcon, color: selectedColor, size: iconSize),
                 tooltip: e.label(context),
               ),
             )

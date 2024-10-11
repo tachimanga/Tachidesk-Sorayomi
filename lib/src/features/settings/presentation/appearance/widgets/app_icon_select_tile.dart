@@ -48,6 +48,8 @@ class AppIconSelectTile extends HookConsumerWidget {
       leading: const Icon(Icons.crop_square),
       title: TextPremium(text: context.l10n!.app_icon_title),
       subtitle: Text(_buildAppIconName(context, currentAppIcon)),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () {
         if (appIconMap.isEmpty) {
           return;

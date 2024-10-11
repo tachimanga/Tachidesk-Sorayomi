@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -66,39 +68,23 @@ bool emptyRepo(EmptyRepoRef ref) {
 }
 
 @riverpod
-class ExtensionTagUrl extends _$ExtensionTagUrl
-    with SharedPreferenceClientMixin<String> {
-  @override
-  String? build() {
-    return initialize(
-        ref,
-        key: "config.extensionTagUrl",
-        initial: AppUrls.extensionTagUrl.url,
-      );
-  }
-}
-
-@riverpod
 Future<Map<String, ExtensionTag>> extensionTag(ExtensionTagRef ref) async {
   final token = CancelToken();
   ref.onDispose(token.cancel);
 
   final repo = ref.watch(repoParamProvider);
-  final dioClient = ref.watch(dioClientKeyProvider);
-  final extensionTagUrl = ref.watch(extensionTagUrlProvider) ??
-      AppUrls.extensionTagUrl.url;
+  final userDefaults = ref.read(sharedPreferencesProvider);
+
   ExtensionTagData? result = ExtensionTagData();
   if (repo != "DEFAULT") {
     try {
-      result = (await dioClient.get<ExtensionTagData, ExtensionTagData>(
-        extensionTagUrl,
-        decoder: (e) =>
-        e is Map<String, dynamic>
-            ? ExtensionTagData.fromJson(e)
-            : ExtensionTagData(),
-        cancelToken: token,
-      ))
-          .data;
+      final s = userDefaults.getString("config.extensionTagJson");
+      try {
+        result = ExtensionTagData.fromJson(json.decode(s ?? "{}"));
+      } catch (e) {
+        log("extensionTagJson parse error:$e");
+      }
+      log("extensionTagJson:$result, json:$s");
     } catch (e) {
       log("load extension tag err:$e");
     }

@@ -28,7 +28,8 @@ class WebViewScreen extends HookConsumerWidget {
     final backgroundColor = context.isDarkMode ? Colors.black : Colors.white;
 
     useEffect(() {
-      toast.show("Loading...", gravity: ToastGravity.CENTER, withMicrotask: true);
+      toast.show("Loading...",
+          gravity: ToastGravity.CENTER, withMicrotask: true);
       return () {
         toast.close(withMicrotask: true);
       };
@@ -40,7 +41,7 @@ class WebViewScreen extends HookConsumerWidget {
       if (url == null) {
         return null;
       }
-      print("webViewController $url");
+      log("webViewController $url");
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(backgroundColor)
@@ -84,17 +85,33 @@ class WebViewScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (loadingState.value) ...[
-              MiniCircularProgressIndicator(
-                color: context.iconColor,
-              )
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (loadingState.value) ...[
+                  MiniCircularProgressIndicator(
+                    color: context.iconColor,
+                  )
+                ],
+                Text(
+                  context.l10n!.browse,
+                  style: context.textTheme.titleMedium,
+                ),
+              ],
+            ),
+            if (url?.isNotEmpty == true) ...[
+              Text(
+                url ?? "",
+                style:
+                    context.textTheme.labelSmall?.copyWith(color: Colors.grey),
+              ),
             ],
-            Text(context.l10n!.browse)
           ],
-        ) ,
+        ),
+        titleSpacing: 0,
         actions: [
           IconButton(
             onPressed: () => launchUrlInSafari(context, url ?? "", toast),

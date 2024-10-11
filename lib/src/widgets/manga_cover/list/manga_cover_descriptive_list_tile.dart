@@ -17,6 +17,7 @@ import '../../../features/manga_book/presentation/manga_details/manga_cover_scre
 import '../../../features/settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
+import '../../custom_circular_progress_indicator.dart';
 import '../grid/manga_cover_grid_tile.dart';
 import '../widgets/clipboard_wrapper.dart';
 import '../widgets/manga_badges.dart';
@@ -32,18 +33,22 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
     this.showBadges = true,
     this.showCountBadges = true,
     this.showLastReadChapter = false,
+    this.showRefreshIndicator = false,
     this.enableCoverPopup = false,
     this.enableTitleCopy = false,
     this.enableSourceEntrance = false,
+    this.showSourceUrl = false,
     this.popupItems,
   });
   final Manga manga;
   final bool showBadges;
   final bool showCountBadges;
   final bool showLastReadChapter;
+  final bool showRefreshIndicator;
   final bool enableCoverPopup;
   final bool enableTitleCopy;
   final bool enableSourceEntrance;
+  final bool showSourceUrl;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final ValueChanged<String?>? onTitleClicked;
@@ -60,25 +65,35 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 120,
-              height: 160,
-              child: MangaCoverGridTile(
-                decodeWidth: kMangaCoverDecodeWidth,
-                manga: manga,
-                showBadges: false,
-                showTitle: false,
-                showDarkOverlay: false,
-                onPressed:
-                    enableCoverPopup ? () => openMangaCover(context) : null,
-              ),
+            Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 160,
+                  child: MangaCoverGridTile(
+                    decodeWidth: kMangaCoverDecodeWidth,
+                    manga: manga,
+                    showBadges: false,
+                    showTitle: false,
+                    showDarkOverlay: false,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    onPressed:
+                        enableCoverPopup ? () => openMangaCover(context) : null,
+                  ),
+                ),
+                if (showRefreshIndicator) ...[
+                  MiniCircularProgressIndicator(padding: KEdgeInsets.a16.size),
+                ],
+              ],
             ),
             Expanded(
               flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: Container(
+                constraints: BoxConstraints(minHeight: 160),
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,6 +129,7 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
@@ -130,14 +146,16 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                         ],
                         if (manga.source?.displayName != null)
                           InkWell(
-                            onTap: enableSourceEntrance ? () {
-                              final source = manga.source;
-                              if (source?.id == null) return;
-                              context.push(Routes.getSourceManga(
-                                source!.id!,
-                                SourceType.popular,
-                              ));
-                            } : null,
+                            onTap: enableSourceEntrance
+                                ? () {
+                                    final source = manga.source;
+                                    if (source?.id == null) return;
+                                    context.push(Routes.getSourceManga(
+                                      source!.id!,
+                                      SourceType.popular,
+                                    ));
+                                  }
+                                : null,
                             child: Text(
                               sourceName,
                               style: context.textTheme.bodySmall,
@@ -166,6 +184,24 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                         ),
                       ),
                     ],
+                    if (showSourceUrl && manga.realUrl.isNotBlank == true) ...[
+                      Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                          child: InkWell(
+                            onTap: () => context
+                                .push(Routes.getWebView(manga.realUrl ?? "")),
+                            child: Text(
+                              manga.realUrl ?? "",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.isDarkMode
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade800,
+                              ),
+                            ),
+                          )),
+                    ],
                     if (showBadges)
                       context.isTablet
                           ? MangaChipsRow(
@@ -184,8 +220,12 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                         },
                         icon: const Icon(Icons.search),
                         style: TextButton.styleFrom(
-                            foregroundColor: Colors.grey,
-                            padding: EdgeInsets.zero),
+                          foregroundColor: context.isDarkMode
+                              ? Colors.grey
+                              : Colors.grey.shade600,
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                         label: Text(context.l10n!.globalSearch),
                       )
                     ]

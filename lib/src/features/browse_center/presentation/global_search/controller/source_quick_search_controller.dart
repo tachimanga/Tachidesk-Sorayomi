@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../data/source_repository/source_repository.dart';
@@ -63,6 +64,18 @@ Future<List<Manga>> sourceQuickSearchMangaList(
 }
 
 @riverpod
+AsyncValue<Pair<Map<String, List<Source>>?, List<String?>?>>
+    sourceMapFilteredWithSort(SourceMapFilteredWithSortRef ref) {
+  final sourceMapData = ref.watch(sourceMapFilteredProvider);
+  final sourceIdsValue = ref.watch(sourceIdListForSearchProvider);
+  final sourceIds = sourceIdsValue.valueOrNull;
+  if (sourceIds == null) {
+    return const AsyncLoading();
+  }
+  return sourceMapData.copyWithData((e) => Pair(first: e, second: sourceIds));
+}
+
+@riverpod
 AsyncValue<List<QuickSearchResult>> quickSearchResults(
     QuickSearchResultsRef ref,
     {String? query,
@@ -71,15 +84,22 @@ AsyncValue<List<QuickSearchResult>> quickSearchResults(
     return const AsyncValue.data([]);
   }
   //print("SEARCH quickSearchResults $query pin:$pin");
-  final sourceMapData = ref.watch(sourceMapFilteredProvider);
+  final sourceMapFilteredWithSort =
+      ref.watch(sourceMapFilteredWithSortProvider);
+  final pair = sourceMapFilteredWithSort.valueOrNull;
+  final sourceMapData = pair?.first;
+  final sourceIds = pair?.second ?? [];
 
-  final sourceMap = {...?sourceMapData.valueOrNull}..remove("lastUsed");
+  final sourceMap = {...?sourceMapData}..remove("lastUsed");
   final pinnedList = sourceMap.remove("pinned");
   final sourceList = sourceMap.values.fold(
     <Source>[],
     (prev, cur) => [...prev, ...cur],
   );
-  final sortedSourceList = [...?pinnedList, ...sourceList];
+
+  final sortedPinnedList = sortedSourceListByIds(pinnedList, sourceIds);
+  final sortedLeftList = sortedSourceListByIds(sourceList, sourceIds);
+  final sortedSourceList = [...sortedPinnedList, ...sortedLeftList];
   final List<QuickSearchResult> sourceMangaListPairList = [];
 
   final onlySearchPinSource = ref.watch(onlySearchPinSourceProvider);
@@ -102,5 +122,25 @@ AsyncValue<List<QuickSearchResult>> quickSearchResults(
   // ref.onDispose(() {
   //   print("SEARCH quickSearchResults ondispose");
   // });
-  return sourceMapData.copyWithData((_) => sourceMangaListPairList);
+  return sourceMapFilteredWithSort.copyWithData((_) => sourceMangaListPairList);
+}
+
+List<Source> sortedSourceListByIds(
+    List<Source>? sourceList, List<String?> sourceIds) {
+  if (sourceList == null) {
+    return [];
+  }
+  final sourceListMap = <String, Source>{};
+  for (final s in sourceList) {
+    sourceListMap[s.id ?? ""] = s;
+  }
+  final sortedSourceList = <Source>[];
+  for (final id in sourceIds) {
+    final source = sourceListMap.remove(id);
+    if (source != null) {
+      sortedSourceList.add(source);
+    }
+  }
+  sortedSourceList.addAll(sourceListMap.values);
+  return sortedSourceList;
 }

@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/enum.dart';
 
@@ -30,6 +31,8 @@ class ReaderPageLayoutTile extends ConsumerWidget {
       leading: const Icon(Icons.menu_book_outlined),
       title: TextPremium(text: context.l10n!.page_layout),
       subtitle: pageLayout != null ? Text(pageLayout.toLocale(context)) : null,
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => const GlobalPageLayoutPopup(),

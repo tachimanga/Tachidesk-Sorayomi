@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/manga_cover_util.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/chapter_page/chapter_page_model.dart';
@@ -39,6 +40,7 @@ class ChapterMangaListTile extends StatelessWidget {
           pair.chapter != null ? () => toggleSelect(pair.chapter!) : null,
       child: ListTile(
         contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 6.0),
+        visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -66,6 +68,8 @@ class ChapterMangaListTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: ServerImage(
               imageUrl: pair.manga?.thumbnailUrl ?? "",
+              imageData: pair.manga?.thumbnailImg,
+              extInfo: CoverExtInfo.build(pair.manga),
               size: const Size.square(48),
               decodeWidth: 48,
             ),
@@ -73,7 +77,7 @@ class ChapterMangaListTile extends StatelessWidget {
         ),
         subtitle: Text(
           pair.chapter?.name ?? pair.chapter?.chapterNumber.toString() ?? "",
-          style: TextStyle(color: color),
+          style: context.textTheme.bodySmall?.copyWith(color: color),
         ),
         trailing: (pair.manga?.id != null && pair.chapter?.index != null)
             ? DownloadStatusIcon(

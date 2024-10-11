@@ -14,6 +14,7 @@ import '../../../constants/enum.dart';
 import '../../../global_providers/global_providers.dart';
 import '../../../utils/classes/trace/trace_model.dart';
 import '../../../utils/classes/trace/trace_ref.dart';
+import '../../../utils/cover/cover_cache_manager.dart';
 import '../../../utils/storage/dio/dio_client.dart';
 import '../../library/domain/category/category_model.dart';
 import '../domain/chapter/chapter_model.dart';
@@ -29,8 +30,10 @@ class MangaBookRepository {
   final DioClient dioClient;
   Future<void> addMangaToLibrary(String mangaId) =>
       dioClient.get(MangaUrl.library(mangaId));
-  Future<void> removeMangaFromLibrary(String mangaId) =>
-      dioClient.delete(MangaUrl.library(mangaId));
+  Future<void> removeMangaFromLibrary(String mangaId) {
+    CoverCacheManager().onRemoveFromLibrary(mangaId);
+    return dioClient.delete(MangaUrl.library(mangaId));
+  }
 
   Future<void> modifyBulkChapters({ChapterBatch? batch}) =>
       dioClient.post(MangaUrl.chapterBatch, data: batch?.toJson());
@@ -135,7 +138,11 @@ class MangaBookRepository {
   }) async =>
       (await dioClient.patch<Chapter, Chapter?>(
         MangaUrl.meta(mangaId),
-        data: FormData.fromMap({"key": key, "value": value?.toString()}),
+        data: FormData.fromMap({
+          "key": key,
+          "value": value?.toString(),
+          "remove": value == null ? "true" : "false",
+        }),
         cancelToken: cancelToken,
       ));
 

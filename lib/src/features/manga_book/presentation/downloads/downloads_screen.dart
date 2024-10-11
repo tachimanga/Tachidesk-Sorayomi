@@ -9,24 +9,29 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_constants.dart';
 import '../../../../constants/app_sizes.dart';
 
+import '../../../../constants/enum.dart';
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
+import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../settings/presentation/lab/controller/pip_controller.dart';
 import '../../data/downloads/downloads_repository.dart';
 import '../../domain/downloads/downloads_model.dart';
+import 'controller/downloads_controller.dart';
 import 'service/download_ticket_service.dart';
 import 'widgets/download_pip_button.dart';
 import 'widgets/download_progress_list_tile.dart';
 import 'widgets/download_reward_ad_dialog.dart';
+import 'widgets/download_status_list_tile.dart';
 import 'widgets/downloads_parallel_button.dart';
 import 'widgets/downloads_task_button.dart';
 
@@ -48,14 +53,19 @@ class DownloadsScreen extends HookConsumerWidget {
 
     useEffect(() {
       pipe.invokeMethod("SCREEN_ON", "1");
+      pipe.invokeMethod("DOWNLOAD:SPEED:START");
       return () {
         pipe.invokeMethod("SCREEN_ON", "0");
+        pipe.invokeMethod("DOWNLOAD:SPEED:STOP");
       };
     }, []);
 
+    final downloadStatus = ref.watch(downloadStatusProvider);
+
+    final showDownloadStatus = downloadStatus == DownloadQueueStatus.started;
     final showPipButton = ref.watch(pipBuildFlagProvider) == true &&
         ref.watch(bgEnablePrefProvider) == true &&
-        downloads.valueOrNull?.status == "Started";
+        downloadStatus == DownloadQueueStatus.started;
 
     final ticket = useState(kDownloadUnlimited);
     useEffect(() {
@@ -67,6 +77,14 @@ class DownloadsScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.downloads),
+        bottom: showDownloadStatus
+            ? PreferredSize(
+                preferredSize: kCalculateAppBarBottomSizeV2(
+                  showDownloadStatus: showDownloadStatus,
+                ),
+                child: const DownloadStatusListTile(),
+              )
+            : null,
         actions: [
           if (showPipButton) const DownloadPipButton(),
           if (ticket.value != kDownloadUnlimited) ...[
@@ -115,6 +133,8 @@ class DownloadsScreen extends HookConsumerWidget {
         ListTile(
           title: Text(context.l10n!.recentlyDownloaded),
           leading: const Icon(Icons.download_outlined),
+          contentPadding: kSettingPadding,
+          trailing: kSettingTrailing,
           onTap: () => context.push(Routes.downloaded),
         ),
         const Divider(),

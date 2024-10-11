@@ -164,6 +164,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     final windowPadding =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
     //print("ContinuousReaderMode build point: ${pointCount.value}");
+    const decodeFactor = 1.5;
     return ReaderWrapper(
       scrollDirection: scrollDirection,
       chapter: currChapter.value,
@@ -227,6 +228,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
             pointCount.value = pointCount.value - 1;
           },
           child: InteractiveWrapper(
+            showScrollBar: false,
             child: ScrollablePositionedList.separated(
               physics: pointCount.value == 2
                   ? const NeverScrollableScrollPhysics()
@@ -273,6 +275,12 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                     child: child,
                   ),
                   imageSizeCache: imageSizeCache,
+                  maxDecodeWidth: scrollDirection == Axis.vertical
+                      ? context.width * decodeFactor
+                      : null,
+                  maxDecodeHeight: scrollDirection != Axis.vertical
+                      ? context.height * decodeFactor
+                      : null,
                 );
 
                 final serverImageWithPadding = PaddingServerImage(

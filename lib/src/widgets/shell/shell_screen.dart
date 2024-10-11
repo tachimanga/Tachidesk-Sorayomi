@@ -27,6 +27,10 @@ import '../../utils/log.dart';
 import 'big_screen_navigation_bar.dart';
 import 'small_screen_navigation_bar.dart';
 
+final GlobalKey<ScaffoldState> mainScaffoldKey = GlobalKey<ScaffoldState>();
+ScrollController get mainPrimaryScrollController =>
+    PrimaryScrollController.of(mainScaffoldKey.currentContext!);
+
 class ShellScreen extends HookConsumerWidget {
   const ShellScreen({
     super.key,
@@ -54,6 +58,7 @@ class ShellScreen extends HookConsumerWidget {
     });
     return context.isTablet
         ? Scaffold(
+            key: mainScaffoldKey,
             body: Row(
               children: [
                 BigScreenNavigationBar(
@@ -71,6 +76,7 @@ class ShellScreen extends HookConsumerWidget {
             ),
           )
         : Scaffold(
+            key: mainScaffoldKey,
             body: child,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,

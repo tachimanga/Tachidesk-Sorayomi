@@ -311,6 +311,7 @@ class DoublePageReaderModeV2 extends HookConsumerWidget {
       mangaId: "${manga.id}",
       pageIndex: "${page.pageIndex}",
     );
+    const decodeFactor = 1;
     final serverImage = ServerImage(
       fit: BoxFit.contain,
       alignment: alignment,
@@ -325,6 +326,12 @@ class DoublePageReaderModeV2 extends HookConsumerWidget {
           CenterCircularProgressIndicator(
         value: downloadProgress.progress,
       ),
+      maxDecodeWidth: scrollDirection != Axis.vertical
+          ? context.width * decodeFactor
+          : null,
+      maxDecodeHeight: scrollDirection == Axis.vertical
+          ? context.height * decodeFactor
+          : null,
     );
     if (!longPressEnable) {
       return serverImage;

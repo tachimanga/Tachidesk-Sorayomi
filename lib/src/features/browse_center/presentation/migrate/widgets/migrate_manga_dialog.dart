@@ -89,6 +89,20 @@ class MigrateMangaDialog extends HookConsumerWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 24.0,
+              right: 24.0,
+              bottom: 10.0,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: Text(
+                context.l10n!.migration_dialog_tips,
+                style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+              ),
+            ),
+          ),
           CheckboxListTile(
             controlAffinity: ListTileControlAffinity.leading,
             value: migrateChapterFlag,

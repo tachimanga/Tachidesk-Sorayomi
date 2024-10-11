@@ -24,7 +24,7 @@ class NavigationBarData {
 
   static final navList = [
     NavigationBarData(
-      icon: Icons.collections_bookmark_outlined,
+      icon: Icons.collections_bookmark_rounded,
       activeIcon: Icons.collections_bookmark_rounded,
       label: (context) => context.l10n!.library,
       path: Routes.library,
@@ -53,8 +53,8 @@ class NavigationBarData {
       activeOn: [Routes.downloads],
     ),*/
     NavigationBarData(
-      icon: Icons.history_outlined,
-      activeIcon: Icons.history_rounded,
+      icon: Icons.access_time,
+      activeIcon: Icons.access_time_filled,
       label: (context) => context.l10n!.history,
       path: Routes.history,
       activeOn: [Routes.history],

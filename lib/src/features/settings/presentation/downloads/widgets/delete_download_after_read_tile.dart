@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -24,6 +25,7 @@ class DeleteDownloadAfterReadTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.delete_outline),
       title: TextPremium(text: context.l10n!.remove_after_read),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("DOWNLOAD:AUTO:DELETE:$value");
         ref

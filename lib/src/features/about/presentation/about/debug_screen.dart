@@ -246,9 +246,30 @@ class DebugScreen extends HookConsumerWidget {
         SwitchListTile(
           controlAffinity: ListTileControlAffinity.trailing,
           secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("downscale page image"),
+          onChanged: ref.read(downscalePageProvider.notifier).update,
+          value: ref.watch(downscalePageProvider).ifNull(true),
+        ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("auto refresh manga"),
+          onChanged: ref.read(autoRefreshMangaProvider.notifier).update,
+          value: ref.watch(autoRefreshMangaProvider).ifNull(true),
+        ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
           title: Text("show direct flag"),
           onChanged: ref.read(showDirectFlagPrefProvider.notifier).update,
           value: ref.watch(showDirectFlagPrefProvider).ifNull(true),
+        ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("show source url"),
+          onChanged: ref.read(showSourceUrlProvider.notifier).update,
+          value: ref.watch(showSourceUrlProvider).ifNull(true),
         ),
       ]),
     );

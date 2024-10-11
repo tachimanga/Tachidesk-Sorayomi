@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../global_providers/global_providers.dart';
@@ -36,6 +37,7 @@ class ShowStatusBarTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.signal_cellular_alt_rounded),
       title: Text(context.l10n!.showStatusBar),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         pipe.invokeMethod("LogEvent", "READER:STATUS_BAR:$value");
         ref.read(showStatusBarModeProvider.notifier).update(value);

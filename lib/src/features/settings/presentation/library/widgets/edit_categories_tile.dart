@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../library/presentation/category/controller/edit_category_controller.dart';
@@ -23,6 +24,8 @@ class EditCategoriesTile extends ConsumerWidget {
       title: Text(context.l10n!.editCategory),
       subtitle: Text(context.l10n!.num_categories(count)),
       leading: const Icon(Icons.label_rounded),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => context.push([
         Routes.settings,
         Routes.librarySettings,

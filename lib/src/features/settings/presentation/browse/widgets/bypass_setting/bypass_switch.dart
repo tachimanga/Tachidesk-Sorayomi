@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../global_providers/global_providers.dart';
@@ -33,6 +34,7 @@ class ByPassTile extends ConsumerWidget {
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.block_rounded),
+      contentPadding: kSettingPadding,
       title: Text(
         context.l10n!.byPassSwitch,
       ),

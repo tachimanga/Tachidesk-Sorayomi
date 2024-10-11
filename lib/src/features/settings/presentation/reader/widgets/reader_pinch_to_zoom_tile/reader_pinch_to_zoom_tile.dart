@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../global_providers/global_providers.dart';
@@ -36,6 +37,7 @@ class ReaderPinchToZoomTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.pinch_rounded),
       title: Text(context.l10n!.pinch_to_zoom),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("READER:PINCH_TO_ZOOM:$value");
         ref.read(readerPinchToZoomProvider.notifier).update(value);

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../utils/event_util.dart';
@@ -35,6 +36,7 @@ class ReaderClassicStartButtonTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.play_arrow_rounded),
       title: Text(context.l10n!.classic_start_reading_button),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("READER:CLASSIC_START:$value");
         ref.read(readerClassicStartButtonProvider.notifier).update(value);

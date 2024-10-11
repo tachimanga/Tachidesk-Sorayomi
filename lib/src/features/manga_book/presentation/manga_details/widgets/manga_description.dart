@@ -14,9 +14,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
 
+import '../../../../../global_providers/preference_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
+import '../../../../../utils/manga_cover_util.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../utils/purchase.dart';
 import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
@@ -35,11 +37,13 @@ class MangaDescription extends HookConsumerWidget {
     required this.manga,
     required this.refresh,
     required this.enableStartReading,
+    required this.showCoverRefreshIndicator,
     this.backgroundImageHeight,
   });
   final Manga manga;
   final AsyncCallback refresh;
   final bool enableStartReading;
+  final bool showCoverRefreshIndicator;
   final double? backgroundImageHeight;
 
   @override
@@ -52,14 +56,17 @@ class MangaDescription extends HookConsumerWidget {
     final purchaseGate = ref.watch(purchaseGateProvider);
     final testflightFlag = ref.watch(testflightFlagProvider);
     final freeTrialFlag = ref.watch(freeTrialFlagProvider);
+    final showSourceUrl = ref.watch(showSourceUrlProvider);
     EdgeInsets padding = MediaQuery.paddingOf(context);
 
     final mangaInfoWidget = MangaCoverDescriptiveListTile(
       manga: manga,
       showBadges: false,
+      showRefreshIndicator: showCoverRefreshIndicator,
       enableCoverPopup: true,
       enableTitleCopy: true,
       enableSourceEntrance: true,
+      showSourceUrl: showSourceUrl == true,
       onTitleClicked: (query) => context.push(Routes.getGlobalSearch(query)),
     );
 
@@ -72,6 +79,7 @@ class MangaDescription extends HookConsumerWidget {
                   ServerImage(
                     imageUrl: manga.thumbnailUrl ?? "",
                     imageData: manga.thumbnailImg, fit: BoxFit.cover,
+                    extInfo: CoverExtInfo.build(manga),
                     size: Size.fromHeight(backgroundImageHeight!),
                     decodeWidth: kMangaCoverDecodeWidth,
                   ),
@@ -105,7 +113,7 @@ class MangaDescription extends HookConsumerWidget {
               )
             : mangaInfoWidget,
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
           child: Row(
             children: [
               Expanded(

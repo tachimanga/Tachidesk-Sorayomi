@@ -235,7 +235,7 @@
   "@noUpdatesAvailable": {
     "description": "Text to show that the user is using the latest version of the app"
   },
-  "noUpdatesFound": "Оновлень не знайдено",
+  "noUpdatesFound": "Немає оновлень",
   "@noUpdatesFound": {
     "description": "Toast Text to show that there are no Updates available"
   },
@@ -595,7 +595,7 @@
       }
     }
   },
-  "noCategoryMangaFound": "У цій категорії не знайдено жодної манґи. \n(Порада: перевірте пошук та фільтри!)",
+  "noCategoryMangaFound": "Категорія порожня",
   "@noCategoryMangaFound": {
     "description": "Hint text to check filter when manga list is empty in Category tab in Library"
   },
@@ -1207,7 +1207,7 @@
   "@long_press_action_menu": {},
   "app_icon_update_tip": "Якщо піктограма не оновилася успішно, ви можете зачекати трохи або просто перезапустити пристрій.",
   "@app_icon_update_tip": {},
-  "update_running_text": "Оновлення {title}",
+  "update_running_text": "Оновлення: {title}",
   "@update_running_text": {},
   "update_completed_text": "Оновлення завершено. Успішно {x}, не вдалося {y}.",
   "@update_completed_text": {},
@@ -1238,5 +1238,47 @@
   "downloading_from_iCloud": "Завантаження з iCloud",
   "@downloading_from_iCloud": {},
   "iCloud_unavailable_tip": "iCloud Drive недоступний. Будь ласка, увімкніть iCloud Drive в налаштуваннях системи. Для отримання додаткової допомоги відвідайте https://tachimanga.app/icloud",
-  "@iCloud_unavailable_tip": {}
+  "@iCloud_unavailable_tip": {},
+  "downloading_running_text": "Завантаження {running} з {total}",
+  "@downloading_running_text": {},
+  "edit_cover": "Редагувати обкладинку",
+  "@edit_cover": {},
+  "set_as_cover": "Встановити як обкладинку",
+  "@set_as_cover": {},
+  "cover_updated": "Обкладинка оновлена",
+  "@cover_updated": {},
+  "save_image_user_denied_msg": "Доступ відмовлено, будь ласка, дозвольте Tachimanga отримати доступ до своїх фотоальбомів у налаштуваннях системи.",
+  "@save_image_user_denied_msg": {},
+  "set_as_default": "Встановити за замовчуванням",
+  "@set_as_default": {},
+  "reset_to_default": "Скинути налаштування",
+  "@reset_to_default": {},
+  "library_is_empty": "Ваша бібліотека порожня.\nДодайте мангу з вкладки перегляду.",
+  "@library_is_empty": {},
+  "history_is_empty": "Нічого не читали останнім часом.",
+  "@history_is_empty": {},
+  "downloaded_is_empty": "Нещодавно не завантажувалося.",
+  "@downloaded_is_empty": {},
+  "reset_filters": "Скинути фільтри",
+  "@reset_filters": {},
+  "repo_not_exist": "Сховище розширень не існує.",
+  "@repo_not_exist": {},
+  "disagree_label": "Не погоджуюсь",
+  "@disagree_label": {},
+  "agree_label": "Погоджуюсь",
+  "@agree_label": {},
+  "log_enable_tips": "Логування успішно увімкнено. Зміни набудуть чинності після перезапуску програми.",
+  "@log_enable_tips": {},
+  "manga_auto_refresh_title": "Автоматичне оновлення",
+  "@manga_auto_refresh_title": {},
+  "manga_auto_refresh_desc": "Перевірка нових розділів під час перегляду заголовка.",
+  "@manga_auto_refresh_desc": {},
+  "migration_dialog_tips": "Завантажені розділи не переносяться під час міграції.",
+  "@migration_dialog_tips": {},
+  "premium_month_price": "{price}/місяць",
+  "@premium_month_price": {},
+  "premium_year_price": "{price}/рік",
+  "@premium_year_price": {},
+  "premium_month_price_only": "Лише {price}/місяць",
+  "@premium_month_price_only": {}
 }

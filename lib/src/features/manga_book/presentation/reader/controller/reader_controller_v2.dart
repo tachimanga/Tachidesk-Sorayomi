@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/db_keys.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
@@ -31,6 +32,28 @@ class DownscaleImage extends _$DownscaleImage
         ref,
         key: "config.downscaleImage2",
         initial: true,
+      );
+}
+
+@riverpod
+class DownscalePage extends _$DownscalePage
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: "config.downscalePage",
+        initial: true,
+      );
+}
+
+@riverpod
+class AutoRefreshManga extends _$AutoRefreshManga
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: DBKeys.autoRefreshTitle.name,
+        initial: DBKeys.autoRefreshTitle.initial,
       );
 }
 

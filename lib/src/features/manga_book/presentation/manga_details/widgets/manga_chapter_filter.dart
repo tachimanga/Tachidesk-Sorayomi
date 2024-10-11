@@ -9,7 +9,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/custom_checkbox_list_tile.dart';
+import '../../../../../widgets/tristate_checkbox_list_tile.dart';
 import '../../../domain/manga/manga_model.dart';
+import '../controller/manga_chapter_controller.dart';
 import '../controller/manga_details_controller.dart';
 
 class MangaChapterFilter extends ConsumerWidget {
@@ -17,29 +19,65 @@ class MangaChapterFilter extends ConsumerWidget {
   final String mangaId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // unread filter
+    final filterUnreadWithMangaIdProvider =
+        mangaChapterFilterUnreadWithMangaIdProvider(mangaId: mangaId);
+    final filterUnreadWithMangaId = ref.watch(filterUnreadWithMangaIdProvider);
+
+    // bookmarked filter
+    final filterBookmarkedWithMangaIdProvider =
+        mangaChapterFilterBookmarkedWithMangaIdProvider(mangaId: mangaId);
+    final filterBookmarkedWithMangaId =
+        ref.watch(filterBookmarkedWithMangaIdProvider);
+
+    // downloaded filter
+    final filterDownloadedWithMangaIdProvider =
+        mangaChapterFilterDownloadedWithMangaIdProvider(mangaId: mangaId);
+    final filterDownloadedWithMangaId =
+        ref.watch(filterDownloadedWithMangaIdProvider);
+
+    // scanlator filter
     final scanlatorList =
         ref.watch(mangaScanlatorListProvider(mangaId: mangaId));
     final selectedScanlators =
         ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
     final selectedScanlatorSet = {...selectedScanlators};
+
     return ListView(
       children: [
-        CustomCheckboxListTile(
-          title: context.l10n!.unread,
-          provider: mangaChapterFilterUnreadProvider,
-          onChanged: ref.read(mangaChapterFilterUnreadProvider.notifier).update,
+        TriCheckboxListTile(
+          title: Text(context.l10n!.unread),
+          value: filterUnreadWithMangaId,
+          tristate: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          activeColor: context.theme.indicatorColor,
+          onChanged: (value) {
+            ref.read(filterUnreadWithMangaIdProvider.notifier).update(value);
+          },
         ),
-        CustomCheckboxListTile(
-          title: context.l10n!.bookmarked,
-          provider: mangaChapterFilterBookmarkedProvider,
-          onChanged:
-              ref.read(mangaChapterFilterBookmarkedProvider.notifier).update,
+        TriCheckboxListTile(
+          title: Text(context.l10n!.bookmarked),
+          value: filterBookmarkedWithMangaId,
+          tristate: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          activeColor: context.theme.indicatorColor,
+          onChanged: (value) {
+            ref
+                .read(filterBookmarkedWithMangaIdProvider.notifier)
+                .update(value);
+          },
         ),
-        CustomCheckboxListTile(
-          title: context.l10n!.downloaded,
-          provider: mangaChapterFilterDownloadedProvider,
-          onChanged:
-              ref.read(mangaChapterFilterDownloadedProvider.notifier).update,
+        TriCheckboxListTile(
+          title: Text(context.l10n!.downloaded),
+          value: filterDownloadedWithMangaId,
+          tristate: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          activeColor: context.theme.indicatorColor,
+          onChanged: (value) {
+            ref
+                .read(filterDownloadedWithMangaIdProvider.notifier)
+                .update(value);
+          },
         ),
         if (scanlatorList.isNotBlank && scanlatorList.length > 1) ...[
           ListTile(

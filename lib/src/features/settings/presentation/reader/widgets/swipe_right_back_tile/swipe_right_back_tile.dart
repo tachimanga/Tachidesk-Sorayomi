@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/enum.dart';
 
@@ -43,6 +44,8 @@ class SwipeRightBackTile extends ConsumerWidget {
       leading: const Icon(Icons.swipe_rounded),
       subtitle: Text(swipeRightMode.toLocale(context)),
       title: Text(context.l10n!.swipeRightToGoBack),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<SwipeRightToGoBackMode>(

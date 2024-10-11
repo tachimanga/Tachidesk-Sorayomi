@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../routes/router_config.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 
@@ -20,6 +21,8 @@ class ReaderAdvancedTile extends ConsumerWidget {
       leading: const Icon(Icons.code_rounded),
       title: Text(context.l10n!.advanced),
       subtitle: Text(context.l10n!.readerAdvancedSubtitle),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => context.push([
         Routes.settings,
         Routes.readerSettings,

@@ -11,6 +11,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/event_util.dart';
@@ -64,6 +65,8 @@ class DownloadsParallelSettingTile extends ConsumerWidget {
         text: context.l10n!.concurrent_download_short_title,
       ),
       subtitle: Text("$limit"),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () {
         logEvent3("DOWNLOAD:PARALLEL:TAP:TILE");
         showDialog(

@@ -12,6 +12,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_constants.dart';
 import '../../../../constants/enum.dart';
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
@@ -23,6 +24,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../widgets/premium_required_tile.dart';
 import '../../../../widgets/section_title.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../data/backup/backup_repository.dart';
 import '../../domain/backup/backup_model.dart';
@@ -154,6 +156,8 @@ class BackupScreenV2 extends HookConsumerWidget {
                   RefreshIndicator(
                     onRefresh: refresh,
                     child: ListView.builder(
+                      controller: mainPrimaryScrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: data.isBlank ? 1 : 2,
                       itemBuilder: (context, sectionIndex) {
                         if (sectionIndex == 0) {
@@ -166,6 +170,8 @@ class BackupScreenV2 extends HookConsumerWidget {
                                 subtitle:
                                     Text(context.l10n!.createBackupDescription),
                                 leading: const Icon(Icons.backup_rounded),
+                                contentPadding: kSettingPadding,
+                                trailing: kSettingTrailing,
                                 onTap: () async {
                                   if (loadingState.value) {
                                     return;
@@ -191,6 +197,8 @@ class BackupScreenV2 extends HookConsumerWidget {
                                 subtitle: Text(
                                     context.l10n!.restoreBackupDescription),
                                 leading: const Icon(Icons.restore_rounded),
+                                contentPadding: kSettingPadding,
+                                trailing: kSettingTrailing,
                                 onTap: () async {
                                   if (loadingState.value) {
                                     return;
@@ -208,6 +216,8 @@ class BackupScreenV2 extends HookConsumerWidget {
                                       context.l10n!.importBackupDescription),
                                   leading: const Icon(
                                       Icons.add_circle_outline_rounded),
+                                  contentPadding: kSettingPadding,
+                                  trailing: kSettingTrailing,
                                   onTap: () async {
                                     if (loadingState.value) {
                                       return;

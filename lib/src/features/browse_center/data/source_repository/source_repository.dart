@@ -36,6 +36,17 @@ class SourceRepository {
       ))
           .data;
 
+  Future<SourceSearchList?> getSourceListForSearch(
+          {CancelToken? cancelToken}) async =>
+      (await dioClient.get<SourceSearchList, SourceSearchList?>(
+        SourceUrl.sourceListForSearch,
+        decoder: (e) => e is Map<String, dynamic>
+            ? SourceSearchList.fromJson(e)
+            : SourceSearchList(),
+        cancelToken: cancelToken,
+      ))
+          .data;
+
   Future<List<SourcePreference>?> getPreferenceList({
     required String sourceId,
     CancelToken? cancelToken,
@@ -134,7 +145,6 @@ class SourceRepository {
         cancelToken: cancelToken,
       ))
           .data;
-
 
   Future<void> installMangaFile(
     BuildContext context, {

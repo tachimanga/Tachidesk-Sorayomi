@@ -28,12 +28,13 @@ class RepoFindButton extends HookConsumerWidget {
     }
     return TextButton.icon(
       onPressed: () {
-        launchUrlInSafari(
-          context,
-          userDefaults.getString("config.repoFindUrl") ??
-              AppUrls.findRepositories.url,
-          toast,
-        );
+        final url = userDefaults.getString("config.repoFindUrl") ??
+            AppUrls.findRepositories.url;
+        if (url.contains("/a")) {
+          launchUrlInSafari(context, url, toast);
+        } else {
+          launchUrlInWeb(context, url, toast);
+        }
         pipe.invokeMethod("LogEvent", "REPO:ADD_BTN_TAP_FIND");
       },
       icon: const Icon(Icons.search_rounded),

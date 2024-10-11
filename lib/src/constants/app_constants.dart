@@ -30,3 +30,6 @@ const kCategoryAlwaysAskValue = -1;
 const kMangaCoverDecodeWidth = 240;
 
 const kDefaultAppIconKey = "default";
+
+const kSettingPadding = EdgeInsetsDirectional.only(start: 16.0, end: 10.0);
+const kSettingTrailing = Icon(Icons.navigate_next, color: Color(0xFF616161));

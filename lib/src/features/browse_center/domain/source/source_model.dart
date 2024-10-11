@@ -34,3 +34,25 @@ class Source with _$Source {
 
   factory Source.fromJson(Map<String, dynamic> json) => _$SourceFromJson(json);
 }
+
+
+@freezed
+class SourceSearchList with _$SourceSearchList {
+  factory SourceSearchList({
+    List<SourceSearch>? list,
+  }) = _SourceSearchList;
+
+  factory SourceSearchList.fromJson(Map<String, dynamic> json) =>
+      _$SourceSearchListFromJson(json);
+}
+
+@freezed
+class SourceSearch with _$SourceSearch {
+  factory SourceSearch({
+    int? count,
+    String? sourceId,
+  }) = _SourceSearch;
+
+  factory SourceSearch.fromJson(Map<String, dynamic> json) =>
+      _$SourceSearchFromJson(json);
+}

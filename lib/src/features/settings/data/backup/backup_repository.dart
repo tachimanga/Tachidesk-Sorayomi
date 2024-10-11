@@ -38,7 +38,7 @@ class BackupRepository {
             (!kIsWeb && (file?.path).isBlank))) {
       throw context.l10n!.errorFilePick;
     }
-    if (!(file!.name.endsWith('.proto.gz') || file.name.endsWith('.tachibk'))) {
+    if (!(file!.name.endsWith('.gz') || file.name.endsWith('.tachibk'))) {
       throw context.l10n!.errorFilePickUnknownType(".proto.gz or .tachibk");
     }
     return (await dioClient.post<BackupMissing, BackupMissing?>(

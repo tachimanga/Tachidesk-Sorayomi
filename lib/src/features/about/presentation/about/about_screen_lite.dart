@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_constants.dart';
 import '../../../../constants/gen/assets.gen.dart';
 
 import '../../../../constants/urls.dart';
@@ -48,6 +49,8 @@ class AboutScreenLite extends HookConsumerWidget {
           ListTile(
             title: Text(context.l10n!.changelogs),
             leading: const Icon(Icons.history_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => launchUrlInWeb(
               context,
               userDefaults.getString("config.changelogs") ?? AppUrls.changelogs.url,
@@ -57,6 +60,8 @@ class AboutScreenLite extends HookConsumerWidget {
           ListTile(
             title: Text(context.l10n!.help),
             leading: const Icon(Icons.help_outline),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => launchUrlInWeb(
               context,
               userDefaults.getString("config.faqUrl") ?? AppUrls.faqUrl.url,
@@ -66,6 +71,8 @@ class AboutScreenLite extends HookConsumerWidget {
           ListTile(
             title: Text(context.l10n!.contact_us),
             leading: const Icon(Icons.forum_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () {
               pipe.invokeMethod("LogEvent", "TAP_CONTACT_US");
               pipe.invokeMethod("SEND_MAIL", <String, Object?>{
@@ -79,6 +86,8 @@ class AboutScreenLite extends HookConsumerWidget {
             ListTile(
               title: Text(context.l10n!.help_translate),
               leading: const Icon(Icons.translate_rounded),
+              contentPadding: kSettingPadding,
+              trailing: kSettingTrailing,
               onTap: () => launchUrlInWeb(
                 context,
                 translateUrl ?? "",

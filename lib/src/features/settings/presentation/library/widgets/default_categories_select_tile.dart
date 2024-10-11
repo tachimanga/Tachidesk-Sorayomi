@@ -49,6 +49,8 @@ class DefaultCategoriesSelectTile extends ConsumerWidget {
       title: Text(context.l10n!.default_category),
       subtitle: Text(selectedItem.name),
       leading: const Icon(Icons.radio_button_checked_rounded),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<CategoryItem>(

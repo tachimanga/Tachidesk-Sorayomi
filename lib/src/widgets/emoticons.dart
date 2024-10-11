@@ -14,12 +14,9 @@ import '../constants/app_sizes.dart';
 import '../utils/extensions/custom_extensions.dart';
 
 const errorFaces = [
-  '(･o･;)',
   'Σ(ಠ_ಠ)',
   'ಥ_ಥ',
   '(˘･_･˘)',
-  '(；￣Д￣)',
-  '(･Д･。',
 ];
 
 class Emoticons extends HookWidget {

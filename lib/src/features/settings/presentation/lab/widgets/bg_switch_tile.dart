@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../controller/pip_controller.dart';
@@ -22,6 +23,7 @@ class BgSwitchTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.download_for_offline_outlined),
       title: Text("Background download and update"),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("PIP:SWITCH:$value");
         ref.read(bgEnablePrefProvider.notifier).update(value);

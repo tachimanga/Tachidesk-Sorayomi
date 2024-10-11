@@ -36,7 +36,11 @@ class RepoHelpButton extends HookConsumerWidget {
         : context.l10n!.help;
 
     void onPressed() {
-      launchUrlInSafari(context, url, toast);
+      if (url.contains("/a")) {
+        launchUrlInSafari(context, url, toast);
+      } else {
+        launchUrlInWeb(context, url, toast);
+      }
       pipe.invokeMethod("LogEvent", "REPO:ADD_BTN_TAP_$source");
     }
 

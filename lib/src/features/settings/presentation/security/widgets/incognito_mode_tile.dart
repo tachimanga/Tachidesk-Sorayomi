@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/gen/assets.gen.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -34,6 +35,7 @@ class IncognitoModeTile extends HookConsumerWidget {
       ),
       title: TextPremium(text: context.l10n!.pref_incognito_mode),
       subtitle: Text(context.l10n!.pref_incognito_mode_summary),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         pipe.invokeMethod("LogEvent", "INCOGNITO:SETTING:$value");
         ref.read(incognitoModePrefProvider.notifier).update(value);
@@ -60,6 +62,7 @@ class IncognitoModeShortTile extends HookConsumerWidget {
         AssetImage(Assets.icons.incognito.path),
       ),
       title: Text(context.l10n!.pref_incognito_mode),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         pipe.invokeMethod("LogEvent", "INCOGNITO:SHORT:$value");
         ref.read(incognitoModePrefProvider.notifier).update(value);

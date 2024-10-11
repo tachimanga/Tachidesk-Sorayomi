@@ -11,6 +11,7 @@ import '../../../../../widgets/common_error_widget.dart';
 import '../../../../../widgets/emoticons.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../data/manga_book_repository.dart';
+import '../controller/manga_chapter_controller.dart';
 import '../controller/manga_details_controller.dart';
 
 class MangaDetailsNoChapterErrorView extends ConsumerWidget {
@@ -22,11 +23,20 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chapterFilterUnread = ref.watch(mangaChapterFilterUnreadProvider);
+    final filterUnreadWithMangaIdProvider =
+        mangaChapterFilterUnreadWithMangaIdProvider(mangaId: "${manga.id}");
+    final chapterFilterUnread = ref.watch(filterUnreadWithMangaIdProvider);
+
+    final filterDownloadedWithMangaIdProvider =
+        mangaChapterFilterDownloadedWithMangaIdProvider(mangaId: "${manga.id}");
     final chapterFilterDownloaded =
-        ref.watch(mangaChapterFilterDownloadedProvider);
+        ref.watch(filterDownloadedWithMangaIdProvider);
+
+    final filterBookmarkedWithMangaIdProvider =
+        mangaChapterFilterBookmarkedWithMangaIdProvider(mangaId: "${manga.id}");
     final chapterFilterBookmark =
-        ref.watch(mangaChapterFilterBookmarkedProvider);
+        ref.watch(filterBookmarkedWithMangaIdProvider);
+
     final chapterFilterScanlators =
         ref.watch(mangaChapterFilterScanlatorProvider(mangaId: "${manga.id}"));
 
@@ -45,13 +55,21 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
               ref
                   .read(mangaChapterFilterBookmarkedProvider.notifier)
                   .update(null);
+
+              ref.read(filterUnreadWithMangaIdProvider.notifier).update(null);
+              ref
+                  .read(filterBookmarkedWithMangaIdProvider.notifier)
+                  .update(null);
+              ref
+                  .read(filterDownloadedWithMangaIdProvider.notifier)
+                  .update(null);
               ref
                   .read(mangaChapterFilterScanlatorProvider(
                           mangaId: "${manga.id}")
                       .notifier)
                   .update([]);
             },
-            child: Text("${context.l10n!.reset} ${context.l10n!.filter}"),
+            child: Text(context.l10n!.reset_filters),
           ));
     }
 

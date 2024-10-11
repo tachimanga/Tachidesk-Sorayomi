@@ -27,8 +27,8 @@ class Filter with _$Filter {
       Map<dynamic, dynamic> json, String str) {
     final filter = json['filter'];
     return {
-      'type': json['type'],
       if (filter is Map<String, dynamic>) ...filter,
+      'type': json['type'],
     };
   }
 

@@ -47,15 +47,15 @@ class BrowseSettingsScreen extends HookConsumerWidget {
         children: [
           if (magic.a9 || repoCount > 0) ...[
             const EditRepoTile(),
-            ListTile(
-              subtitle: Text(
-                context.l10n!.extension_usage_terms,
-                style:
-                    context.textTheme.bodySmall?.copyWith(color: Colors.grey),
-              ),
-              leading: const Icon(Icons.info_rounded),
-              dense: true,
-            ),
+            // ListTile(
+            //   subtitle: Text(
+            //     context.l10n!.extension_usage_terms,
+            //     style:
+            //         context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+            //   ),
+            //   leading: const Icon(Icons.info_rounded),
+            //   dense: true,
+            // ),
             const Divider(),
           ],
           if (magic.a8 && repoCount > 0) ...[

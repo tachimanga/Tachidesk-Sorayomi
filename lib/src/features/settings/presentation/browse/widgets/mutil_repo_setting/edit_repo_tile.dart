@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../routes/router_config.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../controller/edit_repo_controller.dart';
@@ -24,6 +25,8 @@ class EditRepoTile extends ConsumerWidget {
           ? context.l10n!.one_repository
           : context.l10n!.num_repositories(count)),
       leading: const Icon(Icons.extension_rounded),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => context.push([
         Routes.settings,
         Routes.browseSettings,

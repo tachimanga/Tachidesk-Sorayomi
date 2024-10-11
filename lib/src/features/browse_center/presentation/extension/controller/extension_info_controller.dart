@@ -73,7 +73,7 @@ const URL_EXTENSION_COMMITS = "/commits/main";
 const URL_EXTENSION_BLOB = "/blob/main";
 
 String createUrl(String? baseUrl, String url, String pkgName, String? pkgFactory, {String path = ""}) {
-  var finalBaseUrl = "";
+  var finalBaseUrl = "https://github.com/tachiyomiorg/extensions";
   if (baseUrl != null) {
     RegExp regex = RegExp(r"https://.*?github.*?/(.*?)/(.*?)/");
     Match? match = regex.firstMatch(baseUrl);

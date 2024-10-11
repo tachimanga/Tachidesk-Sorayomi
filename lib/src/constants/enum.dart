@@ -48,7 +48,6 @@ enum ReaderMode {
   }
 }
 
-
 enum ReaderPageLayout {
   singlePage,
   doublePage,
@@ -424,4 +423,40 @@ enum TraceType {
   chapterDetail,
   pageImg,
   ;
+}
+
+enum DownloadQueueStatus {
+  stopped("Stopped"),
+  started("Started"),
+  ;
+
+  final String code;
+  const DownloadQueueStatus(
+    this.code,
+  );
+}
+
+enum TriState {
+  include,
+  exclude,
+  ignore,
+  ;
+
+  bool? toBool() {
+    switch (this) {
+      case TriState.include:
+        return true;
+      case TriState.exclude:
+        return false;
+      case TriState.ignore:
+        return null;
+    }
+  }
+
+  static TriState fromBool(bool? value) {
+    if (value == null) {
+      return TriState.ignore;
+    }
+    return value ? TriState.include : TriState.exclude;
+  }
 }

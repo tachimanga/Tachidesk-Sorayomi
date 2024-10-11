@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../constants/app_constants.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/gen/assets.gen.dart';
 import '../../../../constants/urls.dart';
@@ -20,6 +21,7 @@ import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import '../../../../widgets/text_premium.dart';
 import '../../../about/presentation/about/widget/media_launch_button.dart';
 import '../../../custom/inapp/purchase_providers.dart';
@@ -29,7 +31,6 @@ import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
 import '../browse/widgets/repo_setting/repo_url_tile.dart';
 import '../security/controller/security_controller.dart';
 import '../security/widgets/incognito_mode_tile.dart';
-import 'purchase_cell.dart';
 
 class MoreScreenLite extends HookConsumerWidget {
   const MoreScreenLite({super.key});
@@ -65,6 +66,8 @@ class MoreScreenLite extends HookConsumerWidget {
         title: Text(context.l10n!.more),
       ),
       body: ListView(
+        controller: mainPrimaryScrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -85,23 +88,31 @@ class MoreScreenLite extends HookConsumerWidget {
           ListTile(
             title: Text(context.l10n!.general),
             leading: const Icon(Icons.tune_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () =>
                 context.push([Routes.settings, Routes.generalSettings].toPath),
           ),
           ListTile(
             title: Text(context.l10n!.appearance),
             leading: const Icon(Icons.color_lens_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => context
                 .push([Routes.settings, Routes.appearanceSettings].toPath),
           ),
           ListTile(
             title: Text(context.l10n!.library),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             leading: const Icon(Icons.collections_bookmark_rounded),
             onTap: () =>
                 context.push([Routes.settings, Routes.librarySettings].toPath),
           ),
           ListTile(
             title: Text(context.l10n!.reader),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             leading: const Icon(Icons.chrome_reader_mode_rounded),
             onTap: () =>
                 context.push([Routes.settings, Routes.readerSettings].toPath),
@@ -109,6 +120,8 @@ class MoreScreenLite extends HookConsumerWidget {
           ListTile(
             title: TextPremium(text: context.l10n!.tracking),
             leading: const Icon(Icons.sync_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () =>
                 context.push([Routes.settings, Routes.trackingSettings].toPath),
           ),
@@ -116,6 +129,8 @@ class MoreScreenLite extends HookConsumerWidget {
             ListTile(
               title: Text(context.l10n!.extensions),
               leading: const Icon(Icons.explore_rounded),
+              contentPadding: kSettingPadding,
+              trailing: kSettingTrailing,
               onTap: () =>
                   context.push([Routes.settings, Routes.browseSettings].toPath),
             ),
@@ -123,22 +138,31 @@ class MoreScreenLite extends HookConsumerWidget {
           ListTile(
             title: Text(context.l10n!.backup),
             leading: const Icon(Icons.settings_backup_restore_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => context.push([Routes.settings, Routes.backup].toPath),
           ),
           ListTile(
             title: Text(context.l10n!.pref_category_security),
             leading: const Icon(Icons.security_rounded),
-            onTap: () => context.push([Routes.settings, Routes.securitySettings].toPath),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
+            onTap: () =>
+                context.push([Routes.settings, Routes.securitySettings].toPath),
           ),
           ListTile(
             title: Text(context.l10n!.downloads),
             leading: const Icon(Icons.download_outlined),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () => context.push(Routes.downloads),
           ),
           const Divider(),
           ListTile(
             title: Text(context.l10n!.share),
             leading: const Icon(Icons.ios_share_rounded),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () {
               pipe.invokeMethod("LogEvent", "BTN_SHARE");
               _onShare(context, toast, shareMsg);
@@ -148,6 +172,8 @@ class MoreScreenLite extends HookConsumerWidget {
             ListTile(
                 title: Text("Join our telegram group"),
                 leading: const Icon(Icons.telegram_rounded),
+                contentPadding: kSettingPadding,
+                trailing: kSettingTrailing,
                 onTap: () => launchUrlInWeb(
                       context,
                       AppUrls.telegram.url,
@@ -158,6 +184,8 @@ class MoreScreenLite extends HookConsumerWidget {
             ListTile(
               title: Text(context.l10n!.help),
               leading: const Icon(Icons.help_rounded),
+              contentPadding: kSettingPadding,
+              trailing: kSettingTrailing,
               onTap: () => launchUrlInWeb(
                 context,
                 userDefaults.getString("config.faqUrl") ?? AppUrls.faqUrl.url,
@@ -169,6 +197,8 @@ class MoreScreenLite extends HookConsumerWidget {
             ListTile(
                 title: Text(context.l10n!.discordServer),
                 leading: const Icon(Icons.discord_rounded),
+                contentPadding: kSettingPadding,
+                trailing: kSettingTrailing,
                 onTap: () => launchUrlInWeb(
                       context,
                       userDefaults.getString("config.discordUrl") ??
@@ -180,6 +210,8 @@ class MoreScreenLite extends HookConsumerWidget {
             ListTile(
               title: Text(context.l10n!.about),
               leading: const Icon(Icons.info_outline),
+              contentPadding: kSettingPadding,
+              trailing: kSettingTrailing,
               onTap: () => context.push(Routes.about),
             ),
           ],
@@ -187,6 +219,8 @@ class MoreScreenLite extends HookConsumerWidget {
             ListTile(
               title: const Text("Copyright claim"),
               leading: const Icon(Icons.email_rounded),
+              contentPadding: kSettingPadding,
+              trailing: kSettingTrailing,
               onTap: () {
                 pipe.invokeMethod("LogEvent", "COPYRIGHT_CLAIM");
                 pipe.invokeMethod("SEND_MAIL", <String, Object?>{
@@ -199,6 +233,7 @@ class MoreScreenLite extends HookConsumerWidget {
               },
             ),
           ],
+          const SizedBox(height: 20),
         ],
       ),
     );

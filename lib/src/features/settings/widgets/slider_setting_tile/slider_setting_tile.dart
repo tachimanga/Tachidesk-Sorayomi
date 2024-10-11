@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../constants/app_constants.dart';
+
 class SliderSettingTile<T> extends StatelessWidget {
   const SliderSettingTile({
     super.key,
@@ -34,6 +36,7 @@ class SliderSettingTile<T> extends StatelessWidget {
       isThreeLine: true,
       leading: Icon(icon),
       title: Text(title),
+      contentPadding: kSettingPadding,
       trailing: IconButton(
         onPressed: () => onChanged(defaultValue),
         icon: const Icon(Icons.refresh),

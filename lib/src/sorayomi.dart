@@ -28,6 +28,7 @@ import 'utils/extensions/custom_extensions.dart';
 import 'utils/http_proxy.dart';
 import 'utils/log.dart';
 import 'utils/premium_reset.dart';
+import 'widgets/scrollbar_behavior.dart';
 
 class Sorayomi extends HookConsumerWidget {
   const Sorayomi({super.key});
@@ -71,6 +72,7 @@ class Sorayomi extends HookConsumerWidget {
       routeInformationProvider: routes.routeInformationProvider,
       routeInformationParser: routes.routeInformationParser,
       routerDelegate: routes.routerDelegate,
+      scrollBehavior: ScrollbarBehavior(),
     );
   }
 
@@ -119,7 +121,6 @@ class Sorayomi extends HookConsumerWidget {
       if (call.method == 'UPDATE_MAGIC') {
         await ref.read(sharedPreferencesProvider).reload();
         log("reload sharedPreferences succ");
-        ref.read(magicAdUnitIdProvider.notifier).update(call.arguments);
       }
       if (call.method == 'OPENURL') {
         String fullUrl = call.arguments;
@@ -177,6 +178,14 @@ class Sorayomi extends HookConsumerWidget {
                 'url': url,
               },
             });
+          }
+        }
+        if (uri.host == 'go') {
+          final url = uri.queryParameters["url"];
+          if (url != null) {
+            log("go url: $url");
+            goRouter.push(url);
+            logEvent3('NOTICE:TAP:GO', {'url': url});
           }
         }
         // file:///private/var/mobile/Containers/Data/Application/8FDA166C-D754-4E18-9E07-E9B5B3C36AB5/Documents/Inbox/Tachimanga_backup_2024-06-15_18-37-52-181.tmb

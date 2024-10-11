@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../utils/extensions/custom_extensions.dart';
@@ -34,6 +35,7 @@ class ReaderScrollAnimationTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.animation_rounded),
       title: Text(context.l10n!.readerScrollAnimation),
+      contentPadding: kSettingPadding,
       onChanged: ref.read(readerScrollAnimationProvider.notifier).update,
       value: ref.watch(readerScrollAnimationProvider).ifNull(),
     );

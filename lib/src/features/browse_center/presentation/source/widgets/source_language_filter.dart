@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/language_list.dart';
 
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../widgets/pop_button.dart';
 import '../../../domain/language/language_model.dart';
 import '../controller/source_controller.dart';
@@ -20,8 +21,8 @@ class SourceLanguageFilter extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final languageCodes = ref.watch(sourceFilterLangListProvider);
     final enabledLanguages = ref.watch(sourceLanguageFilterProvider);
-    print("SourceLanguageFilter languageCodes $languageCodes");
-    print("SourceLanguageFilter enabledLanguages $enabledLanguages");
+    log("SourceLanguageFilter languageCodes $languageCodes");
+    log("SourceLanguageFilter enabledLanguages $enabledLanguages");
     return AlertDialog(
       title: Text(context.l10n!.languages),
       content: SizedBox(

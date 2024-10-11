@@ -96,14 +96,15 @@ class ChapterListTile extends StatelessWidget {
                 ? const Icon(Icons.check_circle)
                 : const Icon(Icons.radio_button_unchecked))
             : null,
-        trailing: (chapter.index != null && manga.id != null)
-            ? DownloadStatusIcon(
-                updateData: updateData,
-                chapter: chapter,
-                mangaId: manga.id!,
-                isDownloaded: chapter.downloaded.ifNull(),
-              )
-            : null,
+        trailing:
+            (manga.sourceId != "0" && chapter.index != null && manga.id != null)
+                ? DownloadStatusIcon(
+                    updateData: updateData,
+                    chapter: chapter,
+                    mangaId: manga.id!,
+                    isDownloaded: chapter.downloaded.ifNull(),
+                  )
+                : null,
         selectedColor: context.theme.colorScheme.onSurface,
         selectedTileColor:
             context.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,

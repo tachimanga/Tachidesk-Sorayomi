@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../utils/extensions/custom_extensions.dart';
@@ -35,6 +36,7 @@ class ReaderInvertTapTile extends HookConsumerWidget {
       title: Text(
         context.l10n!.readerNavigationLayoutInvert,
       ),
+      contentPadding: kSettingPadding,
       onChanged: ref.read(invertTapProvider.notifier).update,
       value: ref.watch(invertTapProvider).ifNull(),
     );

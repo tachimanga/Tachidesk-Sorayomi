@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -27,6 +28,8 @@ class AutoBackupLimitTile extends ConsumerWidget {
       leading: const Icon(Icons.arrow_upward_rounded),
       title: Text(context.l10n!.pref_backup_slots),
       subtitle: Text("$limit"),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<int>(

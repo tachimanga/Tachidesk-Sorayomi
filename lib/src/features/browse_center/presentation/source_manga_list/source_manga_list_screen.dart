@@ -27,6 +27,7 @@ import '../../../../widgets/search_field.dart';
 import '../../../manga_book/domain/manga/manga_model.dart';
 import '../../data/source_repository/source_repository.dart';
 import '../../domain/filter/filter_model.dart';
+import '../../domain/source/source_model.dart';
 import 'controller/source_manga_controller.dart';
 import 'widgets/install_manga_file.dart';
 import 'widgets/show_source_manga_filter.dart';
@@ -98,6 +99,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
     final showSearch = useState(initialQuery.isNotBlank);
     final controller = usePagingController<int, Manga>(firstPageKey: 1);
     final showDirectFlag = ref.watch(showDirectFlagPrefProvider);
+    final showSourceUrl = ref.watch(showSourceUrlProvider);
 
     useEffect(() {
       controller.addPageRequestListener(
@@ -124,9 +126,13 @@ class SourceMangaListScreen extends HookConsumerWidget {
       context,
       (data) => Scaffold(
         appBar: AppBar(
-          title: Text(
-              "${data?.direct == true && showDirectFlag == true ? "⚡" : ""}"
-              "${data?.displayName ?? context.l10n!.source}"),
+          title: _buildTitleWidget(
+            context,
+            data,
+            showSourceUrl,
+            showDirectFlag,
+          ),
+          titleSpacing: 0,
           actions: [
             if (sourceId == "0") ...[
               InstallMangaFile(onSuccess: () => controller.refresh()),
@@ -233,15 +239,17 @@ class SourceMangaListScreen extends HookConsumerWidget {
             ),
           ),
         ),
-        endDrawer: context.isTablet ? Drawer(
-          width: kDrawerWidth,
-          child: Builder(
-            builder: (context) => ShowSourceMangaFilter(
-                sourceType: sourceType,
-                sourceId: sourceId,
-                controller: controller),
-          ),
-        ) : null,
+        endDrawer: context.isTablet
+            ? Drawer(
+                width: kDrawerWidth,
+                child: Builder(
+                  builder: (context) => ShowSourceMangaFilter(
+                      sourceType: sourceType,
+                      sourceId: sourceId,
+                      controller: controller),
+                ),
+              )
+            : null,
         body: RefreshIndicator(
           onRefresh: () async => controller.refresh(),
           child: SourceMangaDisplayView(controller: controller, source: data),
@@ -255,6 +263,39 @@ class SourceMangaListScreen extends HookConsumerWidget {
         ),
         body: body,
       ),
+    );
+  }
+
+  Widget _buildTitleWidget(
+    BuildContext context,
+    Source? data,
+    bool? showSourceUrl,
+    bool? showDirectFlag,
+  ) {
+    if (showSourceUrl != true) {
+      return Text(
+        "${data?.direct == true && showDirectFlag == true ? "⚡" : ""}"
+        "${data?.displayName ?? context.l10n!.source}",
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "${data?.direct == true && showDirectFlag == true ? "⚡" : ""}"
+          "${data?.displayName ?? context.l10n!.source}",
+          style: context.textTheme.titleMedium,
+        ),
+        if (data?.baseUrl?.isNotEmpty == true) ...[
+          InkWell(
+            onTap: () => context.push(Routes.getWebView(data?.baseUrl ?? "")),
+            child: Text(
+              data?.baseUrl ?? "",
+              style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),
+            ),
+          ),
+        ]
+      ],
     );
   }
 }

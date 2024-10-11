@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/app_sizes.dart';
 import '../../../features/manga_book/domain/manga/manga_model.dart';
+import '../../../utils/manga_cover_util.dart';
 import '../../server_image.dart';
 import '../widgets/manga_badges.dart';
 
@@ -40,6 +41,7 @@ class MangaCoverListTile extends StatelessWidget {
               child: ServerImage(
                 imageUrl: manga.thumbnailUrl ?? "",
                 imageData: manga.thumbnailImg,
+                extInfo: CoverExtInfo.build(manga),
                 size: const Size.square(48),
                 decodeWidth: 48,
               ),

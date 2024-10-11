@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -30,6 +31,8 @@ class AutoBackupFrequencyTile extends ConsumerWidget {
         text: context.l10n!.pref_backup_interval,
       ),
       subtitle: Text(frequency.toLocale(context)),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<FrequencyEnum>(

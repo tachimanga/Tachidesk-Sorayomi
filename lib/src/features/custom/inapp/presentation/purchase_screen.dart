@@ -15,11 +15,13 @@ import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 
 import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../global_providers/preference_providers.dart';
 import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
+import '../../../../utils/usage_util.dart';
 import '../../hex_color.dart';
 import '../purchase_providers.dart';
 
@@ -33,6 +35,7 @@ class PurchaseScreen extends HookConsumerWidget {
     final purchaseGate = ref.watch(purchaseGateProvider);
     final pipe = ref.watch(getMagicPipeProvider);
     final magic = ref.watch(getMagicProvider);
+    final bucket = ref.watch(bucketConfigProvider);
 
     final productList =
         magic.c2 ? ref.watch(productsV3Provider) : ref.watch(productsProvider);
@@ -118,7 +121,11 @@ class PurchaseScreen extends HookConsumerWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 15),
-                    OptionsButton(data: data, selectedIndex: selectedIndex),
+                    bucket == "c"
+                        ? OptionsButton2(
+                            data: data, selectedIndex: selectedIndex)
+                        : OptionsButton(
+                            data: data, selectedIndex: selectedIndex),
                     const SizedBox(height: 2),
                     const Row(children: [
                       Expanded(child: FaqButton()),
@@ -191,6 +198,85 @@ class OptionsButton extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ]),
+    );
+  }
+}
+
+class OptionsButton2 extends ConsumerWidget {
+  const OptionsButton2({
+    super.key,
+    required this.data,
+    required this.selectedIndex,
+  });
+
+  final ProductPageData data;
+  final ValueNotifier<int> selectedIndex;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final colors = context.theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(11, 0, 11, 0),
+      child: Row(children: [
+        ...data.productDetails.map((curr) {
+          final index = data.productDetails.indexOf(curr);
+          return Expanded(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+              height: 60,
+              child: GestureDetector(
+                onTap: () => selectedIndex.value = index,
+                child: Container(
+                  decoration: BoxDecoration(
+                    // filled_button.dart#_FilledButtonDefaultsM3#backgroundColor
+                    color: index == selectedIndex.value && !purchaseGate
+                        ? colors.primary
+                        : colors.onSurface.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(2),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          curr.id.endsWith("0")
+                              ? context.l10n!.premium_year_price(curr.price)
+                              : context.l10n!.premium_month_price(curr.price),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            // filled_button.dart#_FilledButtonDefaultsM3#foregroundColor
+                            color: index == selectedIndex.value && !purchaseGate
+                                ? colors.onPrimary
+                                : colors.onSurface.withOpacity(0.38),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        if (curr.id.endsWith("0"))
+                          Text(
+                            context.l10n!.premium_month_price_only(
+                                "${curr.currencySymbol}${(curr.rawPrice / 12).toStringAsFixed(2)}"),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              // filled_button.dart#_FilledButtonDefaultsM3#foregroundColor
+                              color:
+                                  index == selectedIndex.value && !purchaseGate
+                                      ? colors.onPrimary
+                                      : colors.onSurface.withOpacity(0.38),
+                              fontSize: 10,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -277,6 +363,7 @@ class PurchaseButton extends ConsumerWidget {
     final pipe = ref.watch(getMagicPipeProvider);
     final commonErrStr = context.l10n!.errorSomethingWentWrong;
     final clearBeforeBuy = ref.watch(clearQueueBeforeBuyProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
     return Container(
       padding: const EdgeInsets.fromLTRB(11, 0, 11, 0),
       child: FilledButton(
@@ -284,8 +371,11 @@ class PurchaseButton extends ConsumerWidget {
             ? null
             : () async {
                 final curr = data.productDetails[selectedIndex.value];
-                pipe.invokeMethod(
-                    "LogEvent", "IAP_TAP_BUY_${selectedIndex.value}");
+                final usageDays = UsageUtil.calculateUsageDays(userDefaults);
+                logEvent3(
+                  "IAP_TAP_BUY_${selectedIndex.value}",
+                  {"x": "$usageDays"},
+                );
                 try {
                   final param = PurchaseParam(productDetails: curr);
                   if (clearBeforeBuy == true) {

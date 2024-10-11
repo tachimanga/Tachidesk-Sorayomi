@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../constants/app_constants.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
@@ -48,6 +49,8 @@ class AdvancedScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.cleaning_services_rounded),
             title: Text(context.l10n!.clearCache),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () async {
               toast.show("${context.l10n!.clearCache}...",
                   gravity: ToastGravity.CENTER,
@@ -58,6 +61,8 @@ class AdvancedScreen extends ConsumerWidget {
               } catch (e) {
                 log("CleanCache err $e");
               }
+              PaintingBinding.instance.imageCache.clear();
+              PaintingBinding.instance.imageCache.clearLiveImages();
               toast.close();
               if (context.mounted) {
                 toast.show(context.l10n!.cacheCleared,
@@ -69,6 +74,8 @@ class AdvancedScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.cleaning_services_rounded),
             title: Text(context.l10n!.clearCookies),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
             onTap: () async {
               toast.show("${context.l10n!.clearCookies}...",
                   gravity: ToastGravity.CENTER,

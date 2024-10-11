@@ -19,6 +19,7 @@ import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../global_providers/preference_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -131,6 +132,7 @@ class ReaderWrapper extends HookConsumerWidget {
     final mangaReaderPadding = ref.watch(readerPaddingWithMangaIdProvider(mangaId: manga.id.toString()));
     final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider);
     final tapDelay = doubleTapZoomIn == true ? 500 : 300;
+    final showSourceUrl = ref.watch(showSourceUrlProvider);
 
     final globeLayout = ref.watch(readerNavigationLayoutKeyProvider) ?? ReaderNavigationLayout.disabled;
     final mangaReaderNavigationLayout = manga.meta?.readerNavigationLayout ?? ReaderNavigationLayout.defaultNavigation;
@@ -281,6 +283,24 @@ class ReaderWrapper extends HookConsumerWidget {
                       : null,
                 ),
                 elevation: 0,
+                bottom: showSourceUrl == true && chapter.realUrl.isNotBlank == true
+                    ? PreferredSize(
+                  preferredSize: const Size.fromHeight(22),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                      child: InkWell(
+                        onTap: () => context
+                            .push(Routes.getWebView(chapter.realUrl ?? "")),
+                        child: Text(
+                          "${chapter.realUrl}",
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey),
+                        ),
+                      ),
+                  ),
+                )
+                    : null,
                 backgroundColor: Colors.black.withOpacity(.7),
                 actions: chapter.realUrl.isNotBlank ? [
                   AsyncIconButton(
@@ -525,7 +545,7 @@ class ReaderWrapper extends HookConsumerWidget {
     ref.read(provider.notifier).loadChapter(
       mangaId: "${chapter.mangaId}",
       chapterIndex: "${chapter.index}",
-      nextPage: nextPage,
+      reset: nextPage,
     );
   }
 }

@@ -21,6 +21,7 @@ import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/pop_button.dart';
 import '../../../../widgets/search_field.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import '../../data/manga_book_repository.dart';
 import 'controller/history_controller.dart';
 import 'widgets/history_clear_icon_button.dart';
@@ -91,7 +92,7 @@ class HistoryScreen extends HookConsumerWidget {
         (data) {
           if (data.isBlank) {
             return Emoticons(
-              text: context.l10n!.noMangaFound,
+              text: context.l10n!.history_is_empty,
               button: TextButton(
                 onPressed: refresh,
                 child: Text(context.l10n!.refresh),
@@ -101,6 +102,8 @@ class HistoryScreen extends HookConsumerWidget {
           return RefreshIndicator(
               onRefresh: refresh,
               child: ListView.builder(
+                controller: mainPrimaryScrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: data?.length ?? 0,
                 itemBuilder: (context, index) => MangaCoverDescriptiveListTile(
                   manga: data![index],

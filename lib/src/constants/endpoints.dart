@@ -137,6 +137,7 @@ abstract class ImportUrl {
 
 abstract class SourceUrl {
   static String sourceList = "$_source/list";
+  static String sourceListForSearch = "$_source/listForSearch";
 
   static String withId(String sourceId) => "$_source/$sourceId";
   static String getMangaList(String sourceId, String sourceType, int pageNum) =>

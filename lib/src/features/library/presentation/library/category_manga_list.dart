@@ -12,22 +12,29 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
-
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
-import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_list_tile.dart';
+import '../../../../widgets/shell/shell_screen.dart';
 import '../../../manga_book/presentation/manga_details/widgets/edit_manga_category_dialog.dart';
 import '../../../manga_book/presentation/updates/controller/update_controller.dart';
 import '../../../manga_book/widgets/update_status_fab.dart';
 import '../../../settings/presentation/appearance/widgets/grid_cover_min_width.dart';
 import 'controller/library_controller.dart';
+import 'widgets/library_manga_empty_view.dart';
 
 class CategoryMangaList extends HookConsumerWidget {
-  const CategoryMangaList({super.key, required this.categoryId});
+  const CategoryMangaList({
+    super.key,
+    required this.categoryId,
+    required this.categoryCount,
+  });
+
   final int categoryId;
+  final int categoryCount;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider =
@@ -56,18 +63,18 @@ class CategoryMangaList extends HookConsumerWidget {
       context,
       (data) {
         if (data.isBlank) {
-          return Emoticons(
-            text: context.l10n!.noCategoryMangaFound,
-            button: TextButton(
-              onPressed: refresh,
-              child: Text(context.l10n!.refresh),
-            ),
+          return LibraryMangaEmptyView(
+            refresh: refresh,
+            categoryId: categoryId,
+            categoryCount: categoryCount,
           );
         }
         late final Widget mangaList;
         switch (displayMode) {
           case DisplayMode.grid:
             mangaList = GridView.builder(
+              controller: mainPrimaryScrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               gridDelegate: mangaCoverGridDelegate(coverWidth),
               itemCount: data?.length ?? 0,
               itemBuilder: (context, index) => MangaCoverGridTile(
@@ -100,6 +107,8 @@ class CategoryMangaList extends HookConsumerWidget {
             break;
           case DisplayMode.list:
             mangaList = ListView.builder(
+              controller: mainPrimaryScrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: data?.length ?? 0,
               itemBuilder: (context, index) => MangaCoverListTile(
                 manga: data![index],
@@ -129,6 +138,8 @@ class CategoryMangaList extends HookConsumerWidget {
             break;
           case DisplayMode.descriptiveList:
             mangaList = ListView.builder(
+              controller: mainPrimaryScrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: data?.length ?? 0,
               itemBuilder: (context, index) => MangaCoverDescriptiveListTile(
                 manga: data![index],

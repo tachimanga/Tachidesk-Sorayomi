@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/radio_list_popup.dart';
@@ -27,6 +28,8 @@ class DateFormatSelectTile extends HookConsumerWidget {
       leading: const Icon(Icons.today_rounded),
       title: Text(context.l10n!.pref_date_format),
       subtitle: Text(_getCurrentDataFormatText(now, value, locale)),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<DateFormatEnum>(

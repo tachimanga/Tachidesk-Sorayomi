@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
@@ -36,6 +37,7 @@ class BackupToCloudTile extends ConsumerWidget {
       subtitle: canUseCloud.valueOrNull != true
           ? Text(context.l10n!.iCloud_unavailable_tip)
           : Text(context.l10n!.backup_to_iCloud_tip),
+      contentPadding: kSettingPadding,
       onChanged: canUseCloud.valueOrNull != true
           ? null
           : (value) async {
@@ -68,6 +70,7 @@ class FakeBackupToCloudTile extends ConsumerWidget {
       secondary: const Icon(Icons.cloud_circle_rounded),
       title: TextPremium(text: context.l10n!.backup_to_iCloud),
       subtitle: Text(context.l10n!.backup_to_iCloud_tip),
+      contentPadding: kSettingPadding,
       onChanged: (value) async {
         pipe.invokeMethod("LogEvent", "BACKUP:CLOUD:GATE");
         backupToCloud.value = value;

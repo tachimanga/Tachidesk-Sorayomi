@@ -12,12 +12,14 @@ import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
 import '../../../constants/db_keys.dart';
 import '../../../global_providers/global_providers.dart';
 import '../../../global_providers/locale_providers.dart';
+import '../../../global_providers/preference_providers.dart';
 import '../../../utils/event_util.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/log.dart';
 import '../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../utils/mixin/state_provider_mixin.dart';
 import '../../../utils/premium_reset.dart';
+import '../../../utils/usage_util.dart';
 import '../api/api_providers.dart';
 import 'model/purchase_model.dart';
 
@@ -124,9 +126,9 @@ class PurchaseListener extends _$PurchaseListener {
       ref.read(purchaseDoneProvider.notifier).update(true);
       ref.read(purchaseExpireMsProvider.notifier).update(verifyResult?.expire);
       ref.read(purchaseTokenProvider.notifier).update(verifyResult?.token);
-      ref.read(getMagicPipeProvider)
-          .invokeMethod("LogEvent", "VERIFY_SUCC");
       PremiumReset.instance.setupWhenPurchase(ref);
+      final usageDays = UsageUtil.calculateUsageDays(ref.read(sharedPreferencesProvider));
+      logEvent3("VERIFY_SUCC", {"x": "$usageDays"});
     }
   }
 
@@ -280,6 +282,7 @@ class ProductsV3 extends _$ProductsV3 {
     final locale = ref.watch(userPreferLocaleProvider);
     final pipe = ref.watch(getMagicPipeProvider);
     final apiData = ref.watch(productsApiDataProvider);
+    final bucket = ref.watch(bucketConfigProvider);
 
     ProductListResult? result;
     final apiCacheData = await loadProductsApiCacheData(locale, pipe);
@@ -304,6 +307,11 @@ class ProductsV3 extends _$ProductsV3 {
     }
     log("[purchase]list order $list");
     log("[purchase]product map $map");
+
+    if (bucket == "c") {
+      list.remove("10");
+    }
+    log("bucket=$bucket list=$list");
 
     final sortedList = List.from(list);
     sortedList.sort();

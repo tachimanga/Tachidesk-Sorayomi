@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../utils/event_util.dart';
@@ -35,6 +36,7 @@ class ReaderLongPressActionMenuTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.touch_app_rounded),
       title: Text(context.l10n!.long_press_action_menu),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("READER:LONG_PRESS:$value");
         ref.read(readerLongPressActionMenuPrefProvider.notifier).update(value);

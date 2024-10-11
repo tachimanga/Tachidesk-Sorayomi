@@ -6,7 +6,8 @@ import '../utils/mixin/shared_preferences_client_mixin.dart';
 part 'preference_providers.g.dart';
 
 @riverpod
-class UseSystemProxy extends _$UseSystemProxy with SharedPreferenceClientMixin<bool> {
+class UseSystemProxy extends _$UseSystemProxy
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
         ref,
@@ -16,7 +17,8 @@ class UseSystemProxy extends _$UseSystemProxy with SharedPreferenceClientMixin<b
 }
 
 @riverpod
-class UseNativeNet extends _$UseNativeNet with SharedPreferenceClientMixin<bool> {
+class UseNativeNet extends _$UseNativeNet
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
         ref,
@@ -26,7 +28,8 @@ class UseNativeNet extends _$UseNativeNet with SharedPreferenceClientMixin<bool>
 }
 
 @riverpod
-class MaxConnPerHost extends _$MaxConnPerHost with SharedPreferenceClientMixin<String> {
+class MaxConnPerHost extends _$MaxConnPerHost
+    with SharedPreferenceClientMixin<String> {
   @override
   String? build() => initialize(
         ref,
@@ -36,7 +39,8 @@ class MaxConnPerHost extends _$MaxConnPerHost with SharedPreferenceClientMixin<S
 }
 
 @riverpod
-class JavaUseNativeNet extends _$JavaUseNativeNet with SharedPreferenceClientMixin<bool> {
+class JavaUseNativeNet extends _$JavaUseNativeNet
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
         ref,
@@ -46,7 +50,8 @@ class JavaUseNativeNet extends _$JavaUseNativeNet with SharedPreferenceClientMix
 }
 
 @riverpod
-class DisableStopSocketV2 extends _$DisableStopSocketV2 with SharedPreferenceClientMixin<String> {
+class DisableStopSocketV2 extends _$DisableStopSocketV2
+    with SharedPreferenceClientMixin<String> {
   @override
   String? build() => initialize(
         ref,
@@ -56,7 +61,8 @@ class DisableStopSocketV2 extends _$DisableStopSocketV2 with SharedPreferenceCli
 }
 
 @riverpod
-class MarkNeedAskRate extends _$MarkNeedAskRate with SharedPreferenceClientMixin<bool> {
+class MarkNeedAskRate extends _$MarkNeedAskRate
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
         ref,
@@ -66,7 +72,8 @@ class MarkNeedAskRate extends _$MarkNeedAskRate with SharedPreferenceClientMixin
 }
 
 @riverpod
-class InitLocation extends _$InitLocation with SharedPreferenceClientMixin<String> {
+class InitLocation extends _$InitLocation
+    with SharedPreferenceClientMixin<String> {
   @override
   String? build() => initialize(
         ref,
@@ -84,4 +91,26 @@ class ShowDirectFlagPref extends _$ShowDirectFlagPref
         key: DBKeys.showDirectFlag.name,
         initial: DBKeys.showDirectFlag.initial,
       );
+}
+
+@riverpod
+class ShowSourceUrl extends _$ShowSourceUrl
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: "config.showSourceUrl",
+        initial: true,
+      );
+}
+
+@riverpod
+class BucketConfig extends _$BucketConfig
+    with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() => initialize(
+    ref,
+    key: "config.bucket",
+    initial: null,
+  );
 }

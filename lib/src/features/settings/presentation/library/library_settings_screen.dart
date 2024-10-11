@@ -7,8 +7,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../widgets/section_title.dart';
 import 'widgets/default_categories_select_tile.dart';
 import 'widgets/edit_categories_tile.dart';
+import 'widgets/manga_auto_refresh_setting_tile.dart';
 
 class LibrarySettingsScreen extends StatelessWidget {
   const LibrarySettingsScreen({super.key});
@@ -20,9 +22,12 @@ class LibrarySettingsScreen extends StatelessWidget {
         title: Text(context.l10n!.library),
       ),
       body: ListView(
-        children: const [
-          EditCategoriesTile(),
-          DefaultCategoriesSelectTile(),
+        children: [
+          SectionTitle(title: context.l10n!.categories),
+          const EditCategoriesTile(),
+          const DefaultCategoriesSelectTile(),
+          SectionTitle(title: context.l10n!.update),
+          const MangaAutoRefreshSettingTile(),
         ],
       ),
     );

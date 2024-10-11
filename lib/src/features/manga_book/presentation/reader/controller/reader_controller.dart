@@ -52,12 +52,13 @@ class ChapterWithId extends _$ChapterWithId {
       updateReaderListState(update);
     }
   }
+
   Future<void> loadChapter({
     required String mangaId,
     required String chapterIndex,
-    required bool nextPage,
+    required bool reset,
   }) async {
-    log('[Reader2] loadChapter nextPage:$nextPage');
+    log('[Reader2] loadChapter reset:$reset');
     final token = CancelToken();
     ref.onDispose(token.cancel);
     state = const AsyncValue.loading();
@@ -67,7 +68,7 @@ class ChapterWithId extends _$ChapterWithId {
           chapterIndex: chapterIndex,
         ));
 
-    updateReaderListState(result.valueOrNull, nextPage);
+    updateReaderListState(result.valueOrNull, reset);
     state = result;
   }
 

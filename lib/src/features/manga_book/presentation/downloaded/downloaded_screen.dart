@@ -42,7 +42,7 @@ class DownloadedScreen extends HookConsumerWidget {
         (data) {
           if (data.isBlank) {
             return Emoticons(
-              text: context.l10n!.noMangaFound,
+              text: context.l10n!.downloaded_is_empty,
               button: TextButton(
                 onPressed: refresh,
                 child: Text(context.l10n!.refresh),

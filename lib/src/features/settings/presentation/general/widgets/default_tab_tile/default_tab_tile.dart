@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/enum.dart';
 
@@ -42,6 +43,8 @@ class DefaultTabTile extends ConsumerWidget {
       leading: const Icon(Icons.home_rounded),
       title: Text(context.l10n!.defaultTab),
       subtitle: Text(defaultTab.toLocale(context)),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<DefaultTabEnum>(

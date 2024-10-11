@@ -30,6 +30,22 @@ Future<List<Source>?> sourceList(SourceListRef ref) async {
 }
 
 @riverpod
+Future<List<String?>> sourceIdListForSearch(SourceIdListForSearchRef ref) async {
+  final token = CancelToken();
+  ref.onDispose(token.cancel);
+  final result = await ref
+      .watch(sourceRepositoryProvider)
+      .getSourceListForSearch(cancelToken: token);
+
+  final list = [...?result?.list];
+  list.sort((a, b) => (b.count ?? 0).compareTo(a.count ?? 0));
+  final ids = list.map((e) => e.sourceId).toList();
+
+  ref.keepAlive();
+  return ids;
+}
+
+@riverpod
 AsyncValue<Map<String, List<Source>>> sourceMap(SourceMapRef ref) {
   final sourceMap = <String, List<Source>>{};
   final sourceListData = ref.watch(sourceListProvider);

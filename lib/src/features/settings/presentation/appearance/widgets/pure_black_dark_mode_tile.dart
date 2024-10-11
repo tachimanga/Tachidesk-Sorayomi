@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/text_premium.dart';
@@ -23,6 +24,7 @@ class PureBlackDarkModeTile extends HookConsumerWidget {
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
       title: TextPremium(text: context.l10n!.themePureBlackDarkMode),
+      contentPadding: kSettingPadding,
       onChanged: (value) {
         pipe.invokeMethod("LogEvent", "APPEARANCE:BLACK:$value");
         ref.read(themePureBlackProvider.notifier).update(value);

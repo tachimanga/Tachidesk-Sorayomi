@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/app_sizes.dart';
 import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/enum.dart';
@@ -49,6 +50,8 @@ class ReaderNavigationLayoutTile extends ConsumerWidget {
           ? Text(readerNavigationLayout.toLocale(context))
           : null,
       title: Text(context.l10n!.readerNavigationLayout),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => context.push([
         Routes.settings,
         Routes.readerSettings,
@@ -78,6 +81,8 @@ class ReaderNavigationLayoutSettingTile extends HookConsumerWidget {
           ? Text(readerNavigationLayout.toLocale(context))
           : null,
       title: Text(context.l10n!.readerNavigationLayout),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
       onTap: () => showLayoutDialog(context, ref, readerNavigationLayout),
     );
   }

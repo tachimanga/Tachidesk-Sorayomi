@@ -35,33 +35,14 @@ class BigScreenNavigationBar extends ConsumerWidget {
         : const Offset(-12, -4);
     final pureBlackMode = ref.watch(themePureBlackProvider);
     final bool dark = Theme.of(context).brightness == Brightness.dark;
+    const iconSize = 28.0;
+    const padding = EdgeInsets.fromLTRB(4, 8, 4, 0);
     return NavigationRail(
       backgroundColor: dark && pureBlackMode == true ? Colors.black : null,
-      useIndicator: true,
+      useIndicator: false,
       elevation: 5,
-      extended: context.isDesktop,
-      labelType: context.isDesktop
-          ? NavigationRailLabelType.none
-          : NavigationRailLabelType.all,
-      leading: context.isDesktop
-          ? TextButton.icon(
-              onPressed: () => {},
-              icon: ImageIcon(
-                AssetImage(Assets.icons.darkIcon.path),
-                size: 48,
-              ),
-              label: Text(context.l10n!.appTitle),
-              style: TextButton.styleFrom(
-                foregroundColor: context.textTheme.bodyLarge?.color,
-              ),
-            )
-          : IconButton(
-              onPressed: () => {},
-              icon: ImageIcon(
-                AssetImage(Assets.icons.darkIcon.path),
-                size: 48,
-              ),
-            ),
+      labelType: NavigationRailLabelType.all,
+      leading: const SizedBox(height: kToolbarHeight - 10),
       destinations: NavigationBarData.navList
           .map<NavigationRailDestination>(
             (e) => NavigationRailDestination(
@@ -69,11 +50,21 @@ class BigScreenNavigationBar extends ConsumerWidget {
                   ? Badge(
                       label: Text("$extensionUpdateCount"),
                       offset: badgeOffset,
-                      child: Icon(e.icon),
+                      child: Padding(
+                        padding: padding,
+                        child: Icon(e.icon, size: iconSize),
+                      ),
                     )
-                  : Icon(e.icon),
+                  : Padding(
+                      padding: padding,
+                      child: Icon(e.icon, size: iconSize),
+                    ),
               label: Text(e.label(context)),
-              selectedIcon: Icon(e.activeIcon),
+              indicatorColor: Colors.transparent,
+              selectedIcon: Padding(
+                padding: padding,
+                child: Icon(e.activeIcon, size: iconSize),
+              ),
             ),
           )
           .toList(),

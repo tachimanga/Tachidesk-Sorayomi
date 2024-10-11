@@ -5,16 +5,14 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../../../../../constants/app_sizes.dart';
-
 import '../../../../../constants/urls.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
+import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
@@ -24,13 +22,19 @@ import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../domain/source/source_model.dart';
 
 class SourcePageErrorView extends ConsumerWidget {
-  const SourcePageErrorView({super.key, required this.controller, this.source, this.message});
+  const SourcePageErrorView({
+    super.key,
+    required this.controller,
+    this.source,
+    this.message,
+  });
+
   final PagingController<int, Manga> controller;
   final Source? source;
   final String? message;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pipe = ref.watch(getMagicPipeProvider);
     final userDefaults = ref.watch(sharedPreferencesProvider);
     final magic = ref.watch(getMagicProvider);
     final rawMessage = this.message ?? controller.error.toString();
@@ -43,24 +47,23 @@ class SourcePageErrorView extends ConsumerWidget {
           TextButton(
             onPressed: () => controller.refresh(),
             child: Column(
-                children: [
-                  const Icon(Icons.replay_rounded),
-                  Text(context.l10n!.retry)
-                ]
+              children: [
+                const Icon(Icons.replay_rounded),
+                Text(context.l10n!.retry),
+              ],
             ),
           ),
           if (source?.baseUrl?.isNotEmpty ?? false) ...[
             TextButton(
               onPressed: () {
                 context.push(Routes.getWebView(source?.baseUrl ?? ""));
-                final pkgName = source?.extPkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "");
-                pipe.invokeMethod("LogEvent", "BYPASS_$pkgName");
+                logEvent3("OPEN_WEBVIEW", {"x": source?.extPkgName});
               },
               child: Column(
-                  children: [
-                    const Icon(Icons.public),
-                    Text("WebView")
-                  ]
+                children: [
+                  const Icon(Icons.public),
+                  Text(context.l10n!.webView),
+                ],
               ),
             )
           ],
@@ -71,15 +74,15 @@ class SourcePageErrorView extends ConsumerWidget {
                     AppUrls.findAnswer.url;
                 launchUrlInWeb(
                   context,
-                  "$url?source=${source?.name}&ext=${source?.extPkgName}&err=${message}",
+                  "$url?source=${source?.name}&ext=${source?.extPkgName}&err=$message",
                   ref.read(toastProvider(context)),
                 );
               },
               child: Column(
-                  children: [
-                    const Icon(Icons.help_rounded),
-                    Text(context.l10n!.help)
-                  ]
+                children: [
+                  const Icon(Icons.help_rounded),
+                  Text(context.l10n!.help),
+                ],
               ),
             )
           ],

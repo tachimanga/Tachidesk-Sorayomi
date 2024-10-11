@@ -39,6 +39,7 @@ class InteractiveWrapper extends HookConsumerWidget {
     this.minScale = 1.0,
     this.maxScale = 5.0,
     this.onScaleChanged,
+    this.showScrollBar = true,
   });
 
   /// The image to display
@@ -53,6 +54,8 @@ class InteractiveWrapper extends HookConsumerWidget {
   /// Callback for when the scale has changed, only invoked at the end of
   /// an interaction.
   final void Function(double)? onScaleChanged;
+
+  final bool showScrollBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,7 +106,12 @@ class InteractiveWrapper extends HookConsumerWidget {
         minScale: minScale,
         maxScale: maxScale,
         scaleEnabled: pinchToZoom,
-        child: child,
+        child: showScrollBar
+            ? child
+            : ScrollConfiguration(
+                behavior: const MaterialScrollBehavior(),
+                child: child,
+              ),
         onInteractionEnd: (scaleEndDetails) {
           double scale = transformationController.value.getMaxScaleOnAxis();
           if (onScaleChanged != null) onScaleChanged!(scale);

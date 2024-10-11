@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../widgets/highlighted_container.dart';
+import '../controller/manga_chapter_controller.dart';
 import '../controller/manga_details_controller.dart';
 
 class ChapterFilterIconButton extends HookConsumerWidget {
@@ -19,11 +20,20 @@ class ChapterFilterIconButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chapterFilterUnread = ref.watch(mangaChapterFilterUnreadProvider);
+    final filterUnreadWithMangaIdProvider =
+        mangaChapterFilterUnreadWithMangaIdProvider(mangaId: mangaId);
+    final chapterFilterUnread = ref.watch(filterUnreadWithMangaIdProvider);
+
+    final filterDownloadedWithMangaIdProvider =
+        mangaChapterFilterDownloadedWithMangaIdProvider(mangaId: mangaId);
     final chapterFilterDownloaded =
-        ref.watch(mangaChapterFilterDownloadedProvider);
+        ref.watch(filterDownloadedWithMangaIdProvider);
+
+    final filterBookmarkedWithMangaIdProvider =
+        mangaChapterFilterBookmarkedWithMangaIdProvider(mangaId: mangaId);
     final chapterFilterBookmark =
-        ref.watch(mangaChapterFilterBookmarkedProvider);
+        ref.watch(filterBookmarkedWithMangaIdProvider);
+
     final chapterFilterScanlators =
         ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
 

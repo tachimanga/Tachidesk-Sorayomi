@@ -12,11 +12,15 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../routes/router_config.dart';
+import '../../../../../utils/cover/cover_cache_manager.dart';
+import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/image_util.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/premium_required_tile.dart';
+import '../../../../../widgets/text_premium.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/share/controller/share_controller.dart';
 import '../../../../settings/widgets/server_url_tile/server_url_tile.dart';
@@ -52,10 +56,12 @@ class PageActionWidget extends HookConsumerWidget {
       "imageFileFetchFail": context.l10n!.imageFileFetchFail,
       "imageSaveSuccess": context.l10n!.imageSaveSuccess,
       "imageSaveFail": context.l10n!.imageSaveFail,
+      "save_image_user_denied_msg": context.l10n!.save_image_user_denied_msg,
     };
 
     final purchaseGate = ref.watch(purchaseGateProvider);
     final testflightFlag = ref.watch(testflightFlagProvider);
+    final premiumFlag = purchaseGate || testflightFlag;
     final fakeWatermarkSwitch = useState(true);
     final watermarkChip = InputChip(
       label: Text(
@@ -85,6 +91,33 @@ class PageActionWidget extends HookConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        ListTile(
+          leading: const Icon(Icons.photo_outlined),
+          title: premiumFlag
+              ? Text(context.l10n!.set_as_cover)
+              : TextPremium(text: context.l10n!.set_as_cover),
+          onTap: () async {
+            if (!premiumFlag) {
+              logEvent3("COVER:SET_AS_COVER:GATE");
+              context.push(Routes.purchase);
+              return;
+            }
+            context.pop();
+            logEvent3("COVER:SET_AS_COVER");
+            FileInfo file = await getImageFile(baseUrl, msgMap);
+            (await AsyncValue.guard(() async {
+              CoverCacheManager()
+                  .saveCustomCover("${manga.id}", file.file.path);
+            }))
+                .showToastOnError(toast);
+            PaintingBinding.instance.imageCache.clear();
+            PaintingBinding.instance.imageCache.clearLiveImages();
+            if (context.mounted) {
+              toast.show(context.l10n!.cover_updated,
+                  toastDuration: const Duration(seconds: 3));
+            }
+          },
+        ),
         ListTile(
           leading: const Icon(Icons.save_outlined),
           title: Text(context.l10n!.save),

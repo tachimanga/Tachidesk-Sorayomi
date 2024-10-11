@@ -92,6 +92,7 @@ enum DBKeys {
   deleteDownloadAfterReadTodoList(<String>[]),
   appIconKey('default'),
   backupToCloud(false),
+  autoRefreshTitle(false),
   ;
 
   const DBKeys(this.initial);

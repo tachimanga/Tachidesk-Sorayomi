@@ -223,9 +223,6 @@ class ExtensionListTile extends HookConsumerWidget {
                               if (extension.extensionId == null) {
                                 throw context.l10n!.errorExtension;
                               }
-                              logEvent2(magicPipe, "ADD_EXTENSION", {
-                                "x": extension.pkgName?.replaceAll("eu.kanade.tachiyomi.extension.", "") ?? "-",
-                              });
                               await repository
                                   .installExtension(extension.extensionId!);
                               if (extension.lang?.code != null) {
