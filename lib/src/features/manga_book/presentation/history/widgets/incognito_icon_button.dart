@@ -12,6 +12,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/gen/assets.gen.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/misc/toast/toast.dart';
@@ -36,18 +37,14 @@ class IncognitoIconButton extends HookConsumerWidget {
       return IconButton(
         onPressed: () =>
             context.push([Routes.settings, Routes.securitySettings].toPath),
-        icon: ImageIcon(
-          AssetImage(Assets.icons.incognito.path),
-        ),
+        icon: const Icon(Icomoon.incognito),
       );
     }
 
     return HighlightedContainer(
       highlighted: enable,
       child: IconButton(
-        icon: ImageIcon(
-          AssetImage(Assets.icons.incognito.path),
-        ),
+        icon: const Icon(Icomoon.incognito),
         onPressed: () {
           final value = !enable;
           pipe.invokeMethod("LogEvent", "INCOGNITO:HISTORY:$value");

@@ -7,24 +7,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
+import '../../../../icons/icomoon_icons.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/async_buttons/async_icon_button.dart';
+import '../../../../widgets/popup_Item_with_icon_child.dart';
+import '../../../../widgets/search_field.dart';
 import '../../../browse_center/data/source_repository/source_repository.dart';
 import '../../../browse_center/presentation/source_manga_list/controller/source_manga_controller.dart';
 import '../../../settings/presentation/share/controller/share_controller.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/manga/manga_model.dart';
-import 'widgets/chapter_filter_icon_button.dart';
+import 'controller/manga_details_controller.dart';
 import 'widgets/edit_manga_category_dialog.dart';
 import 'widgets/manga_chapter_download_button.dart';
-import 'widgets/manga_chapter_organizer.dart';
 import 'widgets/manga_start_read_icon.dart';
 
 class MangaDetailsAppBar extends HookConsumerWidget
@@ -38,6 +41,7 @@ class MangaDetailsAppBar extends HookConsumerWidget
     required this.animationController,
     required this.refresh,
     required this.mangaRefresh,
+    required this.showSearch,
   });
 
   final String mangaId;
@@ -47,6 +51,7 @@ class MangaDetailsAppBar extends HookConsumerWidget
   final AnimationController animationController;
   final AsyncValueSetter<bool> refresh;
   final AsyncValueSetter<bool> mangaRefresh;
+  final ValueNotifier<bool> showSearch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,6 +68,26 @@ class MangaDetailsAppBar extends HookConsumerWidget
       end: context.theme.appBarTheme.foregroundColor?.withOpacity(1),
     ).animate(animationController).value;
 
+    final queryProvider = mangaChapterListQueryProvider(mangaId: mangaId);
+    final searchWidget = showSearch.value
+        ? PreferredSize(
+            preferredSize: Size.zero,
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SearchField(
+                    initialText: ref.read(queryProvider),
+                    onChanged: (val) =>
+                        ref.read(queryProvider.notifier).update(val),
+                    onClose: () => showSearch.value = false,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : null;
+
     return selectedChapters.value.isNotEmpty
         ? AppBar(
             leading: IconButton(
@@ -72,29 +97,34 @@ class MangaDetailsAppBar extends HookConsumerWidget
             title: Text(
               context.l10n!.numSelected(selectedChapters.value.length),
             ),
+            bottom: searchWidget,
             foregroundColor:
                 context.theme.appBarTheme.foregroundColor?.withOpacity(1),
-            backgroundColor: context.isTablet
+            backgroundColor: context.isTablet || showSearch.value
                 ? context.theme.appBarTheme.backgroundColor?.withOpacity(1)
                 : bgColorTween,
             actions: [
               IconButton(
                 onPressed: () {
-                  selectedChapters.value = {
-                    for (Chapter i in [...?filteredChapterList.valueOrNull])
-                      if (i.id != null) i.id!: i
-                  };
+                  selectBetween();
+                  toast.show(context.l10n!.select_between,
+                      gravity: ToastGravity.TOP);
+                },
+                icon: const Icon(Icons.expand),
+              ),
+              IconButton(
+                onPressed: () {
+                  selectAll();
+                  toast.show(context.l10n!.select_all,
+                      gravity: ToastGravity.TOP);
                 },
                 icon: const Icon(Icons.select_all_rounded),
               ),
               IconButton(
                 onPressed: () {
-                  selectedChapters.value = {
-                    for (Chapter i in [...?filteredChapterList.valueOrNull])
-                      if (i.id != null &&
-                          !selectedChapters.value.containsKey(i.id))
-                        i.id!: i
-                  };
+                  selectInvert();
+                  toast.show(context.l10n!.select_invert,
+                      gravity: ToastGravity.TOP);
                 },
                 icon: const Icon(Icons.flip_to_back_rounded),
               ),
@@ -102,8 +132,12 @@ class MangaDetailsAppBar extends HookConsumerWidget
           )
         : AppBar(
             title: Text(data?.title ?? context.l10n!.manga),
-            foregroundColor: context.isTablet ? null : textColorTween,
-            backgroundColor: context.isTablet ? null : bgColorTween,
+            foregroundColor:
+                context.isTablet || showSearch.value ? null : textColorTween,
+            backgroundColor: context.isTablet || showSearch.value
+                ? context.theme.appBarTheme.backgroundColor?.withOpacity(1)
+                : bgColorTween,
+            bottom: searchWidget,
             actions: [
               if (context.isTablet) MangaStartReadIcon(mangaId: mangaId),
               AsyncIconButton(
@@ -125,21 +159,12 @@ class MangaDetailsAppBar extends HookConsumerWidget
                             .showToastOnError(toast);
                       }
                     : null,
-                icon: const Icon(Icons.share_outlined),
+                icon: const Icon(Icomoon.shareRounded),
               ),
               if (context.isTablet)
                 IconButton(
                   onPressed: () => refresh(true),
                   icon: const Icon(Icons.refresh_rounded),
-                ),
-              if (!context.isTablet)
-                ChapterFilterIconButton(
-                  mangaId: mangaId,
-                  icon: IconButton(
-                    onPressed: () =>
-                        showMangaChapterOrganizer(context, mangaId),
-                    icon: const Icon(Icons.filter_list_rounded),
-                  ),
                 ),
               if (data?.sourceId != "0")
                 MangaChapterDownloadButton(mangaId: mangaId),
@@ -160,7 +185,10 @@ class MangaDetailsAppBar extends HookConsumerWidget
                       );
                       mangaRefresh(false);
                     },
-                    child: Text(context.l10n!.editCategory),
+                    child: PopupItemWithIconChild(
+                      icon: const Icon(Icons.label),
+                      label: Text(context.l10n!.editCategory),
+                    ),
                   ),
                   if (data?.inLibrary == true) ...[
                     PopupMenuItem(
@@ -170,13 +198,19 @@ class MangaDetailsAppBar extends HookConsumerWidget
                           extra: data,
                         );
                       },
-                      child: Text(context.l10n!.migrate_action_migrate),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icomoon.exchange),
+                        label: Text(context.l10n!.migrate_action_migrate),
+                      ),
                     ),
                   ],
                   if (!context.isTablet)
                     PopupMenuItem(
                       onTap: () => refresh(true),
-                      child: Text(context.l10n!.refresh),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.refresh),
+                        label: Text(context.l10n!.refresh),
+                      ),
                     ),
                   if (filteredChapterList.valueOrNull?.isNotEmpty == true)
                     PopupMenuItem(
@@ -184,7 +218,10 @@ class MangaDetailsAppBar extends HookConsumerWidget
                         final i = filteredChapterList.valueOrNull!.first;
                         selectedChapters.value = {if (i.id != null) i.id!: i};
                       },
-                      child: Text(context.l10n!.select_chapters),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.check_circle_outline),
+                        label: Text(context.l10n!.select_chapters),
+                      ),
                     ),
                   if (data?.sourceId == "0")
                     PopupMenuItem(
@@ -204,7 +241,10 @@ class MangaDetailsAppBar extends HookConsumerWidget
                         }))
                             .showToastOnError(toast);
                       },
-                      child: Text(context.l10n!.delete),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.delete),
+                        label: Text(context.l10n!.delete),
+                      ),
                     ),
                 ],
               ),
@@ -212,6 +252,49 @@ class MangaDetailsAppBar extends HookConsumerWidget
           );
   }
 
+  void selectBetween() {
+    int? firstIndex;
+    int? lastIndex;
+    final list = [...?filteredChapterList.valueOrNull];
+    for (int i = 0; i < list.length; i++) {
+      final chapter = list[i];
+      if (chapter.id != null &&
+          selectedChapters.value.containsKey(chapter.id)) {
+        if (firstIndex == null) {
+          firstIndex = i;
+        } else {
+          lastIndex = i;
+        }
+      }
+    }
+    if (firstIndex == null) {
+      return;
+    }
+    if (firstIndex == lastIndex || lastIndex == null) {
+      lastIndex = list.length - 1;
+    }
+    selectedChapters.value = {
+      for (int i = 0; i < list.length; i++)
+        if (i >= firstIndex && i <= lastIndex && list[i].id != null)
+          list[i].id!: list[i]
+    };
+  }
+
+  void selectAll() {
+    selectedChapters.value = {
+      for (Chapter i in [...?filteredChapterList.valueOrNull])
+        if (i.id != null) i.id!: i
+    };
+  }
+
+  void selectInvert() {
+    selectedChapters.value = {
+      for (Chapter i in [...?filteredChapterList.valueOrNull])
+        if (i.id != null && !selectedChapters.value.containsKey(i.id)) i.id!: i
+    };
+  }
+
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(
+      kToolbarHeight + (showSearch.value ? kTextFieldHeight : 0));
 }

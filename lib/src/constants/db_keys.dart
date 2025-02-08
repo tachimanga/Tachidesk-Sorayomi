@@ -93,6 +93,9 @@ enum DBKeys {
   appIconKey('default'),
   backupToCloud(false),
   autoRefreshTitle(false),
+  receiveTimeout(null),
+  autoScrollInterval(2000),
+  readTimeShowLogo(true),
   ;
 
   const DBKeys(this.initial);

@@ -18,6 +18,18 @@ class RepoController extends _$RepoController {
   Future<List<Repo>?> build() async {
     final token = CancelToken();
     ref.onDispose(token.cancel);
+    final list = loadRepoList(token: token);
+    ref.keepAlive();
+    return list;
+  }
+
+  Future<void> reloadRepoList() async {
+    state = await AsyncValue.guard(() async {
+      return loadRepoList(token: null);
+    });
+  }
+
+  Future<List<Repo>?> loadRepoList({CancelToken? token}) async {
     final result =
         await ref.watch(repoRepositoryProvider).getRepoList(cancelToken: token);
     final list = result
@@ -31,19 +43,6 @@ class RepoController extends _$RepoController {
 int repoCount(RepoCountRef ref) {
   final repoList = ref.watch(repoControllerProvider);
   return repoList.valueOrNull?.length ?? 0;
-}
-
-@riverpod
-class RepoListWithCache extends _$RepoListWithCache {
-  @override
-  Future<List<Repo>?> build() async {
-    final token = CancelToken();
-    ref.onDispose(token.cancel);
-    final result =
-        await ref.watch(repoRepositoryProvider).getRepoList(cancelToken: token);
-    ref.keepAlive();
-    return result;
-  }
 }
 
 String? baseUrlToSourceUrl(String? baseUrl) {

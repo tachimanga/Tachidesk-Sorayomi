@@ -26,8 +26,8 @@ import '../../domain/backup_missing/backup_missing.dart';
 
 part 'backup_repository.g.dart';
 
-class BackupRepository {
-  const BackupRepository(this.dioClient);
+class ProtoBackupRepository {
+  const ProtoBackupRepository(this.dioClient);
 
   final DioClient dioClient;
 
@@ -42,7 +42,7 @@ class BackupRepository {
       throw context.l10n!.errorFilePickUnknownType(".proto.gz or .tachibk");
     }
     return (await dioClient.post<BackupMissing, BackupMissing?>(
-      ImportUrl.import,
+      ProtoBackupUrl.import,
       data: FormData.fromMap({
         'defaultRepoUrl': defaultRepoUrl,
         'backup.proto.gz': kIsWeb
@@ -63,7 +63,8 @@ class BackupRepository {
 
   Pair<Stream<BackupStatus>, AsyncCallback> socketUpdates() {
     final url = (dioClient.dio.options.baseUrl.toWebSocket!);
-    final channel = WebSocketChannel.connect(Uri.parse(url + ImportUrl.update));
+    final channel =
+        WebSocketChannel.connect(Uri.parse(url + ProtoBackupUrl.importWs));
     return Pair<Stream<BackupStatus>, AsyncCallback>(
       first: channel.stream
           .throttle(const Duration(milliseconds: 300), trailing: true)
@@ -72,8 +73,20 @@ class BackupRepository {
       second: channel.sink.close,
     );
   }
+
+  Future<ProtoBackupResult?> createProtoBackup({
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.post<ProtoBackupResult, ProtoBackupResult?>(
+        ProtoBackupUrl.export,
+        data: jsonEncode({"dummy": ""}),
+        decoder: (e) =>
+            e is Map<String, dynamic> ? ProtoBackupResult.fromJson(e) : null,
+        cancelToken: cancelToken,
+      ))
+          .data;
 }
 
 @riverpod
-BackupRepository backupRepository(BackupRepositoryRef ref) =>
-    BackupRepository(ref.watch(dioClientKeyProvider));
+ProtoBackupRepository backupRepository(BackupRepositoryRef ref) =>
+    ProtoBackupRepository(ref.watch(dioClientKeyProvider));

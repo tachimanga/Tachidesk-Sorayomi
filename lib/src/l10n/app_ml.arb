@@ -30,5 +30,33 @@
   "cancel": "റദ്ദാക്കുക",
   "@cancel": {
     "description": "Text for Cancel button in a Popup"
+  },
+  "about": "കുറിച്ച്",
+  "@about": {
+    "description": "Screen title and Button text of About screen"
+  },
+  "categories": "വിഭാഗങ്ങൾ",
+  "@categories": {
+    "description": "Button text of edit Categories screen in Library settings screen"
+  },
+  "chapterSortFetchedDate": "ലഭിച്ച തീയതി പ്രകാരം",
+  "@chapterSortFetchedDate": {
+    "description": "Radio button text for sort by Fetched Date"
+  },
+  "chapterSortSource": "ഉറവിടം വഴി",
+  "@chapterSortSource": {
+    "description": "Radio button text for sort by Source"
+  },
+  "client": "ക്ലയൻ്റ്",
+  "@client": {
+    "description": "Text title for the name of the client in About screen"
+  },
+  "close": "അടയ്ക്കുക",
+  "@close": {
+    "description": "Text for close button"
+  },
+  "completed": "പൂർത്തിയാക്കി",
+  "@completed": {
+    "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
   }
 }

@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -71,6 +73,21 @@ class CategoryRepository {
         CategoryUrl.reorder,
         data: FormData.fromMap({"from": from, "to": to}),
       );
+
+  Future<void> updateMeta({
+    required int categoryId,
+    required String key,
+    required String? value,
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.post(
+        CategoryUrl.meta(categoryId),
+        data: jsonEncode({
+          'key': key,
+          'value': value,
+        }),
+        cancelToken: cancelToken,
+      ));
 
   //  Manga
   Future<List<Manga>?> getMangasFromCategory({

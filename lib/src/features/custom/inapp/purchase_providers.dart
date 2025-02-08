@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/src/types/app_store_product_details.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
@@ -17,13 +17,14 @@ import '../../../utils/event_util.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/log.dart';
 import '../../../utils/mixin/shared_preferences_client_mixin.dart';
-import '../../../utils/mixin/state_provider_mixin.dart';
 import '../../../utils/premium_reset.dart';
 import '../../../utils/usage_util.dart';
 import '../api/api_providers.dart';
 import 'model/purchase_model.dart';
 
 part 'purchase_providers.g.dart';
+
+final productDetailsCache = <String, AppStoreProductDetails>{};
 
 class PurchaseData {
   bool purchasePending = false;
@@ -37,6 +38,7 @@ class PurchaseState extends _$PurchaseState {
   PurchaseData build() {
     return PurchaseData(false, null);
   }
+
   void update(PurchaseData d) {
     log("update state: loading:${d.purchasePending}, err:${d.error}");
     state = d;
@@ -50,6 +52,7 @@ class PurchaseListener extends _$PurchaseListener {
     log("purchase listener init");
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         InAppPurchase.instance.purchaseStream;
+    final bucket = ref.read(bucketConfigProvider);
     // https://developer.apple.com/documentation/storekit/skpaymenttransactionobserver/1506107-paymentqueue?language=objc
     StreamSubscription<List<PurchaseDetails>> subscription = purchaseUpdated
         .listen((List<PurchaseDetails> purchaseDetailsList) async {
@@ -65,10 +68,12 @@ class PurchaseListener extends _$PurchaseListener {
           if (purchaseDetails.status == PurchaseStatus.error) {
             final d = PurchaseData(false, purchaseDetails.error!.toString());
             ref.read(purchaseStateProvider.notifier).update(d);
+            logPurchaseError(purchaseDetails);
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
               purchaseDetails.status == PurchaseStatus.restored) {
             final d = PurchaseData(false, null);
             ref.read(purchaseStateProvider.notifier).update(d);
+            logPurchaseSuccess(purchaseDetails, bucket ?? "-");
             try {
               await processPurchaseDetail(purchaseDetails);
             } catch (e) {
@@ -79,6 +84,7 @@ class PurchaseListener extends _$PurchaseListener {
           } else if (purchaseDetails.status == PurchaseStatus.canceled) {
             final d = PurchaseData(false, null);
             ref.read(purchaseStateProvider.notifier).update(d);
+            logPurchaseCanceled(purchaseDetails);
           }
           // _pendingCompletePurchase = status != PurchaseStatus.pending;
           // https://developer.apple.com/documentation/storekit/in-app_purchase/original_api_for_in-app_purchase/finishing_a_transaction?language=objc
@@ -100,11 +106,55 @@ class PurchaseListener extends _$PurchaseListener {
     return 0;
   }
 
+  void logPurchaseSuccess(PurchaseDetails purchaseDetails, String bucket) {
+    try {
+      doLogPurchaseSuccess(purchaseDetails, bucket);
+    } catch (e) {
+      log("doLogPurchaseSuccess err:$e");
+    }
+  }
+
+  void doLogPurchaseSuccess(PurchaseDetails purchaseDetails, String bucket) {
+    final status = purchaseDetails.status.name;
+    final productDetail = productDetailsCache[purchaseDetails.productID];
+    final countryCode = productDetail?.skProduct.priceLocale.countryCode ?? "-";
+    final usageDays =
+        UsageUtil.calculateUsageDays(ref.read(sharedPreferencesProvider));
+    logEvent3("IAP:STATE:$status", {
+      "x": "$usageDays",
+      "y": purchaseDetails.productID,
+      "z": "${bucket}_${purchaseDetails.productID}",
+      "url": "${bucket}_${countryCode}_${purchaseDetails.productID}"
+    });
+  }
+
+  void logPurchaseError(PurchaseDetails purchaseDetails) {
+    try {
+      logEvent3("IAP:STATE:ERROR", {
+        "id": purchaseDetails.productID,
+        "error": purchaseDetails.error!.toString(),
+      });
+    } catch (e) {
+      log("logPurchaseError err:$e");
+    }
+  }
+
+  void logPurchaseCanceled(PurchaseDetails purchaseDetails) {
+    try {
+      logEvent3("IAP:STATE:CANCELED", {
+        "id": purchaseDetails.productID,
+      });
+    } catch (e) {
+      log("logPurchaseCanceled err:$e");
+    }
+  }
+
   Future<void> processPurchaseDetail(PurchaseDetails purchaseDetails) async {
     log("processPurchaseDetail transactionDate:${purchaseDetails.transactionDate}"
         ", productID:${purchaseDetails.productID}"
         ", purchaseID:${purchaseDetails.purchaseID}");
-    final verificationData = purchaseDetails.verificationData.serverVerificationData;
+    final verificationData =
+        purchaseDetails.verificationData.serverVerificationData;
     log("verificationData $verificationData");
 
     VerifyResult? verifyResult;
@@ -127,7 +177,8 @@ class PurchaseListener extends _$PurchaseListener {
       ref.read(purchaseExpireMsProvider.notifier).update(verifyResult?.expire);
       ref.read(purchaseTokenProvider.notifier).update(verifyResult?.token);
       PremiumReset.instance.setupWhenPurchase(ref);
-      final usageDays = UsageUtil.calculateUsageDays(ref.read(sharedPreferencesProvider));
+      final usageDays =
+          UsageUtil.calculateUsageDays(ref.read(sharedPreferencesProvider));
       logEvent3("VERIFY_SUCC", {"x": "$usageDays"});
     }
   }
@@ -143,8 +194,10 @@ class PurchaseListener extends _$PurchaseListener {
       data: {
         "verificationData": verificationData,
       },
-      decoder: (e) => e is Map<String, dynamic> ? VerifyResult.fromJson(e) : null,
-    )).data;
+      decoder: (e) =>
+          e is Map<String, dynamic> ? VerifyResult.fromJson(e) : null,
+    ))
+        .data;
     return result;
   }
 
@@ -207,72 +260,6 @@ class ProductPageData {
 }
 
 @riverpod
-Future<ProductPageData> products(ProductsRef ref) async {
-  log("purchase load products");
-  final dioClient = ref.watch(dioClientApiProvider);
-  final locale = ref.watch(userPreferLocaleProvider);
-  final pipe = ref.watch(getMagicPipeProvider);
-
-  ProductListResult? result;
-  try {
-    final stopwatch = Stopwatch()..start();
-    result = await queryProductList(dioClient, locale);
-    stopwatch.stop();
-    final ms = stopwatch.elapsedMilliseconds;
-    logEvent2(pipe, "IAP:LOAD:API:SUCC", {
-      "ms": "$ms",
-      "x": "${ms / 100 * 100}",
-    });
-  } catch (e) {
-    logEvent2(pipe, "IAP:LOAD:API:FAIL", {"error": "$e"});
-    rethrow;
-  }
-  log("products data $result");
-
-  final map = <String, ProductItem>{};
-  var list = ["10", "20", "21"];
-  var keys = <String>[];
-  if (result != null && result.list != null) {
-    for (var value in result.list!) {
-      map[value.id ?? ""] = value;
-      keys.add(value.id ?? "");
-    }
-    list = keys;
-  }
-  log("list order $list");
-  log("product map $map");
-
-  ProductDetailsResponse productDetailResponse;
-  try {
-    final stopwatch = Stopwatch()..start();
-    productDetailResponse = await queryProductDetails(list);
-    stopwatch.stop();
-    final ms = stopwatch.elapsedMilliseconds;
-    logEvent2(pipe, "IAP:LOAD:IAP:SUCC", {
-      "ms": "$ms",
-      "x": "${ms / 100 * 100}",
-    });
-  } catch (e) {
-    logEvent2(pipe, "IAP:LOAD:IAP:FAIL", {"error": "$e"});
-    rethrow;
-  }
-
-  var productDetails = <ProductDetails>[];
-  for (final id in list) {
-    final e = productDetailResponse.productDetails.firstWhereOrNull((element) => element.id == id);
-    if (e != null) {
-      productDetails.add(e);
-    }
-  }
-
-  //ref.keepAlive();
-  return ProductPageData(productDetails,
-    result,
-    map
-  );
-}
-
-@riverpod
 class ProductsV3 extends _$ProductsV3 {
   Map<String, ProductDetailsResponse> iapDataMap = {};
 
@@ -301,6 +288,9 @@ class ProductsV3 extends _$ProductsV3 {
     if (result != null && result.list != null) {
       for (var value in result.list!) {
         map[value.id ?? ""] = value;
+        if (value.id == "10") {
+          map["11"] = value;
+        }
         keys.add(value.id ?? "");
       }
       list = keys;
@@ -310,6 +300,10 @@ class ProductsV3 extends _$ProductsV3 {
 
     if (bucket == "c") {
       list.remove("10");
+    }
+    if (bucket == "d") {
+      list.remove("10");
+      list.add("11");
     }
     log("bucket=$bucket list=$list");
 
@@ -337,19 +331,21 @@ class ProductsV3 extends _$ProductsV3 {
     } else {
       log("[purchase] load IAP from cache");
     }
-    
+
     var productDetails = <ProductDetails>[];
     for (final id in list) {
-      final e = iapData.productDetails.firstWhereOrNull((element) => element.id == id);
+      final e = iapData.productDetails
+          .firstWhereOrNull((element) => element.id == id);
       if (e != null) {
         productDetails.add(e);
       }
     }
     log("[purchase] load done");
 
-    return ProductPageData(productDetails,
-        result,
-        map
+    return ProductPageData(
+      productDetails,
+      result,
+      map,
     );
   }
 }
@@ -379,7 +375,8 @@ Future<ProductListResult?> productsApiData(ProductsApiDataRef ref) async {
   return result;
 }
 
-Future<ProductListResult?> loadProductsApiCacheData(Locale locale, MethodChannel pipe) async {
+Future<ProductListResult?> loadProductsApiCacheData(
+    Locale locale, MethodChannel pipe) async {
   ProductListResult? result;
   try {
     final jsonString = await rootBundle.loadString('assets/data/products.json');
@@ -396,15 +393,18 @@ Future<ProductListResult?> loadProductsApiCacheData(Locale locale, MethodChannel
   return result;
 }
 
-Future<ProductListResult?> queryProductList(DioClient dioClient, Locale locale) async {
-   final result = (await dioClient.post<ProductListResult, ProductListResult?>(
+Future<ProductListResult?> queryProductList(
+    DioClient dioClient, Locale locale) async {
+  final result = (await dioClient.post<ProductListResult, ProductListResult?>(
     "/productList",
     data: {
       "language": locale.languageCode,
       "locale": locale.toLanguageTag(),
     },
-    decoder: (e) => e is Map<String, dynamic> ? ProductListResult.fromJson(e) : null,
-  )).data;
+    decoder: (e) =>
+        e is Map<String, dynamic> ? ProductListResult.fromJson(e) : null,
+  ))
+      .data;
   return result;
 }
 
@@ -413,15 +413,20 @@ Future<ProductDetailsResponse> queryProductDetails(List<String> list) async {
   if (!isAvailable) {
     throw Exception('InAppPurchase unavailable');
   }
-  final ProductDetailsResponse productDetailResponse = await InAppPurchase
-      .instance
-      .queryProductDetails(list.toSet());
+  final ProductDetailsResponse productDetailResponse =
+      await InAppPurchase.instance.queryProductDetails(list.toSet());
   log("purchase productDetailResponse "
       "productDetails ${productDetailResponse.productDetails}, "
       "notFoundIDs ${productDetailResponse.notFoundIDs}, "
       "error ${productDetailResponse.error}");
   if (productDetailResponse.error != null) {
     throw Exception(productDetailResponse.error.toString());
+  }
+
+  for (final detail in productDetailResponse.productDetails) {
+    if (detail is AppStoreProductDetails) {
+      productDetailsCache[detail.id] = detail;
+    }
   }
   return productDetailResponse;
 }
@@ -431,10 +436,10 @@ class PurchaseDone extends _$PurchaseDone
     with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
-    ref,
-    key: DBKeys.purchaseDone.name,
-    initial: DBKeys.purchaseDone.initial,
-  );
+        ref,
+        key: DBKeys.purchaseDone.name,
+        initial: DBKeys.purchaseDone.initial,
+      );
 }
 
 @riverpod
@@ -442,10 +447,10 @@ class PurchaseExpireMs extends _$PurchaseExpireMs
     with SharedPreferenceClientMixin<int> {
   @override
   int? build() => initialize(
-    ref,
-    key: DBKeys.purchaseExpireMs.name,
-    initial: DBKeys.purchaseExpireMs.initial,
-  );
+        ref,
+        key: DBKeys.purchaseExpireMs.name,
+        initial: DBKeys.purchaseExpireMs.initial,
+      );
 }
 
 @riverpod
@@ -453,10 +458,10 @@ class PurchaseToken extends _$PurchaseToken
     with SharedPreferenceClientMixin<String> {
   @override
   String? build() => initialize(
-    ref,
-    key: DBKeys.purchaseToken.name,
-    initial: DBKeys.purchaseToken.initial,
-  );
+        ref,
+        key: DBKeys.purchaseToken.name,
+        initial: DBKeys.purchaseToken.initial,
+      );
 }
 
 @riverpod
@@ -510,6 +515,7 @@ class PurchaseSelectIndex extends _$PurchaseSelectIndex {
   int build() {
     return 1;
   }
+
   void update(int d) {
     state = d;
   }

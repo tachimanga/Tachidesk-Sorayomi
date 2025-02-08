@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 
@@ -67,7 +68,7 @@ class FileLogExport extends HookConsumerWidget {
     final pipe = ref.watch(getMagicPipeProvider);
     return ListTile(
       title: Text(context.l10n!.exportLog),
-      leading: const Icon(Icons.ios_share_rounded),
+      leading: const Icon(Icomoon.shareRounded),
       contentPadding: kSettingPadding,
       trailing: kSettingTrailing,
       onTap: () => pipe.invokeMethod("EXPORT_LOG", ""),

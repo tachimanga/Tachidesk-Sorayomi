@@ -58,7 +58,7 @@ class LibraryMangaEmptyView extends ConsumerWidget {
       } else {
         return Emoticons(
           text: context.l10n!.library_is_empty,
-          button: TextButton(
+          button: ElevatedButton(
             onPressed: () => _resetFilters(ref),
             child: Text(context.l10n!.reset_filters),
           ),
@@ -77,7 +77,7 @@ class LibraryMangaEmptyView extends ConsumerWidget {
     } else {
       return Emoticons(
         text: context.l10n!.noCategoryMangaFound,
-        button: TextButton(
+        button: ElevatedButton(
           onPressed: () => _resetFilters(ref),
           child: Text(context.l10n!.reset_filters),
         ),

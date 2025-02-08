@@ -12,6 +12,7 @@ import '../features/settings/presentation/backup2/controller/auto_backup_control
 import '../features/settings/presentation/backup2/controller/backup_controller.dart';
 import '../features/settings/presentation/security/controller/security_controller.dart';
 import '../features/settings/presentation/share/controller/share_controller.dart';
+import '../features/sync/data/sync_repository.dart';
 import '../routes/router_config.dart';
 import 'log.dart';
 
@@ -104,6 +105,11 @@ class PremiumReset {
             .update(ReaderPageLayout.singlePage);
       });
     }
+
+    Future(() {
+      log("reset disableSync");
+      ref.read(syncRepositoryProvider).disableSync();
+    });
   }
 
   void setupWhenPurchase(Ref ref) {

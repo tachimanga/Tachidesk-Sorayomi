@@ -7,9 +7,7 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../../constants/db_keys.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
-import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/manga/manga_model.dart';
@@ -35,13 +33,10 @@ class HistoryMangaQuery extends _$HistoryMangaQuery
 }
 
 @riverpod
-Future<List<Manga>?> historyListFilter(HistoryListFilterRef ref) async {
+AsyncValue<List<Manga>?> historyListFilter(HistoryListFilterRef ref) {
   final query = ref.watch(historyMangaQueryProvider);
-
-  final list = await ref.watch(historyListProvider.future);
-  if (list?.isNotEmpty != true) {
-    return [];
-  }
+  final value = ref.watch(historyListProvider);
+  final list = value.valueOrNull;
 
   bool applyFilter(Manga manga) {
     if (query.isNotBlank == true && manga.title?.query(query) != true) {
@@ -50,5 +45,6 @@ Future<List<Manga>?> historyListFilter(HistoryListFilterRef ref) async {
     return true;
   }
 
-  return list?.where(applyFilter).toList();
+  final filtered = list?.where(applyFilter).toList();
+  return value.copyWithData((p0) => filtered);
 }

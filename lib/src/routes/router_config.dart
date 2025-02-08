@@ -14,6 +14,8 @@ import '../constants/navigation_bar_data.dart';
 import '../features/about/presentation/about/about_screen_lite.dart';
 import '../features/about/presentation/about/debug_keyboard_screen.dart';
 import '../features/about/presentation/about/debug_screen.dart';
+import '../features/account/account_login_screen.dart';
+import '../features/account/account_register_screen.dart';
 import '../features/browse_center/domain/filter/filter_model.dart';
 import '../features/browse_center/domain/migrate/migrate_model.dart';
 import '../features/browse_center/presentation/browse/browse_screen.dart';
@@ -54,6 +56,8 @@ import '../features/settings/presentation/security/security_setting_screen.dart'
 import '../features/settings/presentation/settings/settings_screen.dart';
 import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
 import '../features/settings/presentation/tracking/tracking_manga_search_screen.dart';
+import '../features/stats/read_time_stats_screen.dart';
+import '../features/sync/sync_settings_screen.dart';
 import '../firebase/observer.dart';
 import '../global_providers/global_providers.dart';
 import '../global_providers/preference_providers.dart';
@@ -93,6 +97,7 @@ abstract class Routes {
   static const readerSettings = 'reader';
   static const readerAdvancedSettings = 'r-advanced';
   static const readerTapZones = 'tapZones';
+  static const syncSettings = 'syncSettings';
   static const trackingSettings = 'tracking';
   static const securitySettings = 'security';
   static const downloadSettings = '/downloadSettings';
@@ -110,6 +115,9 @@ abstract class Routes {
   static const mangaTrackSearch = '/track/search/:trackerId/:mangaId';
   static const mangaTrackSetting = '/track/setting';
   static const mangaCategorySetting = '/category/setting';
+  static const mangaSyncSetting = '/sync/setting';
+  static const userLogin = '/user/login';
+  static const userRegister = '/user/register';
   static getMangaTrackSearch(int trackerId, int mangaId) => '/track/search/$trackerId/$mangaId';
   static const sourceManga = '/source/:sourceId/:sourceType';
   static getSourceManga(String sourceId, SourceType sourceType,
@@ -126,6 +134,7 @@ abstract class Routes {
   static const purchase = '/purchase';
   static const migrateMangaList = '/migrate/:sourceId';
   static getMigrateMangaList(String sourceId) => '/migrate/$sourceId';
+  static const statsReadTime = '/stats/time';
 }
 
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -266,6 +275,21 @@ GoRouter routerConfig(ref) {
         builder: (context, state) => const EditCategoryScreen(),
       ),
       GoRoute(
+        path: Routes.mangaSyncSetting,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SyncSettingsScreen(),
+      ),
+      GoRoute(
+        path: Routes.userLogin,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AccountLoginScreen(),
+      ),
+      GoRoute(
+        path: Routes.userRegister,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const AccountRegisterScreen(),
+      ),
+      GoRoute(
         path: Routes.migrateMangaList,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => MigrateSourceDetailScreen(
@@ -305,6 +329,10 @@ GoRouter routerConfig(ref) {
           GoRoute(
             path: Routes.trackingSettings,
             builder: (context, state) => const TrackerSettingsScreen(),
+          ),
+          GoRoute(
+            path: Routes.syncSettings,
+            builder: (context, state) => const SyncSettingsScreen(),
           ),
           GoRoute(
             path: Routes.appearanceSettings,
@@ -364,6 +392,11 @@ GoRouter routerConfig(ref) {
             builder: (context, state) => const SecuritySettingScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: Routes.statsReadTime,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ReadTimeStatsScreen(),
       ),
       GoRoute(
         path: Routes.downloads,

@@ -46,7 +46,7 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
         chapterFilterScanlators.isNotEmpty) {
       return Emoticons(
           text: context.l10n!.noChaptersFound,
-          button: TextButton(
+          button: ElevatedButton(
             onPressed: () {
               ref.read(mangaChapterFilterUnreadProvider.notifier).update(null);
               ref

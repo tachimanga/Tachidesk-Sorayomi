@@ -4,27 +4,25 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
-import '../../../../constants/enum.dart';
-import '../../../../global_providers/global_providers.dart';
-
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
-import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
-import '../../../../widgets/pop_button.dart';
+import '../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../../widgets/search_field.dart';
 import '../../../../widgets/shell/shell_screen.dart';
+import '../../../sync/controller/sync_controller.dart';
+import '../../../sync/widgets/sync_info_widget.dart';
 import '../../data/manga_book_repository.dart';
 import 'controller/history_controller.dart';
 import 'widgets/history_clear_icon_button.dart';
+import 'widgets/history_descriptive_list_tile.dart';
 import 'widgets/incognito_icon_button.dart';
 
 class HistoryScreen extends HookConsumerWidget {
@@ -43,6 +41,14 @@ class HistoryScreen extends HookConsumerWidget {
       if (!mangaListSrc.isLoading) refresh();
       return;
     }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        refresh();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     useEffect(() {
       mangaList.showToastOnError(
@@ -76,8 +82,15 @@ class HistoryScreen extends HookConsumerWidget {
           ),
         ),
         centerTitle: true,
+        leading: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SyncInfoWidget(),
+            IncognitoIconButton(),
+          ],
+        ),
+        leadingWidth: 56 /*_kLeadingWidth*/ * 2,
         actions: [
-          const IncognitoIconButton(),
           IconButton(
             onPressed: () => showSearch.value = true,
             icon: const Icon(Icons.search_rounded),
@@ -105,7 +118,7 @@ class HistoryScreen extends HookConsumerWidget {
                 controller: mainPrimaryScrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: data?.length ?? 0,
-                itemBuilder: (context, index) => MangaCoverDescriptiveListTile(
+                itemBuilder: (context, index) => HistoryDescriptiveListTile(
                   manga: data![index],
                   onPressed: () {
                     if (data[index].id != null) {
@@ -114,11 +127,12 @@ class HistoryScreen extends HookConsumerWidget {
                       ));
                     }
                   },
-                  showBadges: false,
-                  showLastReadChapter: true,
                   popupItems: [
                     PopupMenuItem(
-                      child: Text(context.l10n!.delete),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.delete),
+                        label: Text(context.l10n!.remove),
+                      ),
                       onTap: () async {
                         final manga = data![index];
                         if (manga.id != null) {

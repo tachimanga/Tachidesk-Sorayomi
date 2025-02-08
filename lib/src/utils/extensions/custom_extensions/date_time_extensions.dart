@@ -117,4 +117,21 @@ extension DateTimeExtensions on DateTime {
           .format(this);
     }
   }
+
+  String convertToLocalizedTimeAgo(
+      DateFormatEnum format, BuildContext context) {
+    DateTime now = DateTime.now();
+    Duration timeAgo = now.difference(this);
+    if (timeAgo.inSeconds < 60) {
+      return context.l10n!.just_now;
+    } else if (timeAgo.inMinutes < 60) {
+      return context.l10n!.minutes_ago(timeAgo.inMinutes);
+    } else if (timeAgo.inHours < 10) {
+      return context.l10n!.hours_ago(timeAgo.inHours);
+    } else if (timeAgo.inHours < 24) {
+      return DateFormat().add_Hms().format(this);
+    } else {
+      return convertToLocalizedDaysAgo(format, context);
+    }
+  }
 }

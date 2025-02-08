@@ -16,10 +16,12 @@ class ConfirmDialog extends ConsumerWidget {
     super.key,
     this.title,
     this.content,
+    this.confirmText,
     this.onConfirm,
   });
   final Widget? title;
   final Widget? content;
+  final String? confirmText;
   final VoidCallback? onConfirm;
 
   @override
@@ -38,7 +40,9 @@ class ConfirmDialog extends ConsumerWidget {
               width: 15,
             ),
             ElevatedButton(
-                onPressed: onConfirm, child: Text(context.l10n!.confirm)),
+              onPressed: onConfirm,
+              child: Text(confirmText ?? context.l10n!.confirm),
+            ),
           ],
         )
       ],

@@ -179,10 +179,6 @@ class MangaBookRepository {
         cancelToken: cancelToken,
       ))
           .data;
-  Future<void> addMangaToCategory(String mangaId, String categoryId) =>
-      dioClient.get(MangaUrl.categoryId(mangaId, categoryId));
-  Future<void> removeMangaFromCategory(String mangaId, String categoryId) =>
-      dioClient.delete(MangaUrl.categoryId(mangaId, categoryId));
   Future<void> updateMangaCategory(
           String mangaId, List<String> categoryIdList) =>
       dioClient.post(

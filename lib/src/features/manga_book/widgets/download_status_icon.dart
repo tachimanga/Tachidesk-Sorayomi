@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/app_sizes.dart';
 import '../../../global_providers/global_providers.dart';
+import '../../../icons/icomoon_icons.dart';
 import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/misc/toast/toast.dart';
@@ -21,7 +22,6 @@ import '../data/downloads/downloads_repository.dart';
 import '../data/manga_book_repository.dart';
 import '../domain/chapter/chapter_model.dart';
 import '../domain/chapter_batch/chapter_batch_model.dart';
-import '../presentation/downloads/service/download_ticket_service.dart';
 import '../presentation/downloads/widgets/download_reward_ad_dialog.dart';
 
 class DownloadStatusIcon extends HookConsumerWidget {
@@ -176,7 +176,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
           );
         } else {
           return IconButton(
-            icon: const Icon(Icons.download_for_offline_outlined),
+            icon: const Icon(Icomoon.icDownloadChapter24dp),
             onPressed: () {
               pipe.invokeMethod("LogEvent", "DOWN_ADD_CHAPTER");
               toggleChapterToQueue(toast, context, ref, isAdd: true);

@@ -4,29 +4,49 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../data/category/category_repository.dart';
+import '../../../domain/category/category_model.dart';
+import '../../category/controller/edit_category_controller.dart';
 
 part 'library_controller.g.dart';
 
 @riverpod
-Future<List<Manga>?> categoryMangaList(
-    CategoryMangaListRef ref, int categoryId) async {
-  final token = CancelToken();
-  ref.onDispose(token.cancel);
-  final result = await ref
-      .watch(categoryRepositoryProvider)
-      .getMangasFromCategory(categoryId: categoryId, cancelToken: token);
-  ref.keepAlive();
-  return result;
+class CategoryMangaListWithId extends _$CategoryMangaListWithId {
+  @override
+  Future<List<Manga>?> build({required int categoryId}) async =>
+      loadMangaList(ref, categoryId);
+
+  Future<List<Manga>?> loadMangaList(
+    AutoDisposeAsyncNotifierProviderRef<List<Manga>?> ref,
+    int categoryId,
+  ) async {
+    final token = CancelToken();
+    ref.onDispose(token.cancel);
+    final result = await ref
+        .watch(categoryRepositoryProvider)
+        .getMangasFromCategory(categoryId: categoryId, cancelToken: token);
+    ref.keepAlive();
+    return result;
+  }
+
+  Future<void> reloadMangaList() async {
+    state = await AsyncValue.guard(() async {
+      return loadMangaList(ref, categoryId);
+    });
+  }
 }
 
 bool genreMatches(List<String>? mangaGenreList, List<String>? queryGenreList) {
@@ -41,15 +61,19 @@ class CategoryMangaListWithQueryAndFilter
     extends _$CategoryMangaListWithQueryAndFilter {
   @override
   AsyncValue<List<Manga>?> build({required int categoryId}) {
-    final mangaList = ref.watch(categoryMangaListProvider(categoryId));
+    final mangaList =
+        ref.watch(categoryMangaListWithIdProvider(categoryId: categoryId));
     final query = ref.watch(libraryQueryProvider);
     final mangaFilterUnread = ref.watch(libraryMangaFilterUnreadProvider);
     final mangaFilterDownloaded =
         ref.watch(libraryMangaFilterDownloadedProvider);
     final mangaFilterCompleted = ref.watch(libraryMangaFilterCompletedProvider);
-    final sortedBy = ref.watch(libraryMangaSortProvider);
-    final sortedDirection =
-        ref.watch(libraryMangaSortDirectionProvider).ifNull(true);
+
+    final sortedBy =
+        ref.watch(categorySortWithIdProvider(categoryId: categoryId));
+    final sortedDirection = ref
+        .watch(categorySortDirectionWithIdProvider(categoryId: categoryId))
+        .ifNull(true);
 
     bool applyMangaFilter(Manga manga) {
       if (mangaFilterUnread != null &&
@@ -107,7 +131,8 @@ class CategoryMangaListWithQueryAndFilter
     );
   }
 
-  void invalidate() => ref.invalidate(categoryMangaListProvider(categoryId));
+  void invalidate() =>
+      ref.invalidate(categoryMangaListWithIdProvider(categoryId: categoryId));
 }
 
 @riverpod
@@ -193,4 +218,80 @@ class LibraryShowMangaCount extends _$LibraryShowMangaCount
         key: DBKeys.libraryShowMangaCount.name,
         initial: DBKeys.libraryShowMangaCount.initial,
       );
+}
+
+@riverpod
+class CategorySortWithId extends _$CategorySortWithId {
+  Timer? debounce;
+
+  @override
+  MangaSort? build({required int categoryId}) {
+    final categoryList = ref.watch(categoryControllerProvider);
+    final category =
+        categoryList.valueOrNull?.where((e) => e.id == categoryId).firstOrNull;
+
+    final globalValue = ref.watch(libraryMangaSortProvider);
+    return category?.meta?.sort ?? globalValue;
+  }
+
+  void update(MangaSort? value) {
+    state = value;
+
+    if (debounce?.isActive == true) {
+      debounce?.cancel();
+    }
+    debounce = Timer(
+      kInstantDuration,
+      () {
+        AsyncValue.guard(() async {
+          await ref.read(categoryRepositoryProvider).updateMeta(
+                categoryId: categoryId,
+                key: CategoryMetaKeys.sort.key,
+                value: value?.name,
+              );
+          await ref
+              .read(categoryControllerProvider.notifier)
+              .reloadCategories();
+        });
+      },
+    );
+  }
+}
+
+@riverpod
+class CategorySortDirectionWithId extends _$CategorySortDirectionWithId {
+  Timer? debounce;
+
+  @override
+  bool? build({required int categoryId}) {
+    final categoryList = ref.watch(categoryControllerProvider);
+    final category =
+        categoryList.valueOrNull?.where((e) => e.id == categoryId).firstOrNull;
+
+    final globalValue = ref.watch(libraryMangaSortDirectionProvider);
+    return category?.meta?.sortDirection ?? globalValue;
+  }
+
+  void update(bool? value) {
+    state = value;
+
+    if (debounce?.isActive == true) {
+      debounce?.cancel();
+    }
+    debounce = Timer(
+      kInstantDuration,
+      () {
+        AsyncValue.guard(() async {
+          await ref.read(categoryRepositoryProvider).updateMeta(
+                categoryId: categoryId,
+                key: CategoryMetaKeys.sortDirection.key,
+                value: value?.toString(),
+              );
+          await ref
+              .read(categoryControllerProvider.notifier)
+              .reloadCategories();
+        });
+      },
+    );
+  }
 }

@@ -44,6 +44,29 @@ class DioNetworkModule {
 
     return dio;
   }
+
+  Dio provideDio3({
+    required String host,
+  }) {
+    final dio = Dio();
+    (dio.transformer as BackgroundTransformer).jsonDecodeCallback = parseJson;
+
+    dio
+      ..options.baseUrl = host
+      ..options.connectTimeout = Endpoints.connectionTimeout
+      ..options.receiveTimeout = Endpoints.receiveTimeout
+      ..options.contentType = Headers.jsonContentType
+      ..options.headers = {'Content-Type': 'application/json; charset=utf-8'};
+    if (kDebugMode) {
+      dio.interceptors.add(LogInterceptor(
+        responseBody: true,
+        requestBody: true,
+        logPrint: (e) => debugPrint(e.toString()),
+      ));
+    }
+
+    return dio;
+  }
 }
 
 @riverpod

@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/cover/cover_cache_manager.dart';
 import '../../../../../utils/event_util.dart';
@@ -140,9 +141,7 @@ class PageActionWidget extends HookConsumerWidget {
           const PremiumRequiredTile(),
         ],
         ListTile(
-          leading: const Icon(
-            Icons.share_outlined,
-          ),
+          leading: const Icon(Icomoon.shareRounded),
           title: Text(context.l10n!.share),
           onTap: () async {
             context.pop();

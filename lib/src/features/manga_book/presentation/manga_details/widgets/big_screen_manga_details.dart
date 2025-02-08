@@ -36,6 +36,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
     required this.dateFormatPref,
     required this.showCoverRefreshIndicator,
     required this.refreshIndicatorKey,
+    required this.showSearch,
   });
   final Manga manga;
   final String mangaId;
@@ -47,6 +48,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
   final DateFormatEnum dateFormatPref;
   final bool showCoverRefreshIndicator;
   final ObjectRef<GlobalKey<RefreshIndicatorState>> refreshIndicatorKey;
+  final ValueNotifier<bool> showSearch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,6 +80,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
                       MangaChapterListHeader(
                         mangaId: mangaId,
                         chapterCount: filteredChapterList?.length ?? 0,
+                        showSearch: showSearch,
                       ),
                       Expanded(
                         child: ListView.builder(
@@ -111,8 +114,19 @@ class BigScreenMangaDetails extends ConsumerWidget {
                     ],
                   );
                 } else {
-                  return MangaDetailsNoChapterErrorView(
-                      manga: manga, refresh: () => onListRefresh(true));
+                  return Column(
+                    children: [
+                      MangaChapterListHeader(
+                        mangaId: mangaId,
+                        chapterCount: filteredChapterList?.length ?? 0,
+                        showSearch: showSearch,
+                      ),
+                      Expanded(
+                        child: MangaDetailsNoChapterErrorView(
+                            manga: manga, refresh: () => onListRefresh(true)),
+                      ),
+                    ],
+                  );
                 }
               },
               refresh: () => onRefresh(false),

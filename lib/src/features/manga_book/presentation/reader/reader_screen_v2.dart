@@ -18,6 +18,7 @@ import '../../../../utils/auto_delete.dart';
 import '../../../../utils/classes/trace/trace_ref.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart' as logger;
+import '../../../../utils/log.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/common_error_widget.dart';
 import '../../../settings/presentation/appearance/controller/theme_controller.dart';
@@ -31,6 +32,8 @@ import 'controller/reader_controller.dart';
 import 'controller/reader_controller_v2.dart';
 import 'widgets/reader_mode/continuous_reader_mode_v2.dart';
 import 'widgets/reader_mode/page_reader_mode.dart';
+
+var readDuration = 0;
 
 class ReaderScreen2 extends HookConsumerWidget {
   const ReaderScreen2({
@@ -78,6 +81,15 @@ class ReaderScreen2 extends HookConsumerWidget {
       return;
     }, [manga]);
 
+    useEffect(() {
+      pipe.invokeMethod("SCREEN_ON", "1");
+      return () {
+        pipe.invokeMethod("SCREEN_ON", "0");
+      };
+    }, []);
+
+    final mangaNotifier = ref.read(mangaProvider.notifier);
+
     final chapterListProvider = mangaChapterListProvider(mangaId: mangaId);
     final chapterListNotifier = ref.read(chapterListProvider.notifier);
     final chapterList = ref.watch(chapterListProvider);
@@ -85,6 +97,23 @@ class ReaderScreen2 extends HookConsumerWidget {
             ?.where((e) => "${e.index}" == initChapterIndexState.value)
             .firstOrNull
             ?.realUrl;
+
+    final readDurationTimer = useRef<Timer?>(null);
+    useEffect(() {
+      readDuration = 0;
+      readDurationTimer.value = Timer.periodic(
+        const Duration(seconds: 5),
+            (timer) {
+          if (WidgetsBinding.instance.lifecycleState ==
+              AppLifecycleState.resumed) {
+            readDuration = readDuration + 5;
+          }
+        },
+      );
+      return () {
+        readDurationTimer.value?.cancel();
+      };
+    }, []);
 
     final debounce = useRef<Timer?>(null);
     final onPageChanged2 = useCallback<AsyncValueSetter<PageChangedData>>(
@@ -112,10 +141,13 @@ class ReaderScreen2 extends HookConsumerWidget {
                   currChapter.pageCount.ifNullOrNegative(0);
           // logger.log("[Reader2] updateLastRead "
           //     "isRead:$isReadingCompeted index:${currentPage.pageIndex}");
+          final duration = readDuration;
+          readDuration = 0;
           final input = ChapterModifyInput(
             mangaId: manga.valueOrNull?.id,
             chapterId: currentPage.chapterId,
             lastPageRead: isReadingCompeted ? 0 : currentPage.pageIndex,
+            readDuration: duration,
             read: isReadingCompeted,
             incognito: incognito,
           );
@@ -123,6 +155,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                   () => mangaBookRepository.chapterModify(input: input));
           if (flush) {
             chapterListNotifier.refresh();
+            mangaNotifier.refresh();
           }
           if (isReadingCompeted && currChapter.downloaded == true) {
             autoDeleteService.addToDeleteList(currChapter);

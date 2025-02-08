@@ -22,6 +22,8 @@ import '../../../manga_book/presentation/updates/controller/update_controller.da
 import '../../../manga_book/presentation/updates/widgets/update_status_list_tile.dart';
 import '../../../manga_book/widgets/update_status_fab.dart';
 import '../../../manga_book/widgets/update_status_popup_menu.dart';
+import '../../../sync/controller/sync_controller.dart';
+import '../../../sync/widgets/sync_info_widget.dart';
 import '../category/controller/edit_category_controller.dart';
 import 'category_manga_list.dart';
 import 'controller/library_controller.dart';
@@ -41,6 +43,21 @@ class LibraryScreen extends HookConsumerWidget {
     final showSearch = useState(false);
     final showMangaCount = ref.watch(libraryShowMangaCountProvider);
     final showUpdateStatus = ref.watch(showUpdateStatusProvider);
+
+    useEffect(() {
+      if (!categoryList.isLoading) {
+        ref.read(categoryControllerProvider.notifier).reloadCategories();
+      }
+      return;
+    }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        ref.read(categoryControllerProvider.notifier).reloadCategories();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     useEffect(() {
       categoryList.showToastOnError(toast, withMicrotask: true);
@@ -71,6 +88,7 @@ class LibraryScreen extends HookConsumerWidget {
                 appBar: AppBar(
                   title: Text(context.l10n!.library),
                   centerTitle: true,
+                  leading: const SyncInfoWidget(),
                   bottom: PreferredSize(
                     preferredSize: kCalculateAppBarBottomSizeV2(
                       showTabBar: data.length.isGreaterThan(1),
@@ -115,6 +133,8 @@ class LibraryScreen extends HookConsumerWidget {
                       builder: (context) => LibraryFilterIconButton(
                           icon: IconButton(
                         onPressed: () {
+                          final category =
+                              data[DefaultTabController.of(context).index];
                           if (context.isTablet) {
                             Scaffold.of(context).openEndDrawer();
                           } else {
@@ -124,7 +144,8 @@ class LibraryScreen extends HookConsumerWidget {
                                 borderRadius: KBorderRadius.rT16.radius,
                               ),
                               clipBehavior: Clip.hardEdge,
-                              builder: (_) => const LibraryMangaOrganizer(),
+                              builder: (_) =>
+                                  LibraryMangaOrganizer(category: category),
                             );
                           }
                         },
@@ -144,9 +165,16 @@ class LibraryScreen extends HookConsumerWidget {
                 ),
                 endDrawerEnableOpenDragGesture: false,
                 endDrawer: context.isTablet
-                    ? const Drawer(
+                    ? Drawer(
                         width: kDrawerWidth,
-                        child: LibraryMangaOrganizer(),
+                        child: Builder(
+                          builder: (context) {
+                            final category =
+                                data[DefaultTabController.of(context).index];
+                            print("category $category");
+                            return LibraryMangaOrganizer(category: category);
+                          },
+                        ),
                       )
                     : null,
                 body: Padding(

@@ -25,6 +25,7 @@ class Manga with _$Manga {
     int? chapterCount,
     int? lastReadAt,
     Chapter? lastChapterRead,
+    String? lastChapterReadName,
     int? latestChapterFetchAt,
     int? latestChapterUploadAt,
     bool? freshData,
@@ -48,6 +49,7 @@ class Manga with _$Manga {
     ImgData? thumbnailImg,
     List<MangaTracker>? trackers,
     String? updateStrategy,
+    int? readDuration,
   }) = _Manga;
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);
@@ -74,6 +76,16 @@ class MangaMeta with _$MangaMeta {
       fromJson: MangaMeta.fromJsonToDouble,
     )
     double? readerPaddingLandscape,
+    @JsonKey(
+      name: "flutter_readerPaddingPhone",
+      fromJson: MangaMeta.fromJsonToDouble,
+    )
+    double? readerPaddingPhone,
+    @JsonKey(
+      name: "flutter_readerPaddingPhone_landscape",
+      fromJson: MangaMeta.fromJsonToDouble,
+    )
+    double? readerPaddingPhoneLandscape,
     @JsonKey(
       name: "flutter_readerMagnifierSize",
       fromJson: MangaMeta.fromJsonToDouble,
@@ -117,6 +129,8 @@ enum MangaMetaKeys {
   readerMode("flutter_readerMode"),
   readerPadding("flutter_readerPadding"),
   readerPaddingLandscape("flutter_readerPadding_landscape"),
+  readerPaddingPhone("flutter_readerPaddingPhone"),
+  readerPaddingPhoneLandscape("flutter_readerPaddingPhone_landscape"),
   readerMagnifierSize("flutter_readerMagnifierSize"),
   scanlator("flutter_scanlator"),
   pageLayout("flutter_page_layout"),

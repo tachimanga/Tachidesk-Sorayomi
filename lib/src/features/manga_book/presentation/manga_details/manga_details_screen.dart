@@ -30,6 +30,7 @@ import '../../../settings/controller/remote_blacklist_controller.dart';
 import '../../../settings/data/config/remote_blacklist_config.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
 import '../../../settings/presentation/reader/widgets/reader_classic_start_button_tile/reader_classic_start_button_tile.dart';
+import '../../../sync/controller/sync_controller.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/manga/manga_model.dart';
@@ -124,6 +125,14 @@ class MangaDetailsScreen extends HookConsumerWidget {
       return;
     }, []);
 
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        refresh();
+      }
+      return;
+    }, [syncRefreshSignal]);
+
     final refreshIndicatorKey = useRef(GlobalKey<RefreshIndicatorState>());
     useEffect(() {
       autoRefreshIfNeeded(
@@ -140,7 +149,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
     useRouteObserver(routeObserver, didPop: () {
       log("MangaDetailsScreen did pop");
       if (categoryId != null) {
-        ref.invalidate(categoryMangaListProvider(categoryId!));
+        ref.invalidate(categoryMangaListWithIdProvider(categoryId: categoryId!));
       }
     });
     final toast = ref.read(toastProvider(context));
@@ -162,13 +171,14 @@ class MangaDetailsScreen extends HookConsumerWidget {
             filteredChapterList.valueOrNull != null
         ? AsyncData(localManga)
         : manga;
+    final showSearch = useState(false);
 
     return WillPopScope(
       onWillPop: null,
       child: mangaVO.showUiWhenData(
         context,
         (data) => Scaffold(
-          extendBodyBehindAppBar: !context.isTablet,
+          extendBodyBehindAppBar: !(context.isTablet || showSearch.value),
           appBar: MangaDetailsAppBar(
             mangaId: mangaId,
             data: data,
@@ -177,6 +187,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
             animationController: animationController,
             refresh: refresh,
             mangaRefresh: mangaRefresh,
+            showSearch: showSearch,
           ),
           endDrawer: context.isTablet
               ? Drawer(
@@ -214,6 +225,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                       dateFormatPref: dateFormatPref,
                       showCoverRefreshIndicator: coverRefreshState.value,
                       refreshIndicatorKey: refreshIndicatorKey,
+                      showSearch: showSearch,
                     )
                   : SmallScreenMangaDetails(
                       chapterList: filteredChapterList,
@@ -227,6 +239,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
                       animationController: animationController,
                       showCoverRefreshIndicator: coverRefreshState.value,
                       refreshIndicatorKey: refreshIndicatorKey,
+                      showSearch: showSearch,
                     )
               : Emoticons(
                   text: context.l10n!.noMangaFound,

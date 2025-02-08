@@ -31,9 +31,9 @@ class Magic {
   bool a0 = true; // enable repo tag, show broken status
   bool a1 = false; // no use
   bool a2 = false; // no use
-  bool a3 = false; // no use
-  bool a4 = false; // no use
-  bool a5 = false; // no use
+  bool a3 = true; // discord
+  bool a4 = true; // about
+  bool a5 = true; // help
   bool a6 = true; // enable install apk
   bool a7 = true; // enable nsfw
   bool a8 = true; // enable nsfw settings
@@ -45,7 +45,7 @@ class Magic {
   bool b4 = false; // no use
   bool b5 = false; // no use
   bool b6 = false; // no use
-  bool b7 = false; // no use
+  bool b7 = true; // no use
   bool b8 = false; // no use
   bool b9 = false; // no use
   bool c0 = false; // enable find repo

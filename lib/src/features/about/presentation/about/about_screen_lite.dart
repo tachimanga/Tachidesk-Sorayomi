@@ -6,6 +6,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_constants.dart';
@@ -45,6 +46,16 @@ class AboutScreenLite extends HookConsumerWidget {
             subtitle:
                 Text("v${packageInfo.version}(${packageInfo.buildNumber})"),
             leading: const Icon(Icons.info_outline),
+            onTap: () async {
+              final installId = await pipe.invokeMethod("FIREBASE:INSTALL:ID");
+              final msg = "Installation ID: $installId";
+              Clipboard.setData(
+                ClipboardData(text: msg),
+              );
+              if (context.mounted) {
+                toast.instantShow(context.l10n!.copyMsg(msg));
+              }
+            },
           ),
           ListTile(
             title: Text(context.l10n!.changelogs),

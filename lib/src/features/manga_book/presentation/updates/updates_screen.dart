@@ -19,6 +19,7 @@ import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/shell/shell_screen.dart';
 import '../../../library/presentation/category/controller/edit_category_controller.dart';
 import '../../../settings/presentation/appearance/controller/date_format_controller.dart';
+import '../../../sync/widgets/sync_info_widget.dart';
 import '../../data/manga_book_repository.dart';
 import '../../data/updates/updates_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
@@ -92,6 +93,15 @@ class UpdatesScreen extends HookConsumerWidget {
       return;
     }, [refreshSignal]);
 
+    final scheduleRefreshSignal =
+        ref.watch(updateScheduleRefreshSignalProvider);
+    useEffect(() {
+      if (scheduleRefreshSignal > 0) {
+        _refreshSilently(updatesRepository, controller);
+      }
+      return;
+    }, [scheduleRefreshSignal]);
+
     final updateRunning = ref.watch(updateRunningProvider);
     final categoryListValue = ref.watch(categoryControllerProvider);
     final showUpdateStatus = ref.watch(showUpdateStatusProvider);
@@ -110,6 +120,7 @@ class UpdatesScreen extends HookConsumerWidget {
           : AppBar(
               title: Text(context.l10n!.updates),
               centerTitle: true,
+              leading: const SyncInfoWidget(),
               bottom: showUpdateStatus
                   ? PreferredSize(
                       preferredSize: kCalculateAppBarBottomSizeV2(
@@ -228,6 +239,40 @@ class UpdatesScreen extends HookConsumerWidget {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  void _refreshSilently(
+    UpdatesRepository repository,
+    PagingController<int, ChapterMangaPair> controller,
+  ) {
+    AsyncValue.guard(
+      () async => await repository.getRecentChaptersPage(pageNo: 0),
+    ).then(
+      (value) => value.whenData(
+        (recentChaptersPage) {
+          try {
+            if (recentChaptersPage != null) {
+              final chapterIdSet = <int>{};
+              if (recentChaptersPage.page != null) {
+                for (final item in recentChaptersPage.page!) {
+                  if (item.chapter?.id != null) {
+                    chapterIdSet.add(item.chapter!.id!);
+                  }
+                }
+              }
+              final list = controller.itemList
+                  ?.where((e) =>
+                      e.chapter?.id != null &&
+                      !chapterIdSet.contains(e.chapter!.id))
+                  .toList();
+              controller.itemList = [...?recentChaptersPage.page, ...?list];
+            }
+          } catch (e) {
+            debugPrint("_refreshSilently err=$e");
+          }
+        },
       ),
     );
   }

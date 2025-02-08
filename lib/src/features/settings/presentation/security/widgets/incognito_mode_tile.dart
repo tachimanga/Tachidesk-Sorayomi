@@ -12,6 +12,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/gen/assets.gen.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/text_premium.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
@@ -30,9 +31,7 @@ class IncognitoModeTile extends HookConsumerWidget {
 
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
-      secondary: ImageIcon(
-        AssetImage(Assets.icons.incognito.path),
-      ),
+      secondary: const Icon(Icomoon.incognito),
       title: TextPremium(text: context.l10n!.pref_incognito_mode),
       subtitle: Text(context.l10n!.pref_incognito_mode_summary),
       contentPadding: kSettingPadding,
@@ -58,9 +57,7 @@ class IncognitoModeShortTile extends HookConsumerWidget {
 
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
-      secondary: ImageIcon(
-        AssetImage(Assets.icons.incognito.path),
-      ),
+      secondary: const Icon(Icomoon.incognito),
       title: Text(context.l10n!.pref_incognito_mode),
       contentPadding: kSettingPadding,
       onChanged: (value) {

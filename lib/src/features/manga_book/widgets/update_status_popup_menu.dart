@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../constants/app_sizes.dart';
 import '../../../constants/db_keys.dart';
 import '../../../utils/extensions/custom_extensions.dart';
+import '../../../widgets/popup_Item_with_icon_child.dart';
 import '../../library/domain/category/category_model.dart';
 import '../../library/presentation/category/controller/edit_category_controller.dart';
 import '../data/updates/updates_repository.dart';
@@ -36,15 +37,7 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
       icon: const Icon(Icons.more_vert_rounded),
       shape: RoundedRectangleBorder(borderRadius: KBorderRadius.r16.radius),
       itemBuilder: (context) {
-        final category = getCategory != null ? getCategory!() : null;
         return [
-          if (category != null && category.id != null && category.id != 0)
-            PopupMenuItem(
-              child: Text(context.l10n!.categoryUpdate),
-              onTap: () => ref
-                  .read(updatesRepositoryProvider)
-                  .fetchUpdates(categoryIds: [category.id ?? 0]),
-            ),
           PopupMenuItem(
             onTap: () async {
               categoryListValue.whenOrNull(data: (categoryList) {
@@ -69,15 +62,19 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
                 return;
               });
             },
-            child: Text(context.l10n!.globalUpdate),
+            child: PopupItemWithIconChild(
+              icon: const Icon(Icons.refresh),
+              label: Text(context.l10n!.globalUpdate),
+            ),
           ),
           if (showSummaryButton)
             PopupMenuItem(
               onTap: () => Future.microtask(
                 () => showUpdateStatusSummaryBottomSheetV2(context),
               ),
-              child: Text(
-                context.l10n!.updatesSummary,
+              child: PopupItemWithIconChild(
+                icon: const Icon(Icons.info_outline),
+                label: Text(context.l10n!.updatesSummary),
               ),
             ),
         ];

@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupertino_http/cupertino_http.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart';
@@ -22,6 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:system_proxy/system_proxy.dart';
 
 import 'src/features/about/presentation/about/controllers/about_controller.dart';
+import 'src/global_providers/device_providers.dart';
 import 'src/global_providers/global_providers.dart';
 import 'src/sorayomi.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -36,6 +38,7 @@ Future<void> main() async {
   final packageInfo = await PackageInfo.fromPlatform();
   final sharedPreferences = await SharedPreferences.getInstance();
   final proxy = await SystemProxy.getProxySettings();
+  final deviceInfo = await DeviceInfoPlugin().iosInfo;
 
   // imageCache
   PaintingBinding.instance.imageCache.maximumSize = 100;
@@ -48,6 +51,7 @@ Future<void> main() async {
             packageInfoProvider.overrideWithValue(packageInfo),
             sharedPreferencesProvider.overrideWithValue(sharedPreferences),
             systemProxyProvider.overrideWithValue(proxy),
+            deviceInfoProvider.overrideWithValue(deviceInfo),
           ],
           child: const Sorayomi(),
         ),

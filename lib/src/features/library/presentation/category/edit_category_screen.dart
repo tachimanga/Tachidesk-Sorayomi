@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../../sync/controller/sync_controller.dart';
 import 'controller/edit_category_controller.dart';
 import 'widgets/category_create_fab.dart';
 import 'widgets/category_tile.dart';
@@ -30,6 +31,21 @@ class EditCategoryScreen extends HookConsumerWidget {
       );
       return;
     }, [categoryList]);
+
+    useEffect(() {
+      if (!categoryList.isLoading) {
+        ref.read(categoryControllerProvider.notifier).reloadCategories();
+      }
+      return;
+    }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        ref.read(categoryControllerProvider.notifier).reloadCategories();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     return Scaffold(
       appBar: AppBar(

@@ -4,6 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ import '../../features/manga_book/data/updates/updates_repository.dart';
 import '../../features/settings/data/repo/repo_repository.dart';
 import '../../features/settings/domain/repo/repo_model.dart';
 import '../../features/settings/presentation/backup2/controller/backup_controller.dart';
+import '../../features/sync/controller/sync_controller.dart';
+import '../../features/sync/data/sync_repository.dart';
 import '../../global_providers/global_providers.dart';
 import '../../global_providers/preference_providers.dart';
 import '../../utils/extensions/custom_extensions.dart';
@@ -31,6 +34,8 @@ final GlobalKey<ScaffoldState> mainScaffoldKey = GlobalKey<ScaffoldState>();
 ScrollController get mainPrimaryScrollController =>
     PrimaryScrollController.of(mainScaffoldKey.currentContext!);
 
+var lastSyncAt = 0;
+
 class ShellScreen extends HookConsumerWidget {
   const ShellScreen({
     super.key,
@@ -41,6 +46,13 @@ class ShellScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pipe = ref.watch(getMagicPipeProvider);
+
+    // sync
+    final syncWhenAppResume = ref.watch(syncWhenAppResumePrefProvider);
+    final syncWhenAppStart = ref.read(syncWhenAppStartPrefProvider);
+    final syncPollingInterval = ref.watch(syncPollingIntervalProvider);
+    final syncRepository = ref.watch(syncRepositoryProvider);
+
     final extensionUpdate = ref.watch(extensionUpdateProvider);
     final extensionUpdateCount =
         extensionUpdate.valueOrNull?.isGreaterThan(0) == true
@@ -49,11 +61,25 @@ class ShellScreen extends HookConsumerWidget {
     setupHandler(context, ref);
     updateMetaUrl(context, ref);
 
+    if (syncWhenAppStart == true) {
+      useEffect(() {
+        log("[SYNC]trigger syncWhenAppStart");
+        triggerSync(syncRepository);
+        return;
+      }, []);
+    }
+    startSyncPollingTimerIfNeeded(syncRepository, syncPollingInterval);
+
     useOnAppLifecycleStateChange((pref, state) {
       log("useOnAppLifecycleStateChange pref:$pref curr:$state");
       if (state == AppLifecycleState.resumed) {
         ref.invalidate(downloadsSocketProvider);
         ref.invalidate(updatesSocketProvider);
+        ref.invalidate(syncSocketProvider);
+        if (syncWhenAppResume == true) {
+          log("[SYNC]trigger syncWhenAppResume");
+          triggerSync(syncRepository);
+        }
       }
     });
     return context.isTablet
@@ -163,6 +189,35 @@ class ShellScreen extends HookConsumerWidget {
         } catch (e) {
           log("repoUpdateStr err:$e");
         }
+      });
+      return;
+    }, []);
+  }
+
+  void triggerSync(SyncRepository syncRepository) {
+    try {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final diff = (now - lastSyncAt) / 1000;
+      log("triggerSync diff=${diff}s");
+      if (diff > 30) {
+        lastSyncAt = now;
+        syncRepository.syncNowIfEnable();
+      }
+    } catch (e) {
+      log("triggerSync err:$e");
+    }
+  }
+
+  void startSyncPollingTimerIfNeeded(
+      SyncRepository syncRepository, int? interval) {
+    useEffect(() {
+      log("[SYNC]startSyncPollingTimerIfNeeded interval:$interval");
+      if (interval == null || interval <= 0) {
+        return;
+      }
+      Timer.periodic(Duration(seconds: interval), (Timer timer) {
+        log("[SYNC]trigger sync polling");
+        triggerSync(syncRepository);
       });
       return;
     }, []);

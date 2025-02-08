@@ -16,6 +16,7 @@ import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/pop_button.dart';
+import '../../../sync/controller/sync_controller.dart';
 import '../../controller/edit_repo_controller.dart';
 import '../../domain/repo/repo_model.dart';
 import 'widgets/mutil_repo_setting/add_repo_dialog.dart';
@@ -50,6 +51,21 @@ class EditRepoScreen extends HookConsumerWidget {
       );
       return;
     }, [repoList]);
+
+    useEffect(() {
+      if (!repoList.isLoading) {
+        ref.read(repoControllerProvider.notifier).reloadRepoList();
+      }
+      return;
+    }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        ref.read(repoControllerProvider.notifier).reloadRepoList();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     return Scaffold(
       appBar: AppBar(

@@ -31,6 +31,7 @@ class ChapterModifyInput with _$ChapterModifyInput {
     bool? bookmarked,
     bool? markPrevRead,
     int? lastPageRead,
+    int? readDuration,
     bool? incognito,
   }) = _ChapterModifyInput;
 

@@ -21,6 +21,7 @@ enum AppUrls {
   addRepo(url: "https://tachimanga.app/help/guides/adding-repos.html"),
   findAnswer(url: "https://tachimanga.app/help/guides/find-answer.html"),
   trackingHelp(url: "https://tachimanga.app/help/guides/tracking.html"),
+  syncHelp(url: "https://tachimanga.app/help/guides/sync.html"),
   backupHelp(url: "https://tachimanga.app/help/guides/backups.html"),
   downloadHelp(url: "https://tachimanga.app/help/guides/downloads.html"),
   extensionHelp(url: "https://tachimanga.app/help/guides/extensions.html"),

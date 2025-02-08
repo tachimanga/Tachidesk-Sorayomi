@@ -122,6 +122,7 @@ enum KSizedBox {
 }
 
 enum KBorderRadius {
+  r2(BorderRadius.all(Radius.circular(2))),
   r8(BorderRadius.all(Radius.circular(8))),
   r12(BorderRadius.all(Radius.circular(12))),
   r16(BorderRadius.all(Radius.circular(16))),

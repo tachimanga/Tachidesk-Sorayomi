@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants/language_list.dart';
@@ -54,4 +55,44 @@ Locale userPreferLocale(ref) {
   } else {
     return systemLocales[0];
   }
+}
+
+@riverpod
+Locale appLocale(ref) {
+  final userSettingLocale = ref.watch(l10nProvider);
+  log('[appLocale]userSettingLocale $userSettingLocale');
+  if (userSettingLocale != null) {
+    return userSettingLocale;
+  }
+
+  // Returns the list of locales that user defined in the system settings.
+  final List<Locale> systemLocales = WidgetsBinding.instance.window.locales;
+  log("[appLocale]systemLocales $systemLocales");
+  if (systemLocales.isEmpty) {
+    return const Locale('en');
+  }
+  Locale systemLocale = systemLocales[0];
+  Locale? matchLocale;
+  var maxScore = 0;
+  for (final locale in AppLocalizations.supportedLocales) {
+    if (locale.languageCode == 'ja') {
+      continue;
+    }
+    var score = 0;
+    if (locale.languageCode == systemLocale.languageCode) {
+      score += 10;
+    }
+    if (locale.countryCode != null && locale.countryCode == systemLocale.countryCode) {
+      score += 1;
+    }
+    if (locale.scriptCode != null && locale.scriptCode == systemLocale.scriptCode) {
+      score += 1;
+    }
+    if (score > maxScore) {
+      maxScore = score;
+      matchLocale = locale;
+    }
+  }
+  log("[appLocale]matchLocale $matchLocale");
+  return matchLocale ?? const Locale('en');
 }

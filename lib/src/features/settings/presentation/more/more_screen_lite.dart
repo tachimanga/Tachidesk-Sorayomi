@@ -4,31 +4,33 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'package:cupertino_modal_sheet/cupertino_modal_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../constants/app_constants.dart';
-import '../../../../constants/app_sizes.dart';
 import '../../../../constants/gen/assets.gen.dart';
 import '../../../../constants/urls.dart';
-
 import '../../../../global_providers/global_providers.dart';
+import '../../../../icons/icomoon_icons.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/shell/shell_screen.dart';
 import '../../../../widgets/text_premium.dart';
-import '../../../about/presentation/about/widget/media_launch_button.dart';
+import '../../../account/controller/account_controller.dart';
+import '../../../account/widgets/account_status_tile.dart';
 import '../../../custom/inapp/purchase_providers.dart';
+import '../../../stats/read_time_stats_screen.dart';
+import '../../../sync/controller/sync_controller.dart';
+import '../../../sync/widgets/sync_info_widget.dart';
+import '../../../sync/widgets/sync_now_tile.dart';
+import '../../../sync/widgets/sync_setting_tile.dart';
 import '../../controller/edit_repo_controller.dart';
-import '../../widgets/server_url_tile/server_url_tile.dart';
-import '../../widgets/theme_mode_tile/theme_mode_tile.dart';
-import '../browse/widgets/repo_setting/repo_url_tile.dart';
 import '../security/controller/security_controller.dart';
 import '../security/widgets/incognito_mode_tile.dart';
 
@@ -45,6 +47,11 @@ class MoreScreenLite extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.watch(toastProvider(context));
+    final userInfoValue = ref.watch(userInfoProvider);
+    final userInfo = userInfoValue.valueOrNull;
+
+    final statusValue = ref.watch(syncSocketProvider);
+    final syncStatus = statusValue.valueOrNull;
 
     final purchaseGate = ref.watch(purchaseGateProvider);
     final testflightFlag = ref.watch(testflightFlagProvider);
@@ -64,11 +71,23 @@ class MoreScreenLite extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n!.more),
+        actions: [
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              if (debugCount.value++ > 10) {
+                context.push([Routes.settings, Routes.debugSettings].toPath);
+              }
+            },
+            child: const SizedBox(width: 24, height: 24),
+          ),
+        ],
       ),
       body: ListView(
         controller: mainPrimaryScrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
+          /*
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
@@ -80,8 +99,15 @@ class MoreScreenLite extends HookConsumerWidget {
               AssetImage(Assets.icons.darkIcon.path),
               size: context.height * .1,
             ),
-          ),
+          ),*/
           const Divider(),
+          if (userInfo?.login == true) ...[
+            const AccountStatusTile(),
+            if (syncStatus?.enable == true) ...[
+              const SyncNowTile(),
+            ],
+            const Divider(),
+          ],
           if (showIncognitoMode) ...[
             const IncognitoModeShortTile(),
           ],
@@ -117,6 +143,7 @@ class MoreScreenLite extends HookConsumerWidget {
             onTap: () =>
                 context.push([Routes.settings, Routes.readerSettings].toPath),
           ),
+          const SyncSettingTile(),
           ListTile(
             title: TextPremium(text: context.l10n!.tracking),
             leading: const Icon(Icons.sync_rounded),
@@ -151,6 +178,24 @@ class MoreScreenLite extends HookConsumerWidget {
                 context.push([Routes.settings, Routes.securitySettings].toPath),
           ),
           ListTile(
+            title: Text(context.l10n!.reading_insights),
+            leading: const Icon(Icons.insights),
+            contentPadding: kSettingPadding,
+            trailing: kSettingTrailing,
+            onTap: () {
+              if (context.isTablet) {
+                showCupertinoModalSheet(
+                  context: context,
+                  builder: (context) => const ReadTimeStatsScreen(),
+                  routeSettings:
+                      const RouteSettings(name: Routes.statsReadTime),
+                );
+              } else {
+                context.push(Routes.statsReadTime);
+              }
+            },
+          ),
+          ListTile(
             title: Text(context.l10n!.downloads),
             leading: const Icon(Icons.download_outlined),
             contentPadding: kSettingPadding,
@@ -160,7 +205,7 @@ class MoreScreenLite extends HookConsumerWidget {
           const Divider(),
           ListTile(
             title: Text(context.l10n!.share),
-            leading: const Icon(Icons.ios_share_rounded),
+            leading: const Icon(Icomoon.shareRounded),
             contentPadding: kSettingPadding,
             trailing: kSettingTrailing,
             onTap: () {
@@ -213,24 +258,6 @@ class MoreScreenLite extends HookConsumerWidget {
               contentPadding: kSettingPadding,
               trailing: kSettingTrailing,
               onTap: () => context.push(Routes.about),
-            ),
-          ],
-          if (magic.b3) ...[
-            ListTile(
-              title: const Text("Copyright claim"),
-              leading: const Icon(Icons.email_rounded),
-              contentPadding: kSettingPadding,
-              trailing: kSettingTrailing,
-              onTap: () {
-                pipe.invokeMethod("LogEvent", "COPYRIGHT_CLAIM");
-                pipe.invokeMethod("SEND_MAIL", <String, Object?>{
-                  'recipient': 'tachimangaapp+cr@gmail.com',
-                  'title': 'Copyright Claim Notice',
-                  'content': 'Please provide the following details:\n'
-                      'Description of the copyrighted material: [Provide detailed description]\n'
-                      'Location of the infringing content: [Provide specific URLs or links]\n',
-                });
-              },
             ),
           ],
           const SizedBox(height: 20),

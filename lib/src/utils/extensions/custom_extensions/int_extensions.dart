@@ -50,4 +50,23 @@ extension IntExtensions on int? {
     return DateTime.fromMillisecondsSinceEpoch(this! * 1000)
         .isSameDay(DateTime.fromMillisecondsSinceEpoch(anotherDate! * 1000));
   }
+
+  String? toLocalizedReadTime(BuildContext context) {
+    if (isNull) return null;
+    if (this == 0) return null;
+
+    int totalSeconds = this!;
+    int hours = totalSeconds ~/ 3600;
+    int minutes = (totalSeconds % 3600) ~/ 60;
+
+    if (hours == 0 && minutes == 0) {
+      return null;
+    } else if (hours == 0) {
+      return context.l10n!.minutes_short(minutes);
+    } else if (minutes == 0) {
+      return context.l10n!.hours_short(hours);
+    } else {
+      return context.l10n!.hours_minutes_short(hours, minutes);
+    }
+  }
 }

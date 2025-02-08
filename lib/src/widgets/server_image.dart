@@ -27,6 +27,7 @@ import '../utils/classes/trace/trace_model.dart';
 import '../utils/cover/cover_cache_manager.dart';
 import '../utils/event_util.dart';
 import '../utils/extensions/custom_extensions.dart';
+import '../utils/image_util.dart';
 import '../utils/launch_url_in_web.dart';
 import '../utils/log.dart';
 import '../utils/manga_cover_util.dart';
@@ -59,6 +60,7 @@ class ServerImage extends HookConsumerWidget {
     this.traceInfo,
     this.chapterUrl,
     this.extInfo,
+    this.imageBuilder,
   });
 
   final String imageUrl;
@@ -87,6 +89,9 @@ class ServerImage extends HookConsumerWidget {
   final TraceInfo? traceInfo;
   final String? chapterUrl;
   final Map<String, String>? extInfo;
+
+  // image builder
+  final ImageWidgetBuilder? imageBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -150,14 +155,8 @@ class ServerImage extends HookConsumerWidget {
       extInfo: extInfo,
       maxDecodePixelWidth: maxDecodePixelWidth,
       maxDecodePixelHeight: maxDecodePixelHeight,
+      imageBuilder: imageBuilder,
     );
-  }
-
-  CacheManager? buildCacheManager(Map<String, String>? extInfo) {
-    if (CoverExtInfo.fetchMangaId(extInfo) != null) {
-      return CoverCacheManager();
-    }
-    return null;
   }
 
   Widget buildErrorWidget(
@@ -327,4 +326,30 @@ class ServerImageWithCpi extends StatelessWidget {
             decodeHeight: decodeHeight,
           );
   }
+}
+
+CacheManager? buildCacheManager(Map<String, String>? extInfo) {
+  if (CoverExtInfo.fetchMangaId(extInfo) != null) {
+    return CoverCacheManager();
+  }
+  return null;
+}
+
+ImageProvider buildCachedNetworkImageProvider({
+  required String? baseUrl,
+  required String imageUrl,
+  ImgData? imageData,
+  Map<String, String>? extInfo,
+}) {
+  final url = buildImageUrl(
+    baseUrl: baseUrl,
+    imageUrl: imageUrl,
+    imageData: imageData,
+  );
+  return CachedNetworkImageProvider(
+    url,
+    headers: imageData?.headers,
+    cacheManager: buildCacheManager(extInfo),
+    extInfo: extInfo,
+  );
 }

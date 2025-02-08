@@ -17,7 +17,6 @@ import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../settings/controller/edit_repo_controller.dart';
 import '../../../../settings/domain/repo/repo_model.dart';
-import '../../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../../settings/presentation/browse/widgets/show_nsfw_switch/show_nsfw_switch.dart';
 import '../../../data/extension_repository/extension_repository.dart';
 import '../../../data/source_repository/source_repository.dart';

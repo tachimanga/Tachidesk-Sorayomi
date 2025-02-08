@@ -84,3 +84,13 @@ enum BackupState {
     this.value,
   );
 }
+
+@freezed
+class ProtoBackupResult with _$ProtoBackupResult {
+  factory ProtoBackupResult({
+    String? path,
+  }) = _ProtoBackupResult;
+
+  factory ProtoBackupResult.fromJson(Map<String, dynamic> json) =>
+      _$ProtoBackupResultFromJson(json);
+}

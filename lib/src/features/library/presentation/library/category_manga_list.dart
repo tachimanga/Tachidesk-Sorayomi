@@ -22,6 +22,7 @@ import '../../../manga_book/presentation/manga_details/widgets/edit_manga_catego
 import '../../../manga_book/presentation/updates/controller/update_controller.dart';
 import '../../../manga_book/widgets/update_status_fab.dart';
 import '../../../settings/presentation/appearance/widgets/grid_cover_min_width.dart';
+import '../../../sync/controller/sync_controller.dart';
 import 'controller/library_controller.dart';
 import 'widgets/library_manga_empty_view.dart';
 
@@ -45,7 +46,8 @@ class CategoryMangaList extends HookConsumerWidget {
         ref.watch(gridMinWidthProvider) ?? DBKeys.gridMangaCoverWidth.initial;
     final updateRunning = ref.watch(updateRunningProvider);
     final showUpdateStatus = ref.watch(showUpdateStatusProvider);
-    refresh() => ref.invalidate(categoryMangaListProvider(categoryId));
+    final rawProvider = categoryMangaListWithIdProvider(categoryId: categoryId);
+    refresh() => ref.invalidate(rawProvider);
     useEffect(() {
       if (!mangaList.isLoading) refresh();
       return;
@@ -58,6 +60,22 @@ class CategoryMangaList extends HookConsumerWidget {
       }
       return;
     }, [refreshSignal]);
+
+    final scheduleRefreshSignal = ref.watch(updateScheduleRefreshSignalProvider);
+    useEffect(() {
+      if (scheduleRefreshSignal > 0) {
+        ref.read(rawProvider.notifier).reloadMangaList();
+      }
+      return;
+    }, [scheduleRefreshSignal]);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        refresh();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     return mangaList.showUiWhenData(
       context,

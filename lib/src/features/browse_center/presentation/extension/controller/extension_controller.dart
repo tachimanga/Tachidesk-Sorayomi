@@ -19,7 +19,6 @@ import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../settings/controller/edit_repo_controller.dart';
 import '../../../../settings/data/repo/repo_repository.dart';
-import '../../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../../settings/presentation/browse/widgets/show_nsfw_switch/show_nsfw_switch.dart';
 import '../../../data/extension_repository/extension_repository.dart';
 import '../../../domain/extension/extension_model.dart';
@@ -32,10 +31,9 @@ Future<List<Extension>?> extension(ExtensionRef ref) async {
   final token = CancelToken();
   ref.onDispose(token.cancel);
 
-  final repo = ref.watch(repoParamProvider);
   final result = await ref
       .watch(extensionRepositoryProvider)
-      .getExtensionList(repo, cancelToken: token);
+      .getExtensionList(cancelToken: token);
   ref.keepAlive();
   return result;
 }
@@ -49,22 +47,11 @@ Future<int?> extensionUpdate(ExtensionUpdateRef ref) async {
   return count;
 }
 
-@riverpod
-String repoParam(RepoParamRef ref) {
-  return "";
-}
 
 @riverpod
 bool emptyRepo(EmptyRepoRef ref) {
-  final magic = ref.watch(getMagicProvider);
-  final repo = ref.watch(repoParamProvider);
-
-  final repoList = ref.watch(repoListWithCacheProvider);
-  if (repoList.valueOrNull?.isNotEmpty == true) {
-    return false;
-  }
-
-  return magic.b4 && repo == "DEFAULT";
+  final count = ref.watch(repoCountProvider);
+  return count == 0;
 }
 
 @riverpod
@@ -72,11 +59,11 @@ Future<Map<String, ExtensionTag>> extensionTag(ExtensionTagRef ref) async {
   final token = CancelToken();
   ref.onDispose(token.cancel);
 
-  final repo = ref.watch(repoParamProvider);
+  final emptyRepo = ref.watch(emptyRepoProvider);
   final userDefaults = ref.read(sharedPreferencesProvider);
 
   ExtensionTagData? result = ExtensionTagData();
-  if (repo != "DEFAULT") {
+  if (!emptyRepo) {
     try {
       final s = userDefaults.getString("config.extensionTagJson");
       try {
@@ -100,6 +87,16 @@ Future<Map<String, ExtensionTag>> extensionTag(ExtensionTagRef ref) async {
 }
 
 @riverpod
+bool decideShowNsfw(DecideShowNsfwRef ref) {
+  var showNsfw = false;
+  var userPref = ref.watch(showNSFWProvider);
+  if (userPref != null) {
+    showNsfw = userPref;
+  }
+  return showNsfw;
+}
+
+@riverpod
 AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
   final extensionMap = <String, List<Extension>>{};
   final extensionListData = ref.watch(extensionProvider);
@@ -107,6 +104,7 @@ AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
   final extensionList = <Extension>[];
   final extensionTagMapValue = ref.watch(extensionTagProvider);
   final extensionTagMap = extensionTagMapValue.valueOrNull ?? {};
+  final showNsfw = ref.watch(decideShowNsfwProvider);
 
   for (final e in extensionListDraft) {
     final extensionTag = extensionTagMap[e.pkgName];
@@ -115,19 +113,12 @@ AsyncValue<Map<String, List<Extension>>> extensionMap(ExtensionMapRef ref) {
     } else {
       if (extensionTag.down != true) {
         final ee = e.copyWith(
-          name: (e.name ?? "") + (extensionTag.suffix ?? ""),
-          tagList: extensionTag.tagList,
-          isNsfw: extensionTag.top == true ? false : e.isNsfw
-        );
+            name: (e.name ?? "") + (extensionTag.suffix ?? ""),
+            tagList: extensionTag.tagList,
+            isNsfw: extensionTag.top == true ? false : e.isNsfw);
         extensionList.add(ee);
       }
     }
-  }
-
-  var showNsfw = false;
-  var userPref = ref.watch(showNSFWProvider);
-  if (userPref != null) {
-    showNsfw = userPref;
   }
 
   for (final e in extensionList) {
@@ -232,6 +223,104 @@ AsyncValue<Map<String, List<Extension>>>
       ),
     ),
   );
+}
+
+class ExtensionFilterDetail {
+  final int? repoId;
+  final List<String> enabledLangList;
+  final bool nsfwEnable;
+  final String? query;
+
+  final int extensionCountFilteredOutByQueryAndLangAndNsfw;
+  final Map<String, List<Extension>> extensionMapFilteredOutByQueryAndLang;
+
+  ExtensionFilterDetail(
+    this.repoId,
+    this.enabledLangList,
+    this.nsfwEnable,
+    this.query,
+    this.extensionCountFilteredOutByQueryAndLangAndNsfw,
+    this.extensionMapFilteredOutByQueryAndLang,
+  );
+}
+
+@riverpod
+AsyncValue<ExtensionFilterDetail> extensionMapFilteredResult(
+  ExtensionMapFilteredResultRef ref, {
+  required int? repoId,
+}) {
+  final extensionMap = <String, List<Extension>>{};
+  final extensionMapFilteredByLang = <String, List<Extension>>{};
+  final extensionListData = ref.watch(extensionProvider);
+  final extensionList = [...?extensionListData.valueOrNull];
+
+  final showNsfw = ref.watch(decideShowNsfwProvider);
+  final enabledLangList = [...?ref.watch(extensionLanguageFilterProvider)];
+  final query = ref.watch(extensionQueryProvider);
+
+  for (final e in extensionList) {
+    if (e.installed != true) {
+      extensionMap.update(
+        e.lang?.code?.toLowerCase() ?? "other",
+        (value) => [...value, e],
+        ifAbsent: () => [e],
+      );
+    }
+  }
+
+  final extensionMapFilteredByRepo = extensionMap.map(
+    (key, value) => MapEntry(
+      key,
+      value.where((e) => repoId == null || e.repoId == repoId).toList(),
+    ),
+  );
+
+  for (final e in enabledLangList) {
+    if (extensionMapFilteredByRepo.containsKey(e)) {
+      extensionMapFilteredByLang[e] = extensionMapFilteredByRepo[e]!;
+    }
+  }
+
+  final extensionMapFilteredByLangAndQuery = extensionMapFilteredByLang.map(
+    (key, value) => MapEntry(
+      key,
+      value
+          .where((element) => query.isBlank || element.name.query(query))
+          .toList(),
+    ),
+  );
+
+  var extensionCountFilteredOutByQueryAndLangAndNsfw = 0;
+  if (!showNsfw) {
+    extensionMapFilteredByLangAndQuery.forEach((lang, list) {
+      final count = list.where((e) => e.isNsfw == true).length;
+      //log("[FILTER]lang $lang Nsfw filterd out:$count");
+      extensionCountFilteredOutByQueryAndLangAndNsfw += count;
+    });
+  }
+
+  Map<String, List<Extension>> extensionMapFilteredOutByQueryAndLang = {};
+  if (!query.isBlank) {
+    extensionMapFilteredByRepo.forEach((lang, list) {
+      if (!enabledLangList.contains(lang)) {
+        final filtered = list.where((e) => e.name.query(query)).toList();
+        if (filtered.isNotEmpty) {
+          extensionMapFilteredOutByQueryAndLang[lang] = filtered;
+        }
+      }
+    });
+    //log("[FILTER]extensionMapFilteredOutByQueryAndLang $extensionMapFilteredOutByQueryAndLang");
+  }
+
+  final result = ExtensionFilterDetail(
+    repoId,
+    enabledLangList,
+    showNsfw,
+    query,
+    extensionCountFilteredOutByQueryAndLangAndNsfw,
+    extensionMapFilteredOutByQueryAndLang,
+  );
+  return extensionListData.copyWithData((_) => result);
 }
 
 @riverpod

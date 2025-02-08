@@ -17,6 +17,7 @@ import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/pop_button.dart';
+import '../../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../../../widgets/radio_list_popup.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
@@ -80,7 +81,10 @@ class TrackerStatusWidget extends ConsumerWidget {
                   ),
                   itemBuilder: (context) => [
                         PopupMenuItem(
-                          child: Text(context.l10n!.openInBrowser),
+                          child: PopupItemWithIconChild(
+                            icon: const Icon(Icons.public),
+                            label: Text(context.l10n!.openInBrowser),
+                          ),
                           onTap: () async {
                             launchUrlInWeb(
                               context,
@@ -90,7 +94,10 @@ class TrackerStatusWidget extends ConsumerWidget {
                           },
                         ),
                         PopupMenuItem(
-                          child: Text(context.l10n!.remove),
+                          child: PopupItemWithIconChild(
+                            icon: const Icon(Icons.delete),
+                            label: Text(context.l10n!.remove),
+                          ),
                           onTap: () async {
                             await updateRemote(
                                 toast,

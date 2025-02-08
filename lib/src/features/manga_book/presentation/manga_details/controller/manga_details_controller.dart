@@ -17,6 +17,7 @@ import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../library/domain/category/category_model.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
@@ -142,6 +143,18 @@ class MangaChapterFilterScanlator extends _$MangaChapterFilterScanlator {
 }
 
 @riverpod
+class MangaChapterListQuery extends _$MangaChapterListQuery {
+  @override
+  String? build({required String mangaId}) {
+    return null;
+  }
+
+  void update(String? query) async {
+    state = query;
+  }
+}
+
+@riverpod
 AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   MangaChapterListWithFilterRef ref, {
   required String mangaId,
@@ -164,6 +177,8 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
   final chapterFilterScanlators =
       ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
   final selectedScanlatorSet = {...chapterFilterScanlators};
+  // query
+  final query = ref.watch(mangaChapterListQueryProvider(mangaId: mangaId));
 
   bool applyChapterFilter(Chapter chapter) {
     if (chapterFilterUnread != null &&
@@ -185,6 +200,11 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
         !selectedScanlatorSet.contains(chapter.scanlator)) {
       return false;
     }
+
+    if (query?.isNotEmpty == true && chapter.name?.query(query) != true) {
+      return false;
+    }
+
     return true;
   }
 

@@ -18,11 +18,16 @@ import '../../../domain/source/source_model.dart';
 import '../controller/source_controller.dart';
 
 class SourceListTile extends ConsumerWidget {
-  const SourceListTile(
-      {super.key, required this.source, required this.pinSourceIdSet});
+  const SourceListTile({
+    super.key,
+    required this.source,
+    required this.pinSourceIdSet,
+    this.trailing,
+  });
 
   final Source source;
   final Set<String> pinSourceIdSet;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +43,9 @@ class SourceListTile extends ConsumerWidget {
           SourceType.popular,
         ));
       }),
-      contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 6.0),
+      contentPadding: trailing == null
+          ? const EdgeInsetsDirectional.only(start: 16.0, end: 6.0)
+          : null,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: ServerImage(
@@ -55,57 +62,58 @@ class SourceListTile extends ConsumerWidget {
           : (source.lang?.localizedDisplayName(context)).isNotBlank
               ? Text(source.lang?.localizedDisplayName(context) ?? "")
               : null,
-      trailing: Wrap(
-        spacing: 0, // space between two icons
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          if (source.isConfigurable.ifNull()) ...[
-            IconButton(
-              icon: const Icon(Icons.settings),
-              style: const ButtonStyle(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () {
-                context.push(Routes.getSourcePref(source.id!));
-              },
-            )
-          ],
-          if (magic.b7 == true)
-            IconButton(
-              icon: pinned
-                  ? const Icon(Icons.push_pin)
-                  : const Icon(Icons.push_pin_outlined),
-              style: const ButtonStyle(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () {
-                if (pinned) {
-                  pinSourceIdSet.remove(source.id ?? '');
-                } else {
-                  pinSourceIdSet.add(source.id ?? '');
-                }
-                ref
-                    .read(pinSourceIdListProvider.notifier)
-                    .update(pinSourceIdSet.toList());
-              },
-            ),
-          if (source.supportsLatest.ifNull()) ...[
-            IconButton(
-              icon: const Icon(Icons.new_releases_outlined),
-              style: const ButtonStyle(
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () {
-                ref.read(sourceLastUsedProvider.notifier).update(source.id);
-                context.push(Routes.getSourceManga(
-                  source.id!,
-                  SourceType.latest,
-                ));
-              },
-            ),
-          ],
-        ],
-      ),
+      trailing: trailing ??
+          Wrap(
+            spacing: 0, // space between two icons
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (source.isConfigurable.ifNull()) ...[
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  style: const ButtonStyle(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    context.push(Routes.getSourcePref(source.id!));
+                  },
+                )
+              ],
+              if (magic.b7 == true)
+                IconButton(
+                  icon: pinned
+                      ? const Icon(Icons.push_pin)
+                      : const Icon(Icons.push_pin_outlined),
+                  style: const ButtonStyle(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    if (pinned) {
+                      pinSourceIdSet.remove(source.id ?? '');
+                    } else {
+                      pinSourceIdSet.add(source.id ?? '');
+                    }
+                    ref
+                        .read(pinSourceIdListProvider.notifier)
+                        .update(pinSourceIdSet.toList());
+                  },
+                ),
+              if (source.supportsLatest.ifNull()) ...[
+                IconButton(
+                  icon: const Icon(Icons.new_releases_outlined),
+                  style: const ButtonStyle(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    ref.read(sourceLastUsedProvider.notifier).update(source.id);
+                    context.push(Routes.getSourceManga(
+                      source.id!,
+                      SourceType.latest,
+                    ));
+                  },
+                ),
+              ],
+            ],
+          ),
     );
   }
 }

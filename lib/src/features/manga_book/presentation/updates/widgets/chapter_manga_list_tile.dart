@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/manga_cover_util.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../domain/chapter/chapter_model.dart';
@@ -41,21 +42,6 @@ class ChapterMangaListTile extends StatelessWidget {
       child: ListTile(
         contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 6.0),
         visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if ((pair.chapter?.bookmarked).ifNull()) ...[
-              const Icon(Icons.bookmark, size: 20),
-              KSizedBox.w4.size,
-            ],
-            Expanded(
-              child: Text(
-                pair.manga?.title ?? "",
-                style: TextStyle(color: color),
-              ),
-            ),
-          ],
-        ),
         leading: InkWell(
           onTap: () {
             if (pair.manga?.id != null) {
@@ -75,9 +61,31 @@ class ChapterMangaListTile extends StatelessWidget {
             ),
           ),
         ),
-        subtitle: Text(
-          pair.chapter?.name ?? pair.chapter?.chapterNumber.toString() ?? "",
-          style: context.textTheme.bodySmall?.copyWith(color: color),
+        title: Text(
+          pair.manga?.title ?? "",
+          style: context.textTheme.bodyLarge?.copyWith(color: color),
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 2.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (pair.chapter?.bookmarked == true) ...[
+                const Icon(Icons.bookmark, size: 16),
+                KSizedBox.w4.size,
+              ],
+              Expanded(
+                child: Text(
+                  pair.chapter?.name ??
+                      pair.chapter?.chapterNumber.toString() ??
+                      "",
+                  style: context.textTheme.bodyMedium?.copyWith(color: color),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
         trailing: (pair.manga?.id != null && pair.chapter?.index != null)
             ? DownloadStatusIcon(
@@ -92,16 +100,17 @@ class ChapterMangaListTile extends StatelessWidget {
             context.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
         selected: isSelected,
         onTap: pair.chapter != null && pair.manga != null
-            ? () {
+            ? () async {
                 if (canTapSelect) {
                   toggleSelect(pair.chapter!);
                 } else {
-                  context.push(
+                  await context.push(
                     Routes.getReader(
                       "${pair.manga!.id}",
                       "${pair.chapter!.index}",
                     ),
                   );
+                  updatePair();
                 }
               }
             : null,

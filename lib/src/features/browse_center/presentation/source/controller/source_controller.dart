@@ -10,6 +10,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../global_providers/locale_providers.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../data/source_repository/source_repository.dart';
@@ -78,7 +79,7 @@ AsyncValue<Map<String, List<Source>>?> sourceMapFiltered(
   final sourceMapData = ref.watch(sourceMapProvider);
   final sourceMap = {...?sourceMapData.valueOrNull};
   final enabledLangList = [...?ref.watch(sourceLanguageFilterProvider)];
-  print('enabledLangList $enabledLangList');
+  log('enabledLangList $enabledLangList');
   // if (enabledLangList.contains("all")) {
   //   return sourceMapData;
   // }
@@ -88,7 +89,7 @@ AsyncValue<Map<String, List<Source>>?> sourceMapFiltered(
 
   final pinSourceIdList = ref.watch(pinSourceIdListProvider);
   final pinSourceIdSet = {...?pinSourceIdList};
-  final pinSourceList = <Source>[];
+  final pinSourceMap = <String?, Source>{};
 
   for (var entry in sourceMapFiltered.entries) {
     if (entry.key == "lastUsed") {
@@ -97,15 +98,30 @@ AsyncValue<Map<String, List<Source>>?> sourceMapFiltered(
     final keep = <Source>[];
     for (final s in entry.value) {
       if (pinSourceIdSet.contains(s.id)) {
-        pinSourceList.add(s);
+        pinSourceMap[s.id] = s;
       } else {
         keep.add(s);
       }
     }
     sourceMapFiltered[entry.key] = keep;
   }
-  sourceMapFiltered["pinned"] = pinSourceList;
 
+  final pinSourceList = <Source>[];
+  for (final id in pinSourceIdList ??[]) {
+    final s = pinSourceMap[id];
+    if (s != null) {
+      pinSourceList.add(s);
+    }
+  }
+  sourceMapFiltered["pinned"] = pinSourceList;
+  return sourceMapData.copyWithData((e) => sourceMapFiltered);
+}
+
+@riverpod
+AsyncValue<Map<String, List<Source>>?> sourceMapLangAndKeywordFiltered(
+    SourceMapLangAndKeywordFilteredRef ref) {
+  final sourceMapData = ref.watch(sourceMapFilteredProvider);
+  final sourceMapFiltered = {...?sourceMapData.valueOrNull};
   final query = ref.watch(sourceQueryProvider);
   if (query.isNotBlank) {
     for (var entry in sourceMapFiltered.entries) {
@@ -113,7 +129,6 @@ AsyncValue<Map<String, List<Source>>?> sourceMapFiltered(
           entry.value.where((element) => element.name.query(query)).toList();
     }
   }
-
   return sourceMapData.copyWithData((e) => sourceMapFiltered);
 }
 

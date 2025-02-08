@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../global_providers/device_providers.dart';
+import '../../../../../utils/log.dart';
 import '../controller/reader_setting_controller.dart';
 
 class PaddingServerImage extends ConsumerWidget {
@@ -26,13 +28,26 @@ class PaddingServerImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final orientation = MediaQuery.of(context).orientation;
-    //print("orientation image $orientation");
     final portrait = orientation == Orientation.portrait;
+
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final isPad = deviceInfo.model.toLowerCase().contains("ipad");
+
+    //log("[PADDING]orientation image $orientation, isPad:$isPad");
+
     final portraitPadding =
         ref.watch(readerPaddingWithMangaIdProvider(mangaId: mangaId));
     final landscapePadding =
         ref.watch(readerPaddingLandscapeWithMangaIdProvider(mangaId: mangaId));
-    final mangaReaderPadding = portrait ? portraitPadding : landscapePadding;
+
+    final portraitPaddingPhone =
+        ref.watch(readerPaddingPhoneWithMangaIdProvider(mangaId: mangaId));
+    final landscapePaddingPhone = ref.watch(
+        readerPaddingPhoneLandscapeWithMangaIdProvider(mangaId: mangaId));
+
+    final mangaReaderPadding = portrait
+        ? (isPad ? portraitPadding : portraitPaddingPhone)
+        : (isPad ? landscapePadding : landscapePaddingPhone);
 
     if (mangaReaderPadding > 0) {
       return Padding(

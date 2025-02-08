@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +16,9 @@ import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../../utils/log.dart';
 import '../../../../widgets/radio_list_popup.dart';
+import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../lab/controller/pip_controller.dart';
 import 'widgets/default_tab_tile/default_tab_tile.dart';
@@ -52,6 +56,7 @@ class GeneralScreen extends ConsumerWidget {
                 value: context.currentLocale,
                 onChange: (locale) {
                   ref.read(l10nProvider.notifier).update(locale);
+                  uploadLocale(ref, locale);
                   context.pop();
                 },
                 optionDisplayName: getLanguageNameFormLocale,
@@ -89,5 +94,17 @@ class GeneralScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void uploadLocale(WidgetRef ref, Locale locale) {
+    Future(() {
+      try {
+        log("uploadLocale $locale");
+        final param = jsonEncode({"locale": locale.toString()});
+        ref.read(settingsRepositoryProvider).uploadSettings(json: param);
+      } catch (e) {
+        log("uploadLocale e:$e");
+      }
+    });
   }
 }

@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,11 +16,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'constants/navigation_bar_data.dart';
 import 'features/about/presentation/about/widget/file_log_tile.dart';
+import 'features/browse_center/data/settings_repository/settings_repository.dart';
 import 'features/custom/inapp/purchase_providers.dart';
 import 'features/manga_book/presentation/downloads/service/download_ticket_service.dart';
 import 'features/settings/domain/repo/repo_model.dart';
 import 'features/settings/presentation/appearance/controller/theme_controller.dart';
 import 'features/settings/widgets/theme_mode_tile/theme_mode_tile.dart';
+import 'features/sync/controller/sync_controller.dart';
 import 'global_providers/global_providers.dart';
 import 'global_providers/preference_providers.dart';
 import 'routes/router_config.dart';
@@ -48,14 +52,22 @@ class Sorayomi extends HookConsumerWidget {
     // services
     final purchaseListener = ref.watch(purchaseListenerProvider);
     ref.watch(downloadTicketServiceProvider);
+    final syncSuccessListener = ref.watch(syncSuccessListenerProvider);
 
     setupProxy(ref);
 
     setupLog(ref);
 
+    configDio(ref);
+
     useEffect(() {
-      PremiumReset.instance.resetWhenStartup(ref);
-      ref.read(autoDeleteProvider.notifier).triggerDelete();
+      try {
+        PremiumReset.instance.resetWhenStartup(ref);
+        ref.read(autoDeleteProvider.notifier).triggerDelete();
+        uploadLocale(ref, appLocale);
+      } catch (e) {
+        log("exec main useEffect error:$e");
+      }
       return;
     }, []);
 
@@ -76,7 +88,7 @@ class Sorayomi extends HookConsumerWidget {
     );
   }
 
-  Locale? decideAppLocale(WidgetRef ref) {
+  Locale decideAppLocale(WidgetRef ref) {
     final userSettingLocale = ref.watch(l10nProvider);
     log('userSettingLocale $userSettingLocale');
     if (userSettingLocale != null) {
@@ -220,5 +232,26 @@ class Sorayomi extends HookConsumerWidget {
     if (ref.read(fileLogProvider) == true) {
       logToNativeEnabled = true;
     }
+  }
+
+  void configDio(WidgetRef ref) {
+    final receiveTimeout = ref.read(receiveTimeoutPrefProvider);
+    log("main configDio receiveTimeout:$receiveTimeout");
+    if (receiveTimeout != null) {
+      final dioClient = ref.read(dioClientKeyProvider);
+      dioClient.dio.options.receiveTimeout = Duration(seconds: receiveTimeout);
+    }
+  }
+
+  void uploadLocale(WidgetRef ref, Locale locale) {
+    Future(() {
+      try {
+        log("uploadLocale $locale");
+        final param = jsonEncode({"locale": locale.toString()});
+        ref.read(settingsRepositoryProvider).uploadSettings(json: param);
+      } catch (e) {
+        log("uploadLocale e:$e");
+      }
+    });
   }
 }

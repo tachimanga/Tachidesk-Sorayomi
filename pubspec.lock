@@ -214,18 +214,20 @@ packages:
   connectivity_plus:
     dependency: "direct main"
     description:
-      name: connectivity_plus
-      sha256: "224a77051d52a11fbad53dd57827594d3bd24f945af28bd70bab376d68d437f0"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/connectivity_plus/connectivity_plus"
+      ref: "hotfix/connectivity_plus-v5.0.2"
+      resolved-ref: "0b3e574a6b128159d2af48cf5d986b43b8525b62"
+      url: "git@github.com:tachimanga/plus_plugins.git"
+    source: git
     version: "5.0.2"
   connectivity_plus_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: connectivity_plus_platform_interface
-      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/connectivity_plus/connectivity_plus_platform_interface"
+      ref: "hotfix/connectivity_plus-v5.0.2"
+      resolved-ref: "0b3e574a6b128159d2af48cf5d986b43b8525b62"
+      url: "git@github.com:tachimanga/plus_plugins.git"
+    source: git
     version: "1.2.4"
   convert:
     dependency: transitive
@@ -275,6 +277,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  cupertino_modal_sheet:
+    dependency: "direct main"
+    description:
+      name: cupertino_modal_sheet
+      sha256: "50cc00a18d01f62172bf1584d5efde1fc7a644db50d40865529dbf8f90c26587"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   custom_lint:
     dependency: transitive
     description:
@@ -315,6 +325,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  device_info_plus:
+    dependency: "direct main"
+    description:
+      name: device_info_plus
+      sha256: "77f757b789ff68e4eaf9c56d1752309bd9f7ad557cb105b938a7f8eb89e59110"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.2"
+  device_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: device_info_plus_platform_interface
+      sha256: "282d3cf731045a2feb66abfe61bbc40870ae50a3ed10a4d3d217556c35c8c2ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.1"
   dio:
     dependency: "direct main"
     description:
@@ -487,6 +513,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  flutter_nsfw:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "52d78f6a5ba3dd5ac316c3a6810129524e4703d5"
+      url: "git@github.com:tachimanga/flutter_nsfw.git"
+    source: git
+    version: "0.0.7+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -962,6 +997,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  palette_generator:
+    dependency: "direct main"
+    description:
+      name: palette_generator
+      sha256: eb7082b4b97487ebc65b3ad3f6f0b7489b96e76840381ed0e06a46fe7ffd4068
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+3"
   path:
     dependency: transitive
     description:
@@ -1218,6 +1261,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  sign_in_with_apple:
+    dependency: "direct main"
+    description:
+      name: sign_in_with_apple
+      sha256: "0975c23b9f8b30a80e27d5659a75993a093d4cb5f4eb7d23a9ccc586fea634e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
+  sign_in_with_apple_platform_interface:
+    dependency: transitive
+    description:
+      name: sign_in_with_apple_platform_interface
+      sha256: a5883edee09ed6be19de19e7d9f618a617fe41a6fa03f76d082dfb787e9ea18d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  sign_in_with_apple_web:
+    dependency: transitive
+    description:
+      name: sign_in_with_apple_web
+      sha256: "44b66528f576e77847c14999d5e881e17e7223b7b0625a185417829e5306f47a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1519,6 +1586,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.7"
+  win32_registry:
+    dependency: transitive
+    description:
+      name: win32_registry
+      sha256: "41fd8a189940d8696b1b810efb9abcf60827b6cbfab90b0c43e8439e3a39d85a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   window_to_front:
     dependency: transitive
     description:

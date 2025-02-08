@@ -17,11 +17,14 @@ import '../../../../global_providers/preference_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/http_proxy.dart';
+import '../../../../widgets/pop_button.dart';
+import '../../../../widgets/text_field_popup.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../../manga_book/presentation/reader/controller/reader_controller_v2.dart';
-import '../../../settings/presentation/browse/widgets/repo_setting/repo_url_tile.dart';
 import '../../../settings/widgets/server_url_tile/server_url_tile.dart';
+import '../../../stats/controller/stats_controller.dart';
+import '../../../sync/controller/sync_controller.dart';
 import 'controllers/about_controller.dart';
 import 'widget/clipboard_list_tile.dart';
 import 'widget/file_log_tile.dart';
@@ -38,6 +41,9 @@ class DebugScreen extends HookConsumerWidget {
     final sourceDirect = useState(false);
     final pipe = ref.watch(getMagicPipeProvider);
 
+    final remoteShowLogo = ref.watch(remoteShowLogoProvider);
+    final localShowLogo = ref.watch(localShowLogoProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Debug"),
@@ -49,6 +55,25 @@ class DebugScreen extends HookConsumerWidget {
         ),
         const FileLogTile(),
         const FileLogExport(),
+        const Divider(),
+        const ApiServerTile(),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("SyncWhenAppStart"),
+          onChanged: ref.read(syncWhenAppStartPrefProvider.notifier).update,
+          value: ref.watch(syncWhenAppStartPrefProvider).ifNull(true),
+        ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("SyncWhenAppResume"),
+          onChanged: ref.read(syncWhenAppResumePrefProvider.notifier).update,
+          value: ref.watch(syncWhenAppResumePrefProvider).ifNull(true),
+        ),
+        SyncPollingInterval(),
+        SyncSampleInterval(),
+        const Divider(),
         SwitchListTile(
           controlAffinity: ListTileControlAffinity.trailing,
           secondary: const Icon(Icons.switch_left_rounded),
@@ -100,6 +125,23 @@ class DebugScreen extends HookConsumerWidget {
           },
           value: disableStopSocketV2 != "1",
         ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("localShowLogo"),
+          onChanged: (value) async {
+            ref.read(localShowLogoProvider.notifier).update(value);
+          },
+          value: localShowLogo == true,
+        ),
+        SwitchListTile(
+          controlAffinity: ListTileControlAffinity.trailing,
+          secondary: const Icon(Icons.switch_left_rounded),
+          title: Text("remoteShowLogo"),
+          onChanged: (value) async {
+          },
+          value: remoteShowLogo == true,
+        ),
         ListTile(
             title: Text("crash"),
             leading: const Icon(Icons.bug_report),
@@ -122,7 +164,6 @@ class DebugScreen extends HookConsumerWidget {
               ref.read(purchaseExpireMsProvider.notifier).update(0);
             }),
          */
-        const RepoUrlTile(),
         ListTile(
             title: Text("clean ad mem"),
             leading: const Icon(Icons.cleaning_services_rounded),
@@ -272,6 +313,151 @@ class DebugScreen extends HookConsumerWidget {
           value: ref.watch(showSourceUrlProvider).ifNull(true),
         ),
       ]),
+    );
+  }
+}
+
+
+class ApiServerTile extends ConsumerWidget {
+  const ApiServerTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final serverUrl = ref.watch(cloudServerPrefProvider);
+    return ListTile(
+      leading: const Icon(Icons.computer_rounded),
+      title: Text("Api Server URL"),
+      subtitle: serverUrl.isNotBlank ? Text(serverUrl!) : null,
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => ApiServerUrlField(initialUrl: serverUrl),
+      ),
+    );
+  }
+}
+
+class ApiServerUrlField extends HookConsumerWidget {
+  const ApiServerUrlField({
+    this.initialUrl,
+    super.key,
+  });
+  final String? initialUrl;
+
+  void _update(String url, WidgetRef ref) async {
+    final tempUrl = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
+    ref.read(cloudServerPrefProvider.notifier).update(tempUrl);
+
+    Map<String, String> map = {'cloudServer': tempUrl};
+    String json = jsonEncode(map);
+    await ref.read(settingsRepositoryProvider).uploadSettings(json: json);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController(text: initialUrl);
+    return AlertDialog(
+      title: Text("Api Server URL"),
+      content: TextField(
+        autofocus: true,
+        controller: controller,
+        onSubmitted: (value) {
+          _update(controller.text, ref);
+          context.pop();
+        },
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          hintText: ("Enter server url"),
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            _update("http://127.0.0.1:8080", ref);
+            context.pop();
+          },
+          child: Text("local"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            _update("http://192.168.0.42:4567", ref);
+            context.pop();
+          },
+          child: Text("local2"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            _update("https://api3.tachimanga.app", ref);
+            context.pop();
+          },
+          child: Text("api3"),
+        ),
+        const PopButton(),
+        ElevatedButton(
+          onPressed: () {
+            _update(controller.text, ref);
+            context.pop();
+          },
+          child: Text(context.l10n!.save),
+        ),
+      ],
+    );
+  }
+}
+
+
+class SyncPollingInterval extends ConsumerWidget {
+  const SyncPollingInterval({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final interval = ref.watch(syncPollingIntervalProvider);
+    return ListTile(
+      title: Text("SyncPollingInterval(need restart)"),
+      subtitle: Text("$interval"),
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => TextFieldPopup(
+          title: "",
+          onChange: (value) {
+            ref.read(syncPollingIntervalProvider.notifier).update(int.parse(value));
+            if (context.mounted) {
+              context.pop();
+            }
+          },
+          initialValue: "$interval",
+          textInputAction: TextInputAction.done,
+        ),
+      ),
+    );
+  }
+}
+
+
+class SyncSampleInterval extends ConsumerWidget {
+  const SyncSampleInterval({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsRepository = ref.watch(settingsRepositoryProvider);
+    return ListTile(
+      title: Text("SyncSampleInterval"),
+      subtitle: Text("lost when restart"),
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => TextFieldPopup(
+          title: "",
+          onChange: (value) async {
+            Map<String, int> map = {'syncListenerInterval': int.parse(value)};
+            String json = jsonEncode(map);
+            await settingsRepository.uploadSettings(json: json);
+            if (context.mounted) {
+              context.pop();
+            }
+          },
+          initialValue: "5",
+          textInputAction: TextInputAction.done,
+        ),
+      ),
     );
   }
 }

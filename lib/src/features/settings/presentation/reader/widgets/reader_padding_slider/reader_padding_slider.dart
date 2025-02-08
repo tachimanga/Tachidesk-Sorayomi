@@ -14,7 +14,9 @@ import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/db_keys.dart';
 
 import '../../../../../../constants/enum.dart';
+import '../../../../../../global_providers/device_providers.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../../utils/log.dart';
 import '../../../../../manga_book/data/manga_book_repository.dart';
 import '../../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../../../manga_book/presentation/reader/controller/reader_setting_controller.dart';
@@ -53,25 +55,46 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
     final debounce = useRef<Timer?>(null);
 
     final orientation = MediaQuery.of(context).orientation;
-    //print("orientation $orientation");
     final portrait = orientation == Orientation.portrait;
+
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final isPad = deviceInfo.model.toLowerCase().contains("ipad");
+
+    //log("[PADDING]orientation image $orientation, isPad:$isPad");
 
     final readerPaddingProvider =
         readerPaddingWithMangaIdProvider(mangaId: mangaId);
     final readerPaddingLandscapeProvider =
         readerPaddingLandscapeWithMangaIdProvider(mangaId: mangaId);
+    final readerPaddingPhoneProvider =
+        readerPaddingPhoneWithMangaIdProvider(mangaId: mangaId);
+    final readerPaddingPhoneLandscapeProvider =
+        readerPaddingPhoneLandscapeWithMangaIdProvider(mangaId: mangaId);
 
     final readerPadding = ref.watch(readerPaddingProvider);
     final readerPaddingLandscape = ref.watch(readerPaddingLandscapeProvider);
+    final readerPaddingPhone = ref.watch(readerPaddingPhoneProvider);
+    final readerPaddingPhoneLandscape =
+        ref.watch(readerPaddingPhoneLandscapeProvider);
 
     final onDebounceChanged = useCallback<ValueSetter<double>>(
       (double paddingValue) async {
         if (portrait) {
-          ref.read(readerPaddingProvider.notifier).update(paddingValue);
+          if (isPad) {
+            ref.read(readerPaddingProvider.notifier).update(paddingValue);
+          } else {
+            ref.read(readerPaddingPhoneProvider.notifier).update(paddingValue);
+          }
         } else {
-          ref
-              .read(readerPaddingLandscapeProvider.notifier)
-              .update(paddingValue);
+          if (isPad) {
+            ref
+                .read(readerPaddingLandscapeProvider.notifier)
+                .update(paddingValue);
+          } else {
+            ref
+                .read(readerPaddingPhoneLandscapeProvider.notifier)
+                .update(paddingValue);
+          }
         }
         final finalDebounce = debounce.value;
         if ((finalDebounce?.isActive).ifNull()) {
@@ -84,8 +107,12 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
               () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
                     mangaId: mangaId,
                     key: portrait
-                        ? MangaMetaKeys.readerPadding.key
-                        : MangaMetaKeys.readerPaddingLandscape.key,
+                        ? (isPad
+                            ? MangaMetaKeys.readerPadding.key
+                            : MangaMetaKeys.readerPaddingPhone.key)
+                        : (isPad
+                            ? MangaMetaKeys.readerPaddingLandscape.key
+                            : MangaMetaKeys.readerPaddingPhoneLandscape.key),
                     value: paddingValue,
                   ),
             );
@@ -98,7 +125,9 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
     return SliderSettingTile(
       icon: Icons.width_wide_rounded,
       title: context.l10n!.readerPadding,
-      value: portrait ? readerPadding : readerPaddingLandscape,
+      value: portrait
+          ? (isPad ? readerPadding : readerPaddingPhone)
+          : (isPad ? readerPaddingLandscape : readerPaddingPhoneLandscape),
       labelGenerator: (val) => (val * 2.5).toStringAsFixed(2),
       onChanged: onDebounceChanged,
       defaultValue: DBKeys.readerPadding.initial,

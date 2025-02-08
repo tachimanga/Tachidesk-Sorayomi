@@ -24,7 +24,6 @@ import '../../../../controller/remote_blacklist_controller.dart';
 import '../../../../data/config/remote_blacklist_config.dart';
 import '../../../../data/repo/repo_repository.dart';
 import '../../../../domain/repo/repo_model.dart';
-import '../repo_setting/repo_url_tile.dart';
 import 'aggrement_radio_list_tile.dart';
 
 class AddRepoDialogAgreementDialog extends HookConsumerWidget {

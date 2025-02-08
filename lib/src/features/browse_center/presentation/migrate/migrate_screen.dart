@@ -12,6 +12,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/shell/shell_screen.dart';
+import '../../../sync/controller/sync_controller.dart';
 import 'controller/migrate_controller.dart';
 import 'widgets/migrate_source_list_tile.dart';
 
@@ -30,6 +31,14 @@ class MigrateScreen extends HookConsumerWidget {
       }
       return;
     }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        refresh();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     useEffect(() {
       sourceListSrc.showToastOnError(

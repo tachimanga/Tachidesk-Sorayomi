@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/manga/manga_model.dart';
@@ -71,6 +72,56 @@ class ReaderPaddingLandscapeWithMangaId
     }
 
     return manga.meta?.readerPaddingLandscape ?? localMangaReaderPadding;
+  }
+
+  void update(double p) {
+    ref.keepAlive();
+    state = p;
+  }
+}
+
+@riverpod
+class ReaderPaddingPhoneWithMangaId extends _$ReaderPaddingPhoneWithMangaId {
+  @override
+  double build({required String mangaId}) {
+    final mangaWithId = ref.watch(mangaWithIdProvider(mangaId: mangaId));
+    final manga = mangaWithId.valueOrNull;
+
+    final double localMangaReaderPadding =
+        ref.watch(readerPaddingKeyProvider) ?? DBKeys.readerPadding.initial;
+    if (manga == null) {
+      return localMangaReaderPadding;
+    }
+
+    final mangaReaderPadding =
+        manga.meta?.readerPaddingPhone ?? manga.meta?.readerPadding;
+    //log("[PADDING]readerPaddingPhone ${manga.meta?.readerPaddingPhone}  readerPadding:${manga.meta?.readerPadding} final:${mangaReaderPadding}");
+    return mangaReaderPadding ?? localMangaReaderPadding;
+  }
+
+  void update(double p) {
+    ref.keepAlive();
+    state = p;
+  }
+}
+
+@riverpod
+class ReaderPaddingPhoneLandscapeWithMangaId
+    extends _$ReaderPaddingPhoneLandscapeWithMangaId {
+  @override
+  double build({required String mangaId}) {
+    final mangaWithId = ref.watch(mangaWithIdProvider(mangaId: mangaId));
+    final manga = mangaWithId.valueOrNull;
+
+    final double localMangaReaderPadding =
+        ref.watch(readerPaddingKeyProvider) ?? DBKeys.readerPadding.initial;
+    if (manga == null) {
+      return localMangaReaderPadding;
+    }
+
+    final mangaReaderPadding = manga.meta?.readerPaddingPhoneLandscape ??
+        manga.meta?.readerPaddingLandscape;
+    return mangaReaderPadding ?? localMangaReaderPadding;
   }
 
   void update(double p) {

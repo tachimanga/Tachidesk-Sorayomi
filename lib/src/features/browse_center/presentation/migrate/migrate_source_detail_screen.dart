@@ -13,6 +13,7 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/search_field.dart';
+import '../../../sync/controller/sync_controller.dart';
 import '../../domain/migrate/migrate_model.dart';
 import 'controller/migrate_controller.dart';
 import 'widgets/migrate_manga_list_tile.dart';
@@ -41,6 +42,14 @@ class MigrateSourceDetailScreen extends HookConsumerWidget {
       );
       return;
     }, [mangaList]);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        refresh();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     return Scaffold(
       appBar: AppBar(

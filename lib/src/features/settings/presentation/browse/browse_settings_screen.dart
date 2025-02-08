@@ -15,10 +15,10 @@ import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/pop_button.dart';
+import '../../../sync/controller/sync_controller.dart';
 import '../../controller/edit_repo_controller.dart';
 import 'widgets/bypass_setting/bypass_switch.dart';
 import 'widgets/mutil_repo_setting/edit_repo_tile.dart';
-import 'widgets/repo_setting/repo_url_tile.dart';
 import 'widgets/show_nsfw_switch/show_nsfw_switch.dart';
 
 class BrowseSettingsScreen extends HookConsumerWidget {
@@ -28,7 +28,23 @@ class BrowseSettingsScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final magic = ref.watch(getMagicProvider);
     final toast = ref.read(toastProvider(context));
+    final repoList = ref.watch(repoControllerProvider);
     final repoCount = ref.watch(repoCountProvider);
+
+    useEffect(() {
+      if (!repoList.isLoading) {
+        ref.read(repoControllerProvider.notifier).reloadRepoList();
+      }
+      return;
+    }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        ref.read(repoControllerProvider.notifier).reloadRepoList();
+      }
+      return;
+    }, [syncRefreshSignal]);
 
     return Scaffold(
       appBar: AppBar(
@@ -47,15 +63,6 @@ class BrowseSettingsScreen extends HookConsumerWidget {
         children: [
           if (magic.a9 || repoCount > 0) ...[
             const EditRepoTile(),
-            // ListTile(
-            //   subtitle: Text(
-            //     context.l10n!.extension_usage_terms,
-            //     style:
-            //         context.textTheme.bodySmall?.copyWith(color: Colors.grey),
-            //   ),
-            //   leading: const Icon(Icons.info_rounded),
-            //   dense: true,
-            // ),
             const Divider(),
           ],
           if (magic.a8 && repoCount > 0) ...[

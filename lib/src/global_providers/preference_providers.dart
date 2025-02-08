@@ -114,3 +114,14 @@ class BucketConfig extends _$BucketConfig
     initial: null,
   );
 }
+
+@riverpod
+class ReceiveTimeoutPref extends _$ReceiveTimeoutPref
+    with SharedPreferenceClientMixin<int> {
+  @override
+  int? build() => initialize(
+    ref,
+    initial: DBKeys.receiveTimeout.initial,
+    key: DBKeys.receiveTimeout.name,
+  );
+}

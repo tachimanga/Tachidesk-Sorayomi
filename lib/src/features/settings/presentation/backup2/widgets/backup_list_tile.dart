@@ -13,11 +13,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../utils/date_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/custom_circular_progress_indicator.dart';
+import '../../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../domain/backup/backup_model.dart';
 import '../../appearance/controller/date_format_controller.dart';
 import '../controller/backup_controller.dart';
@@ -118,7 +120,10 @@ class BackupListTile extends ConsumerWidget {
                         }
                         onConfirm();
                       },
-                child: Text(context.l10n!.restoreBackup),
+                child: PopupItemWithIconChild(
+                  icon: const Icon(Icons.restore),
+                  label: Text(context.l10n!.restoreBackup),
+                ),
               ),
               PopupMenuItem(
                 onTap: () async {
@@ -143,7 +148,10 @@ class BackupListTile extends ConsumerWidget {
                   }
                   onShare();
                 },
-                child: Text(context.l10n!.exportBackup),
+                child: PopupItemWithIconChild(
+                  icon: const Icon(Icomoon.shareRounded),
+                  label: Text(context.l10n!.exportBackup),
+                ),
               ),
               PopupMenuItem(
                 onTap: () async {
@@ -162,7 +170,10 @@ class BackupListTile extends ConsumerWidget {
                       .showToastOnError(toast);
                   loadingState.value = false;
                 },
-                child: Text(context.l10n!.delete),
+                child: PopupItemWithIconChild(
+                  icon: const Icon(Icons.delete),
+                  label: Text(context.l10n!.remove),
+                ),
               ),
             ],
           ),

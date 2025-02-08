@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
@@ -114,5 +116,28 @@ class UpdateRefreshSignal extends _$UpdateRefreshSignal {
     final signal = (prev == true && running == false);
     prev = running;
     return signal;
+  }
+}
+
+@riverpod
+class UpdateScheduleRefreshSignal extends _$UpdateScheduleRefreshSignal {
+  Timer? _timer;
+
+  @override
+  int build() {
+    _timer = Timer.periodic(
+      const Duration(seconds: 3),
+      (timer) {
+        final updateStatus = ref.read(updatesSocketProvider);
+        final running = updateStatus.valueOrNull?.running == true;
+        if (running) {
+          state = state + 1;
+        }
+      },
+    );
+    ref.onDispose(() {
+      _timer?.cancel();
+    });
+    return 0;
   }
 }

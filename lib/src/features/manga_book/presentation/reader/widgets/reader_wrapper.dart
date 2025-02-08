@@ -4,6 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -13,21 +14,20 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
-import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
-
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../global_providers/preference_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
-import '../../../../../utils/launch_url_in_web.dart';
+import '../../../../../utils/log.dart' as logger;
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../../widgets/radio_list_popup.dart';
 import '../../../../../widgets/text_premium.dart';
+import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
@@ -41,8 +41,6 @@ import '../../../domain/manga/manga_model.dart';
 import '../../../widgets/chapter_actions/single_chapter_action_icon.dart';
 import '../../manga_details/controller/manga_details_controller.dart';
 import '../controller/reader_controller.dart';
-import '../controller/reader_controller_v2.dart';
-import '../controller/reader_setting_controller.dart';
 import 'page_number_slider.dart';
 import 'reader_navigation_layout/reader_navigation_layout.dart';
 import 'reader_page_layout/manga_page_layout_popup.dart';
@@ -85,6 +83,7 @@ class ReaderWrapper extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
+    final scaffoldKey = useRef(GlobalKey<ScaffoldState>());
 
     final chapterPair = ref.watch(
       getPreviousAndNextChaptersProvider(
@@ -129,7 +128,51 @@ class ReaderWrapper extends HookConsumerWidget {
       };
     }, []);
 
-    final mangaReaderPadding = ref.watch(readerPaddingWithMangaIdProvider(mangaId: manga.id.toString()));
+    final autoScrollIntervalMs = useState<int?>(null);
+    final autoScrollTimer = useRef<Timer?>(null);
+    final quickSettingsOpen = useState(false);
+    useEffect(() {
+      autoScrollTimer.value?.cancel();
+      final intervalMs = autoScrollIntervalMs.value;
+      final isVisibility = visibility.value;
+      final isEndDrawerOpen = context.mounted
+          ? scaffoldKey.value.currentState?.isEndDrawerOpen
+          : false;
+      logger.log(
+          "[AUTO]intervalMs $intervalMs, visibility:$isVisibility isEndDrawerOpen:$isEndDrawerOpen quickSettingsOpen:${quickSettingsOpen.value}");
+      if (intervalMs != null) {
+        autoScrollTimer.value = Timer.periodic(
+          Duration(milliseconds: intervalMs),
+          (timer) {
+            logger.log(
+                "[AUTO]tick intervalMs $intervalMs, visibility:$isVisibility isEndDrawerOpen:$isEndDrawerOpen quickSettingsOpen:${quickSettingsOpen.value}");
+            if (context.mounted) {
+              final settingOpen =
+                  quickSettingsOpen.value || isEndDrawerOpen == true;
+              final tick = settingOpen || !isVisibility;
+              if (tick) {
+                onNext();
+              }
+            }
+          },
+        );
+      }
+      return;
+    }, [
+      autoScrollIntervalMs.value,
+      visibility.value,
+      scaffoldKey.value,
+      quickSettingsOpen.value,
+    ]);
+
+    useEffect(() {
+      return () {
+        logger.log("[AUTO]dispose");
+        autoScrollTimer.value?.cancel();
+      };
+    }, []);
+
+
     final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider);
     final tapDelay = doubleTapZoomIn == true ? 500 : 300;
     final showSourceUrl = ref.watch(showSourceUrlProvider);
@@ -254,6 +297,9 @@ class ReaderWrapper extends HookConsumerWidget {
         AsyncReaderPaddingSlider(
           mangaId: manga.id.toString(),
         ),
+        ReaderAutoScrollTile(
+          intervalState: autoScrollIntervalMs,
+        ),
       ],
     );
     final reverseKey = Directionality.of(context) == TextDirection.ltr ? reverse : !reverse;
@@ -266,6 +312,7 @@ class ReaderWrapper extends HookConsumerWidget {
         ),
       ),
       child: Scaffold(
+        key: scaffoldKey.value,
         appBar: visibility.value
             ? AppBar(
                 title: ListTile(
@@ -322,7 +369,7 @@ class ReaderWrapper extends HookConsumerWidget {
                       }))
                           .showToastOnError(toast);
                     },
-                    icon: const Icon(Icons.share_outlined),
+                    icon: const Icon(Icomoon.shareRounded),
                   ),
                   IconButton(
                     onPressed: () {
@@ -439,19 +486,22 @@ class ReaderWrapper extends HookConsumerWidget {
                           ],
                           Builder(builder: (context) {
                             return IconButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (context.isTablet) {
                                   Scaffold.of(context).openEndDrawer();
                                 } else {
-                                  showModalBottomSheet(
+                                  quickSettingsOpen.value = true;
+                                  await showModalBottomSheet(
                                     context: context,
                                     backgroundColor: context.theme.cardColor,
                                     clipBehavior: Clip.hardEdge,
                                     builder: (context) => Padding(
-                                      padding: EdgeInsets.only(bottom: safeAreaBottom),
+                                      padding: EdgeInsets.only(
+                                          bottom: safeAreaBottom),
                                       child: quickSettings,
                                     ),
                                   );
+                                  quickSettingsOpen.value = false;
                                 }
                               },
                               icon: const Icon(Icons.settings_rounded),
@@ -521,7 +571,6 @@ class ReaderWrapper extends HookConsumerWidget {
                         }
                       },
                       scrollDirection: scrollDirection,
-                      mangaReaderPadding: mangaReaderPadding,
                       onNext: onNext,
                       onPrevious: onPrevious,
                       mangaReaderNavigationLayout: effectNavigationLayout,
@@ -556,7 +605,6 @@ class ReaderView extends HookWidget {
     required this.onTapDown,
     required this.onTap,
     required this.scrollDirection,
-    required this.mangaReaderPadding,
     required this.child,
     required this.onNext,
     required this.onPrevious,
@@ -567,7 +615,6 @@ class ReaderView extends HookWidget {
   final GestureTapDownCallback onTapDown;
   final VoidCallback onTap;
   final Axis scrollDirection;
-  final double mangaReaderPadding;
   final Widget child;
   final VoidCallback onNext;
   final VoidCallback onPrevious;

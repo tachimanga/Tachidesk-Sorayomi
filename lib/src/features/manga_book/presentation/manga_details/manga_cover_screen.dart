@@ -19,6 +19,7 @@ import '../../../../constants/app_sizes.dart';
 import '../../../../constants/app_themes/color_schemas/default_theme.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../icons/icomoon_icons.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/cover/cover_cache_manager.dart';
 import '../../../../utils/event_util.dart';
@@ -28,6 +29,7 @@ import '../../../../utils/log.dart';
 import '../../../../utils/manga_cover_util.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/async_buttons/async_icon_button.dart';
+import '../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../../widgets/premium_required_tile.dart';
 import '../../../../widgets/server_image.dart';
 import '../../../../widgets/text_premium.dart';
@@ -186,7 +188,7 @@ class MangaCoverScreen extends HookConsumerWidget {
             actions: [
               AsyncIconButton(
                 onPressed: onShare,
-                icon: const Icon(Icons.share_outlined),
+                icon: const Icon(Icomoon.shareRounded),
               ),
               AsyncIconButton(
                 onPressed: onSave,
@@ -212,11 +214,17 @@ class MangaCoverScreen extends HookConsumerWidget {
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           onTap: onEdit,
-                          child: Text(context.l10n!.edit),
+                          child: PopupItemWithIconChild(
+                            icon: const Icon(Icons.edit_outlined),
+                            label: Text(context.l10n!.edit),
+                          ),
                         ),
                         PopupMenuItem(
                           onTap: onDelete,
-                          child: Text(context.l10n!.delete),
+                          child: PopupItemWithIconChild(
+                            icon: const Icon(Icons.delete),
+                            label: Text(context.l10n!.delete),
+                          ),
                         ),
                       ],
                     ),
@@ -340,9 +348,7 @@ class CoverActionWidget extends HookConsumerWidget {
           const PremiumRequiredTile(),
         ],
         ListTile(
-          leading: const Icon(
-            Icons.share_outlined,
-          ),
+          leading: const Icon(Icomoon.shareRounded),
           title: Text(context.l10n!.share),
           onTap: () async {
             context.pop();

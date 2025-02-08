@@ -112,24 +112,21 @@ class $AssetsIconsGen {
   /// File path: assets/icons/AppIcon.png
   AssetGenImage get appIcon => const AssetGenImage('assets/icons/AppIcon.png');
 
+  /// File path: assets/icons/LOGO-black.png
+  AssetGenImage get lOGOBlack =>
+      const AssetGenImage('assets/icons/LOGO-black.png');
+
+  /// File path: assets/icons/LOGO-white.png
+  AssetGenImage get lOGOWhite =>
+      const AssetGenImage('assets/icons/LOGO-white.png');
+
   /// File path: assets/icons/dark_icon.png
   AssetGenImage get darkIcon =>
       const AssetGenImage('assets/icons/dark_icon.png');
 
-  /// File path: assets/icons/incognito.png
-  AssetGenImage get incognito =>
-      const AssetGenImage('assets/icons/incognito.png');
-
   /// File path: assets/icons/light_icon.png
   AssetGenImage get lightIcon =>
       const AssetGenImage('assets/icons/light_icon.png');
-
-  /// File path: assets/icons/pip.png
-  AssetGenImage get pip => const AssetGenImage('assets/icons/pip.png');
-
-  /// File path: assets/icons/previous_done.png
-  AssetGenImage get previousDone =>
-      const AssetGenImage('assets/icons/previous_done.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
@@ -155,11 +152,10 @@ class $AssetsIconsGen {
         appIcon6,
         appIcon9,
         appIcon,
+        lOGOBlack,
+        lOGOWhite,
         darkIcon,
-        incognito,
-        lightIcon,
-        pip,
-        previousDone
+        lightIcon
       ];
 }
 

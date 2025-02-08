@@ -32,20 +32,12 @@ class PurchaseScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.watch(toastProvider(context));
     final purchaseState = ref.watch(purchaseStateProvider);
-    final purchaseGate = ref.watch(purchaseGateProvider);
     final pipe = ref.watch(getMagicPipeProvider);
-    final magic = ref.watch(getMagicProvider);
     final bucket = ref.watch(bucketConfigProvider);
-
-    final productList =
-        magic.c2 ? ref.watch(productsV3Provider) : ref.watch(productsProvider);
+    final productList = ref.watch(productsV3Provider);
 
     Future<void> refresh() async {
-      if (magic.c2) {
-        ref.refresh(productsApiDataProvider.future);
-      } else {
-        ref.refresh(productsProvider.future);
-      }
+      ref.refresh(productsApiDataProvider.future);
     }
 
     useEffect(() {
@@ -186,19 +178,37 @@ class OptionsButton extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.all(2),
-                  child: Center(
-                    child: Text(
-                      "${curr.price}${item?.priceSuffix}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        // filled_button.dart#_FilledButtonDefaultsM3#foregroundColor
-                        color: index == selectedIndex.value && !purchaseGate
-                            ? colors.onPrimary
-                            : colors.onSurface.withOpacity(0.38),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (curr.id == "10") ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 2, vertical: 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(1),
+                            color: Colors.yellow.shade300,
+                          ),
+                          child: Text(
+                            context.l10n!.early_bird_price,
+                            style: context.textTheme.labelSmall
+                                ?.copyWith(color: Colors.black, fontSize: 8),
+                          ),
+                        ),
+                      ],
+                      Text(
+                        "${curr.price}${item?.priceSuffix}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          // filled_button.dart#_FilledButtonDefaultsM3#foregroundColor
+                          color: index == selectedIndex.value && !purchaseGate
+                              ? colors.onPrimary
+                              : colors.onSurface.withOpacity(0.38),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -377,7 +387,10 @@ class PurchaseButton extends ConsumerWidget {
                   {"x": "$usageDays"},
                 );
                 try {
-                  final param = PurchaseParam(productDetails: curr);
+                  final did = userDefaults.getString("config.mcdid") ?? '';
+                  log("purchase mcdid=$did");
+                  final param = PurchaseParam(
+                      productDetails: curr, applicationUserName: did);
                   if (clearBeforeBuy == true) {
                     await PurchaseService.clearTransactions();
                   }

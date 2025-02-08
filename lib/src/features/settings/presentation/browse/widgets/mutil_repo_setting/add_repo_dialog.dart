@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../../constants/app_sizes.dart';
 import '../../../../../../global_providers/global_providers.dart';
 import '../../../../../../routes/router_config.dart';
 import '../../../../../../utils/event_util.dart';
@@ -23,7 +24,6 @@ import '../../../../controller/remote_blacklist_controller.dart';
 import '../../../../data/config/remote_blacklist_config.dart';
 import '../../../../data/repo/repo_repository.dart';
 import '../../../../domain/repo/repo_model.dart';
-import '../repo_setting/repo_url_tile.dart';
 import 'add_repo_agreement_dialog.dart';
 
 class AddRepoDialog extends HookConsumerWidget {
@@ -123,10 +123,6 @@ class AddRepoDialog extends HookConsumerWidget {
         .showToastOnError(toast);
     addingState.value = false;
 
-    if (repo?.baseUrl.isNotBlank == true) {
-      ref.read(repoUrlProvider.notifier).update(repo?.baseUrl ?? "");
-    }
-
     if (repo != null) {
       if (context.mounted) {
         context.push([
@@ -152,17 +148,12 @@ class AddRepoDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final byName = useState(true);
     final repoName = useTextEditingController();
     final repoMetaUrl = useTextEditingController();
     final addingState = useState(false);
     final repoNameEmpty = useState(false);
     final repoMetaUrlEmpty = useState(false);
-    final userDefaults = ref.watch(sharedPreferencesProvider);
-    final byUrlFirst = userDefaults.getString("config.byUrlFirst") == "1";
-    final byUrlOnly = userDefaults.getString("config.byUrlOnly") == "1";
-    final byName = useState(!byUrlFirst);
-    log("[REPO]byUrlFirst $byUrlFirst");
-
     if (urlSchemeAddRepo != null) {
       final name = urlSchemeAddRepo?.repoName?.isNotEmpty == true
           ? "${urlSchemeAddRepo?.repoName}\n"
@@ -201,38 +192,39 @@ class AddRepoDialog extends HookConsumerWidget {
           if (addingState.value) ...[const MiniCircularProgressIndicator()],
         ],
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(byName.value
-              ? context.l10n!.add_repo_by_name_tip
-              : context.l10n!.add_repo_by_url_tip),
-          const SizedBox(
-            height: 20,
-          ),
-          byName.value
-              ? TextField(
-                  controller: repoName,
-                  autofocus: true,
-                  enabled: !addingState.value,
-                  decoration: InputDecoration(
-                    hintText: "username/repo",
-                    errorText: repoNameEmpty.value ? "" : null,
-                    border: const OutlineInputBorder(),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(byName.value
+                ? context.l10n!.add_repo_by_name_tip
+                : context.l10n!.add_repo_by_url_tip),
+            const SizedBox(
+              height: 20,
+            ),
+            byName.value
+                ? TextField(
+                    controller: repoName,
+                    autofocus: true,
+                    enabled: !addingState.value,
+                    decoration: InputDecoration(
+                      hintText: "username/repo",
+                      errorText: repoNameEmpty.value ? "" : null,
+                      border: const OutlineInputBorder(),
+                    ),
+                  )
+                : TextField(
+                    controller: repoMetaUrl,
+                    autofocus: true,
+                    enabled: !addingState.value,
+                    decoration: InputDecoration(
+                      hintText: "https://example.com/repo/index.min.json",
+                      hintStyle: context.textTheme.bodySmall
+                          ?.copyWith(color: Colors.grey),
+                      errorText: repoMetaUrlEmpty.value ? "" : null,
+                      border: const OutlineInputBorder(),
+                    ),
                   ),
-                )
-              : TextField(
-                  controller: repoMetaUrl,
-                  autofocus: true,
-                  enabled: !addingState.value,
-                  decoration: InputDecoration(
-                    hintText: "https://example.com/repo/index.min.json",
-                    hintStyle: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                    errorText: repoMetaUrlEmpty.value ? "" : null,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-          if (!byUrlFirst) ...[
             Row(
               children: [
                 Row(
@@ -248,7 +240,12 @@ class AddRepoDialog extends HookConsumerWidget {
                         }
                       },
                     ),
-                    Text(context.l10n!.add_repo_by_name)
+                    GestureDetector(
+                      onTap: () {
+                        byName.value = true;
+                      },
+                      child: Text(context.l10n!.add_repo_by_name),
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -267,55 +264,22 @@ class AddRepoDialog extends HookConsumerWidget {
                         }
                       },
                     ),
-                    Text(context.l10n!.add_repo_by_url)
+                    GestureDetector(
+                      onTap: () {
+                        byName.value = false;
+                      },
+                      child: Text(context.l10n!.add_repo_by_url),
+                    ),
                   ],
                 ),
               ],
             ),
           ],
-          if (byUrlFirst && !byUrlOnly) ...[
-            Row(
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Radio(
-                      value: false,
-                      visualDensity: VisualDensity.compact,
-                      groupValue: byName.value,
-                      onChanged: (value) {
-                        if (value == false) {
-                          byName.value = false;
-                        }
-                      },
-                    ),
-                    Text(context.l10n!.add_repo_by_url)
-                  ],
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Radio(
-                      value: true,
-                      visualDensity: VisualDensity.compact,
-                      groupValue: byName.value,
-                      onChanged: (value) {
-                        if (value == true) {
-                          byName.value = true;
-                        }
-                      },
-                    ),
-                    Text(context.l10n!.add_repo_by_name)
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ],
+        ),
       ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0.0),
+      contentPadding: const EdgeInsets.fromLTRB(24, 6, 24, 0),
+      actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 10),
       actions: [
         const PopButton(),
         ElevatedButton(

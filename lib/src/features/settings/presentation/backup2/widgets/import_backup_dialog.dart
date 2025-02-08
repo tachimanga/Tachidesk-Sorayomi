@@ -20,8 +20,8 @@ import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../browse_center/presentation/source/controller/source_controller.dart';
+import '../../../controller/edit_repo_controller.dart';
 import '../../../domain/backup/backup_model.dart';
-import '../../browse/widgets/repo_setting/repo_url_tile.dart';
 import '../controller/backup_controller.dart';
 
 class ImportBackupDialog extends HookConsumerWidget {
@@ -39,6 +39,7 @@ class ImportBackupDialog extends HookConsumerWidget {
       if (status?.state == BackupState.success.value) {
         Future(() {
           ref.read(markNeedAskRateProvider.notifier).update(true);
+          ref.read(repoControllerProvider.notifier).reloadRepoList();
           if (status?.codes?.isNotEmpty == true) {
             final enabledLanguages = ref.watch(sourceLanguageFilterProvider);
             final result = {...?enabledLanguages, ...?status?.codes}.toList();

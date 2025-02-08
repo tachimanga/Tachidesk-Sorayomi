@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_constants.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../controller/pip_controller.dart';
@@ -21,7 +22,7 @@ class BgSwitchTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SwitchListTile(
       controlAffinity: ListTileControlAffinity.trailing,
-      secondary: const Icon(Icons.download_for_offline_outlined),
+      secondary: const Icon(Icomoon.icDownloadChapter24dp),
       title: Text("Background download and update"),
       contentPadding: kSettingPadding,
       onChanged: (value) {

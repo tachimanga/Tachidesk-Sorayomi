@@ -21,10 +21,12 @@ class MangaChapterListHeader extends ConsumerWidget {
     super.key,
     required this.mangaId,
     required this.chapterCount,
+    required this.showSearch,
   });
 
   final String mangaId;
   final int chapterCount;
+  final ValueNotifier<bool> showSearch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,6 +41,10 @@ class MangaChapterListHeader extends ConsumerWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          IconButton(
+            onPressed: () => showSearch.value = true,
+            icon: const Icon(Icons.search_rounded),
+          ),
           IconButton(
             onPressed: () {
               ref

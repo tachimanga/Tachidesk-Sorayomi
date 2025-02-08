@@ -97,9 +97,8 @@ AsyncValue<List<QuickSearchResult>> quickSearchResults(
     (prev, cur) => [...prev, ...cur],
   );
 
-  final sortedPinnedList = sortedSourceListByIds(pinnedList, sourceIds);
   final sortedLeftList = sortedSourceListByIds(sourceList, sourceIds);
-  final sortedSourceList = [...sortedPinnedList, ...sortedLeftList];
+  final sortedSourceList = [...?pinnedList, ...sortedLeftList];
   final List<QuickSearchResult> sourceMangaListPairList = [];
 
   final onlySearchPinSource = ref.watch(onlySearchPinSourceProvider);

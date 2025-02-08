@@ -38,6 +38,7 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
     this.enableTitleCopy = false,
     this.enableSourceEntrance = false,
     this.showSourceUrl = false,
+    this.showReadDuration = false,
     this.popupItems,
   });
   final Manga manga;
@@ -49,6 +50,7 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
   final bool enableTitleCopy;
   final bool enableSourceEntrance;
   final bool showSourceUrl;
+  final bool showReadDuration;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final ValueChanged<String?>? onTitleClicked;
@@ -59,6 +61,9 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
         ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
     final sourceName =
         " • ${manga.source?.displayName ?? context.l10n!.unknownSource}";
+    final readTimeString = showReadDuration
+        ? manga.readDuration.toLocalizedReadTime(context)
+        : null;
     return InkWell(
       onTap: onPressed,
       onLongPress: onLongPress,
@@ -139,8 +144,9 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                             size: 16,
                             color: context.textTheme.bodySmall?.color,
                           ),
+                          const SizedBox(width: 4),
                           Text(
-                            " ${manga.status!.toLocale(context)}",
+                            manga.status!.toLocale(context),
                             style: context.textTheme.bodySmall,
                           ),
                         ],
@@ -163,11 +169,31 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                           ),
                       ],
                     ),
+                    if (showReadDuration && readTimeString != null) ...[
+                      const SizedBox(height: 4),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.timelapse,
+                            size: 16,
+                            color: context.textTheme.bodySmall?.color,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            readTimeString,
+                            style: context.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ],
                     if (showLastReadChapter) ...[
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Text(
-                          manga.lastChapterRead?.name ?? "",
+                          manga.lastChapterRead?.name ??
+                              manga.lastChapterReadName ??
+                              "",
                           overflow: TextOverflow.ellipsis,
                           style: context.textTheme.bodySmall,
                         ),
@@ -251,6 +277,7 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
       Navigator.push(
         context,
         PageRouteBuilder(
+          settings: const RouteSettings(name: "/manga-cover"),
           fullscreenDialog: true,
           opaque: false,
           pageBuilder: (context, _, __) => MangaCoverScreen(

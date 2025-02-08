@@ -17,6 +17,9 @@ abstract class Endpoints {
 
   // connectTimeout
   static const Duration connectionTimeout = Duration(seconds: 20);
+
+  // api3
+  static const String api3host = "https://api3.tachimanga.app";
 }
 
 abstract class SettingsUrl {
@@ -42,6 +45,7 @@ abstract class CategoryUrl {
   static const String category = "/category";
   static const String reorder = "$category/reorder";
   static String withId(int id) => "$category/$id";
+  static String meta(int id) => "$category/$id/meta";
 }
 
 abstract class RepoUrl {
@@ -60,8 +64,6 @@ abstract class MangaUrl {
   static String thumbnail(int mangaId) => "$_manga/$mangaId/thumbnail";
   static String category(String mangaId) => "$_manga/$mangaId/category";
   static String updateCategory(String mangaId) => "$_manga/$mangaId/updateCategory";
-  static String categoryId(String mangaId, String categoryId) =>
-      "$_manga/$mangaId/category/$categoryId";
   static String library(String mangaId) => "$_manga/$mangaId/library";
   static String meta(String mangaId) => "$_manga/$mangaId/meta";
   static String chapters(String mangaId) => "$_manga/$mangaId/chapters";
@@ -122,17 +124,10 @@ abstract class DownloadedUrl {
   static const String batchDelete = "/downloaded/batch";
 }
 
-abstract class BackupUrl {
-  static String import = "$_backup/import/file";
-  static String validate = "$_backup/validate/file";
-  static String export = "$_backup/export/file";
-
-  static const String _backup = "/backup";
-}
-
-abstract class ImportUrl {
-  static String import = "/import/file";
-  static String update = "/import";
+abstract class ProtoBackupUrl {
+  static String import = "/proto/import";
+  static String importWs = "/proto/importWs";
+  static String export = "/proto/export";
 }
 
 abstract class SourceUrl {
@@ -167,4 +162,27 @@ abstract class MigrateUrl {
   static const String sourceList = "$migrate/sourceList";
   static const String mangaList = "$migrate/mangaList";
   static const String doMigrate = "$migrate/migrate";
+}
+
+abstract class UserUrl {
+  static const String user = "/user";
+  static const String info = "$user/info";
+  static const String register = "$user/register";
+  static const String login = "$user/login";
+  static const String logout = "$user/logout";
+  static const String delete = "$user/delete";
+  static const String thirdLogin = "$user/third-login";
+}
+
+abstract class SyncUrl {
+  static const String sync = "/sync";
+  static const String enableSync = "$sync/enableSync";
+  static const String disableSync = "$sync/disableSync";
+  static const String syncNow = "$sync/syncNow";
+  static const String syncNowIfEnable = "$sync/syncNowIfEnable";
+  static const String ws = "$sync/ws";
+}
+
+abstract class StatsUrl {
+  static const String readTime = "/stats/readTime";
 }

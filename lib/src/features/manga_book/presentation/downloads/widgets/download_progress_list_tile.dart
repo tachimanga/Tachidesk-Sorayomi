@@ -14,6 +14,7 @@ import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/manga_cover_util.dart';
 import '../../../../../utils/misc/toast/toast.dart';
+import '../../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../../../widgets/server_image.dart';
 import '../../../data/downloads/downloads_repository.dart';
 import '../../../domain/downloads_queue/downloads_queue_model.dart';
@@ -181,16 +182,25 @@ class DownloadProgressListTile extends HookConsumerWidget {
               itemBuilder: (context) => [
                 if (download.state == "Error")
                   PopupMenuItem(
-                    child: Text(context.l10n!.retry),
+                    child: PopupItemWithIconChild(
+                      icon: const Icon(Icons.replay),
+                      label: Text(context.l10n!.retry),
+                    ),
                     onTap: () => toggleChapterToQueue(toast, ref, true),
                   ),
                 PopupMenuItem(
-                  child: Text(context.l10n!.delete),
+                  child: PopupItemWithIconChild(
+                    icon: const Icon(Icons.delete),
+                    label: Text(context.l10n!.remove),
+                  ),
                   onTap: () => toggleChapterToQueue(toast, ref, false),
                 ),
                 if (!index.isZero)
                   PopupMenuItem(
-                    child: Text(context.l10n!.moveToTop),
+                    child: PopupItemWithIconChild(
+                      icon: const Icon(Icons.vertical_align_top),
+                      label: Text(context.l10n!.moveToTop),
+                    ),
                     onTap: () =>
                         ref.read(downloadsRepositoryProvider).reorderDownload(
                               download.mangaId!,
@@ -200,7 +210,10 @@ class DownloadProgressListTile extends HookConsumerWidget {
                   ),
                 if (index < downloadsCount - 1)
                   PopupMenuItem(
-                      child: Text(context.l10n!.moveToBottom),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.vertical_align_bottom),
+                        label: Text(context.l10n!.moveToBottom),
+                      ),
                       onTap: () =>
                           ref.read(downloadsRepositoryProvider).reorderDownload(
                                 download.mangaId!,

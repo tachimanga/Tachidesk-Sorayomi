@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../constants/app_constants.dart';
 import '../../../../constants/enum.dart';
@@ -25,6 +26,7 @@ import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../widgets/premium_required_tile.dart';
 import '../../../../widgets/section_title.dart';
 import '../../../../widgets/shell/shell_screen.dart';
+import '../../../../widgets/text_premium.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../data/backup/backup_repository.dart';
 import '../../domain/backup/backup_model.dart';
@@ -120,6 +122,9 @@ class BackupScreenV2 extends HookConsumerWidget {
     final premiumBackupToCloud =
         !purchaseGate && !testflightFlag && fakeBackupToCloud.value;
 
+    final premiumProtoBackup =
+        (purchaseGate || testflightFlag) ? null : useState(false);
+
     return WillPopScope(
         onWillPop: premiumAlertForAutoBackup || loadingState.value == true
             ? () async {
@@ -167,9 +172,12 @@ class BackupScreenV2 extends HookConsumerWidget {
                             children: [
                               ListTile(
                                 title: Text(context.l10n!.createBackupTitle),
-                                subtitle:
-                                    Text(context.l10n!.createBackupDescription),
-                                leading: const Icon(Icons.backup_rounded),
+                                subtitle: Text(
+                                  context.l10n!.createBackupDescription,
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(color: Colors.grey),
+                                ),
+                                leading: const Icon(Icons.add),
                                 contentPadding: kSettingPadding,
                                 trailing: kSettingTrailing,
                                 onTap: () async {
@@ -195,7 +203,10 @@ class BackupScreenV2 extends HookConsumerWidget {
                               ListTile(
                                 title: Text(context.l10n!.restoreBackupTitle),
                                 subtitle: Text(
-                                    context.l10n!.restoreBackupDescription),
+                                  context.l10n!.restoreBackupDescription,
+                                  style: context.textTheme.bodySmall
+                                      ?.copyWith(color: Colors.grey),
+                                ),
                                 leading: const Icon(Icons.restore_rounded),
                                 contentPadding: kSettingPadding,
                                 trailing: kSettingTrailing,
@@ -209,13 +220,25 @@ class BackupScreenV2 extends HookConsumerWidget {
                                       ref, context, loadingState, msgMap, pipe);
                                 },
                               ),
-                              if (magic.b7 == true)
+                              if (magic.b7 == true) ...[
+                                const Divider(),
+                                CreateTachiyomiBackupTile(
+                                  loadingState: loadingState,
+                                  premiumProtoBackup: premiumProtoBackup,
+                                ),
+                                if (premiumProtoBackup?.value == true) ...[
+                                  const PremiumRequiredTile(),
+                                ],
                                 ListTile(
-                                  title: Text(context.l10n!.importBackupTitle),
+                                  title: Text(
+                                      context.l10n!.importTachiyomiBackupTitle),
                                   subtitle: Text(
-                                      context.l10n!.importBackupDescription),
-                                  leading: const Icon(
-                                      Icons.add_circle_outline_rounded),
+                                    context
+                                        .l10n!.importTachiyomiBackupDescription,
+                                    style: context.textTheme.bodySmall
+                                        ?.copyWith(color: Colors.grey),
+                                  ),
+                                  leading: const Icon(Icons.restore_rounded),
                                   contentPadding: kSettingPadding,
                                   trailing: kSettingTrailing,
                                   onTap: () async {
@@ -228,6 +251,8 @@ class BackupScreenV2 extends HookConsumerWidget {
                                         msgMap, refresh);
                                   },
                                 ),
+                              ],
+                              const Divider(),
                               SectionTitle(
                                   title: context.l10n!.autoBackupSectionTitle),
                               const AutoBackupFrequencyTile(),
@@ -242,11 +267,13 @@ class BackupScreenV2 extends HookConsumerWidget {
                               if (premiumAlertForAutoBackup) ...[
                                 const PremiumRequiredTile(),
                               ],
+                              const Divider(),
                               SectionTitle(title: context.l10n!.iCloud_label),
                               (purchaseGate || testflightFlag)
                                   ? const BackupToCloudTile()
                                   : FakeBackupToCloudTile(
-                                      backupToCloud: fakeBackupToCloud),
+                                      backupToCloud: fakeBackupToCloud,
+                                    ),
                               if (premiumBackupToCloud) ...[
                                 const PremiumRequiredTile(),
                               ],
@@ -533,6 +560,56 @@ class BackupScreenV2 extends HookConsumerWidget {
       barrierDismissible: kDebugMode ? true : false,
       builder: (BuildContext context) {
         return const ImportBackupDialog();
+      },
+    );
+  }
+}
+
+class CreateTachiyomiBackupTile extends ConsumerWidget {
+  const CreateTachiyomiBackupTile({
+    super.key,
+    required this.loadingState,
+    required this.premiumProtoBackup,
+  });
+
+  final ValueNotifier<bool> loadingState;
+  final ValueNotifier<bool>? premiumProtoBackup;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.read(toastProvider(context));
+    return ListTile(
+      title: Text(context.l10n!.createTachiyomiBackupTitle),
+      subtitle: Text(
+        context.l10n!.createTachiyomiBackupDescription,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+      ),
+      leading: const Icon(Icons.add),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
+      onTap: () async {
+        if (premiumProtoBackup != null) {
+          premiumProtoBackup!.value = true;
+          return;
+        }
+        if (loadingState.value) {
+          return;
+        }
+        logEvent3("BACKUP:CREATE:TACHI");
+        loadingState.value = true;
+        (await AsyncValue.guard(() async {
+          final result =
+              await ref.read(backupRepositoryProvider).createProtoBackup();
+          log("[BACKUP]tachiyomi backup path:${result?.path}");
+          if (context.mounted && result?.path != null) {
+            final box = context.findRenderObject() as RenderBox?;
+            await Share.shareXFiles([XFile(result!.path!)],
+                sharePositionOrigin:
+                    box!.localToGlobal(Offset.zero) & box.size);
+          }
+        }))
+            .showToastOnError(toast);
+        loadingState.value = false;
       },
     );
   }

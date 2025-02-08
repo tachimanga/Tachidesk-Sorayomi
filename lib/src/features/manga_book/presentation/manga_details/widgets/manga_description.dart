@@ -67,6 +67,7 @@ class MangaDescription extends HookConsumerWidget {
       enableTitleCopy: true,
       enableSourceEntrance: true,
       showSourceUrl: showSourceUrl == true,
+      showReadDuration: true,
       onTitleClicked: (query) => context.push(Routes.getGlobalSearch(query)),
     );
 

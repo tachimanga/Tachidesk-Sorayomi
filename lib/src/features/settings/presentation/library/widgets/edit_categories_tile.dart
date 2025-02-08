@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,14 +13,31 @@ import '../../../../../constants/app_constants.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../library/presentation/category/controller/edit_category_controller.dart';
+import '../../../../sync/controller/sync_controller.dart';
 
-class EditCategoriesTile extends ConsumerWidget {
+class EditCategoriesTile extends HookConsumerWidget {
   const EditCategoriesTile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoryList = ref.watch(categoryControllerProvider);
     final count = categoryList.valueOrNull?.where((e) => e.id != 0).length ?? 0;
+
+    useEffect(() {
+      if (!categoryList.isLoading) {
+        ref.read(categoryControllerProvider.notifier).reloadCategories();
+      }
+      return;
+    }, []);
+
+    final syncRefreshSignal = ref.watch(syncRefreshSignalProvider);
+    useEffect(() {
+      if (syncRefreshSignal) {
+        ref.read(categoryControllerProvider.notifier).reloadCategories();
+      }
+      return;
+    }, [syncRefreshSignal]);
+
     return ListTile(
       title: Text(context.l10n!.editCategory),
       subtitle: Text(context.l10n!.num_categories(count)),

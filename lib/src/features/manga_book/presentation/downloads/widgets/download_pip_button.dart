@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/gen/assets.gen.dart';
 import '../../../../../global_providers/global_providers.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../utils/event_util.dart';
 
 class DownloadPipButton extends ConsumerWidget {
@@ -19,9 +20,7 @@ class DownloadPipButton extends ConsumerWidget {
     final pipe = ref.watch(getMagicPipeProvider);
 
     return IconButton(
-      icon: ImageIcon(
-        AssetImage(Assets.icons.pip.path),
-      ),
+      icon: const Icon(Icomoon.pictureInPicture324),
       onPressed: () async {
         logEvent3("PIP:DOWNLOAD:START");
         await pipe.invokeMethod("PIP:DOWNLOAD:START");

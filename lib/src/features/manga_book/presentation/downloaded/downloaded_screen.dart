@@ -19,6 +19,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../widgets/pop_button.dart';
+import '../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../data/downloads/downloads_repository.dart';
 import '../../data/manga_book_repository.dart';
 import 'controller/downloaded_controller.dart';
@@ -65,7 +66,10 @@ class DownloadedScreen extends HookConsumerWidget {
                   showBadges: false,
                   popupItems: [
                     PopupMenuItem(
-                      child: Text(context.l10n!.delete),
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.delete),
+                        label: Text(context.l10n!.remove),
+                      ),
                       onTap: () async {
                         final manga = data[index];
                         if (manga.id != null) {

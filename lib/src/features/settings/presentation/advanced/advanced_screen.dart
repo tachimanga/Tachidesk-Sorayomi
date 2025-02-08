@@ -14,6 +14,8 @@ import '../../../../constants/app_constants.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../global_providers/preference_providers.dart';
+import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
@@ -97,6 +99,7 @@ class AdvancedScreen extends ConsumerWidget {
           if (magic.b7) ...[
             const ByPassTile(),
           ],
+          const ReceiveTimeoutTile(),
           SectionTitle(title: context.l10n!.logsSectionTitle),
           const FileLogTile(),
           const FileLogExport(),
@@ -110,5 +113,40 @@ class AdvancedScreen extends ConsumerWidget {
         .read(byPassSwitchProvider.notifier)
         .update(DBKeys.disableBypass.initial);
     ref.read(fileLogProvider.notifier).update(DBKeys.enableFileLog.initial);
+  }
+}
+
+class ReceiveTimeoutTile extends ConsumerWidget {
+  const ReceiveTimeoutTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    const options = [20, 30, 40];
+    final timeout = ref.watch(receiveTimeoutPrefProvider) ?? options[0];
+
+    return ListTile(
+      leading: const Icon(Icons.timer_sharp),
+      title: Text(context.l10n!.receive_timeout_label),
+      subtitle: Text("${timeout}s"),
+      contentPadding: kSettingPadding,
+      trailing: kSettingTrailing,
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => RadioListPopup<int>(
+          title: context.l10n!.receive_timeout_label,
+          subTitle: context.l10n!.receive_timeout_subtitle,
+          optionList: options,
+          optionDisplayName: (value) => "${value}s",
+          value: timeout,
+          onChange: (value) async {
+            logEvent3("SETTING:NETWORK:RECEIVE:TIMEOUT", {"x" : "$value"});
+            ref.read(receiveTimeoutPrefProvider.notifier).update(value);
+            final dioClient = ref.read(dioClientKeyProvider);
+            dioClient.dio.options.receiveTimeout = Duration(seconds: value);
+            if (context.mounted) context.pop();
+          },
+        ),
+      ),
+    );
   }
 }

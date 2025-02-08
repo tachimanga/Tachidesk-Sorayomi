@@ -8,16 +8,20 @@ import 'package:flutter/material.dart';
 
 import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../domain/category/category_model.dart';
 import 'library_manga_display.dart';
 import 'library_manga_filter.dart';
+import 'library_manga_sort_global_tile.dart';
 import 'library_manga_sort_tile.dart';
 
 class LibraryMangaOrganizer extends StatelessWidget {
   const LibraryMangaOrganizer({
     super.key,
-    /* required this.controller */
+    required this.category,
   });
-  // final ScrollController controller;
+
+  final Category category;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -36,7 +40,11 @@ class LibraryMangaOrganizer extends StatelessWidget {
             ListView(
               children: [
                 for (MangaSort sortType in MangaSort.values)
-                  LibraryMangaSortTile(sortType: sortType),
+                  LibraryMangaSortTile(
+                    sortType: sortType,
+                    category: category,
+                  ),
+                LibraryMangaSortGlobalTile(category: category),
               ],
             ),
             const LibraryMangaDisplay(),

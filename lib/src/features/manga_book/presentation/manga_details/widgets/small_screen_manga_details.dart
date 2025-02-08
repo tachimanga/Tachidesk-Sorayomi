@@ -38,6 +38,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
     required this.animationController,
     required this.showCoverRefreshIndicator,
     required this.refreshIndicatorKey,
+    required this.showSearch,
   });
   final String mangaId;
   final Manga manga;
@@ -50,6 +51,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
   final AnimationController animationController;
   final bool showCoverRefreshIndicator;
   final ObjectRef<GlobalKey<RefreshIndicatorState>> refreshIndicatorKey;
+  final ValueNotifier<bool> showSearch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,21 +76,24 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                child: MangaDescription(
-                  manga: manga,
-                  refresh: () => onDescriptionRefresh(false),
-                  enableStartReading: selectedChapters.value.isEmpty,
-                  showCoverRefreshIndicator: showCoverRefreshIndicator,
-                  backgroundImageHeight: backgroundImageHeight,
+            if (!showSearch.value) ...[
+              SliverToBoxAdapter(
+                child: SingleChildScrollView(
+                  child: MangaDescription(
+                    manga: manga,
+                    refresh: () => onDescriptionRefresh(false),
+                    enableStartReading: selectedChapters.value.isEmpty,
+                    showCoverRefreshIndicator: showCoverRefreshIndicator,
+                    backgroundImageHeight: backgroundImageHeight,
+                  ),
                 ),
               ),
-            ),
+            ],
             SliverToBoxAdapter(
               child: MangaChapterListHeader(
                 mangaId: mangaId,
                 chapterCount: filteredChapterList?.length ?? 0,
+                showSearch: showSearch,
               ),
             ),
             chapterList.showUiWhenData(

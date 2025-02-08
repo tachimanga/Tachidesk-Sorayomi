@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/gen/assets.gen.dart';
+import '../../../../icons/icomoon_icons.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/chapter_batch/chapter_batch_model.dart';
@@ -67,10 +68,7 @@ class MultiChaptersActionsBottomAppBar extends HookConsumerWidget {
             ),
           if (selectedList.isSingletonList)
             SingleChapterActionIcon(
-              imageIcon: ImageIcon(
-                Assets.icons.previousDone.provider(),
-                color: context.theme.cardTheme.color,
-              ),
+              icon: Icomoon.icDonePrev24dp,
               chapterPut: ChapterModifyInput(
                 mangaId: selectedChapters.value[chapterList.first]?.mangaId,
                 chapterId: selectedChapters.value[chapterList.first]?.id,

@@ -35,8 +35,14 @@ class BackupToCloudTile extends ConsumerWidget {
       secondary: const Icon(Icons.cloud_circle_rounded),
       title: TextPremium(text: context.l10n!.backup_to_iCloud),
       subtitle: canUseCloud.valueOrNull != true
-          ? Text(context.l10n!.iCloud_unavailable_tip)
-          : Text(context.l10n!.backup_to_iCloud_tip),
+          ? Text(
+              context.l10n!.iCloud_unavailable_tip,
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+            )
+          : Text(
+              context.l10n!.backup_to_iCloud_tip,
+              style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+            ),
       contentPadding: kSettingPadding,
       onChanged: canUseCloud.valueOrNull != true
           ? null
@@ -69,7 +75,10 @@ class FakeBackupToCloudTile extends ConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.cloud_circle_rounded),
       title: TextPremium(text: context.l10n!.backup_to_iCloud),
-      subtitle: Text(context.l10n!.backup_to_iCloud_tip),
+      subtitle: Text(
+        context.l10n!.backup_to_iCloud_tip,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+      ),
       contentPadding: kSettingPadding,
       onChanged: (value) async {
         pipe.invokeMethod("LogEvent", "BACKUP:CLOUD:GATE");
