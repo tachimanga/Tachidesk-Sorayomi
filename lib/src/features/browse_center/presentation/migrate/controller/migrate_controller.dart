@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:dio/dio.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
@@ -45,18 +46,15 @@ class MigrateSourceQuery extends _$MigrateSourceQuery
 }
 
 @riverpod
-Future<List<MigrateSource>> migrateSourceListFilter(
-    MigrateSourceListFilterRef ref) async {
+AsyncValue<List<MigrateSource>?> migrateSourceListFilter(
+    Ref ref) {
   final query = ref.watch(migrateSourceQueryProvider);
-  final data = await ref.watch(migrateSourceListProvider.future);
-  if (data?.list?.isNotEmpty != true) {
-    return [];
-  }
-  final list = data!.list!;
+  final value = ref.watch(migrateSourceListProvider);
+  
+  final list = value.valueOrNull?.list;
 
   bool applyFilter(MigrateSource source) {
-    if (query.isNotBlank == true &&
-        source.source?.name?.query(query) != true) {
+    if (query.isNotBlank == true && source.source?.name?.query(query) != true) {
       return false;
     }
     return true;
@@ -66,7 +64,8 @@ Future<List<MigrateSource>> migrateSourceListFilter(
     return (m1.source?.name ?? "").compareTo(m2.source?.name ?? "");
   }
 
-  return list.where(applyFilter).toList()..sort(applySort);
+  final filtered = list?.where(applyFilter).toList()?..sort(applySort);
+  return value.copyWithData((p0) => filtered);
 }
 
 @riverpod
@@ -92,18 +91,14 @@ class MigrateMangaQuery extends _$MigrateMangaQuery
 }
 
 @riverpod
-Future<List<Manga>> migrateMangaListFilter(
-  MigrateMangaListFilterRef ref, {
+AsyncValue<List<Manga>?> migrateMangaListFilter(
+  Ref ref, {
   required String sourceId,
-}) async {
+}) {
   final query = ref.watch(migrateMangaQueryProvider);
 
-  final data =
-      await ref.watch(migrateMangaListProvider(sourceId: sourceId).future);
-  if (data?.list?.isNotEmpty != true) {
-    return [];
-  }
-  final list = data!.list!;
+  final value = ref.watch(migrateMangaListProvider(sourceId: sourceId));
+  final list = value.valueOrNull?.list;
 
   bool applyFilter(Manga manga) {
     if (query.isNotBlank == true && manga.title?.query(query) != true) {
@@ -116,35 +111,50 @@ Future<List<Manga>> migrateMangaListFilter(
     return (m1.title ?? "").compareTo(m2.title ?? "");
   }
 
-  return list.where(applyFilter).toList()..sort(applySort);
+  final filtered = list?.where(applyFilter).toList()?..sort(applySort);
+  return value.copyWithData((p0) => filtered);
 }
 
 @riverpod
-class MigrateChapterPref extends _$MigrateChapterPref with SharedPreferenceClientMixin<bool> {
+class MigrateChapterPref extends _$MigrateChapterPref
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
-    ref,
-    key: DBKeys.migrateChapterFlag.name,
-    initial: DBKeys.migrateChapterFlag.initial,
-  );
+        ref,
+        key: DBKeys.migrateChapterFlag.name,
+        initial: DBKeys.migrateChapterFlag.initial,
+      );
 }
 
 @riverpod
-class MigrateCategoryPref extends _$MigrateCategoryPref with SharedPreferenceClientMixin<bool> {
+class MigrateCategoryPref extends _$MigrateCategoryPref
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
-    ref,
-    key: DBKeys.migrateCategoryFlag.name,
-    initial: DBKeys.migrateCategoryFlag.initial,
-  );
+        ref,
+        key: DBKeys.migrateCategoryFlag.name,
+        initial: DBKeys.migrateCategoryFlag.initial,
+      );
 }
 
 @riverpod
-class MigrateTrackingPref extends _$MigrateTrackingPref with SharedPreferenceClientMixin<bool> {
+class MigrateTrackingPref extends _$MigrateTrackingPref
+    with SharedPreferenceClientMixin<bool> {
   @override
   bool? build() => initialize(
-    ref,
-    key: DBKeys.migrateTrackFlag.name,
-    initial: DBKeys.migrateTrackFlag.initial,
-  );
+        ref,
+        key: DBKeys.migrateTrackFlag.name,
+        initial: DBKeys.migrateTrackFlag.initial,
+      );
+}
+
+@riverpod
+class RemoveDownloadsIfMigratePref extends _$RemoveDownloadsIfMigratePref
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: DBKeys.removeDownloadsIfMigrate.name,
+        initial: DBKeys.removeDownloadsIfMigrate.initial,
+      );
 }

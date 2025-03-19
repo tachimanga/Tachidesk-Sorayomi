@@ -22,7 +22,6 @@ import '../../../../utils/classes/pair/pair_model.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/storage/dio/dio_client.dart';
 import '../../domain/backup/backup_model.dart';
-import '../../domain/backup_missing/backup_missing.dart';
 
 part 'backup_repository.g.dart';
 
@@ -31,7 +30,7 @@ class ProtoBackupRepository {
 
   final DioClient dioClient;
 
-  Future<BackupMissing?> restoreBackup(
+  Future<ProtoImportResult?> restoreBackup(
       BuildContext context, PlatformFile? file, String defaultRepoUrl) async {
     if ((file?.name).isBlank ||
         (kIsWeb && (file?.bytes).isBlank ||
@@ -41,7 +40,7 @@ class ProtoBackupRepository {
     if (!(file!.name.endsWith('.gz') || file.name.endsWith('.tachibk'))) {
       throw context.l10n!.errorFilePickUnknownType(".proto.gz or .tachibk");
     }
-    return (await dioClient.post<BackupMissing, BackupMissing?>(
+    return (await dioClient.post<ProtoImportResult, ProtoImportResult?>(
       ProtoBackupUrl.import,
       data: FormData.fromMap({
         'defaultRepoUrl': defaultRepoUrl,
@@ -56,7 +55,7 @@ class ProtoBackupRepository {
               )
       }),
       decoder: (e) =>
-          e is Map<String, dynamic> ? BackupMissing.fromJson(e) : null,
+          e is Map<String, dynamic> ? ProtoImportResult.fromJson(e) : null,
     ))
         .data;
   }

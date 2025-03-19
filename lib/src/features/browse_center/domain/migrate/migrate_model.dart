@@ -63,6 +63,7 @@ class MigrateRequest with _$MigrateRequest {
     bool? migrateCategoryFlag,
     bool? migrateTrackFlag,
     bool? replaceFlag,
+    bool? removeDownloadsIfMigrate,
   }) = _MigrateRequest;
 
   factory MigrateRequest.fromJson(Map<String, dynamic> json) =>

@@ -54,7 +54,7 @@ class AsyncReaderPaddingSlider extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final debounce = useRef<Timer?>(null);
 
-    final orientation = MediaQuery.of(context).orientation;
+    final orientation = context.orientation;
     final portrait = orientation == Orientation.portrait;
 
     final deviceInfo = ref.watch(deviceInfoProvider);

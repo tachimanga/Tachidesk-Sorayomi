@@ -23,12 +23,14 @@ class Emoticons extends HookWidget {
   const Emoticons({
     super.key,
     this.text,
-    this.button,
     this.iconData,
+    this.button,
+    this.footer,
   });
   final String? text;
   final IconData? iconData;
   final Widget? button;
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class Emoticons extends HookWidget {
                 maxLines: 3,
               ),
             if (button != null) button!,
+            if (footer != null) footer!,
           ],
         ),
       ),

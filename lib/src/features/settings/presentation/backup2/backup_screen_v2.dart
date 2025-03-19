@@ -589,6 +589,7 @@ class CreateTachiyomiBackupTile extends ConsumerWidget {
       trailing: kSettingTrailing,
       onTap: () async {
         if (premiumProtoBackup != null) {
+          logEvent3("BACKUP:CREATE:TACHI:GATE");
           premiumProtoBackup!.value = true;
           return;
         }
@@ -658,19 +659,20 @@ extension BackupAsyncValueExtensions<T> on AsyncValue<T> {
       whenOrNull(
         error: (error, stackTrace) {
           logEvent3("BACKUP:IMPORT:FAIL", {"error": error.toString()});
-          if (error.toString() ==
-                  "java.lang.OutOfMemoryError: Java heap space" &&
-              context.mounted) {
+          final whiteList = [
+            "java.lang.OutOfMemoryError: Java heap space",
+            "Receive timeout",
+          ];
+          if (whiteList.contains(error.toString()) && context.mounted) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: const Text("Import failed: Backup file is too large."),
-                  content: const Text(
-                      "When creating a backup of Tachiyomi, only backup Library, Categories, and Tracking, then retry."),
+                  title: Text(context.l10n!.tachiyomi_import_tip_title),
+                  content: Text(context.l10n!.tachiyomi_import_tip_content),
                   actions: <Widget>[
                     ElevatedButton(
-                      child: const Text('OK'),
+                      child: Text(context.l10n!.ok),
                       onPressed: () {
                         context.pop();
                       },

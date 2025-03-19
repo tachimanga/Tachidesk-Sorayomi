@@ -39,6 +39,8 @@ class MigrateMangaDialog extends HookConsumerWidget {
     final migrateChapterFlag = ref.watch(migrateChapterPrefProvider);
     final migrateCategoryFlag = ref.watch(migrateCategoryPrefProvider);
     final migrateTrackingFlag = ref.watch(migrateTrackingPrefProvider);
+    final removeDownloadsIfMigrate =
+        ref.watch(removeDownloadsIfMigratePrefProvider);
 
     final migratingState = useState(false);
 
@@ -63,6 +65,7 @@ class MigrateMangaDialog extends HookConsumerWidget {
                 migrateCategoryFlag,
                 migrateTrackingFlag,
                 false,
+                removeDownloadsIfMigrate,
                 ref,
                 context,
                 pipe,
@@ -78,6 +81,7 @@ class MigrateMangaDialog extends HookConsumerWidget {
                 migrateCategoryFlag,
                 migrateTrackingFlag,
                 true,
+                removeDownloadsIfMigrate,
                 ref,
                 context,
                 pipe,
@@ -99,7 +103,8 @@ class MigrateMangaDialog extends HookConsumerWidget {
               width: double.infinity,
               child: Text(
                 context.l10n!.migration_dialog_tips,
-                style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                style:
+                    context.textTheme.bodySmall?.copyWith(color: Colors.grey),
               ),
             ),
           ),
@@ -121,6 +126,13 @@ class MigrateMangaDialog extends HookConsumerWidget {
             title: Text(context.l10n!.tracking),
             onChanged: ref.read(migrateTrackingPrefProvider.notifier).update,
           ),
+          CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
+            value: removeDownloadsIfMigrate,
+            title: Text(context.l10n!.remove_downloads_if_migrate),
+            onChanged:
+                ref.read(removeDownloadsIfMigratePrefProvider.notifier).update,
+          ),
         ],
       ),
     );
@@ -132,6 +144,7 @@ class MigrateMangaDialog extends HookConsumerWidget {
       bool? migrateCategoryFlag,
       bool? migrateTrackingFlag,
       bool replaceFlag,
+      bool? removeDownloadsIfMigrate,
       WidgetRef ref,
       BuildContext context,
       MethodChannel pipe,
@@ -143,6 +156,7 @@ class MigrateMangaDialog extends HookConsumerWidget {
         'migrateCategoryFlag': '$migrateCategoryFlag',
         'migrateTrackingFlag': '$migrateTrackingFlag',
         'replaceFlag': '$replaceFlag',
+        'removeDownloadsIfMigrate': '$removeDownloadsIfMigrate',
         'srcSourceId': '${srcManga.sourceId}',
         'destSourceId': '${destManga.sourceId}',
       },
@@ -156,6 +170,7 @@ class MigrateMangaDialog extends HookConsumerWidget {
         migrateCategoryFlag: migrateCategoryFlag,
         migrateTrackFlag: migrateTrackingFlag,
         replaceFlag: replaceFlag,
+        removeDownloadsIfMigrate: removeDownloadsIfMigrate,
       );
       await ref.read(migrateRepositoryProvider).doMigrate(param: param);
       if (replaceFlag) {

@@ -26,6 +26,8 @@ class AppIconItem with _$AppIconItem {
     String? name,
     String? author,
     String? link,
+    String? description,
+    bool? adaptive,
   }) = _AppIconItem;
 
   factory AppIconItem.fromJson(Map<String, dynamic> json) =>

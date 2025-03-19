@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/enum.dart';
+import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
 import '../../../../settings/presentation/appearance/controller/date_format_controller.dart';
@@ -90,7 +91,7 @@ class HistoryDescriptiveListTile extends ConsumerWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Icon(
-                            Icons.timelapse,
+                            Icomoon.readTime2,
                             size: 16,
                             color: context.textTheme.bodySmall?.color,
                           ),

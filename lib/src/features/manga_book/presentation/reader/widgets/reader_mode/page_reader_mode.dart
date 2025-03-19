@@ -28,6 +28,7 @@ class PageReaderMode extends HookConsumerWidget {
     required this.initChapterIndexState,
     required this.initChapter,
     required this.readerListData,
+    required this.visibility,
     this.onPageChanged,
     this.onNoNextChapter,
     this.reverse = false,
@@ -42,6 +43,7 @@ class PageReaderMode extends HookConsumerWidget {
   final AsyncCallback? onNoNextChapter;
   final bool reverse;
   final Axis scrollDirection;
+  final ValueNotifier<bool> visibility;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,6 +73,7 @@ class PageReaderMode extends HookConsumerWidget {
             onNoNextChapter: onNoNextChapter,
             reverse: reverse,
             scrollDirection: scrollDirection,
+            visibility: visibility,
           )
         : SinglePageReaderMode2(
             manga: manga,
@@ -83,6 +86,7 @@ class PageReaderMode extends HookConsumerWidget {
             onNoNextChapter: onNoNextChapter,
             reverse: reverse,
             scrollDirection: scrollDirection,
+            visibility: visibility,
           );
   }
 }

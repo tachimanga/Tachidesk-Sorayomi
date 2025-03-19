@@ -21,8 +21,10 @@ import '../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../../widgets/search_field.dart';
 import '../../../browse_center/data/source_repository/source_repository.dart';
+import '../../../browse_center/presentation/migrate/controller/migrate_controller.dart';
 import '../../../browse_center/presentation/source_manga_list/controller/source_manga_controller.dart';
 import '../../../settings/presentation/share/controller/share_controller.dart';
+import '../../data/manga_book_repository.dart';
 import '../../domain/chapter/chapter_model.dart';
 import '../../domain/manga/manga_model.dart';
 import 'controller/manga_details_controller.dart';
@@ -162,9 +164,10 @@ class MangaDetailsAppBar extends HookConsumerWidget
                 icon: const Icon(Icomoon.shareRounded),
               ),
               if (context.isTablet)
-                IconButton(
+                AsyncIconButton(
                   onPressed: () => refresh(true),
                   icon: const Icon(Icons.refresh_rounded),
+                  showLoading: true,
                 ),
               if (data?.sourceId != "0")
                 MangaChapterDownloadButton(mangaId: mangaId),
@@ -246,6 +249,24 @@ class MangaDetailsAppBar extends HookConsumerWidget
                         label: Text(context.l10n!.delete),
                       ),
                     ),
+                  if (data?.inLibrary == true) ...[
+                    PopupMenuItem(
+                      onTap: () async {
+                        (await AsyncValue.guard(() async {
+                          await ref
+                              .read(mangaBookRepositoryProvider)
+                              .removeMangaFromLibrary("${data?.id}");
+                          refresh(false);
+                          ref.invalidate(migrateInfoProvider);
+                        }))
+                            .showToastOnError(toast);
+                      },
+                      child: PopupItemWithIconChild(
+                        icon: const Icon(Icons.delete),
+                        label: Text(context.l10n!.remove_from_library),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ],

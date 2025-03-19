@@ -4,6 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class AppIconSelectTile extends HookConsumerWidget {
                 () async {
                   if (purchaseGate || testflightFlag) {
                     final r = await pipe.invokeMethod("ICON:SET", {
-                      "key": value
+                      "key": value,
                     });
                     if (r != null) {
                       logEvent3("ICON:SET:ERROR", {"error": r});
@@ -135,21 +136,15 @@ class AppIconSelectDialog extends HookConsumerWidget {
                     contentPadding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
                     title: Text(_buildAppIconName(context, e)),
                     subtitle: Text(
-                      e.author != null
-                          ? context.l10n!.app_icon_author("${e.author}")
-                          : "",
+                      e.description ??
+                          (e.author != null
+                              ? context.l10n!.app_icon_author("${e.author}")
+                              : ""),
                       style: context.textTheme.labelSmall
                           ?.copyWith(color: Colors.grey),
                     ),
                     controlAffinity: ListTileControlAffinity.trailing,
-                    secondary: ClipRRect(
-                      borderRadius: BorderRadius.circular(9.0),
-                      child: Image.asset(
-                        'assets/icons/${e.key == kDefaultAppIconKey ? 'AppIcon' : e.key}.png',
-                        height: 50,
-                        width: 50,
-                      ),
-                    ),
+                    secondary: AppIconImageWidget(appIcon: e),
                     value: e,
                     groupValue: initAppIcon,
                     onChanged: onSelect,
@@ -163,6 +158,68 @@ class AppIconSelectDialog extends HookConsumerWidget {
         PopButton(),
       ],
     );
+  }
+}
+
+class AppIconImageWidget extends HookConsumerWidget {
+  const AppIconImageWidget({
+    super.key,
+    required this.appIcon,
+  });
+
+  final AppIconItem appIcon;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (appIcon.adaptive != true) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(9.0),
+        child: Image.asset(
+          _buildIconPath(0),
+          height: 50,
+          width: 50,
+        ),
+      );
+    }
+
+    final index = useState(0);
+    final timer = useRef<Timer?>(null);
+    useEffect(() {
+      timer.value = Timer.periodic(
+        const Duration(milliseconds: 2000),
+        (timer) {
+          index.value = (index.value + 1) % 2;
+        },
+      );
+      return () {
+        timer.value?.cancel();
+      };
+    }, []);
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 900),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      child: ClipRRect(
+        key: ValueKey<int>(index.value),
+        borderRadius: BorderRadius.circular(9.0),
+        child: Image.asset(
+          _buildIconPath(index.value),
+          height: 50,
+          width: 50,
+        ),
+      ),
+    );
+  }
+
+  String _buildIconPath(int index) {
+    return 'assets/icons/'
+        '${appIcon.key == kDefaultAppIconKey ? 'AppIcon' : appIcon.key}'
+        '${index == 1 ? ' dark' : ''}.png';
   }
 }
 

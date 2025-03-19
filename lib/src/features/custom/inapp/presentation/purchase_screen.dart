@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
@@ -35,6 +36,7 @@ class PurchaseScreen extends HookConsumerWidget {
     final pipe = ref.watch(getMagicPipeProvider);
     final bucket = ref.watch(bucketConfigProvider);
     final productList = ref.watch(productsV3Provider);
+    final upgradeToLifetimeSwitch = ref.watch(upgradeToLifetimeSwitchProvider);
 
     Future<void> refresh() async {
       ref.refresh(productsApiDataProvider.future);
@@ -126,6 +128,9 @@ class PurchaseScreen extends HookConsumerWidget {
                     const SizedBox(height: 2),
                     PurchaseButton(data: data, selectedIndex: selectedIndex),
                     const SizedBox(height: 2),
+                    if (upgradeToLifetimeSwitch == true) ...[
+                      UpgradeLifeTime(data: data),
+                    ],
                     const Footer(),
                     SizedBox(height: max(0, windowPadding.bottom - 14)),
                   ],
@@ -446,6 +451,154 @@ class Footer extends ConsumerWidget {
           onPressed: () => launchUrlInWeb(context, AppUrls.privacy.url, toast),
         ),
       ]),
+    );
+  }
+}
+
+class UpgradeLifeTime extends HookConsumerWidget {
+  const UpgradeLifeTime({
+    super.key,
+    required this.data,
+  });
+
+  final ProductPageData data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final toast = ref.watch(toastProvider(context));
+    final purchaseState = ref.watch(purchaseStateProvider);
+
+    final clearBeforeBuy = ref.watch(clearQueueBeforeBuyProvider);
+    final userDefaults = ref.watch(sharedPreferencesProvider);
+    final commonErrStr = context.l10n!.errorSomethingWentWrong;
+
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final purchaseExpireMs = ref.watch(purchaseExpireMsProvider);
+
+    final lifetimeOption = data.productDetails
+        .where((e) => e.id == "10" || e.id == "11")
+        .firstOrNull;
+    final canUpgradedToLifeTime = purchaseGate == true &&
+        (purchaseExpireMs ?? 0) > 0 &&
+        lifetimeOption != null;
+
+    final didTapUpgrade = useState(false);
+    final didShowSuccessDialog = useRef(false);
+
+    useEffect(() {
+      if (didTapUpgrade.value &&
+          (purchaseExpireMs ?? 0) <= 0 &&
+          !didShowSuccessDialog.value) {
+        didShowSuccessDialog.value = true;
+        logEvent3("IAP:UPGRADE:SUCC");
+        Future(() {
+          if (context.mounted) {
+            showUpgradeDialog(context, ref, null);
+          }
+        });
+      }
+    }, [purchaseExpireMs]);
+
+    if (!canUpgradedToLifeTime) {
+      return SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(11, 0, 11, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () async {
+              logEvent3("IAP:UPGRADE:TAP:GUIDE");
+              showUpgradeDialog(
+                context,
+                ref,
+                () async {
+                  if (purchaseState.purchasePending) {
+                    return;
+                  }
+                  final curr = lifetimeOption;
+                  try {
+                    final did = userDefaults.getString("config.mcdid") ?? '';
+                    log("purchase mcdid=$did");
+                    final param = PurchaseParam(
+                        productDetails: curr, applicationUserName: did);
+                    if (clearBeforeBuy == true) {
+                      await PurchaseService.clearTransactions();
+                    }
+                    didTapUpgrade.value = true;
+                    final ret = await PurchaseService.purchase(param);
+                  } catch (e) {
+                    var detail = e.toString();
+                    if (e is SKError) {
+                      detail =
+                          "SKError{code: ${e.code}, domain: ${e.domain}, userInfo: ${e.userInfo}";
+                    }
+                    logEvent3(
+                      "IAP_TAP_BUY_ERROR",
+                      {
+                        "error": (e is SKError) ? "${e.userInfo}" : e.toString()
+                      },
+                    );
+                    log("purchase err:$e");
+                    toast.showError("$commonErrStr\n$detail");
+                  }
+                },
+              );
+            },
+            child: Text(context.l10n!.how_to_upgrade_lifetime),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showUpgradeDialog(
+    BuildContext context,
+    WidgetRef ref,
+    VoidCallback? onTapUpgrade,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: Text(context.l10n!.how_to_upgrade_lifetime),
+          content: Text(context.l10n!.how_to_upgrade_lifetime_steps),
+          actions: <Widget>[
+            TextButton(
+              child: Text(context.l10n!.cancel),
+              onPressed: () {
+                ctx.pop();
+              },
+            ),
+            TextButton(
+              onPressed: onTapUpgrade != null
+                  ? () {
+                      ctx.pop();
+                      logEvent3("IAP:UPGRADE:TAP:UPGRADE");
+                      onTapUpgrade();
+                    }
+                  : null,
+              child: Text(context.l10n!.upgrade_label),
+            ),
+            TextButton(
+              onPressed: onTapUpgrade == null
+                  ? () {
+                      logEvent3("IAP:UPGRADE:TAP:MANAGE");
+                      launchUrlInSafari(
+                        context,
+                        "https://apps.apple.com/account/subscriptions",
+                        ref.read(toastProvider(context)),
+                      );
+                      ctx.pop();
+                    }
+                  : null,
+              child: Text(context.l10n!.subscription_management),
+            ),
+          ],
+        );
+      },
     );
   }
 }

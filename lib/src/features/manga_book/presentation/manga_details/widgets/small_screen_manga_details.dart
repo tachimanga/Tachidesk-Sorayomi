@@ -129,6 +129,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
               },
               refresh: () => onRefresh(false),
               errorSource: "manga-details",
+              mangaId: mangaId,
               webViewUrlProvider: () async {
                 final url = manga.realUrl;
                 if (url?.isNotEmpty == true) {

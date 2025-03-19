@@ -16,18 +16,11 @@ import '../../extensions/custom_extensions.dart';
 
 part 'network_module.g.dart';
 
-// Must be top-level function
-_parseAndDecode(String response) => jsonDecode(response);
-
-parseJson(String text) => compute(_parseAndDecode, text);
-
 class DioNetworkModule {
   Dio provideDio({
     required String baseUrl,
   }) {
     final dio = Dio();
-    (dio.transformer as BackgroundTransformer).jsonDecodeCallback = parseJson;
-
     dio
       ..options.baseUrl = Endpoints.baseApi(baseUrl: baseUrl)
       ..options.connectTimeout = Endpoints.connectionTimeout
@@ -49,8 +42,6 @@ class DioNetworkModule {
     required String host,
   }) {
     final dio = Dio();
-    (dio.transformer as BackgroundTransformer).jsonDecodeCallback = parseJson;
-
     dio
       ..options.baseUrl = host
       ..options.connectTimeout = Endpoints.connectionTimeout

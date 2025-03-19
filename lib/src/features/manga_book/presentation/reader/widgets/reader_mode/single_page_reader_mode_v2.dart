@@ -10,8 +10,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../../../../../constants/app_constants.dart';
+import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/endpoints.dart';
 import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/classes/pair/pair_model.dart';
@@ -20,8 +22,11 @@ import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart';
 import '../../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../widgets/server_image.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_long_press_tile/reader_long_press_tile.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_pinch_to_zoom_tile/reader_pinch_to_zoom_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_use_photo_view_tile/reader_use_photo_view_tile.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
 import '../../../manga_details/controller/manga_details_controller.dart';
@@ -44,6 +49,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     required this.readerListData,
     required this.sharedPageIndex,
     required this.pageLayout,
+    required this.visibility,
     this.onPageChanged,
     this.onNoNextChapter,
     this.reverse = false,
@@ -60,6 +66,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
   final bool reverse;
   final Axis scrollDirection;
   final ReaderPageLayout pageLayout;
+  final ValueNotifier<bool> visibility;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,11 +97,11 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
         chapterIndex: "${currChapter.value.index}",
       ),
     );
+    final autoScrollIntervalMs = useState<int?>(null);
+    final autoScrollDemoMode = useState(false);
     useEffect(() {
       notifyPageUpdate(context, currentIndex, currPage, currChapter, false);
-      if (onNoNextChapter != null) {
-        notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter!);
-      }
+      notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter, autoScrollIntervalMs);
       return;
     }, [currentIndex.value]);
     useEffect(() {
@@ -154,7 +161,108 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     const decodeFactor = 2;
     final windowPadding =
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
+
+    final enablePhotoView = ref.watch(readerUsePhotoViewPrefProvider);
+    final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider) ??
+        DBKeys.doubleTapZoomIn.initial;
+
+    Widget? child;
+    if (enablePhotoView == true) {
+      child = PhotoViewGallery.builder(
+        scrollDirection: scrollDirection,
+        scrollPhysics: pointCount.value != 2
+            ? const CustomPageViewScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        reverse: reverse,
+        pageController: scrollController,
+        allowImplicitScrolling: true,
+        itemCount: readerListData.totalPageCount + 1,
+        builder: (context, index)  {
+          //log("[Reader2]load page $index");
+          if (index > 0 && index == readerListData.totalPageCount) {
+            //log("[Reader2]load ChapterLoadingWidget");
+            final page = readerListData.pageList[index - 1];
+            final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
+            final chapterLoading = ChapterLoadingWidget(
+              mangaId: "${pageChapter.mangaId}",
+              lastChapterIndex: "${pageChapter.index}",
+              scrollDirection: scrollDirection,
+              singlePageMode: true,
+            );
+            return PhotoViewGalleryPageOptions.customChild(
+              initialScale: 1.0,
+              minScale: 1.0,
+              maxScale: 1.0,
+              child: chapterLoading,
+            );
+          }
+
+          final page = readerListData.pageList[index];
+          final imageUrl = MangaUrl.chapterPageWithIndex(
+            chapterIndex: "${page.chapterIndex}",
+            mangaId: "${manga.id}",
+            pageIndex: "${page.pageIndex}",
+          );
+          final serverImage = ServerImage(
+            fit: BoxFit.contain,
+            size: Size.fromHeight(context.height),
+            appendApiToUrl: true,
+            imageUrl: imageUrl,
+            imageData: page.imageData,
+            traceInfo: traceInfo,
+            chapterUrl: currChapter.value.realUrl,
+            reloadButton: true,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CenterCircularProgressIndicator(
+                  value: downloadProgress.progress,
+                ),
+            maxDecodeWidth: scrollDirection != Axis.vertical
+                ? context.width * decodeFactor
+                : null,
+            maxDecodeHeight: scrollDirection == Axis.vertical
+                ? context.height * decodeFactor
+                : null,
+          );
+
+          final serverImageWithPadding = PaddingServerImage(
+            scrollDirection: scrollDirection,
+            contextSize: context.mediaQuerySize,
+            mangaId: manga.id.toString(),
+            serverImage: serverImage,
+          );
+
+          final image = buildGestureDetector(
+            longPressEnable: longPressEnable,
+            onLongPress: () {
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: context.theme.cardColor,
+                builder: (context) => Padding(
+                  padding: EdgeInsets.only(bottom: windowPadding.bottom),
+                  child: PageActionWidget(
+                    manga: manga,
+                    chapter: currChapter.value,
+                    imageUrl: imageUrl,
+                    page: page,
+                  ),
+                ),
+              );
+            },
+            child: serverImageWithPadding,
+          );
+
+          return PhotoViewGalleryPageOptions.customChild(
+            initialScale: 1.0,
+            minScale: 1.0,
+            maxScale: 5.0,
+            child: image,
+          );
+        },
+      );
+    }
+
     return ReaderWrapper(
+      visibility: visibility,
       scrollDirection: scrollDirection,
       pageLayout: pageLayout,
       chapter: currChapter.value,
@@ -164,6 +272,8 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       onChanged: (index) => scrollController.jumpToPage(
           readerListData.pageIndexToIndex(currPage.value.chapterIndex, index)),
       initChapterIndexState: initChapterIndexState,
+      autoScrollIntervalMs: autoScrollIntervalMs,
+      autoScrollDemoMode: autoScrollDemoMode,
       onPrevious: () => scrollController.previousPage(
         duration: isAnimationEnabled ? kDuration : kInstantDuration,
         curve: kCurve,
@@ -182,7 +292,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
         onPointerCancel: (_) {
           pointCount.value = pointCount.value - 1;
         },
-        child: PageView.builder(
+        child: child ?? PageView.builder(
           scrollDirection: scrollDirection,
           physics: pagingEnabled.value && pointCount.value != 2
               ? const CustomPageViewScrollPhysics()
@@ -279,6 +389,9 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       ValueNotifier<ReaderPageData> currPage,
       ValueNotifier<Chapter> currChapter,
       bool flush) {
+    if (flush && currentIndex.value > readerListData.pageList.length - 1) {
+      currentIndex.value = readerListData.pageList.length - 1;
+    }
     if (currentIndex.value > readerListData.pageList.length - 1) {
       return;
     }
@@ -299,14 +412,18 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
   void notifyNoNextChapter(
     ValueNotifier<int> currentIndex,
     Pair<Chapter?, Chapter?>? chapterPair,
-    AsyncCallback onNoNextChapter,
+    AsyncCallback? onNoNextChapter,
+    ValueNotifier<int?> autoScrollIntervalMs,
   ) {
     //log("[Reader2] reader wrapper ${currentIndex.value}");
     if (chapterPair != null &&
         chapterPair.first == null &&
         currentIndex.value == readerListData.pageList.length) {
       //log("[Reader2] no next chapter");
-      onNoNextChapter();
+      if (onNoNextChapter != null) {
+        onNoNextChapter();
+      }
+      autoScrollIntervalMs.value = null;
     }
   }
 

@@ -65,7 +65,6 @@ class ThemeSchemeColor extends _$ThemeSchemeColor {
       subThemesData: const FlexSubThemesData(
         blendOnLevel: 10,
         blendOnColors: false,
-        useTextTheme: true,
         useM2StyleDividerInM3: true,
         unselectedToggleIsColored: true,
         inputDecoratorIsFilled: false,
@@ -77,16 +76,18 @@ class ThemeSchemeColor extends _$ThemeSchemeColor {
     ThemeData themeDark = FlexThemeData.dark(
       colors: scheme.dark,
       surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-      blendLevel: blendLevel.toInt(),
+      blendLevel: pureBlackDarkMode ? 0 : blendLevel.toInt(),
       appBarOpacity: 0.00,
       scaffoldBackground: pureBlackDarkMode ? Colors.black : null,
-      subThemesData: const FlexSubThemesData(
+      subThemesData: FlexSubThemesData(
         blendOnLevel: 20,
-        useTextTheme: true,
+        blendOnColors: false,
         useM2StyleDividerInM3: true,
         unselectedToggleIsColored: true,
         inputDecoratorIsFilled: false,
+        scaffoldBackgroundBaseColor: pureBlackDarkMode ? null : FlexScaffoldBaseColor.surfaceContainer
       ),
+      darkIsTrueBlack: pureBlackDarkMode,
       useMaterial3ErrorColors: true,
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,

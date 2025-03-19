@@ -38,6 +38,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     bool addScaffoldWrapper = false,
     bool skipLoadingOnReload = false,
     String? errorSource,
+    String? mangaId,
     Future<String?> Function()? webViewUrlProvider,
   }) {
     if (addScaffoldWrapper) {
@@ -54,6 +55,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               showGenericError: showGenericError,
               error: error,
               src: errorSource,
+              mangaId : mangaId,
               webViewUrlProvider: webViewUrlProvider,
             )
           : wrapper(CommonErrorWidget(
@@ -61,6 +63,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               showGenericError: showGenericError,
               error: error,
               src: errorSource,
+              mangaId : mangaId,
               webViewUrlProvider: webViewUrlProvider,
             )),
       loading: () => wrapper == null

@@ -8,13 +8,16 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:octo_image/octo_image.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../../constants/app_constants.dart';
 import '../../../../../../constants/app_sizes.dart';
+import '../../../../../../constants/db_keys.dart';
 import '../../../../../../constants/endpoints.dart';
 import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/classes/pair/pair_model.dart';
@@ -22,8 +25,12 @@ import '../../../../../../utils/classes/trace/trace_model.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart' as logger;
 import '../../../../../../widgets/server_image.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_controller.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_long_press_tile/reader_long_press_tile.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_pinch_to_zoom_tile/reader_pinch_to_zoom_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_scroll_animation_tile/reader_scroll_animation_tile.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_use_photo_view_tile/reader_use_photo_view_tile.dart';
 import '../../../../domain/chapter/chapter_model.dart';
 import '../../../../domain/manga/manga_model.dart';
 import '../../../manga_details/controller/manga_details_controller.dart';
@@ -44,6 +51,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     required this.initChapterIndexState,
     required this.initChapter,
     required this.readerListData,
+    required this.visibility,
     this.showSeparator = false,
     this.onPageChanged,
     this.onNoNextChapter,
@@ -59,6 +67,8 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
   final AsyncCallback? onNoNextChapter;
   final Axis scrollDirection;
   final bool reverse;
+  final ValueNotifier<bool> visibility;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // useEffect(() {
@@ -77,6 +87,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     final currPage = useState(readerListData.pageList[initIndex]);
 
     final scrollController = useMemoized(() => ItemScrollController());
+    final scrollOffsetController = useMemoized(() => ScrollOffsetController());
     final positionsListener = useMemoized(() => ItemPositionsListener.create());
     final imageSizeCache = useMemoized(() => ImageSizeCache());
 
@@ -165,7 +176,74 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
         MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding;
     //print("ContinuousReaderMode build point: ${pointCount.value}");
     const decodeFactor = 1.5;
+    final enablePhotoView = ref.watch(readerUsePhotoViewPrefProvider);
+
+    final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider) ??
+        DBKeys.doubleTapZoomIn.initial;
+
+    final tickerRef = useRef<Ticker?>(null);
+    final lastElapsedDurationRef = useRef<Duration?>(null);
+    final tickerProvider = useSingleTickerProvider();
+    final screenHeight = context.height;
+
+    final autoScrollIntervalMs = useState<int?>(null);
+    final autoScrollDemoMode = useState(false);
+
+    useEffect(() {
+      return () {
+        tickerRef.value?.dispose();
+      };
+    }, []);
+
+    final dpr = context.devicePixelRatio;
+    useEffect(() {
+      if (tickerRef.value != null) {
+        return;
+      }
+      tickerRef.value = tickerProvider.createTicker((Duration duration) {
+        final last = lastElapsedDurationRef.value;
+        lastElapsedDurationRef.value = duration;
+        if (last == null) {
+          return;
+        }
+        if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+          return;
+        }
+        if (!context.mounted) {
+          return;
+        }
+        if (autoScrollIntervalMs.value == null) {
+          return;
+        }
+        if (pointCount.value > 0) {
+          return;
+        }
+        if (visibility.value && !autoScrollDemoMode.value) {
+          return;
+        }
+        final curr = scrollOffsetController.controller.offset;
+        if (curr >= scrollOffsetController.controller.position.maxScrollExtent) {
+          return;
+        }
+        final diff = duration - last;
+        if (diff.inSeconds > 1) {
+          return;
+        }
+        final intervalMs = autoScrollTransform(autoScrollIntervalMs.value!);
+        final delta = 1.0 *
+            diff.inMicroseconds /
+            1000 *
+            screenHeight /
+            intervalMs;
+        final to = curr + delta;
+        scrollOffsetController.controller.jumpTo(to);
+      });
+      tickerRef.value?.start();
+      return;
+    }, [autoScrollIntervalMs.value]);
+
     return ReaderWrapper(
+      visibility: visibility,
       scrollDirection: scrollDirection,
       chapter: currChapter.value,
       manga: manga,
@@ -175,6 +253,9 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
           index: readerListData.pageIndexToIndex(
               currPage.value.chapterIndex, index)),
       initChapterIndexState: initChapterIndexState,
+      autoScrollIntervalMs: autoScrollIntervalMs,
+      autoScrollDemoMode: autoScrollDemoMode,
+      continuousMode: true,
       onPrevious: () {
         final ItemPosition itemPosition =
             positionsListener.itemPositions.value.toList().first;
@@ -227,14 +308,16 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
           onPointerCancel: (_) {
             pointCount.value = pointCount.value - 1;
           },
-          child: InteractiveWrapper(
-            showScrollBar: false,
+          child: _buildInteractiveWrapper(
+            enablePhotoView: enablePhotoView,
+            doubleTapEnabled: doubleTapZoomIn,
             child: ScrollablePositionedList.separated(
-              physics: pointCount.value == 2
+              physics: enablePhotoView != true && pointCount.value == 2
                   ? const NeverScrollableScrollPhysics()
                   : null,
               itemScrollController: scrollController,
               itemPositionsListener: positionsListener,
+              scrollOffsetController: scrollOffsetController,
               initialScrollIndex: initIndex,
               scrollDirection: scrollDirection,
               reverse: reverse,
@@ -293,6 +376,9 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                 final image = buildGestureDetector(
                   longPressEnable: longPressEnable,
                   onLongPress: () {
+                    if (autoScrollIntervalMs.value != null) {
+                      return;
+                    }
                     showModalBottomSheet(
                       context: context,
                       backgroundColor: context.theme.cardColor,
@@ -429,6 +515,32 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
               },
             ),
           )),
+    );
+  }
+
+  Widget _buildInteractiveWrapper({
+    required Widget child,
+    required bool? enablePhotoView,
+    required bool doubleTapEnabled,
+  }) {
+    if (enablePhotoView != true) {
+      return InteractiveWrapper(
+        showScrollBar: false,
+        child: child,
+      );
+    }
+    return PhotoViewGallery.builder(
+      scrollDirection: scrollDirection,
+      itemCount: 1,
+      builder: (_, __) => PhotoViewGalleryPageOptions.customChild(
+        initialScale: 1.0,
+        minScale: 1.0,
+        maxScale: 5.0,
+        child: ScrollConfiguration(
+          behavior: const MaterialScrollBehavior(),
+          child: child,
+        ),
+      ),
     );
   }
 

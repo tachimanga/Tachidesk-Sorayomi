@@ -29,7 +29,10 @@ class PopupItemWithIconChild extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        icon,
+        IconTheme(
+          data: context.theme.iconTheme.copyWith(size: 18),
+          child: icon,
+        ),
         SizedBox(width: gap),
         Flexible(
           child: DefaultTextStyle(

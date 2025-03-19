@@ -35,9 +35,11 @@ class CategoryMangaListWithId extends _$CategoryMangaListWithId {
   ) async {
     final token = CancelToken();
     ref.onDispose(token.cancel);
-    final result = await ref
+    final result0 = await ref
         .watch(categoryRepositoryProvider)
         .getMangasFromCategory(categoryId: categoryId, cancelToken: token);
+    final result =
+        result0?.map((i) => i.copyWith(categoryId: categoryId)).toList();
     ref.keepAlive();
     return result;
   }

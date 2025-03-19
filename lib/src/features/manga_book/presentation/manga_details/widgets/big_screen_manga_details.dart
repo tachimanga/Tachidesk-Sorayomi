@@ -61,6 +61,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
+              primary: false,
               child: MangaDescription(
                 manga: manga,
                 refresh: () => onDescriptionRefresh(false),
@@ -131,6 +132,7 @@ class BigScreenMangaDetails extends ConsumerWidget {
               },
               refresh: () => onRefresh(false),
               errorSource: "manga-details",
+              mangaId: mangaId,
               webViewUrlProvider: () async {
                 final url = manga.realUrl;
                 if (url?.isNotEmpty == true) {

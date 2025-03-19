@@ -1,2 +1,3 @@
 https://icongo.github.io/#/icon/tb/exchange.svg
 https://icongo.github.io/#/icon/lu/settings-2.svg
+https://icongo.github.io/#/icon/io/pencil-outline.svg 

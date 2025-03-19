@@ -58,5 +58,37 @@
   "completed": "പൂർത്തിയാക്കി",
   "@completed": {
     "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
+  },
+  "appTheme": "ആപ്പ് തീം",
+  "@appTheme": {
+    "description": "Popup title and Button text to change App Theme"
+  },
+  "backup": "ബാക്കപ്പ് & പുനഃസ്ഥാപിക്കുക",
+  "@backup": {
+    "description": "Screen title and Button text of Backup & Restore screen"
+  },
+  "displayMode": "പ്രദർശന മോഡ്",
+  "@displayMode": {
+    "description": "Radio Group title to change manga Cover display in Library and Source Screens"
+  },
+  "displayModeDescriptiveList": "വിവരണമുള്ള പട്ടിക",
+  "@displayModeDescriptiveList": {
+    "description": "Radio button text for Manga Cover display mode - Descriptive List"
+  },
+  "downloaded": "ഡൗൺലോഡ് ചെയ്തത്",
+  "@downloaded": {
+    "description": "Text to show downloaded chapters status in Filters  "
+  },
+  "downloads": "ഡൗൺലോഡുകൾ",
+  "@downloads": {
+    "description": "Screen title and Navigation text of Downloads screen"
+  },
+  "edit": "തിരുത്തുക",
+  "@edit": {
+    "description": "Popup button text to edit Category in Edit category screen"
+  },
+  "editCategory": "വിഭാഗം തിരുത്തുക",
+  "@editCategory": {
+    "description": "Screen title, Button text and  of Downloads screen"
   }
 }

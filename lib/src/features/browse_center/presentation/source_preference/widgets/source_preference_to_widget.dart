@@ -42,6 +42,7 @@ class SourcePreferenceToWidget extends StatelessWidget {
         onChanged: (value) =>
             onChangedPreferenceCopyWith(prop.copyWith(currentValue: value)),
         controlAffinity: ListTileControlAffinity.trailing,
+        enabled: prop.enabled != false,
       );
     } else if (prop is SwitchPreferenceCompat) {
       return SwitchListTile(
@@ -49,8 +50,10 @@ class SourcePreferenceToWidget extends StatelessWidget {
         title: Text(prop.title ?? ""),
         subtitle: prop.summary.isNotBlank ? Text(prop.summary!) : null,
         value: prop.currentValue.ifNull(prop.defaultValue.ifNull()),
-        onChanged: (value) =>
-            onChangedPreferenceCopyWith(prop.copyWith(currentValue: value)),
+        onChanged: prop.enabled != false
+            ? (value) =>
+                onChangedPreferenceCopyWith(prop.copyWith(currentValue: value))
+            : null,
         controlAffinity: ListTileControlAffinity.trailing,
       );
     } else if (prop is ListPreference) {
@@ -71,6 +74,7 @@ class SourcePreferenceToWidget extends StatelessWidget {
             optionDisplayName: (entry) => prop.entries?[entry] ?? entry,
           ),
         ),
+        enabled: prop.enabled != false,
       );
     } else if (prop is MultiSelectListPreference) {
       return ListTile(
@@ -88,6 +92,7 @@ class SourcePreferenceToWidget extends StatelessWidget {
             getOptionTitle: (entry) => prop.entries?[entry] ?? entry,
           ),
         ),
+        enabled: prop.enabled != false,
       );
     } else if (prop is EditTextPreference) {
       return ListTile(
@@ -105,6 +110,7 @@ class SourcePreferenceToWidget extends StatelessWidget {
             textInputAction: TextInputAction.newline,
           ),
         ),
+        enabled: prop.enabled != false,
       );
     } else {
       return const SizedBox.shrink();

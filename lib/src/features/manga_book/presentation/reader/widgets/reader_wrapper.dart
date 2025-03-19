@@ -7,6 +7,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:apple_pencil_double_tap/apple_pencil_double_tap.dart';
+import 'package:apple_pencil_double_tap/entities/preferred_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -27,8 +29,12 @@ import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/async_buttons/async_icon_button.dart';
 import '../../../../../widgets/radio_list_popup.dart';
 import '../../../../../widgets/text_premium.dart';
+import '../../../../custom/inapp/purchase_providers.dart';
+import '../../../../settings/presentation/reader/widgets/reader_apple_pencil_setting/reader_apple_pencil_controller.dart';
+import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_controller.dart';
 import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
+import '../../../../settings/presentation/reader/widgets/reader_keep_screen_on/reader_keep_screen_on_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_padding_slider/reader_padding_slider.dart';
@@ -63,10 +69,15 @@ class ReaderWrapper extends HookConsumerWidget {
     required this.onNext,
     required this.onPrevious,
     required this.scrollDirection,
+    required this.initChapterIndexState,
+    required this.visibility,
+    required this.autoScrollIntervalMs,
+    required this.autoScrollDemoMode,
     this.reverse = false,
-    this.initChapterIndexState,
     this.pageLayout,
+    this.continuousMode,
   });
+
   final Widget child;
   final Manga manga;
   final Chapter chapter;
@@ -76,14 +87,18 @@ class ReaderWrapper extends HookConsumerWidget {
   final int currentIndex;
   final Axis scrollDirection;
   final bool reverse;
-  final ValueNotifier<String>? initChapterIndexState;
+  final ValueNotifier<String> initChapterIndexState;
   final ReaderPageLayout? pageLayout;
+  final ValueNotifier<bool> visibility;
+  final ValueNotifier<int?> autoScrollIntervalMs;
+  final ValueNotifier<bool> autoScrollDemoMode;
+  final bool? continuousMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
-    final scaffoldKey = useRef(GlobalKey<ScaffoldState>());
+    final keepScreenOn = ref.read(readerKeepScreenOnPrefProvider) == true;
 
     final chapterPair = ref.watch(
       getPreviousAndNextChaptersProvider(
@@ -98,8 +113,6 @@ class ReaderWrapper extends HookConsumerWidget {
           )
         : chapterPair;
 
-    final visibility = useState(false);
-
     final readerModeText = useMemoized(() {
       final defaultReaderMode = ref.read(readerModeKeyProvider);
       final readerMode = manga.meta?.readerMode ?? defaultReaderMode;
@@ -112,44 +125,24 @@ class ReaderWrapper extends HookConsumerWidget {
       };
     }, []);
 
-    final showStatusBar = ref.watch(showStatusBarModeProvider);
-    useEffect(() {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: visibility.value ? SystemUiOverlay.values : [
-            if (showStatusBar == true) SystemUiOverlay.top,
-          ]
-      );
-      return;
-    }, [visibility.value]);
-
+    final autoPageTimer = useRef<Timer?>(null);
     useEffect(() {
       return () {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+        autoPageTimer.value?.cancel();
       };
     }, []);
-
-    final autoScrollIntervalMs = useState<int?>(null);
-    final autoScrollTimer = useRef<Timer?>(null);
-    final quickSettingsOpen = useState(false);
     useEffect(() {
-      autoScrollTimer.value?.cancel();
+      if (continuousMode == true) {
+        return;
+      }
+      autoPageTimer.value?.cancel();
       final intervalMs = autoScrollIntervalMs.value;
-      final isVisibility = visibility.value;
-      final isEndDrawerOpen = context.mounted
-          ? scaffoldKey.value.currentState?.isEndDrawerOpen
-          : false;
-      logger.log(
-          "[AUTO]intervalMs $intervalMs, visibility:$isVisibility isEndDrawerOpen:$isEndDrawerOpen quickSettingsOpen:${quickSettingsOpen.value}");
       if (intervalMs != null) {
-        autoScrollTimer.value = Timer.periodic(
-          Duration(milliseconds: intervalMs),
-          (timer) {
-            logger.log(
-                "[AUTO]tick intervalMs $intervalMs, visibility:$isVisibility isEndDrawerOpen:$isEndDrawerOpen quickSettingsOpen:${quickSettingsOpen.value}");
+        autoPageTimer.value = Timer.periodic(
+          Duration(milliseconds: autoScrollTransform(intervalMs)),
+              (timer) {
             if (context.mounted) {
-              final settingOpen =
-                  quickSettingsOpen.value || isEndDrawerOpen == true;
-              final tick = settingOpen || !isVisibility;
+              final tick = autoScrollDemoMode.value || !visibility.value;
               if (tick) {
                 onNext();
               }
@@ -158,20 +151,28 @@ class ReaderWrapper extends HookConsumerWidget {
         );
       }
       return;
-    }, [
-      autoScrollIntervalMs.value,
-      visibility.value,
-      scaffoldKey.value,
-      quickSettingsOpen.value,
-    ]);
+    }, [autoScrollIntervalMs.value]);
+
+    final invokeScreenOnBefore = useRef<bool>(false);
+    useEffect(() {
+      if (keepScreenOn) {
+        return;
+      }
+      final intervalMs = autoScrollIntervalMs.value;
+      if (intervalMs != null) {
+        invokeScreenOnBefore.value = true;
+        pipe.invokeMethod("SCREEN_ON", "1");
+      }
+      if (invokeScreenOnBefore.value == true && intervalMs == null) {
+        pipe.invokeMethod("SCREEN_ON", "0");
+      }
+      return;
+    }, [autoScrollIntervalMs.value]);
 
     useEffect(() {
-      return () {
-        logger.log("[AUTO]dispose");
-        autoScrollTimer.value?.cancel();
-      };
+      _setupPencilListener(ref);
+      return;
     }, []);
-
 
     final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider);
     final tapDelay = doubleTapZoomIn == true ? 500 : 300;
@@ -192,7 +193,7 @@ class ReaderWrapper extends HookConsumerWidget {
       () => showDialog(
         context: context,
         builder: (context) => RadioListPopup<ReaderMode>(
-          optionList: ReaderMode.values,
+          optionList: ReaderMode.sortedValues,
           optionDisplayName: (value) => value.toLocale(context),
           showDisplaySubName: (value) {
             return value == ReaderMode.defaultReader &&
@@ -299,6 +300,8 @@ class ReaderWrapper extends HookConsumerWidget {
         ),
         ReaderAutoScrollTile(
           intervalState: autoScrollIntervalMs,
+          continuousMode: continuousMode,
+          autoScrollDemoMode: autoScrollDemoMode,
         ),
       ],
     );
@@ -312,7 +315,6 @@ class ReaderWrapper extends HookConsumerWidget {
         ),
       ),
       child: Scaffold(
-        key: scaffoldKey.value,
         appBar: visibility.value
             ? AppBar(
                 title: ListTile(
@@ -382,8 +384,6 @@ class ReaderWrapper extends HookConsumerWidget {
             : null,
         extendBodyBehindAppBar: true,
         extendBody: true,
-        endDrawerEnableOpenDragGesture: false,
-        endDrawer: context.isTablet ? Drawer(width: kDrawerWidth, child: quickSettings) : null,
         bottomSheet: visibility.value
             ? ExcludeFocus(
                 child: Column(
@@ -396,19 +396,11 @@ class ReaderWrapper extends HookConsumerWidget {
                           shape: const CircleBorder(),
                           child: IconButton(
                             onPressed: prevNextChapterPair?.second != null
-                                ? () {
-                                    if (initChapterIndexState != null) {
-                                      loadPrevOrNextChapter(ref,
-                                          prevNextChapterPair!.second!, reverse);
-                                      return;
-                                    }
-                                    context.pushReplacement(
-                                      Routes.getReader(
-                                        "${prevNextChapterPair!.second!.mangaId}",
-                                        "${prevNextChapterPair.second!.index}",
-                                      ),
-                                    );
-                                  }
+                                ? () => loadPrevOrNextChapter(
+                              ref,
+                              prevNextChapterPair!.second!,
+                              reverse,
+                            )
                                 : null,
                             icon: const Icon(
                               Icons.skip_previous_rounded,
@@ -428,19 +420,11 @@ class ReaderWrapper extends HookConsumerWidget {
                           shape: const CircleBorder(),
                           child: IconButton(
                             onPressed: prevNextChapterPair?.first != null
-                                ? () {
-                                    if (initChapterIndexState != null) {
-                                      loadPrevOrNextChapter(ref,
-                                          prevNextChapterPair!.first!, !reverse);
-                                      return;
-                                    }
-                                    context.pushReplacement(
-                                      Routes.getReader(
-                                        "${prevNextChapterPair!.first!.mangaId}",
-                                        "${prevNextChapterPair.first!.index}",
-                                      ),
-                                    );
-                                  }
+                                ? () => loadPrevOrNextChapter(
+                              ref,
+                              prevNextChapterPair!.first!,
+                              !reverse,
+                            )
                                 : null,
                             icon: const Icon(Icons.skip_next_rounded),
                           ),
@@ -486,23 +470,18 @@ class ReaderWrapper extends HookConsumerWidget {
                           ],
                           Builder(builder: (context) {
                             return IconButton(
-                              onPressed: () async {
-                                if (context.isTablet) {
-                                  Scaffold.of(context).openEndDrawer();
-                                } else {
-                                  quickSettingsOpen.value = true;
-                                  await showModalBottomSheet(
-                                    context: context,
-                                    backgroundColor: context.theme.cardColor,
-                                    clipBehavior: Clip.hardEdge,
-                                    builder: (context) => Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: safeAreaBottom),
-                                      child: quickSettings,
-                                    ),
-                                  );
-                                  quickSettingsOpen.value = false;
-                                }
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  backgroundColor: context.theme.cardColor,
+                                  clipBehavior: Clip.hardEdge,
+                                  builder: (context) => Padding(
+                                    padding: EdgeInsets.only(
+                                        bottom: safeAreaBottom),
+                                    child: SingleChildScrollView(child: quickSettings),
+                                  ),
+                                );
                               },
                               icon: const Icon(Icons.settings_rounded),
                             );
@@ -563,11 +542,12 @@ class ReaderWrapper extends HookConsumerWidget {
                         lastTapDownTimestamp = DateTime.now().millisecondsSinceEpoch;
                       },
                       onTap: () {
-                        final diff = lastTapDownTimestamp - lastScrollTimestamp;
-                        //print('ContinuousReaderMode toggleVisibility diff:$diff');
-                        if (diff > tapDelay) {
-                          //print('ContinuousReaderMode toggleVisibility yes');
+                        final lastScrollDiff = lastTapDownTimestamp - lastScrollTimestamp;
+                        final autoScrollEnable = autoScrollIntervalMs.value != null;
+                        final tapDownDiff = DateTime.now().millisecondsSinceEpoch - lastTapDownTimestamp;
+                        if ((lastScrollDiff > tapDelay || autoScrollEnable) && tapDownDiff < 300) {
                           visibility.value = !visibility.value;
+                          autoScrollDemoMode.value = false;
                         }
                       },
                       scrollDirection: scrollDirection,
@@ -587,8 +567,8 @@ class ReaderWrapper extends HookConsumerWidget {
   }
 
   void loadPrevOrNextChapter(WidgetRef ref, Chapter chapter, bool nextPage) {
-    final initChapterIndex = initChapterIndexState!.value;
-    initChapterIndexState!.value = initChapterIndex;
+    final initChapterIndex = initChapterIndexState.value;
+    initChapterIndexState.value = initChapterIndex;
     final provider = chapterWithIdProvider(mangaId: "${manga.id}",
         chapterIndex: initChapterIndex);
     ref.read(provider.notifier).loadChapter(
@@ -596,6 +576,75 @@ class ReaderWrapper extends HookConsumerWidget {
       chapterIndex: "${chapter.index}",
       reset: nextPage,
     );
+  }
+
+  void _setupPencilListener(WidgetRef ref) {
+    ApplePencilDoubleTap().listen(
+      // For iPadOS <17.5
+      v1Callback: (PreferredAction preferedAction) {
+        logger.log('[PENCIL]Double tap. Prefered action: $preferedAction');
+        _onPencilDoubleTap(ref);
+      },
+      // For iPadOS >=17.5
+      onTapAction: (TapAction action) {
+        logger.log('[PENCIL]TapAction: $action');
+        _onPencilDoubleTap(ref);
+      },
+      // For iPadOS >=17.5
+      onSqueeze: (SqueezeAction action) {
+        logger.log('[PENCIL]SqueezeAction: $action');
+        if (action.squeezePhase == SqueezePhase.ended) {
+          _onPencilSqueeze(ref);
+        }
+      },
+      onError: (e) {
+        logger.log('[PENCIL]Error: $e');
+      },
+    );
+  }
+
+  void _onPencilDoubleTap(WidgetRef ref) {
+    final action = ref.read(applePencilDoubleTabPrefProvider);
+    _preformPencilAction(ref, action);
+  }
+
+  void _onPencilSqueeze(WidgetRef ref) {
+    final action = ref.read(applePencilSqueezePrefProvider);
+    _preformPencilAction(ref, action);
+  }
+
+  void _preformPencilAction(WidgetRef ref, ApplePencilActon? action) {
+    final purchaseGate = ref.watch(purchaseGateProvider);
+    final testflightFlag = ref.watch(testflightFlagProvider);
+    if (!purchaseGate && !testflightFlag) {
+      logger.log("skip _preformPencilAction, not premium");
+      return;
+    }
+    if (action == ApplePencilActon.nextPage) {
+      onNext();
+    } else if (action == ApplePencilActon.previousPage) {
+      onPrevious();
+    } else if (action == ApplePencilActon.previousChapter) {
+      final chapterPair = ref.read(
+        getPreviousAndNextChaptersProvider(
+          mangaId: "${manga.id}",
+          chapterIndex: "${chapter.index}",
+        ),
+      );
+      if (chapterPair?.second != null) {
+        loadPrevOrNextChapter(ref, chapterPair!.second!, false);
+      }
+    } else if (action == ApplePencilActon.nextChapter) {
+      final chapterPair = ref.read(
+        getPreviousAndNextChaptersProvider(
+          mangaId: "${manga.id}",
+          chapterIndex: "${chapter.index}",
+        ),
+      );
+      if (chapterPair?.first != null) {
+        loadPrevOrNextChapter(ref, chapterPair!.first!, true);
+      }
+    }
   }
 }
 

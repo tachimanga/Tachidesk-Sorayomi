@@ -495,9 +495,20 @@ class PurchaseGate extends _$PurchaseGate {
 class TestflightFlag extends _$TestflightFlag {
   @override
   bool build() {
-    final userDefaults = ref.watch(sharedPreferencesProvider);
-    return userDefaults.getString("config.testflight") == "1";
+    final value = ref.watch(testflightFlagPrefProvider);
+    return value == "1";
   }
+}
+
+@riverpod
+class TestflightFlagPref extends _$TestflightFlagPref
+    with SharedPreferenceClientMixin<String> {
+  @override
+  String? build() => initialize(
+    ref,
+    key: "config.testflight",
+    initial: "0",
+  );
 }
 
 @riverpod
@@ -541,4 +552,15 @@ class ClearQueueBeforeRestore extends _$ClearQueueBeforeRestore
         key: "config.clearQueueBeforeRestore",
         initial: false,
       );
+}
+
+@riverpod
+class UpgradeToLifetimeSwitch extends _$UpgradeToLifetimeSwitch
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+    ref,
+    key: "config.enableUpgradeToLifetime",
+    initial: true,
+  );
 }

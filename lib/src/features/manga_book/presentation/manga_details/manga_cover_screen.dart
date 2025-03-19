@@ -107,7 +107,7 @@ class MangaCoverScreen extends HookConsumerWidget {
       PaintingBinding.instance.imageCache.clearLiveImages();
       keyState.value = UniqueKey();
       ref.invalidate(customCoverExistProvider);
-      ref.read(mangaWithIdProvider(mangaId: "${manga.id}").notifier).refresh();
+      ref.read(mangaWithIdProvider(mangaId: "${manga.id}").notifier).refreshSilently();
     }
 
     onEdit() async {

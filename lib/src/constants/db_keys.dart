@@ -74,6 +74,7 @@ enum DBKeys {
   migrateChapterFlag(true),
   migrateCategoryFlag(true),
   migrateTrackFlag(true),
+  removeDownloadsIfMigrate(true),
   categoryIdsToUpdate(<String>[]),
   alwaysAskCategoryToUpdate(true),
   defaultCategory(kCategoryAlwaysAskValue),
@@ -95,7 +96,12 @@ enum DBKeys {
   autoRefreshTitle(false),
   receiveTimeout(null),
   autoScrollInterval(2000),
+  autoSmoothScrollInterval(4000),
   readTimeShowLogo(true),
+  keepScreenOnWhileReading(false),
+  applePencilDoubleTapAction(ApplePencilActon.previousPage),
+  applePencilSqueezeAction(ApplePencilActon.nextPage),
+  readerUsePhotoView(true),
   ;
 
   const DBKeys(this.initial);

@@ -51,7 +51,7 @@ class MangaChapterSortWithMangaId extends _$MangaChapterSortWithMangaId {
               );
           await ref
               .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-              .refresh();
+              .refreshSilently();
         });
       },
     );
@@ -93,7 +93,7 @@ class MangaChapterSortDirectionWithMangaId
               );
           await ref
               .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-              .refresh();
+              .refreshSilently();
         });
       },
     );
@@ -137,7 +137,7 @@ class MangaChapterFilterDownloadedWithMangaId
               );
           await ref
               .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-              .refresh();
+              .refreshSilently();
         });
       },
     );
@@ -181,7 +181,7 @@ class MangaChapterFilterUnreadWithMangaId
               );
           await ref
               .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-              .refresh();
+              .refreshSilently();
         });
       },
     );
@@ -225,7 +225,7 @@ class MangaChapterFilterBookmarkedWithMangaId
               );
           await ref
               .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-              .refresh();
+              .refreshSilently();
         });
       },
     );

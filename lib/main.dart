@@ -32,6 +32,7 @@ import 'src/utils/log.dart';
 
 
 Future<void> main() async {
+  // debugRepaintRainbowEnabled = true;
   // debugPaintSizeEnabled=true;
   WidgetsFlutterBinding.ensureInitialized();
   //MobileAds.instance.initialize();

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../global_providers/device_providers.dart';
+import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../controller/reader_setting_controller.dart';
 
@@ -27,7 +28,7 @@ class PaddingServerImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final orientation = MediaQuery.of(context).orientation;
+    final orientation = context.orientation;
     final portrait = orientation == Orientation.portrait;
 
     final deviceInfo = ref.watch(deviceInfoProvider);

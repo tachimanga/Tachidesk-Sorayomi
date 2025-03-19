@@ -28,6 +28,7 @@ class MangaCoverGridTile extends ConsumerWidget {
     this.decodeWidth,
     this.decodeHeight,
     this.margin,
+    this.selected = false,
   });
 
   final Manga manga;
@@ -40,13 +41,14 @@ class MangaCoverGridTile extends ConsumerWidget {
   final int? decodeWidth;
   final int? decodeHeight;
   final EdgeInsetsGeometry? margin;
+  final bool selected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appThemeData = ref.watch(themeSchemeColorProvider);
     final canvasColor = appThemeData.dark.canvasColor;
 
-    return InkResponse(
+    final card = InkResponse(
       onTap: onPressed,
       onLongPress: onLongPress,
       child: Card(
@@ -109,6 +111,15 @@ class MangaCoverGridTile extends ConsumerWidget {
                 ),
         ),
       ),
+    );
+    return Container(
+      decoration: selected
+          ? BoxDecoration(
+              color: context.theme.colorScheme.primary.withOpacity(0.7),
+              borderRadius: BorderRadius.circular(12),
+            )
+          : null,
+      child: card,
     );
   }
 }

@@ -251,6 +251,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
         ),
         refresh: refresh,
         errorSource: "manga-details",
+        mangaId: mangaId,
         webViewUrlProvider: () async {
           final url = manga.valueOrNull?.realUrl;
           if (url?.isNotEmpty == true) {
@@ -333,7 +334,8 @@ class MangaDetailsScreen extends HookConsumerWidget {
     if (diff > 86400) {
       Future(() async {
         final connectivity = await Connectivity().checkConnectivity();
-        if (connectivity == ConnectivityResult.none) {
+        if (connectivity.length == 1 &&
+            connectivity.contains(ConnectivityResult.none)) {
           return;
         }
         if (context.mounted) {
@@ -392,7 +394,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
       }
       PaintingBinding.instance.imageCache.clear();
       PaintingBinding.instance.imageCache.clearLiveImages();
-      ref.read(mangaWithIdProvider(mangaId: "${manga.id}").notifier).refresh();
+      ref.read(mangaWithIdProvider(mangaId: "${manga.id}").notifier).refreshSilently();
       //log("[CacheManager] _refreshMangaCover. done");
     } catch (e) {
       log("[CacheManager] _refreshMangaCover err=$e");

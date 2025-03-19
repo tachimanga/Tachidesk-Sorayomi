@@ -86,7 +86,7 @@ class MigrateSourceDetailScreen extends HookConsumerWidget {
       body: mangaList.showUiWhenData(
         context,
         (data) {
-          if (data.isEmpty) {
+          if (data.isBlank) {
             return Emoticons(
               text: context.l10n!.noMangaFound,
               button: TextButton(
@@ -98,7 +98,7 @@ class MigrateSourceDetailScreen extends HookConsumerWidget {
           return RefreshIndicator(
             onRefresh: refresh,
             child: ListView.builder(
-              itemCount: data.length,
+              itemCount: data!.length,
               itemBuilder: (context, index) => MigrateMangaListTile(
                 manga: data[index],
               ),

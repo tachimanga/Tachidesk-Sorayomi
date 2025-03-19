@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http_status/http_status.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../global_providers/global_providers.dart';
@@ -61,7 +62,14 @@ class WebViewScreen extends HookConsumerWidget {
               loadingState.value = false;
             },
             onWebResourceError: (WebResourceError error) {
+              log("[flutter_webview] onWebResourceError $error");
               toast.showError(error.description);
+            },
+            onHttpError: (HttpResponseError error) {
+              log("[flutter_webview] onHttpError ${error.response?.statusCode}");
+              if (error.response?.statusCode != 403) {
+                toast.showError(_buildHttpErrorMessage(context, error));
+              }
             },
           ),
         )
@@ -123,5 +131,14 @@ class WebViewScreen extends HookConsumerWidget {
           ? WebViewWidget(controller: controller)
           : const Text("Url not valid"),
     );
+  }
+
+  String _buildHttpErrorMessage(BuildContext context, HttpResponseError error) {
+    var message = "${error.response?.statusCode} ERROR";
+    try {
+      final s = HttpStatus.fromCode(error.response?.statusCode ?? -1);
+      message = "${s.code} ${s.name}";
+    } catch (_) {}
+    return context.l10n!.errorMessageFrom(message);
   }
 }

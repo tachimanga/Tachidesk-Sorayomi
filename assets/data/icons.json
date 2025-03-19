@@ -4,6 +4,18 @@
             "key": "default"
         },
         {
+            "key": "AppIcon 32",
+            "name": "Adaptive Blue",
+            "description": "Designed for iOS 18",
+            "adaptive": true
+        },
+        {
+            "key": "AppIcon 33",
+            "name": "Adaptive Dark",
+            "description": "Designed for iOS 18",
+            "adaptive": true
+        },
+        {
             "key": "AppIcon 17",
             "name": "Dark Blue",
             "author": "@mlyn"

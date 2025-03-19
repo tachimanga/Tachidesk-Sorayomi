@@ -21,19 +21,27 @@ class ReaderAutoScrollTile extends HookConsumerWidget {
   const ReaderAutoScrollTile({
     super.key,
     required this.intervalState,
+    required this.continuousMode,
+    required this.autoScrollDemoMode,
   });
 
   final ValueNotifier<int?> intervalState;
+  final bool? continuousMode;
+  final ValueNotifier<bool> autoScrollDemoMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final signal = useState(0);
-    final globalInterval = ref.watch(autoScrollIntervalPrefProvider) ??
-        DBKeys.scrollAnimation.initial;
+    final smoothInterval = ref.watch(autoSmoothScrollIntervalPrefProvider) ??
+        DBKeys.autoSmoothScrollInterval.initial;
+    final pagedInterval = ref.watch(autoScrollIntervalPrefProvider) ??
+        DBKeys.autoScrollInterval.initial;
+    final globalInterval =
+        continuousMode == true ? smoothInterval : pagedInterval;
     final enable = intervalState.value != null;
     final currInterval = intervalState.value ?? globalInterval;
     final label = context.l10n!.seconds_per_page(
-      (currInterval / 1000).toStringAsFixed(1),
+      (autoScrollTransform(currInterval) / 1000).toStringAsFixed(1),
     );
 
     // premium gate
@@ -51,19 +59,22 @@ class ReaderAutoScrollTile extends HookConsumerWidget {
       }, []);
     }
 
-    return SwitchListTile(
-      controlAffinity: ListTileControlAffinity.trailing,
-      secondary: const Icon(Icons.access_time_rounded),
+    return ListTile(
+      leading: const Icon(Icons.access_time_rounded),
       title: Text(context.l10n!.auto_scroll),
-      onChanged: (value) {
-        logger.log("[AUTO] set enable to $value");
-        if (value) {
-          logEvent3("READER:AUTO:SCROLL:ENABLE");
-        }
-        intervalState.value = value ? globalInterval : null;
-        signal.value = signal.value + 1;
-      },
-      value: enable,
+      trailing: Switch(
+        value: enable,
+        onChanged: (value) {
+          logger.log("[AUTO] set enable to $value");
+          if (value) {
+            autoScrollDemoMode.value = true;
+            logEvent3("READER:AUTO:SCROLL:ENABLE");
+          }
+          intervalState.value = value ? globalInterval : null;
+          signal.value = signal.value + 1;
+        },
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
       subtitle: enable
           ? Column(
               mainAxisSize: MainAxisSize.min,
@@ -74,17 +85,23 @@ class ReaderAutoScrollTile extends HookConsumerWidget {
                   style: context.textTheme.bodyMedium,
                 ),
                 Slider(
-                  label: label.toString(),
                   value: currInterval.toDouble(),
-                  divisions: 18,
+                  divisions: 90,
                   min: 1000,
                   max: 10 * 1000,
                   onChanged: (value) {
                     logger.log("[AUTO] set interval to $value");
+                    autoScrollDemoMode.value = true;
                     intervalState.value = value.toInt();
-                    ref
-                        .read(autoScrollIntervalPrefProvider.notifier)
-                        .update(value.toInt());
+                    if (continuousMode == true) {
+                      ref
+                          .read(autoSmoothScrollIntervalPrefProvider.notifier)
+                          .update(value.toInt());
+                    } else {
+                      ref
+                          .read(autoScrollIntervalPrefProvider.notifier)
+                          .update(value.toInt());
+                    }
                     signal.value = signal.value + 1;
                   },
                 ),

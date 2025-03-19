@@ -51,7 +51,7 @@ class MigrateScreen extends HookConsumerWidget {
     return sourceList.showUiWhenData(
       context,
       (data) {
-        if (data.isEmpty) {
+        if (data.isBlank) {
           return Emoticons(
             text: context.l10n!.noSourcesFound,
             button: TextButton(
@@ -65,7 +65,7 @@ class MigrateScreen extends HookConsumerWidget {
           child: ListView.builder(
             controller: mainPrimaryScrollController,
             physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: data.length,
+            itemCount: data!.length,
             itemBuilder: (context, index) => MigrateSourceListTile(
               migrateSource: data[index],
             ),

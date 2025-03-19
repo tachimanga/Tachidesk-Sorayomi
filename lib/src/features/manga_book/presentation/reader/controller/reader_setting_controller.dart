@@ -189,7 +189,7 @@ class ReaderPageLayoutWithMangaId extends _$ReaderPageLayoutWithMangaId {
                 );
             await ref
                 .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-                .refresh();
+                .refreshSilently();
           },
         );
       },
@@ -238,7 +238,7 @@ class ReaderPageLayoutSkipFirstWithMangaId
               );
           await ref
               .read(mangaWithIdProvider(mangaId: mangaId).notifier)
-              .refresh();
+              .refreshSilently();
         });
       },
     );

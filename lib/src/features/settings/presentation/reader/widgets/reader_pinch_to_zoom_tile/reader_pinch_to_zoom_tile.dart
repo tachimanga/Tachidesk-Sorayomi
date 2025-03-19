@@ -37,6 +37,10 @@ class ReaderPinchToZoomTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.pinch_rounded),
       title: Text(context.l10n!.pinch_to_zoom),
+      subtitle: Text(
+        context.l10n!.pinch_to_zoom_tip,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
+      ),
       contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("READER:PINCH_TO_ZOOM:$value");

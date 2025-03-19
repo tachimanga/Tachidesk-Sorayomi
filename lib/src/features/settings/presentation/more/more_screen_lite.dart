@@ -125,7 +125,7 @@ class MoreScreenLite extends HookConsumerWidget {
             contentPadding: kSettingPadding,
             trailing: kSettingTrailing,
             onTap: () => context
-                .push([Routes.settings, Routes.appearanceSettings].toPath),
+                .push([Routes.more, Routes.appearanceSettings].toPath),
           ),
           ListTile(
             title: Text(context.l10n!.library),

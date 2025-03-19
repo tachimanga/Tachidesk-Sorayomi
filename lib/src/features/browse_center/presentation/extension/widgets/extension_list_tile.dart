@@ -225,7 +225,7 @@ class ExtensionListTile extends HookConsumerWidget {
                               }
                               await repository
                                   .installExtension(extension.extensionId!);
-                              if (extension.lang?.code != null) {
+                              if (context.mounted && extension.lang?.code != null) {
                                 final code = extension.lang!.code!;
                                 final enabledLanguages = ref.watch(sourceLanguageFilterProvider);
                                 if (enabledLanguages != null && !enabledLanguages.contains(code)) {

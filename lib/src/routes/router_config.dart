@@ -52,6 +52,7 @@ import '../features/settings/presentation/more/more_screen_lite.dart';
 import '../features/settings/presentation/reader/reader_settings_screen.dart';
 import '../features/settings/presentation/reader/reader_tap_zones_settings_screen.dart';
 import '../features/settings/presentation/reader/widgets/reader_advanced_setting/reader_advanced_screen.dart';
+import '../features/settings/presentation/reader/widgets/reader_apple_pencil_setting/reader_apple_pencil_setting_screen.dart';
 import '../features/settings/presentation/security/security_setting_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
 import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
@@ -97,6 +98,7 @@ abstract class Routes {
   static const readerSettings = 'reader';
   static const readerAdvancedSettings = 'r-advanced';
   static const readerTapZones = 'tapZones';
+  static const readerApplePencilSettings = 'applePencilSettings';
   static const syncSettings = 'syncSettings';
   static const trackingSettings = 'tracking';
   static const securitySettings = 'security';
@@ -188,6 +190,12 @@ GoRouter routerConfig(ref) {
             path: Routes.more,
             // builder: (context, state) => const MoreScreen(),
             pageBuilder: (context, state) => const NoTransitionPage(child: MoreScreenLite()),
+            routes: [
+              GoRoute(
+                path: Routes.appearanceSettings,
+                builder: (context, state) => const AppearanceScreen(),
+              ),
+            ],
           ),
         ],
       ),
@@ -195,9 +203,9 @@ GoRouter routerConfig(ref) {
         path: Routes.manga,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => MangaDetailsScreen(
-          key: ValueKey(state.params['mangaId'] ?? "2"),
-          mangaId: state.params['mangaId'] ?? "",
-          categoryId: int.tryParse(state.queryParams['categoryId'] ?? ''),
+          key: ValueKey(state.pathParameters['mangaId'] ?? "2"),
+          mangaId: state.pathParameters['mangaId'] ?? "",
+          categoryId: int.tryParse(state.uri.queryParameters['categoryId'] ?? ''),
           mangaBasic: state.extra as Manga?,
         ),
       ),
@@ -205,8 +213,8 @@ GoRouter routerConfig(ref) {
         path: Routes.globalSearch,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => GlobalSearchScreen(
-          key: ValueKey(state.queryParams['query'] ?? "1"),
-          initialQuery: state.queryParams['query'],
+          key: ValueKey(state.uri.queryParameters['query'] ?? "1"),
+          initialQuery: state.uri.queryParameters['query'],
           migrateSrcManga: state.extra as Manga?,
         ),
       ),
@@ -214,11 +222,11 @@ GoRouter routerConfig(ref) {
         path: Routes.sourceManga,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => SourceMangaListScreen(
-          key: ValueKey(state.params['sourceId'] ?? "0"),
-          sourceId: state.params['sourceId'] ?? "0",
-          initialQuery: state.queryParams['query'],
+          key: ValueKey(state.pathParameters['sourceId'] ?? "0"),
+          sourceId: state.pathParameters['sourceId'] ?? "0",
+          initialQuery: state.uri.queryParameters['query'],
           sourceType: SourceType.values.firstWhere(
-            (element) => element.name.query(state.params['sourceType']),
+            (element) => element.name.query(state.pathParameters['sourceType']),
             orElse: () => SourceType.popular,
           ),
         ),
@@ -227,16 +235,16 @@ GoRouter routerConfig(ref) {
         path: Routes.sourcePref,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => SourcePreferenceScreen(
-          key: ValueKey(state.params['sourceId'] ?? "0"),
-          sourceId: state.params['sourceId'] ?? "",
+          key: ValueKey(state.pathParameters['sourceId'] ?? "0"),
+          sourceId: state.pathParameters['sourceId'] ?? "",
         ),
       ),
       GoRoute(
         path: Routes.extensionInfo,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => ExtensionInfoScreen(
-          key: ValueKey(state.params['extensionId'] ?? "0"),
-          extensionId: int.parse(state.params['extensionId'] ?? ""),
+          key: ValueKey(state.pathParameters['extensionId'] ?? "0"),
+          extensionId: int.parse(state.pathParameters['extensionId'] ?? ""),
         ),
       ),
       GoRoute(
@@ -250,8 +258,8 @@ GoRouter routerConfig(ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           return ReaderScreen2(
-            mangaId: state.params['mangaId'] ?? '',
-            initChapterIndex: state.params['chapterIndex'] ?? '',
+            mangaId: state.pathParameters['mangaId'] ?? '',
+            initChapterIndex: state.pathParameters['chapterIndex'] ?? '',
           );
         },
       ),
@@ -259,9 +267,9 @@ GoRouter routerConfig(ref) {
         path: Routes.mangaTrackSearch,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => TrackingMangaSearchScreen(
-          key: ValueKey(state.params['trackerId'] ?? ""),
-          trackerId: int.parse(state.params['trackerId'] ?? ""),
-          mangaId: int.parse(state.params['mangaId'] ?? ""),
+          key: ValueKey(state.pathParameters['trackerId'] ?? ""),
+          trackerId: int.parse(state.pathParameters['trackerId'] ?? ""),
+          mangaId: int.parse(state.pathParameters['mangaId'] ?? ""),
         ),
       ),
       GoRoute(
@@ -293,8 +301,8 @@ GoRouter routerConfig(ref) {
         path: Routes.migrateMangaList,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => MigrateSourceDetailScreen(
-          key: ValueKey(state.params['sourceId'] ?? "0"),
-          sourceId: state.params['sourceId'] ?? "0",
+          key: ValueKey(state.pathParameters['sourceId'] ?? "0"),
+          sourceId: state.pathParameters['sourceId'] ?? "0",
           migrateSource: state.extra as MigrateSource?,
         ),
       ),
@@ -319,6 +327,10 @@ GoRouter routerConfig(ref) {
               GoRoute(
                 path: Routes.readerTapZones,
                 builder: (context, state) => const ReaderTapZonesSettingsScreen(),
+              ),
+              GoRoute(
+                path: Routes.readerApplePencilSettings,
+                builder: (context, state) => const ReaderApplePencilSettingScreen(),
               ),
               GoRoute(
                 path: Routes.readerAdvancedSettings,
@@ -373,8 +385,8 @@ GoRouter routerConfig(ref) {
                   GoRoute(
                     path: Routes.repoDetail,
                     builder: (context, state) => ExtensionDetailScreen(
-                      repoId: int.parse(state.queryParams['repoId'] ?? ""),
-                      repoName: state.queryParams['repoName'] ?? "",
+                      repoId: int.parse(state.uri.queryParameters['repoId'] ?? ""),
+                      repoName: state.uri.queryParameters['repoName'] ?? "",
                     ),
                   ),
                 ],
@@ -417,7 +429,7 @@ GoRouter routerConfig(ref) {
         path: Routes.goWebView,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => WebViewScreen(
-          url: state.queryParams['url'],
+          url: state.uri.queryParameters['url'],
         ),
       ),
       GoRoute(

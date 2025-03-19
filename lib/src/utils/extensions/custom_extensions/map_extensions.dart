@@ -29,4 +29,18 @@ extension NullableMapExtensions<K, V> on Map<K, V>? {
   bool get isBlank => isNull || this!.isEmpty;
 
   bool get isNotBlank => !isBlank;
+
+  Map<K, V>? toggleKeyNullable(K key, V value) {
+    if (this == null) {
+      return {key: value};
+    }
+    if (this!.containsKey(key)) {
+      if (this!.length == 1) {
+        return null;
+      }
+      return {...this!}..remove(key);
+    } else {
+      return {...this!, key: value};
+    }
+  }
 }

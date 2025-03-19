@@ -6,6 +6,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,7 +15,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../constants/urls.dart';
+import '../features/manga_book/data/manga_book_repository.dart';
+import '../features/manga_book/presentation/manga_details/controller/manga_details_controller.dart';
 import '../global_providers/global_providers.dart';
+import '../icons/icomoon_icons.dart';
 import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
@@ -29,6 +33,7 @@ class CommonErrorWidget extends HookConsumerWidget {
     this.showGenericError = false,
     this.src,
     this.webViewUrlProvider,
+    this.mangaId,
     required this.error,
   });
   final VoidCallback? refresh;
@@ -36,6 +41,7 @@ class CommonErrorWidget extends HookConsumerWidget {
   final Object error;
   final String? src;
   final Future<String?> Function()? webViewUrlProvider;
+  final String? mangaId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,6 +52,10 @@ class CommonErrorWidget extends HookConsumerWidget {
         ? context.l10n!.errorSomethingWentWrong
         : DioErrorUtil.localizeErrorMessage(error.toString(), context);
     final enableRefresh = useState(true);
+
+    final mangaValue = mangaId != null
+        ? ref.watch(mangaWithIdProvider(mangaId: mangaId ?? ""))
+        : null;
 
     return Emoticons(
       text: message,
@@ -108,8 +118,37 @@ class CommonErrorWidget extends HookConsumerWidget {
               ]),
             )
           ],
+          if (magic.c5 && mangaId != null) ...[
+            TextButton(
+              onPressed: () {
+                final manga = mangaValue?.valueOrNull;
+                context.push(
+                  Routes.getGlobalSearch(manga?.title ?? ""),
+                  extra: manga,
+                );
+              },
+              child: Column(
+                children: [
+                  Icon(Icomoon.exchange),
+                  Text(context.l10n!.migrate_action_migrate),
+                ],
+              ),
+            )
+          ],
         ],
       ),
+      footer: magic.c6 && mangaId != null
+          ? Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 50),
+              child: Text(
+                context.l10n!.source_not_working_tips,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: Colors.grey,
+                  fontSize: 10,
+                ),
+              ),
+            )
+          : null,
     );
   }
 }

@@ -28,7 +28,7 @@ class GeneralScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final betaLocales = ['ml'];
+    final betaLocales = ['ml', 'he', 'ta'];
     final testflightFlag = ref.watch(testflightFlagProvider);
     final locales = testflightFlag ||
             betaLocales.contains(context.currentLocale.languageCode)

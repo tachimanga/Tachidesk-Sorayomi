@@ -13,6 +13,7 @@ import '../features/settings/presentation/backup2/controller/backup_controller.d
 import '../features/settings/presentation/security/controller/security_controller.dart';
 import '../features/settings/presentation/share/controller/share_controller.dart';
 import '../features/sync/data/sync_repository.dart';
+import '../global_providers/global_providers.dart';
 import '../routes/router_config.dart';
 import 'log.dart';
 
@@ -110,6 +111,27 @@ class PremiumReset {
       log("reset disableSync");
       ref.read(syncRepositoryProvider).disableSync();
     });
+
+    if (ref.read(watermarkSwitchProvider) != true) {
+      log("reset watermarkSwitchProvider");
+      Future(() {
+        ref.read(watermarkSwitchProvider.notifier).update(true);
+      });
+    }
+
+    if (ref.read(deleteDownloadAfterReadPrefProvider) != 0) {
+      log("reset deleteDownloadAfterReadPrefProvider");
+      Future(() {
+        ref.read(deleteDownloadAfterReadPrefProvider.notifier).update(0);
+      });
+    }
+
+    if (ref.read(downloadTaskInParallelPrefProvider) != 1) {
+      log("reset downloadTaskInParallelPrefProvider");
+      Future(() {
+        ref.read(downloadTaskInParallelPrefProvider.notifier).update(1);
+      });
+    }
   }
 
   void setupWhenPurchase(Ref ref) {

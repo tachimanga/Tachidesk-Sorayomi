@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
+import '../../../../global_providers/device_providers.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/premium_required_tile.dart';
@@ -16,6 +17,7 @@ import '../../../custom/inapp/purchase_providers.dart';
 import '../../../manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import '../general/widgets/watermark_switch/watermark_switch.dart';
 import 'widgets/reader_advanced_setting/reader_advanced_tile.dart';
+import 'widgets/reader_apple_pencil_setting/reader_apple_pencil_setting_tile.dart';
 import 'widgets/reader_mode_tile/reader_mode_tile.dart';
 import 'widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
 import 'widgets/reader_padding_slider/reader_padding_slider.dart';
@@ -36,6 +38,9 @@ class ReaderSettingsScreen extends ConsumerWidget {
     final premiumPageLayout = !purchaseGate &&
         !testflightFlag &&
         pageLayout != ReaderPageLayout.singlePage;
+
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final isPad = deviceInfo.model.toLowerCase().contains("ipad");
 
     return WillPopScope(
       onWillPop: premiumPageLayout
@@ -61,6 +66,9 @@ class ReaderSettingsScreen extends ConsumerWidget {
             const ReaderNavigationLayoutTile(),
             const ReaderPaddingSlider(),
             const WatermarkSwitchTile(),
+            if (isPad) ...[
+              const ReaderApplePencilSettingTile(),
+            ],
             const ReaderAdvancedTile(),
           ],
         ),

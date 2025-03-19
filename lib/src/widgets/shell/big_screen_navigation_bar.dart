@@ -37,44 +37,56 @@ class BigScreenNavigationBar extends ConsumerWidget {
     final bool dark = Theme.of(context).brightness == Brightness.dark;
     const iconSize = 28.0;
     const padding = EdgeInsets.fromLTRB(4, 8, 4, 0);
-    return NavigationRail(
-      backgroundColor: dark && pureBlackMode == true ? Colors.black : null,
-      useIndicator: false,
-      elevation: 5,
-      labelType: NavigationRailLabelType.all,
-      leading: const SizedBox(height: kToolbarHeight - 10),
-      destinations: NavigationBarData.navList
-          .map<NavigationRailDestination>(
-            (e) => NavigationRailDestination(
-              icon: extensionUpdateCount > 0 && e.path == Routes.browse
-                  ? Badge(
-                      label: Text("$extensionUpdateCount"),
-                      offset: badgeOffset,
-                      child: Padding(
+
+    return NavigationRailTheme(
+      // ref: _NavigationRailDefaultsM3#selectedIconTheme, selectedLabelTextStyle
+      data: NavigationRailThemeData(
+        selectedLabelTextStyle: context.theme.textTheme.labelMedium
+            ?.copyWith(color: context.theme.colorScheme.primary),
+        selectedIconTheme: IconThemeData(
+          size: 24.0,
+          color: context.theme.colorScheme.primary,
+        ),
+      ),
+      child: NavigationRail(
+        backgroundColor: dark && pureBlackMode == true ? Colors.black : null,
+        useIndicator: false,
+        elevation: 5,
+        labelType: NavigationRailLabelType.all,
+        leading: const SizedBox(height: kToolbarHeight - 10),
+        destinations: NavigationBarData.navList
+            .map<NavigationRailDestination>(
+              (e) => NavigationRailDestination(
+                icon: extensionUpdateCount > 0 && e.path == Routes.browse
+                    ? Badge(
+                        label: Text("$extensionUpdateCount"),
+                        offset: badgeOffset,
+                        child: Padding(
+                          padding: padding,
+                          child: Icon(e.icon, size: iconSize),
+                        ),
+                      )
+                    : Padding(
                         padding: padding,
                         child: Icon(e.icon, size: iconSize),
                       ),
-                    )
-                  : Padding(
-                      padding: padding,
-                      child: Icon(e.icon, size: iconSize),
-                    ),
-              label: Text(e.label(context)),
-              indicatorColor: Colors.transparent,
-              selectedIcon: Padding(
-                padding: padding,
-                child: Icon(e.activeIcon, size: iconSize),
+                label: Text(e.label(context)),
+                indicatorColor: Colors.transparent,
+                selectedIcon: Padding(
+                  padding: padding,
+                  child: Icon(e.activeIcon, size: iconSize),
+                ),
               ),
-            ),
-          )
-          .toList(),
-      selectedIndex: NavigationBarData.indexWherePathOrZero(selectedScreen),
-      onDestinationSelected: (value) {
-        PremiumReset.instance.resetWhenSwitchTab(selectedScreen, ref);
-        final target = NavigationBarData.navList[value].path;
-        context.go(target);
-        onDestinationSelected(target);
-      },
+            )
+            .toList(),
+        selectedIndex: NavigationBarData.indexWherePathOrZero(selectedScreen),
+        onDestinationSelected: (value) {
+          PremiumReset.instance.resetWhenSwitchTab(selectedScreen, ref);
+          final target = NavigationBarData.navList[value].path;
+          context.go(target);
+          onDestinationSelected(target);
+        },
+      ),
     );
   }
 }

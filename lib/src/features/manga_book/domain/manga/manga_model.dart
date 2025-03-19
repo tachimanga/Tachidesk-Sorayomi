@@ -50,6 +50,7 @@ class Manga with _$Manga {
     List<MangaTracker>? trackers,
     String? updateStrategy,
     int? readDuration,
+    int? categoryId,
   }) = _Manga;
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);

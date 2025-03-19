@@ -15,6 +15,7 @@ import '../../../features/manga_book/domain/manga/manga_model.dart';
 
 import '../../../features/manga_book/presentation/manga_details/manga_cover_screen.dart';
 import '../../../features/settings/presentation/appearance/controller/date_format_controller.dart';
+import '../../../icons/icomoon_icons.dart';
 import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../custom_circular_progress_indicator.dart';
@@ -40,7 +41,9 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
     this.showSourceUrl = false,
     this.showReadDuration = false,
     this.popupItems,
+    this.selected = false,
   });
+
   final Manga manga;
   final bool showBadges;
   final bool showCountBadges;
@@ -55,6 +58,8 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
   final VoidCallback? onLongPress;
   final ValueChanged<String?>? onTitleClicked;
   final List<PopupMenuItem>? popupItems;
+  final bool selected;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dateFormatPref =
@@ -67,8 +72,13 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
     return InkWell(
       onTap: onPressed,
       onLongPress: onLongPress,
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.all(8.0),
+        color: selected
+            ? context.isDarkMode
+                ? Colors.grey.shade700
+                : Colors.grey.shade300
+            : null,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -175,7 +185,7 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Icon(
-                            Icons.timelapse,
+                            Icomoon.readTime2,
                             size: 16,
                             color: context.textTheme.bodySmall?.color,
                           ),

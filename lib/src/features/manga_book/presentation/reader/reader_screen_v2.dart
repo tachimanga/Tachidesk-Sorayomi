@@ -22,7 +22,9 @@ import '../../../../utils/log.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/common_error_widget.dart';
 import '../../../settings/presentation/appearance/controller/theme_controller.dart';
+import '../../../settings/presentation/reader/widgets/reader_keep_screen_on/reader_keep_screen_on_tile.dart';
 import '../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
+import '../../../settings/presentation/reader/widgets/show_status_bar_tile/show_status_bar_tile.dart';
 import '../../../settings/presentation/reader/widgets/swipe_right_back_tile/swipe_right_back_tile.dart';
 import '../../../settings/presentation/security/controller/security_controller.dart';
 import '../../data/manga_book_repository.dart';
@@ -50,6 +52,7 @@ class ReaderScreen2 extends HookConsumerWidget {
 
     final appThemeData = ref.watch(themeSchemeColorProvider);
     final initChapterIndexState = useState(initChapterIndex);
+    final visibility = useState(false);
 
     final readerListProvider = useMemoized(
         () => readerListStateWithMangeIdProvider(mangaId: mangaId), []);
@@ -81,12 +84,7 @@ class ReaderScreen2 extends HookConsumerWidget {
       return;
     }, [manga]);
 
-    useEffect(() {
-      pipe.invokeMethod("SCREEN_ON", "1");
-      return () {
-        pipe.invokeMethod("SCREEN_ON", "0");
-      };
-    }, []);
+
 
     final mangaNotifier = ref.read(mangaProvider.notifier);
 
@@ -97,6 +95,31 @@ class ReaderScreen2 extends HookConsumerWidget {
             ?.where((e) => "${e.index}" == initChapterIndexState.value)
             .firstOrNull
             ?.realUrl;
+
+    final keepScreenOn = ref.read(readerKeepScreenOnPrefProvider) == true;
+    useEffect(() {
+      if (keepScreenOn) {
+        pipe.invokeMethod("SCREEN_ON", "1");
+      }
+      return;
+    }, []);
+
+    final showStatusBar = ref.watch(showStatusBarModeProvider);
+    useEffect(() {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: visibility.value ? SystemUiOverlay.values : [
+            if (showStatusBar == true) SystemUiOverlay.top,
+          ]
+      );
+      return;
+    }, [visibility.value]);
+
+    useEffect(() {
+      return () {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+        pipe.invokeMethod("SCREEN_ON", "0");
+      };
+    }, []);
 
     final readDurationTimer = useRef<Timer?>(null);
     useEffect(() {
@@ -136,6 +159,11 @@ class ReaderScreen2 extends HookConsumerWidget {
         }
 
         updateLastRead() async {
+          final lifecycleState = WidgetsBinding.instance.lifecycleState;
+          if (lifecycleState != AppLifecycleState.resumed) {
+            logger.log("skip updateLastRead, app in bg:$lifecycleState");
+            return;
+          }
           final isReadingCompeted = currChapter.read == true ||
               currentPage.pageIndex + 1 >=
                   currChapter.pageCount.ifNullOrNegative(0);
@@ -154,8 +182,7 @@ class ReaderScreen2 extends HookConsumerWidget {
           await AsyncValue.guard(
                   () => mangaBookRepository.chapterModify(input: input));
           if (flush) {
-            chapterListNotifier.refresh();
-            mangaNotifier.refresh();
+            chapterListNotifier.refreshSilently();
           }
           if (isReadingCompeted && currChapter.downloaded == true) {
             autoDeleteService.addToDeleteList(currChapter);
@@ -187,6 +214,8 @@ class ReaderScreen2 extends HookConsumerWidget {
 
       // trigger auto delete
       autoDeleteService.triggerDelete();
+
+      mangaNotifier.refreshSilently();
     });
 
     final swipeRightMode =
@@ -236,6 +265,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 onPageChanged: onPageChanged2,
                                 onNoNextChapter: onNoNextChapter,
                                 scrollDirection: Axis.vertical,
+                                visibility: visibility,
                               );
                             case ReaderMode.singleHorizontalRTL:
                               return PageReaderMode(
@@ -246,6 +276,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 onPageChanged: onPageChanged2,
                                 onNoNextChapter: onNoNextChapter,
                                 reverse: true,
+                                visibility: visibility,
                               );
                             case ReaderMode.continuousHorizontalLTR:
                               return ContinuousReaderMode2(
@@ -256,6 +287,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 onPageChanged: onPageChanged2,
                                 onNoNextChapter: onNoNextChapter,
                                 scrollDirection: Axis.horizontal,
+                                visibility: visibility,
                               );
                             case ReaderMode.continuousHorizontalRTL:
                               return ContinuousReaderMode2(
@@ -267,6 +299,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 onNoNextChapter: onNoNextChapter,
                                 scrollDirection: Axis.horizontal,
                                 reverse: true,
+                                visibility: visibility,
                               );
                             case ReaderMode.singleHorizontalLTR:
                               return PageReaderMode(
@@ -276,6 +309,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
                                 onNoNextChapter: onNoNextChapter,
+                                visibility: visibility,
                               );
                             case ReaderMode.continuousVertical:
                               return ContinuousReaderMode2(
@@ -286,6 +320,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 onPageChanged: onPageChanged2,
                                 onNoNextChapter: onNoNextChapter,
                                 showSeparator: true,
+                                visibility: visibility,
                               );
                             case ReaderMode.webtoon:
                             default:
@@ -296,10 +331,12 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 readerListData: readerListData,
                                 onPageChanged: onPageChanged2,
                                 onNoNextChapter: onNoNextChapter,
+                                visibility: visibility,
                               );
                           }
                         },
                         errorSource: "chapter-details",
+                        mangaId: mangaId,
                         webViewUrlProvider: () async {
                           if (chapterRealUrl?.isNotEmpty == true) {
                             return chapterRealUrl;

@@ -27,6 +27,7 @@ class SourcePreferenceProp with _$SourcePreferenceProp {
     bool? defaultValue,
     bool? currentValue,
     String? defaultValueType,
+    bool? enabled,
   }) = CheckBoxPreference;
 
   const factory SourcePreferenceProp.switchPreferenceCompat({
@@ -36,6 +37,7 @@ class SourcePreferenceProp with _$SourcePreferenceProp {
     bool? defaultValue,
     bool? currentValue,
     String? defaultValueType,
+    bool? enabled,
   }) = SwitchPreferenceCompat;
 
   const factory SourcePreferenceProp.listPreference({
@@ -46,6 +48,7 @@ class SourcePreferenceProp with _$SourcePreferenceProp {
     String? currentValue,
     String? defaultValueType,
     Map<String, String>? entries,
+    bool? enabled,
   }) = ListPreference;
 
   const factory SourcePreferenceProp.multiSelectListPreference({
@@ -56,6 +59,7 @@ class SourcePreferenceProp with _$SourcePreferenceProp {
     List<String>? currentValue,
     String? defaultValueType,
     Map<String, String>? entries,
+    bool? enabled,
   }) = MultiSelectListPreference;
 
   const factory SourcePreferenceProp.editTextPreference({
@@ -68,6 +72,7 @@ class SourcePreferenceProp with _$SourcePreferenceProp {
     String? dialogTitle,
     String? dialogMessage,
     String? text,
+    bool? enabled,
   }) = EditTextPreference;
 
   factory SourcePreferenceProp.fromJson(Map<String, dynamic> json) =>

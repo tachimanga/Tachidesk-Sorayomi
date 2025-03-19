@@ -21,6 +21,7 @@ import '../domain/chapter/chapter_model.dart';
 import '../domain/chapter_batch/chapter_batch_model.dart';
 import '../domain/chapter_patch/chapter_put_model.dart';
 import '../domain/manga/manga_model.dart';
+import '../domain/manga_batch/manga_batch_model.dart';
 
 part 'manga_book_repository.g.dart';
 
@@ -185,6 +186,9 @@ class MangaBookRepository {
         MangaUrl.updateCategory(mangaId),
         data: {"categoryIdList": categoryIdList},
       );
+
+  Future<void> mangaBatchUpdate({MangaBatchInput? input}) =>
+      dioClient.post(MangaUrl.mangaBatch, data: input?.toJson());
 
   //  History
   Future<List<Manga>?> getMangasFromHistory({

@@ -93,6 +93,22 @@ class $AssetsIconsGen {
   AssetGenImage get appIcon31 =>
       const AssetGenImage('assets/icons/AppIcon 31.png');
 
+  /// File path: assets/icons/AppIcon 32 dark.png
+  AssetGenImage get appIcon32Dark =>
+      const AssetGenImage('assets/icons/AppIcon 32 dark.png');
+
+  /// File path: assets/icons/AppIcon 32.png
+  AssetGenImage get appIcon32 =>
+      const AssetGenImage('assets/icons/AppIcon 32.png');
+
+  /// File path: assets/icons/AppIcon 33 dark.png
+  AssetGenImage get appIcon33Dark =>
+      const AssetGenImage('assets/icons/AppIcon 33 dark.png');
+
+  /// File path: assets/icons/AppIcon 33.png
+  AssetGenImage get appIcon33 =>
+      const AssetGenImage('assets/icons/AppIcon 33.png');
+
   /// File path: assets/icons/AppIcon 4.png
   AssetGenImage get appIcon4 =>
       const AssetGenImage('assets/icons/AppIcon 4.png');
@@ -130,46 +146,53 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-        appIcon1,
-        appIcon10,
-        appIcon14,
-        appIcon17,
-        appIcon18,
-        appIcon19,
-        appIcon2,
-        appIcon22,
-        appIcon23,
-        appIcon24,
-        appIcon26,
-        appIcon27,
-        appIcon28,
-        appIcon29,
-        appIcon3,
-        appIcon30,
-        appIcon31,
-        appIcon4,
-        appIcon5,
-        appIcon6,
-        appIcon9,
-        appIcon,
-        lOGOBlack,
-        lOGOWhite,
-        darkIcon,
-        lightIcon
-      ];
+    appIcon1,
+    appIcon10,
+    appIcon14,
+    appIcon17,
+    appIcon18,
+    appIcon19,
+    appIcon2,
+    appIcon22,
+    appIcon23,
+    appIcon24,
+    appIcon26,
+    appIcon27,
+    appIcon28,
+    appIcon29,
+    appIcon3,
+    appIcon30,
+    appIcon31,
+    appIcon32Dark,
+    appIcon32,
+    appIcon33Dark,
+    appIcon33,
+    appIcon4,
+    appIcon5,
+    appIcon6,
+    appIcon9,
+    appIcon,
+    lOGOBlack,
+    lOGOWhite,
+    darkIcon,
+    lightIcon,
+  ];
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const $AssetsDataGen data = $AssetsDataGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
+
+  final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,
@@ -189,10 +212,10 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -224,15 +247,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;

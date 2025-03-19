@@ -79,7 +79,7 @@ class EditMangaCategoryDialog extends HookConsumerWidget {
       ),
       insetPadding:
           const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
-      contentPadding: KEdgeInsets.h8v16.size,
+      contentPadding: KEdgeInsets.h16v8.size,
       actionsPadding: const EdgeInsets.fromLTRB(14, 0, 24, 24),
       actions: [
         Row(
@@ -122,6 +122,8 @@ class EditMangaCategoryDialog extends HookConsumerWidget {
                         children: [
                           for (model.Category category in customCategoryList!)
                             CheckboxListTile(
+                              controlAffinity: ListTileControlAffinity.leading,
+                              contentPadding: EdgeInsets.zero,
                               onChanged: (value) {
                                 final keys = selectedCategoryListState.value;
                                 if (value == true) {

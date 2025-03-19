@@ -46,6 +46,17 @@ enum ReaderMode {
     }
     return toLocale(context);
   }
+
+  static List<ReaderMode> get sortedValues => [
+        defaultReader,
+        singleHorizontalLTR,
+        singleHorizontalRTL,
+        singleVertical,
+        continuousHorizontalLTR,
+        continuousHorizontalRTL,
+        continuousVertical,
+        webtoon,
+      ];
 }
 
 enum ReaderPageLayout {
@@ -397,6 +408,30 @@ enum SwipeRightToGoBackMode {
   }
 }
 
+enum ApplePencilActon {
+  previousPage,
+  nextPage,
+  previousChapter,
+  nextChapter,
+  none,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case ApplePencilActon.previousPage:
+        return context.l10n!.action_previous_page;
+      case ApplePencilActon.nextPage:
+        return context.l10n!.action_next_page;
+      case ApplePencilActon.previousChapter:
+        return context.l10n!.action_previous_chapter;
+      case ApplePencilActon.nextChapter:
+        return context.l10n!.action_next_chapter;
+      case ApplePencilActon.none:
+        return context.l10n!.action_none;
+    }
+  }
+}
+
 // https://api.flutter.dev/flutter/intl/DateFormat-class.html
 // https://en.m.wikipedia.org/wiki/List_of_date_formats_by_country
 enum DateFormatEnum {
@@ -458,5 +493,34 @@ enum TriState {
       return TriState.ignore;
     }
     return value ? TriState.include : TriState.exclude;
+  }
+}
+
+enum SelectMode {
+  between,
+  all,
+  invert,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case SelectMode.between:
+        return context.l10n!.select_between;
+      case SelectMode.all:
+        return context.l10n!.select_all;
+      case SelectMode.invert:
+        return context.l10n!.select_invert;
+    }
+  }
+
+  IconData toIcon() {
+    switch (this) {
+      case SelectMode.between:
+        return Icons.expand;
+      case SelectMode.all:
+        return Icons.select_all_rounded;
+      case SelectMode.invert:
+        return Icons.flip_to_back_rounded;
+    }
   }
 }

@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,4 +30,24 @@ class AutoScrollIntervalPref extends _$AutoScrollIntervalPref
         initial: DBKeys.autoScrollInterval.initial,
         key: DBKeys.autoScrollInterval.name,
       );
+}
+
+@riverpod
+class AutoSmoothScrollIntervalPref extends _$AutoSmoothScrollIntervalPref
+    with SharedPreferenceClientMixin<int> {
+  @override
+  int? build() => initialize(
+        ref,
+        initial: DBKeys.autoSmoothScrollInterval.initial,
+        key: DBKeys.autoSmoothScrollInterval.name,
+      );
+}
+
+int autoScrollTransform(int input) {
+  if (input < 4800) {
+    return input;
+  }
+  // 5~10 to 5~30
+  final x = 0.1 * pow(input / 1000, 2.477);
+  return (x * 1000).toInt();
 }

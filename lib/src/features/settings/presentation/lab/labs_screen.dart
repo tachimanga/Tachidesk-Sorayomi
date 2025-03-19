@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../utils/extensions/custom_extensions.dart';
+import '../../../about/presentation/about/widget/flutter_metal_layer_tile.dart';
 import 'widgets/bg_switch_tile.dart';
 
 class LabsScreen extends ConsumerWidget {
@@ -21,6 +22,7 @@ class LabsScreen extends ConsumerWidget {
       body: ListView(
         children: const [
           BgSwitchTile(),
+          FlutterMetalLayerTile(),
         ],
       ),
     );

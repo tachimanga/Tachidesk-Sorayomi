@@ -24,7 +24,6 @@ abstract class Endpoints {
 
 abstract class SettingsUrl {
   static const String about = '$_settings/about';
-  static const String checkServerUpdate = '$_settings/check-update';
   static const String uploadSettings = '$_settings/uploadSettings';
   static const String clearCookies = '$_settings/clearCookies';
   static const String _settings = "/settings";
@@ -85,6 +84,7 @@ abstract class MangaUrl {
     required String pageIndex,
   }) =>
       "$_manga/$mangaId/chapter/$chapterIndex/page/$pageIndex";
+  static String mangaBatch = "$_manga/batchUpdate";
 
   static const String _manga = "/manga";
 }

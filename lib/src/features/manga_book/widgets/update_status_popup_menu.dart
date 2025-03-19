@@ -22,10 +22,13 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
   const UpdateStatusPopupMenu({
     super.key,
     this.getCategory,
+    this.onTapSelectManga,
     this.showSummaryButton = true,
   });
   final Category? Function()? getCategory;
   final bool showSummaryButton;
+  final Function()? onTapSelectManga;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoryListValue = ref.watch(categoryControllerProvider);
@@ -37,7 +40,18 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
       icon: const Icon(Icons.more_vert_rounded),
       shape: RoundedRectangleBorder(borderRadius: KBorderRadius.r16.radius),
       itemBuilder: (context) {
+        final category = getCategory != null ? getCategory!() : null;
         return [
+          if (category != null && category.id != null && category.id != 0)
+            PopupMenuItem(
+              child: PopupItemWithIconChild(
+                icon: const Icon(Icons.refresh),
+                label: Text(context.l10n!.categoryUpdate),
+              ),
+              onTap: () => ref
+                  .read(updatesRepositoryProvider)
+                  .fetchUpdates(categoryIds: [category.id ?? 0]),
+            ),
           PopupMenuItem(
             onTap: () async {
               categoryListValue.whenOrNull(data: (categoryList) {
@@ -75,6 +89,14 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
               child: PopupItemWithIconChild(
                 icon: const Icon(Icons.info_outline),
                 label: Text(context.l10n!.updatesSummary),
+              ),
+            ),
+          if (onTapSelectManga != null)
+            PopupMenuItem(
+              onTap: onTapSelectManga,
+              child: PopupItemWithIconChild(
+                icon: const Icon(Icons.check_circle_outline),
+                label: Text(context.l10n!.label_select),
               ),
             ),
         ];

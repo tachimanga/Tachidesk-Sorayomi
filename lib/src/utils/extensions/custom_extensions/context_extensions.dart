@@ -14,29 +14,8 @@ extension ContextExtensions on BuildContext {
   ///
   get hideKeyboard => FocusScope.of(this).unfocus();
 
-  ///
-  /// accepts a double [scale] and returns scaled sized based on the screen
-  /// orientation
-  ///
-
-  double get horizontal =>
-      (MediaQuery.of(this).orientation == Orientation.portrait
-          ? MediaQuery.of(this).size.width
-          : MediaQuery.of(this).size.height);
-  double horizontalScale({double scale = 1}) => scale * horizontal;
-
-  ///
-  /// accepts a double [scale] and returns scaled sized based on the screen
-  /// orientation
-  ///
-  double verticalScale({double scale = 1}) => scale * vertical;
-  double get vertical =>
-      (MediaQuery.of(this).orientation == Orientation.landscape
-          ? MediaQuery.of(this).size.width
-          : MediaQuery.of(this).size.height);
-
   /// The same of [MediaQuery.of(context).size]
-  Size get mediaQuerySize => MediaQuery.of(this).size;
+  Size get mediaQuerySize => MediaQuery.sizeOf(this);
 
   /// The same of [MediaQuery.of(context).size.height]
   /// Note: updates when you resize your screen (like on a browser or
@@ -96,7 +75,7 @@ extension ContextExtensions on BuildContext {
       heightTransformer(dividedBy: dividedBy, reducedBy: reducedByH) /
       widthTransformer(dividedBy: dividedBy, reducedBy: reducedByW);
 
-  /// similar to [MediaQuery.of(context).padding]
+  /// similar to [Theme.of(context)]
   ThemeData get theme => Theme.of(this);
 
   /// Check if dark mode theme is enable
@@ -105,23 +84,23 @@ extension ContextExtensions on BuildContext {
   /// give access to context.iconTheme.color
   Color? get iconColor => theme.iconTheme.color;
 
-  /// similar to [MediaQuery.of(context).padding]
+  /// similar to [Theme.of(context).textTheme]
   TextTheme get textTheme => Theme.of(this).textTheme;
 
   /// similar to [MediaQuery.of(context).padding]
-  EdgeInsets get mediaQueryPadding => MediaQuery.of(this).padding;
+  EdgeInsets get mediaQueryPadding => MediaQuery.paddingOf(this);
 
   /// similar to [MediaQuery.of(context).padding]
   MediaQueryData get mediaQuery => MediaQuery.of(this);
 
   /// similar to [MediaQuery.of(context).viewPadding]
-  EdgeInsets get mediaQueryViewPadding => MediaQuery.of(this).viewPadding;
+  EdgeInsets get mediaQueryViewPadding => MediaQuery.viewPaddingOf(this);
 
   /// similar to [MediaQuery.of(context).viewInsets]
-  EdgeInsets get mediaQueryViewInsets => MediaQuery.of(this).viewInsets;
+  EdgeInsets get mediaQueryViewInsets => MediaQuery.viewInsetsOf(this);
 
   /// similar to [MediaQuery.of(context).orientation]
-  Orientation get orientation => MediaQuery.of(this).orientation;
+  Orientation get orientation => MediaQuery.orientationOf(this);
 
   /// check if device is on landscape mode
   bool get isLandscape => orientation == Orientation.landscape;
@@ -130,10 +109,7 @@ extension ContextExtensions on BuildContext {
   bool get isPortrait => orientation == Orientation.portrait;
 
   /// similar to [MediaQuery.of(this).devicePixelRatio]
-  double get devicePixelRatio => MediaQuery.of(this).devicePixelRatio;
-
-  /// similar to [MediaQuery.of(this).textScaleFactor]
-  double get textScaleFactor => MediaQuery.of(this).textScaleFactor;
+  double get devicePixelRatio => MediaQuery.devicePixelRatioOf(this);
 
   /// get the shortestSide from screen
   double get mediaQueryShortestSide => mediaQuerySize.shortestSide;

@@ -70,8 +70,11 @@ class ReaderNavigationLayoutSettingTile extends HookConsumerWidget {
     useEffect(() {
       if (readerNavigationLayout == null ||
           readerNavigationLayout == ReaderNavigationLayout.disabled) {
-        Future.microtask(
-            () => showLayoutDialog(context, ref, readerNavigationLayout));
+        Future.microtask(() {
+          if (context.mounted) {
+            showLayoutDialog(context, ref, readerNavigationLayout);
+          }
+        });
       }
       return;
     }, []);

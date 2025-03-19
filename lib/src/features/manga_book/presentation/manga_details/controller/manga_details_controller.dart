@@ -16,6 +16,7 @@ import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../library/domain/category/category_model.dart';
@@ -54,6 +55,24 @@ class MangaWithId extends _$MangaWithId {
     return result.valueOrNull;
   }
 
+  Future<void> refreshSilently() async {
+    final token = CancelToken();
+    ref.onDispose(token.cancel);
+    final result = await AsyncValue.guard(
+          () => ref.watch(mangaBookRepositoryProvider).getManga(
+        mangaId: mangaId,
+        cancelToken: token,
+        onlineFetch: false,
+      ),
+    );
+    if (result is AsyncError) {
+      log("[flush]MangaWithId refresh error $result");
+      return;
+    }
+    ref.keepAlive();
+    state = result;
+  }
+
   void updateManga(Manga manga) {
     state = AsyncData(manga);
   }
@@ -84,6 +103,24 @@ class MangaChapterList extends _$MangaChapterList {
             onlineFetch: onlineFetch,
           ),
     );
+    ref.keepAlive();
+    state = result;
+  }
+
+  Future<void> refreshSilently() async {
+    final token = CancelToken();
+    ref.onDispose(token.cancel);
+    final result = await AsyncValue.guard(
+          () => ref.read(mangaBookRepositoryProvider).getChapterList(
+        mangaId: mangaId,
+        cancelToken: token,
+        onlineFetch: false,
+      ),
+    );
+    if (result is AsyncError) {
+      log("[flush]MangaChapterList refresh error $result");
+      return;
+    }
     ref.keepAlive();
     state = result;
   }

@@ -111,7 +111,8 @@ class BrowseScreen extends HookConsumerWidget {
             children: [
               TabBar(
                 dividerColor: Colors.transparent,
-                isScrollable: context.isTablet,
+                isScrollable: context.isTablet ? true : false,
+                tabAlignment: context.isTablet ? TabAlignment.center : TabAlignment.fill,
                 controller: tabController,
                 tabs: [
                   Tab(text: context.l10n!.sources),
