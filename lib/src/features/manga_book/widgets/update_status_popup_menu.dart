@@ -8,15 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../constants/app_sizes.dart';
-import '../../../constants/db_keys.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../widgets/popup_Item_with_icon_child.dart';
 import '../../library/domain/category/category_model.dart';
-import '../../library/presentation/category/controller/edit_category_controller.dart';
 import '../data/updates/updates_repository.dart';
-import '../presentation/updates/controller/update_controller.dart';
-import 'select_category_to_update_dialog.dart';
-import 'update_status_summary_sheet_v2.dart';
+import '../presentation/updates/widgets/update_status_summary_sheet_v3.dart';
+import 'update_status_fab.dart';
 
 class UpdateStatusPopupMenu extends ConsumerWidget {
   const UpdateStatusPopupMenu({
@@ -31,11 +28,6 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoryListValue = ref.watch(categoryControllerProvider);
-    final selectedCategoryIds = ref.watch(categoryIdsToUpdatePrefProvider);
-    final alwaysAskSelect = ref.watch(alwaysAskCategoryToUpdatePrefProvider) ??
-        DBKeys.alwaysAskCategoryToUpdate.initial;
-
     return PopupMenuButton(
       icon: const Icon(Icons.more_vert_rounded),
       shape: RoundedRectangleBorder(borderRadius: KBorderRadius.r16.radius),
@@ -53,29 +45,7 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
                   .fetchUpdates(categoryIds: [category.id ?? 0]),
             ),
           PopupMenuItem(
-            onTap: () async {
-              categoryListValue.whenOrNull(data: (categoryList) {
-                if (categoryList == null ||
-                    categoryList.isEmpty ||
-                    categoryList.length == 1) {
-                  ref.read(updatesRepositoryProvider).fetchUpdates();
-                  return;
-                }
-                if (alwaysAskSelect) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => SelectCategoryToUpdateDialog(
-                      onSelectCategory: (List<String> categoryIds) {
-                        fireUpdate(ref, categoryIds);
-                      },
-                    ),
-                  );
-                } else {
-                  fireUpdate(ref, selectedCategoryIds ?? []);
-                }
-                return;
-              });
-            },
+            onTap: () => fireGlobalUpdate(ref),
             child: PopupItemWithIconChild(
               icon: const Icon(Icons.refresh),
               label: Text(context.l10n!.globalUpdate),
@@ -84,7 +54,7 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
           if (showSummaryButton)
             PopupMenuItem(
               onTap: () => Future.microtask(
-                () => showUpdateStatusSummaryBottomSheetV2(context),
+                () => showUpdateStatusSummaryBottomSheetV3(context),
               ),
               child: PopupItemWithIconChild(
                 icon: const Icon(Icons.info_outline),
@@ -102,14 +72,5 @@ class UpdateStatusPopupMenu extends ConsumerWidget {
         ];
       },
     );
-  }
-
-  void fireUpdate(WidgetRef ref, List<String> categoryIds) {
-    if (categoryIds.isEmpty) {
-      ref.read(updatesRepositoryProvider).fetchUpdates();
-    } else {
-      final list = categoryIds.map((e) => int.parse(e)).toList();
-      ref.read(updatesRepositoryProvider).fetchUpdates(categoryIds: list);
-    }
   }
 }

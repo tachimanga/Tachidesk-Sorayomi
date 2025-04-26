@@ -39,7 +39,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     bool skipLoadingOnReload = false,
     String? errorSource,
     String? mangaId,
-    Future<String?> Function()? webViewUrlProvider,
+    UrlFetchInput? urlFetchInput,
   }) {
     if (addScaffoldWrapper) {
       wrapper = (body) => Scaffold(
@@ -56,7 +56,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               error: error,
               src: errorSource,
               mangaId : mangaId,
-              webViewUrlProvider: webViewUrlProvider,
+              urlFetchInput: urlFetchInput,
             )
           : wrapper(CommonErrorWidget(
               refresh: refresh,
@@ -64,7 +64,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               error: error,
               src: errorSource,
               mangaId : mangaId,
-              webViewUrlProvider: webViewUrlProvider,
+              urlFetchInput: urlFetchInput,
             )),
       loading: () => wrapper == null
           ? const CenterCircularProgressIndicator()

@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
+import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
@@ -18,28 +19,6 @@ import '../../../data/updates/updates_repository.dart';
 import '../../../domain/update_status/update_status_model.dart';
 
 part 'update_controller.g.dart';
-
-@riverpod
-class CategoryIdsToUpdatePref extends _$CategoryIdsToUpdatePref
-    with SharedPreferenceClientMixin<List<String>> {
-  @override
-  List<String>? build() => initialize(
-        ref,
-        key: DBKeys.categoryIdsToUpdate.name,
-        initial: DBKeys.categoryIdsToUpdate.initial,
-      );
-}
-
-@riverpod
-class AlwaysAskCategoryToUpdatePref extends _$AlwaysAskCategoryToUpdatePref
-    with SharedPreferenceClientMixin<bool> {
-  @override
-  bool? build() => initialize(
-        ref,
-        key: DBKeys.alwaysAskCategoryToUpdate.name,
-        initial: DBKeys.alwaysAskCategoryToUpdate.initial,
-      );
-}
 
 @riverpod
 class UpdateRunning extends _$UpdateRunning {
@@ -139,5 +118,18 @@ class UpdateScheduleRefreshSignal extends _$UpdateScheduleRefreshSignal {
       _timer?.cancel();
     });
     return 0;
+  }
+}
+
+@riverpod
+class UpdatePageRefreshChapterSignal extends _$UpdatePageRefreshChapterSignal {
+  @override
+  Pair<int, int>? build() => null;
+
+  void update(int chapterId) {
+    state = Pair(
+      first: chapterId,
+      second: DateTime.now().millisecondsSinceEpoch,
+    );
   }
 }

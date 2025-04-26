@@ -9,6 +9,8 @@ part of '../custom_extensions.dart';
 extension IterableExtensions<T> on Iterable<T>? {
   bool get isNull => this == null;
 
+  bool get isNullOrEmpty => isNull || this!.isEmpty;
+
   bool get isBlank => isNull || this!.isEmpty;
 
   bool get isNotBlank => !isBlank;

@@ -4,6 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ import '../../domain/filter/filter_model.dart';
 import '../../domain/manga_page/manga_page.dart';
 import '../../domain/source/source_model.dart';
 import '../../domain/source_preference/source_preference.dart';
+import '../../presentation/source/domain/source_meta_model.dart';
 
 part 'source_repository.g.dart';
 
@@ -155,7 +158,9 @@ class SourceRepository {
       throw context.l10n!.errorFilePick;
     }
     final name = file!.name;
-    if (!(name.endsWith('.zip') || name.endsWith('.cbz') || name.endsWith('.epub'))) {
+    if (!(name.endsWith('.zip') ||
+        name.endsWith('.cbz') ||
+        name.endsWith('.epub'))) {
       throw context.l10n!.errorFilePickUnknownType(".zip");
     }
     return (file.path).isNotBlank
@@ -183,6 +188,40 @@ class SourceRepository {
           "mangaId": mangaId,
         },
       );
+
+  Future<SourceMeta?> queryMeta({
+    required String sourceId,
+    required String key,
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.post<SourceMeta, SourceMeta?>(
+        SourceUrl.queryMeta,
+        data: jsonEncode({
+          "sourceId": sourceId,
+          "key": key,
+        }),
+        decoder: (e) =>
+            e is Map<String, dynamic> ? SourceMeta.fromJson(e) : null,
+        cancelToken: cancelToken,
+      ))
+          .data;
+
+  Future<void> updateMeta({
+    required String sourceId,
+    required String key,
+    required String? value,
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.post(
+        SourceUrl.updateMeta,
+        data: jsonEncode({
+          "sourceId": sourceId,
+          "key": key,
+          "value": value,
+        }),
+        cancelToken: cancelToken,
+      ))
+          .data;
 }
 
 @riverpod

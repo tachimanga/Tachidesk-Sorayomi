@@ -18,7 +18,7 @@ class Filter with _$Filter {
   factory Filter({
     String? type,
     @JsonKey(readValue: Filter.filterFromJson, name: 'filter')
-        FilterState? filterState,
+    FilterState? filterState,
   }) = _Filter;
 
   factory Filter.fromJson(Map<String, dynamic> json) => _$FilterFromJson(json);
@@ -69,4 +69,15 @@ class Filter with _$Filter {
     }
     return json.encode(value);
   }
+}
+
+@freezed
+class FilterChange with _$FilterChange {
+  factory FilterChange({
+    int? position,
+    String? state,
+  }) = _FilterChange;
+
+  factory FilterChange.fromJson(Map<String, dynamic> json) =>
+      _$FilterChangeFromJson(json);
 }

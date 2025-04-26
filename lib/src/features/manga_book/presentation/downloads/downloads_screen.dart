@@ -51,6 +51,8 @@ class DownloadsScreen extends HookConsumerWidget {
     final magic = ref.watch(getMagicProvider);
     final pipe = ref.watch(getMagicPipeProvider);
 
+    refresh() => ref.invalidate(downloadsSocketProvider);
+
     useEffect(() {
       pipe.invokeMethod("SCREEN_ON", "1");
       pipe.invokeMethod("DOWNLOAD:SPEED:START");
@@ -161,7 +163,13 @@ class DownloadsScreen extends HookConsumerWidget {
           context,
           (data) {
             if (data.queue == null) {
-              return Emoticons(text: context.l10n!.errorSomethingWentWrong);
+              return Emoticons(
+                text: context.l10n!.errorSomethingWentWrong,
+                button: TextButton(
+                  onPressed: refresh,
+                  child: Text(context.l10n!.refresh),
+                ),
+              );
             } else if (data.queue!.isEmpty) {
               return Emoticons(
                 text: context.l10n!.noDownloads,
@@ -187,6 +195,7 @@ class DownloadsScreen extends HookConsumerWidget {
             }
           },
           showGenericError: true,
+          refresh: refresh,
         ))
       ]),
     );

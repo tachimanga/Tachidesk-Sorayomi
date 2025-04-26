@@ -1,0 +1,1454 @@
+{
+  "inLibrary": "U biblijatécy",
+  "@inLibrary": {
+    "description": "Button and Chip text to show that the manga is in Library"
+  },
+  "library": "Biblijatéka",
+  "@library": {
+    "description": "Screen title and Button text of Library and Library Settings screen"
+  },
+  "manga": "Mánga",
+  "@manga": {
+    "description": "Screen title and Button text of Manga details screen"
+  },
+  "about": "Daviédka",
+  "@about": {
+    "description": "Screen title and Button text of About screen"
+  },
+  "extensionListEmpty": "Śpís pašyréńniaŭ pustý",
+  "@extensionListEmpty": {
+    "description": "Description to show that Extension list is empty in Extension list tab of Browse screen"
+  },
+  "cancel": "Skasaváć",
+  "@cancel": {
+    "description": "Text for Cancel button in a Popup"
+  },
+  "chapterSortFetchedDate": "Pá dácie atrymáńnia",
+  "@chapterSortFetchedDate": {
+    "description": "Radio button text for sort by Fetched Date"
+  },
+  "addCategory": "Dadáć katehóryju",
+  "@addCategory": {
+    "description": "Popup title and Button text to add new category in Edit Category Screen"
+  },
+  "addToLibrary": "Dadáć u biblijatéku",
+  "@addToLibrary": {
+    "description": "Button text to add Manga to Library in Manga Details Screen"
+  },
+  "appLanguage": "Móva pragrámy",
+  "@appLanguage": {
+    "description": "Popup title and Button text to change App Language"
+  },
+  "appTheme": "Téma pragrámy",
+  "@appTheme": {
+    "description": "Popup title and Button text to change App Theme"
+  },
+  "appearance": "Źniéšni výhlad",
+  "@appearance": {
+    "description": "Screen title and Button text of Appearance screen"
+  },
+  "backup": "Rezervóvyja kópiji j adnaŭléńnie",
+  "@backup": {
+    "description": "Screen title and Button text of Backup & Restore screen"
+  },
+  "badges": "Značkí",
+  "@badges": {
+    "description": "Checkbox Group title to enable Badges on manga Cover in Library Screen"
+  },
+  "bookmarked": "Zakłádzienyja",
+  "@bookmarked": {
+    "description": "Checkbox text to filter bookmarked manga chapters in Manga Details screen"
+  },
+  "categories": "Katehóryji",
+  "@categories": {
+    "description": "Button text of edit Categories screen in Library settings screen"
+  },
+  "categoryUpdate": "Abnaŭléńnie katehóryji",
+  "@categoryUpdate": {
+    "description": "Button text to update the mangas in the Category"
+  },
+  "chapterNumber": "Raździéł {number}",
+  "@chapterNumber": {
+    "description": "Text title for Chapter name in chapter list",
+    "placeholders": {
+      "number": {
+        "example": "12.5",
+        "type": "double"
+      }
+    }
+  },
+  "chapterSortSource": "Pá krynícach",
+  "@chapterSortSource": {
+    "description": "Radio button text for sort by Source"
+  },
+  "clientVersion": "Vérsyja klijénta",
+  "@clientVersion": {
+    "description": "Text title for the current version of the client in About screen"
+  },
+  "close": "Zakrýć",
+  "@close": {
+    "description": "Text for close button"
+  },
+  "completed": "Zaviéršana",
+  "@completed": {
+    "description": "Checkbox text to filter Completed mangas in Library screen and Manga Grouping text in Update Summary screen"
+  },
+  "copyMsg": "'{msg}' Skapijaváva!",
+  "@copyMsg": {
+    "description": "Toast text to show that the message has been copied",
+    "placeholders": {
+      "msg": {
+        "example": "Client : Tachidesk Sorayomi",
+        "type": "String"
+      }
+    }
+  },
+  "delete": "Výdalić",
+  "@delete": {
+    "description": "Text for delete button"
+  },
+  "deleteCategoryDescription": "Héta abjadnáje ŭsiú mánhu ŭ hétaj katehóryji z katehóryjaj pá zmaŭčáńni!",
+  "@deleteCategoryDescription": {
+    "description": "Popup description when deleting Category"
+  },
+  "deleteCategoryTitle": "Vý ŭpéŭnienyja?",
+  "@deleteCategoryTitle": {
+    "description": "Popup title when deleting Category"
+  },
+  "discord": "Discord",
+  "@discord": {
+    "description": "Discord app title"
+  },
+  "display": "Pakáz",
+  "@display": {
+    "description": "Text for Display tab in Library screen drawer"
+  },
+  "displayMode": "Rezým pakázu",
+  "@displayMode": {
+    "description": "Radio Group title to change manga Cover display in Library and Source Screens"
+  },
+  "displayModeDescriptiveList": "Apisálny śpís",
+  "@displayModeDescriptiveList": {
+    "description": "Radio button text for Manga Cover display mode - Descriptive List"
+  },
+  "displayModeList": "Śpís",
+  "@displayModeList": {
+    "description": "Radio button text for Manga Cover display mode - List"
+  },
+  "downloads": "Spampóŭki",
+  "@downloads": {
+    "description": "Screen title and Navigation text of Downloads screen"
+  },
+  "edit": "Redahaváć",
+  "@edit": {
+    "description": "Popup button text to edit Category in Edit category screen"
+  },
+  "editCategory": "Redahaváć katehóryju",
+  "@editCategory": {
+    "description": "Screen title, Button text and  of Downloads screen"
+  },
+  "emptyCategory": "Názva katehóryji niá móža býć pustój",
+  "@emptyCategory": {
+    "description": "Description to show that category list is empty in Edit Category screen"
+  },
+  "errorFilePick": "Fájł nié abrány!",
+  "@errorFilePick": {
+    "description": "Error Description to show when user does not selected an file"
+  },
+  "errorFilePickUnknownExtension": "Kalí łáska, abiarýcie fájl z pašyréńniem {extensionName}",
+  "@errorFilePickUnknownExtension": {
+    "description": "Error Description to show when user selected unknown extension file"
+  },
+  "errorLaunchURL": "Nié ŭdałósia adkrýć!\nKapijaváńnie \"{url}\" u búfar pamiénu",
+  "@errorLaunchURL": {
+    "description": "Error Description to show when App failed to launch an URL and copied the URL to clipboard",
+    "placeholders": {
+      "url": {
+        "example": "http://sorayomi.suwayomi.org",
+        "type": "String"
+      }
+    }
+  },
+  "errorSomethingWentWrong": "Štóści pajšłó niá ták!",
+  "@errorSomethingWentWrong": {
+    "description": "Error Description to show that Something went wrong!"
+  },
+  "extensionInstalled": "Pašyréńnie ŭstalavánaje!",
+  "@extensionInstalled": {
+    "description": "Toast text to show that the Extension Installed successfully"
+  },
+  "extensions": "Pašyréńni",
+  "@extensions": {
+    "description": "Extension list Tab title in Browse Screen"
+  },
+  "failed": "Nié atrymáłasia",
+  "@failed": {
+    "description": "Failed status Manga Group title in Update Summary Screen"
+  },
+  "filter": "Fíltar",
+  "@filter": {
+    "description": "title of filter Tab across the app"
+  },
+  "general": "Ahúlny",
+  "@general": {
+    "description": "Screen title and Button text of General setting screen"
+  },
+  "globalSearch": "Glabálny póšuk",
+  "@globalSearch": {
+    "description": "Screen title of Global Search screen"
+  },
+  "install": "Dadáć",
+  "@install": {
+    "description": "Button text to install the extension"
+  },
+  "installing": "Dadáńnie",
+  "@installing": {
+    "description": "Button text to show that the extension is installing"
+  },
+  "mangaGridSize": "Pamiér siétki mángi",
+  "@mangaGridSize": {
+    "description": "Popup title and Button text to change Manga Grid size"
+  },
+  "mangaSortAlphabetical": "U alfabétnym parádku",
+  "@mangaSortAlphabetical": {
+    "description": "Radio button text for Manga sort Type - Alphabetical"
+  },
+  "appTitle": "Tachimanga",
+  "@appTitle": {
+    "description": "Name of the app (Tachidesk Sorayomi in native script)"
+  },
+  "browse": "Ahlád",
+  "@browse": {
+    "description": "Screen title, Navigation Bar text and Button text of both Browse screen and Browse Settings Screen"
+  },
+  "errorExtension": "Nié atrýmlivajecca znajścí abránaje pašyréńnie",
+  "@errorExtension": {
+    "description": "Error Description to show when user selected unknown extension from list"
+  },
+  "languages": "Móvy",
+  "@languages": {
+    "description": "Popup title to filter extensions based on language"
+  },
+  "client": "Klijént",
+  "@client": {
+    "description": "Text title for the name of the client in About screen"
+  },
+  "installingExtension": "Dadáńnie pašyréńnia",
+  "@installingExtension": {
+    "description": "Toast text to show that the extension is installing"
+  },
+  "gitHub": "GitHub",
+  "@gitHub": {
+    "description": "GitHub app title"
+  },
+  "downloaded": "Spampavánaje",
+  "@downloaded": {
+    "description": "Text to show downloaded chapters status in Filters  "
+  },
+  "globalUpdate": "Glabálnaje abnaŭléńnie",
+  "@globalUpdate": {
+    "description": "Button text of Global Manga Update"
+  },
+  "help": "Dapamóha",
+  "@help": {
+    "description": "Button text of help in about screen"
+  },
+  "current": "Biahúčy",
+  "@current": {
+    "description": "Text to show the currently reading chapter in Reader Screen"
+  },
+  "mangaSortDateAdded": "Pá dácie dadáńnia",
+  "@mangaSortDateAdded": {
+    "description": "Radio button text for Manga sort Type - Date Added"
+  },
+  "defaultCategory": "Katehóryja pá zmaŭčáńni prý dadáńni nóvaj mánhi ŭ biblijatéku",
+  "@defaultCategory": {
+    "description": "Checkbox description when creating a Category to add manga to the Category by Default"
+  },
+  "displayModeGrid": "Siétka",
+  "@displayModeGrid": {
+    "description": "Radio button text for Manga Cover display mode - Grid"
+  },
+  "finished": "Skónčany",
+  "@finished": {
+    "description": "Text to show the Currently Finished reading chapter in Reader Screen"
+  },
+  "mangaSortUnread": "Niepračytánaje",
+  "@mangaSortUnread": {
+    "description": "Radio button text for Manga sort Type - Unread"
+  },
+  "mangaStatusCancelled": "Skasavána",
+  "@mangaStatusCancelled": {
+    "description": "Text to show Manga Status Cancelled in Manga details screen"
+  },
+  "mangaSortLastRead": "Apóšniaje čytáńnie",
+  "@mangaSortLastRead": {
+    "description": "Radio button text for Manga sort Type - Last Read"
+  },
+  "mangaStatusCompleted": "Zaviéršana",
+  "@mangaStatusCompleted": {
+    "description": "Text to show Manga Status Completed in Manga details screen"
+  },
+  "mangaStatusLicensed": "Licenzavána",
+  "@mangaStatusLicensed": {
+    "description": "Text to show Manga Status Licensed in Manga details screen"
+  },
+  "mangaStatusOnHiatus": "Spýnieny",
+  "@mangaStatusOnHiatus": {
+    "description": "Text to show Manga Status On Hiatus in Manga details screen"
+  },
+  "mangaStatusOngoing": "Vychódzić",
+  "@mangaStatusOngoing": {
+    "description": "Text to show Manga Status Ongoing in Manga details screen"
+  },
+  "mangaStatusPublishingFinished": "Výpusk zaviéršany",
+  "@mangaStatusPublishingFinished": {
+    "description": "Text to show Manga Status Publishing Finished in Manga details screen"
+  },
+  "mangaStatusUnknown": "Nieviadóma",
+  "@mangaStatusUnknown": {
+    "description": "Text to show Manga Status Unknown in Manga details screen"
+  },
+  "more": "Bólš",
+  "@more": {
+    "description": "Screen title and Navigation text of More screen"
+  },
+  "moveToBottom": "Pierasúnuć uníz",
+  "@moveToBottom": {
+    "description": "Button text to move download/category to the bottom of list"
+  },
+  "moveToTop": "Pierasúnuć uviérch",
+  "@moveToTop": {
+    "description": "Button text to move download/category to the top of list"
+  },
+  "nameCountDisplay": "{name}: {count}",
+  "@nameCountDisplay": {
+    "description": "Text pattern to display an name and count in a string",
+    "placeholders": {
+      "name": {
+        "example": "Downloaded",
+        "type": "String"
+      },
+      "count": {
+        "example": "22",
+        "type": "int"
+      }
+    }
+  },
+  "newUpdateAvailable": "Dastúpna abnaŭléńnie",
+  "@newUpdateAvailable": {
+    "description": "Popup title to show that the App/Server has and update"
+  },
+  "noCategoriesFound": "U vás niamá anivódnaj katehóryji.",
+  "@noCategoriesFound": {
+    "description": "Hint text to add new Category when category list is empty"
+  },
+  "noCategoryMangaFound": "Katehóryja pustája",
+  "@noCategoryMangaFound": {
+    "description": "Hint text to check filter when manga list is empty in Category tab in Library"
+  },
+  "noChaptersFound": "Raździéły niá znójdzienyja",
+  "@noChaptersFound": {
+    "description": "Text to show that the Chapter list is empty in Manga details Screen"
+  },
+  "noDownloads": "Niamá spampóŭkaŭ",
+  "@noDownloads": {
+    "description": "Text to show that there is no active downloads in Downloads Screen"
+  },
+  "noMangaFound": "Mánga niá znójdzienaja",
+  "@noMangaFound": {
+    "description": "Text to show that the Manga list is empty"
+  },
+  "noResultFound": "Aničóha niá znójdziena",
+  "@noResultFound": {
+    "description": "Text to show that no results found for the given search query"
+  },
+  "noSourcesFound": "Krynícy niá znójdzienyja",
+  "@noSourcesFound": {
+    "description": "Text to show that the Source list is empty"
+  },
+  "noUpdatesAvailable": "Vý karystájeciesia apóšniaj vérsyjaj",
+  "@noUpdatesAvailable": {
+    "description": "Text to show that the user is using the latest version of the app"
+  },
+  "noUpdatesFound": "Niamá nóvych raździéłaŭ",
+  "@noUpdatesFound": {
+    "description": "Toast Text to show that there are no Updates available"
+  },
+  "nsfw": "Pakázvać NSFW pašyréńni j krynícy",
+  "@nsfw": {
+    "description": "Switch text to show/hide the nsfw extensions"
+  },
+  "nsfw18": "18+",
+  "@nsfw18": {
+    "description": "18+ tag Text to show in extensions list"
+  },
+  "numSelected": "{num} Abrána",
+  "@numSelected": {
+    "description": "Title text to show the number of chapters selected in the Manga details screen and Updates screen",
+    "placeholders": {
+      "num": {
+        "example": "23",
+        "type": "int"
+      }
+    }
+  },
+  "obsolete": "Sastaréła",
+  "@obsolete": {
+    "description": "Text to show that the extension has become Obsolete"
+  },
+  "pause": "Páŭza",
+  "@pause": {
+    "description": "Button text to pause downloads"
+  },
+  "pending": "Čakańnie",
+  "@pending": {
+    "description": "Pending status Manga Group title in Update Summary Screen"
+  },
+  "reader": "Čytáč",
+  "@reader": {
+    "description": "Screen title and Button text of Reader screen"
+  },
+  "readerMode": "Režým čytáńnia",
+  "@readerMode": {
+    "description": "Popup title and Button text of Reader Mode popup"
+  },
+  "readerModeContinuousHorizontalLTR": "Bieśpierapýnna (źléva napráva)",
+  "@readerModeContinuousHorizontalLTR": {
+    "description": "Radio button text for Reader Mode Type - Continuous Horizontal (LTR)"
+  },
+  "readerModeContinuousVertical": "Bieśpierapýnna (vertykálna)",
+  "@readerModeContinuousVertical": {
+    "description": "Radio button text for Reader Mode Type - Continuous Vertical"
+  },
+  "readerModeDefaultReader": "Pá zmaŭčáńni",
+  "@readerModeDefaultReader": {
+    "description": "Radio button text for Reader Mode Type - Default"
+  },
+  "readerModeSingleHorizontalRTL": "Starónkavy (správa naléva)",
+  "@readerModeSingleHorizontalRTL": {
+    "description": "Radio button text for Reader Mode Type - Single Horizontal (RTL)"
+  },
+  "readerNavigationLayoutDefault": "Pá zmaŭčáńni",
+  "@readerNavigationLayoutDefault": {
+    "description": "Radio button text for Reader Navigation Layout - Default"
+  },
+  "readerNavigationLayoutDisabled": "Adklúčana",
+  "@readerNavigationLayoutDisabled": {
+    "description": "Radio button text for Reader Navigation Layout - Disabled"
+  },
+  "readerNavigationLayoutEdge": "Kráj",
+  "@readerNavigationLayoutEdge": {
+    "description": "Radio button text for Reader Navigation Layout - Edge"
+  },
+  "readerNavigationLayout": "Nacisknýja zóny",
+  "@readerNavigationLayout": {
+    "description": "Popup title and Button text of Reader Navigation Layout popup"
+  },
+  "readerNavigationLayoutKindlish": "U stýli Kindle",
+  "@readerNavigationLayoutKindlish": {
+    "description": "Radio button text for Reader Navigation Layout - Kindle-ish"
+  },
+  "readerNavigationLayoutLShaped": "L-vobrázny",
+  "@readerNavigationLayoutLShaped": {
+    "description": "Radio button text for Reader Navigation Layout - L Shaped"
+  },
+  "readerNavigationLayoutRightAndLeft": "Správa j źléva",
+  "@readerNavigationLayoutRightAndLeft": {
+    "description": "Radio button text for Reader Navigation Layout - Right And Left"
+  },
+  "readerPadding": "Vódstup čytačá",
+  "@readerPadding": {
+    "description": "Slider title text for Reader Padding"
+  },
+  "refresh": "Abnavíć",
+  "@refresh": {
+    "description": "Refresh button text"
+  },
+  "retry": "Paŭtarýć",
+  "@retry": {
+    "description": "Retry Button Text"
+  },
+  "running": "Zapúščany",
+  "@running": {
+    "description": "Running status Manga Group title in Update Summary Screen"
+  },
+  "sourceTypeFilter": "Fíltar",
+  "@sourceTypeFilter": {
+    "description": "Tab text Filter for source screen type"
+  },
+  "sourceTypeLatest": "Apóšniaje",
+  "@sourceTypeLatest": {
+    "description": "Tab text Latest for source screen type"
+  },
+  "sourceTypePopular": "Papulárnaje",
+  "@sourceTypePopular": {
+    "description": "Tab text Popular for source screen type"
+  },
+  "sources": "Krynícy",
+  "@sources": {
+    "description": "title of Sources Tab in Browse Screen"
+  },
+  "start": "Pačáć",
+  "@start": {
+    "description": "Button text start reading the manga"
+  },
+  "themeModeDark": "Ciómny",
+  "@themeModeDark": {
+    "description": "Radio button text for App theme - Dark"
+  },
+  "themeModeLight": "Śviétły",
+  "@themeModeLight": {
+    "description": "Radio button text for App theme - Light"
+  },
+  "themeModeSystem": "Systémny",
+  "@themeModeSystem": {
+    "description": "Radio button text for App theme - System"
+  },
+  "uninstall": "Výdalić",
+  "@uninstall": {
+    "description": "Button text to Uninstall the extension"
+  },
+  "unknownAuthor": "Nieviadómy áŭtar",
+  "@unknownAuthor": {
+    "description": "Text to show unknown author in Manga details screen"
+  },
+  "unread": "Niepračytánaje",
+  "@unread": {
+    "description": "Checkbox text to unread bookmarked manga/chapters across app"
+  },
+  "update": "Abnavíć",
+  "@update": {
+    "description": "Button text to update the extension"
+  },
+  "updates": "Abnaŭléńni",
+  "@updates": {
+    "description": "Screen title and Button text of Updates screen"
+  },
+  "updatesSummary": "Spravazdáča abnaŭléńniaŭ",
+  "@updatesSummary": {
+    "description": "Screen title and Button text of Updates Summary screen"
+  },
+  "updating": "Abnaŭlájecca",
+  "@updating": {
+    "description": "Button text to show that the extension is updating"
+  },
+  "webView": "Véb-prahlád",
+  "@webView": {
+    "description": "Button text to open manga website"
+  },
+  "whatsNew": "Štó nóvaha?",
+  "@whatsNew": {
+    "description": "Button text to open whats new page of app in web"
+  },
+  "getPremium": "Atrymáć Prémijum",
+  "@getPremium": {},
+  "alreadyGetPremium": "Prémijum nabýty",
+  "@alreadyGetPremium": {},
+  "purchaseExpireAt": "Prémijum-padpíska aŭtamatýčna praciáhniecca {date}.",
+  "@purchaseExpireAt": {},
+  "iapFaq": "ČáPy",
+  "@iapFaq": {},
+  "restorePurchase": "Adnavíć pakúpku",
+  "@restorePurchase": {},
+  "share": "Abahulíć",
+  "@share": {},
+  "discordServer": "Discord-sérver",
+  "@discordServer": {},
+  "externalRepository": "Nałády pašyréńnia",
+  "@externalRepository": {},
+  "externalRepositoryUrl": "URL-ádras repazytára pašyréńniaŭ",
+  "@externalRepositoryUrl": {},
+  "history": "Históryja",
+  "@history": {},
+  "clearCookies": "Ačýścić fájły \"Cookie\"",
+  "@clearCookies": {},
+  "clearCache": "Ačýścić kéš",
+  "@clearCache": {},
+  "termsUrl": "Umóvy vykarystáńnia",
+  "@termsUrl": {},
+  "privacyUrl": "Palítyka pryvátnaści",
+  "@privacyUrl": {},
+  "recentlyDownloaded": "Niadáŭna spampavána",
+  "@recentlyDownloaded": {},
+  "tracking": "Adsóčvańnie",
+  "@tracking": {},
+  "downloadFailed": "Pamýłka spampóŭki",
+  "@downloadFailed": {},
+  "downloadTip": "Padkázka: Nacíśnicie knópku adkryćciá, káb praviéryć, cí právilna janá adlustróŭvajecca.",
+  "@downloadTip": {},
+  "open": "Adkrýć",
+  "@open": {},
+  "remove": "Výdalić",
+  "@remove": {},
+  "logout": "Výjści",
+  "@logout": {},
+  "addTracking": "Dadáć adsóčvańnie",
+  "@addTracking": {},
+  "openInBrowser": "Adkrýć u bráŭzary",
+  "@openInBrowser": {},
+  "processing": "Apracóŭka...",
+  "@processing": {},
+  "trackingStatus": "Státus",
+  "@trackingStatus": {},
+  "trackingStatusReading": "Čytáju",
+  "@trackingStatusReading": {},
+  "trackingStatusPlanToRead": "Planúju čytáć",
+  "@trackingStatusPlanToRead": {},
+  "trackingStatusCompleted": "Zaviéršana",
+  "@trackingStatusCompleted": {},
+  "trackingStatusRereading": "Pieračýtvaju",
+  "@trackingStatusRereading": {},
+  "trackingChapter": "Raździéł",
+  "@trackingChapter": {},
+  "trackingScore": "Acénka",
+  "@trackingScore": {},
+  "trackingStartDate": "Dáta pačátku",
+  "@trackingStartDate": {},
+  "trackingFinishDate": "Dáta zakančéńnia",
+  "@trackingFinishDate": {},
+  "operationFailTip": "Nié ŭdałósia výkanać aperácyju. Kalí łáska, pasprabújcie jaščé ráz.",
+  "@operationFailTip": {},
+  "readerModeSingleHorizontalLTR": "Starónkavy (źléva napráva)",
+  "@readerModeSingleHorizontalLTR": {
+    "description": "Radio button text for Reader Mode Type - Single Horizontal (LTR)"
+  },
+  "readerModeContinuousHorizontalRTL": "Bieśpierapýnna (správa naléva)",
+  "@readerModeContinuousHorizontalRTL": {
+    "description": "Radio button text for Reader Mode Type - Continuous Horizontal (RTL)"
+  },
+  "updateCompleted": "Abnaŭléńnie zaviéršanaje",
+  "@updateCompleted": {
+    "description": "Button text to show that extension update is completed"
+  },
+  "readerModeSingleVertical": "Starónkavy (vertykálna)",
+  "@readerModeSingleVertical": {
+    "description": "Radio button text for Reader Mode Type - Single Vertical"
+  },
+  "noCategoriesFoundAlt": "U vás niamá anivódnaj katehóryji. \nStvarýcie adnú ŭ nałádach dlá arganizácyji vášaj biblijatéki",
+  "@noCategoriesFoundAlt": {
+    "description": "Hint text to add new Category in Settings when category list is empty"
+  },
+  "unknownSource": "Nieviadómaja kryníca",
+  "@unknownSource": {
+    "description": "Text to show unknown Source in Manga details screen"
+  },
+  "trackingStatusDropped": "Kínuta",
+  "@trackingStatusDropped": {},
+  "noOfChapters": "{count} Raździełaŭ",
+  "@noOfChapters": {
+    "description": "Title text to show the number of chapters in the Manga details screen",
+    "placeholders": {
+      "count": {
+        "example": "23",
+        "type": "int"
+      }
+    }
+  },
+  "nsfwInfo": "Héta nié pieraškadžáje nieaficýjnym albó patencýjna niaprávilna paznáčanym pašyréńniam pakázvać źmiéściva NSFW(18+) u pragrámie",
+  "@nsfwInfo": {
+    "description": "Hint text to show that the nsfw switch cannot prevent incorrectly flagged extensions from surfacing"
+  },
+  "save": "Zachaváć",
+  "@save": {
+    "description": "Save Button Text"
+  },
+  "page": "Starónka: {number}",
+  "@page": {
+    "description": "Text to show the last read Page number of the chapter in Manga details screen",
+    "placeholders": {
+      "number": {
+        "example": "23",
+        "type": "int"
+      }
+    }
+  },
+  "errorMessageFrom": "Pamýłka: {text}",
+  "@errorMessageFrom": {},
+  "readerModeWebtoon": "Vebtún (Webtoon)",
+  "@readerModeWebtoon": {
+    "description": "Radio button text for Reader Mode Type - Webtoon"
+  },
+  "logoutFrom": "Výjści z {text}",
+  "@logoutFrom": {},
+  "settings": "Nałády",
+  "@settings": {
+    "description": "Screen title and Button text of Settings screen"
+  },
+  "readerNavigationLayoutInvert": "Invertaváć nacisknýja zóny",
+  "@readerNavigationLayoutInvert": {
+    "description": "Switch title to invert Tap to scroll in reader screen"
+  },
+  "reset": "Skínuć",
+  "@reset": {
+    "description": "Button text of reset button in source filters"
+  },
+  "sort": "Sartaváć",
+  "@sort": {
+    "description": "title of sort Tab across the app"
+  },
+  "externalRepositoryUrlShort": "URL-ádras repazytára pašyréńniaŭ",
+  "@externalRepositoryUrlShort": {},
+  "resume": "Praciáhnuć",
+  "@resume": {
+    "description": "Button Text to resume Chapter reading/downloading"
+  },
+  "search": "Póšuk",
+  "@search": {
+    "description": "Search field hint Text"
+  },
+  "uninstalling": "Vydaléńnie",
+  "@uninstalling": {
+    "description": "Button text to show that the extension is uninstalling"
+  },
+  "source": "Kryníca",
+  "@source": {
+    "description": "Screen title and Button text of source screen"
+  },
+  "ok": "OK",
+  "@ok": {},
+  "unknownManga": "Nieviadómaja mánga",
+  "@unknownManga": {
+    "description": "Text to show unknown manga in Manga details screen"
+  },
+  "trackingStatusOnHold": "Adkłádziena",
+  "@trackingStatusOnHold": {},
+  "createBackupTitle": "Stvarýć rezervóvuju kópiju",
+  "@createBackupTitle": {
+    "description": "Button text to create backup"
+  },
+  "createBackupDescription": "Móžna výkarystać dlá adnaŭléńnia biahúčaj biblijatéki.",
+  "@createBackupDescription": {
+    "description": "Button text description to create backup"
+  },
+  "backupCreated": "Rezervóvaja kópija stvóranaja!",
+  "@backupCreated": {},
+  "restoreBackupDescription": "Adnavíć biblijatéku z rezervóvaj kópiji",
+  "@restoreBackupDescription": {
+    "description": "Button text description to create backup"
+  },
+  "restoring": "Adnaŭléńnie rezervóvaj kópiji",
+  "@restoring": {
+    "description": "Toast Text to show that the backup is restoring"
+  },
+  "restored": "Rezervóvaja kópija paśpiachóva adnóŭlenaja!",
+  "@restored": {
+    "description": "Toast Text to show that the backup has been restored"
+  },
+  "autoBackupSectionTitle": "Aŭtamatýčnaje rezervóvaje kapijaváńnie",
+  "@autoBackupSectionTitle": {},
+  "backupNamePrefixNormal": "Rezervóvaja kópija",
+  "@backupNamePrefixNormal": {},
+  "backupNamePrefixAuto": "Aŭtamatýčnaje rezervóvaje kapijaváńnie",
+  "@backupNamePrefixAuto": {},
+  "importConfirmTitle": "Jympartaváć rezervóvuju kópiju Tachiyomi?",
+  "@importConfirmTitle": {},
+  "autoBackupTip": "Piérad adnaŭléńniem z rezervóvaj kópiji aŭtamatýčna stvarýć nóvuju rezervóvuju kópiju.",
+  "@autoBackupTip": {},
+  "imported": "Rezervóvaja kópija jympartavánaja!",
+  "@imported": {},
+  "restoreSuccessTip": "Rezervóvaja kópija paśpiachóva adnóŭlenaja. Źmianiéńni nabúduć móc paślá pierazápusku pragrámy.",
+  "@restoreSuccessTip": {},
+  "importSuccessTip": "Rezervóvaja kópija paśpiachóva jympartavánaja. Źmiény nabúduć móc paślá pierazápusku pragrámy.",
+  "@importSuccessTip": {},
+  "restartApp": "Pierazapuścíć pragrámu",
+  "@restartApp": {},
+  "confirm": "Śćviérdzić",
+  "@confirm": {},
+  "noNextChapter": "Nastúpnaha raździéłu niamá",
+  "@noNextChapter": {},
+  "readerScrollAnimation": "Animácyja pierachódaŭ starónak",
+  "@readerScrollAnimation": {},
+  "doubleTapZoomIn": "Dvójčy nacíśnuć, káb pavialíčyć",
+  "@doubleTapZoomIn": {},
+  "allScanlators": "Usié Skanátary (Scanlators)",
+  "@allScanlators": {},
+  "scanlators": "Skanátary (Scanlators)",
+  "@scanlators": {},
+  "mangaSortLatestChapterFetch": "Dáta atrymáńnia raździéłu",
+  "@mangaSortLatestChapterFetch": {},
+  "onlySearchPinSource": "Šukáć tólki ŭ zamacaványch krynícach",
+  "@onlySearchPinSource": {},
+  "prevPage": "Papiarédni",
+  "@prevPage": {},
+  "nextPage": "Nastúpny",
+  "@nextPage": {},
+  "leftPage": "Naléva",
+  "@leftPage": {},
+  "rightPage": "Napráva",
+  "@rightPage": {},
+  "byPassStart": "Sprabújem abyjścí Cloudflare",
+  "@byPassStart": {},
+  "byPassSuccess": "Cloudflare paśpiachóva abýdzieny",
+  "@byPassSuccess": {},
+  "byPassTimeout": "Nié ŭdałósia abyjścí Cloudflare",
+  "@byPassTimeout": {},
+  "byPassCancel": "Karystálnik skasaváŭ abychód Cloudflare",
+  "@byPassCancel": {},
+  "imageSaveSuccess": "Vidarýs paśpiachóva zachavány.",
+  "@imageSaveSuccess": {},
+  "imageFileFetchFail": "Nié ŭdałósia spampaváć vidarýs.",
+  "@imageFileFetchFail": {},
+  "imageSaveWatermarkSwitch": "Zachóŭvać i abahuláć vidarýs z vadzianým znákam",
+  "@imageSaveWatermarkSwitch": {},
+  "mangaShareText": "{title} ád {author} {link}\nAbahúlena z Tachimanga",
+  "@mangaShareText": {},
+  "theme_default": "Pá zmaŭčáńni",
+  "@theme_default": {},
+  "theme_monet": "Dynamíčny",
+  "@theme_monet": {},
+  "theme_greenapple": "Zialóny jábłyk",
+  "@theme_greenapple": {},
+  "theme_lavender": "Lavánda",
+  "@theme_lavender": {},
+  "theme_yinyang": "Jýń i Ján",
+  "@theme_yinyang": {},
+  "theme_yotsuba": "Čatyrochlístnik (四葉)",
+  "@theme_yotsuba": {},
+  "theme_tidalwave": "Pryliŭnája chvála",
+  "@theme_tidalwave": {},
+  "themeColorBlendLevel": "Uzróvień źmiašáńnia kóleraŭ",
+  "@themeColorBlendLevel": {},
+  "themePureBlackDarkMode": "Čýsta-čórny ciómny režým",
+  "@themePureBlackDarkMode": {},
+  "themeSectionTitle": "Téma",
+  "@themeSectionTitle": {},
+  "displaySectionTitle": "Pakáz",
+  "@displaySectionTitle": {},
+  "advanced": "Pašýranyja",
+  "@advanced": {},
+  "advancedSubtitle": "Ačýścić kéš, fájły Cookie j ékspartavyja časópisy.",
+  "@advancedSubtitle": {},
+  "pref_backup_interval": "Častatá rezervóvaha kapijaváńnia",
+  "@pref_backup_interval": {},
+  "off": "Výklučana",
+  "@off": {},
+  "on": "Uklúčana",
+  "@on": {},
+  "update_12hour": "Kóžnyja 12 hadzínaŭ",
+  "@update_12hour": {},
+  "update_24hour": "Štódnia",
+  "@update_24hour": {},
+  "update_48hour": "Kóžnyja 2 dní",
+  "@update_48hour": {},
+  "update_weekly": "Štotýdzień",
+  "@update_weekly": {},
+  "pref_backup_slots": "Maksymálnaja kólkaść rezervóvych kópijaŭ",
+  "@pref_backup_slots": {},
+  "backup_info": "Vý músicie zachóŭvać kópiji rezervóvych kópijaŭ i ŭ jýnšych miéscach.",
+  "@backup_info": {},
+  "last_auto_backup_info": "Apóšniaja aŭtamatýčnaja rezervóvaja kópija: {time}",
+  "@last_auto_backup_info": {},
+  "defaultTab": "Ukłádka pá zmaŭčáńni",
+  "@defaultTab": {},
+  "lastOpenedTab": "Apóšniaja adkrýtaja ŭkłádka",
+  "@lastOpenedTab": {},
+  "showStatusBar": "Pakázvać radók stánu prý čytáńni",
+  "@showStatusBar": {},
+  "swipeRightToGoBack": "Praviadzície pálcam napráva, káb viarnúcca nazád",
+  "@swipeRightToGoBack": {},
+  "always": "Zaŭsiódy",
+  "@always": {},
+  "disable": "Výklučana",
+  "@disable": {},
+  "disableWhenHorizontal": "Adklučýć u haryzantálnym režýmie",
+  "@disableWhenHorizontal": {},
+  "default_category": "Katehóryja pá zmaŭčáńni",
+  "@default_category": {},
+  "default_category_summary": "Zaŭsiódy pytáć",
+  "@default_category_summary": {},
+  "label_default": "Pá zmaŭčáńni",
+  "@label_default": {},
+  "action_move_category": "Naładžáńnie katehóryjaŭ",
+  "@action_move_category": {},
+  "readerAdvancedSubtitle": "Žésty, maštabaváńnie j radók stánu.",
+  "@readerAdvancedSubtitle": {},
+  "networkSectionTitle": "Siétka",
+  "@networkSectionTitle": {},
+  "logsSectionTitle": "Časópisy",
+  "@logsSectionTitle": {},
+  "exportLog": "Ekspartaváć časópis",
+  "@exportLog": {},
+  "cookiesCleared": "Fájły Cookie výdalenyja",
+  "@cookiesCleared": {},
+  "cacheCleared": "Kéš ačýščany",
+  "@cacheCleared": {},
+  "local_source": "Miascóvaja kryníca",
+  "@local_source": {},
+  "ext_installed": "Ustalavána",
+  "@ext_installed": {},
+  "pinned_sources": "Zamacaványja",
+  "@pinned_sources": {},
+  "ext_updates_pending": "Abnaŭléńni dastúpnyja",
+  "@ext_updates_pending": {},
+  "other_source": "Jýnšaje",
+  "@other_source": {},
+  "multi_lang": "Šmatmóŭnyja",
+  "@multi_lang": {},
+  "uninstall_confirm": "Chóčacie výdalić hétaje pašyréńnie?",
+  "@uninstall_confirm": {},
+  "one_repository": "1 repazytár",
+  "@one_repository": {},
+  "extension_repo": "Repazytáry pašyréńniaŭ",
+  "@extension_repo": {},
+  "add_repository": "Dadáć repazytár",
+  "@add_repository": {},
+  "num_repositories": "{num} repazytáraŭ",
+  "@num_repositories": {},
+  "empty_repository": "Vý jaščé nié dadáli anivódnaha repazytára z pašyréńniami.",
+  "@empty_repository": {},
+  "add_repo_by_name": "Pá náźvie",
+  "@add_repo_by_name": {},
+  "add_repo_by_url": "Pá URL",
+  "@add_repo_by_url": {},
+  "add_repo_by_url_tip": "Dadájcie dadatkóvyja repazytáry ŭ Tachimanga.\nHéta músić býć URL, jáki skánčvajecca ná \"index.min.json\"",
+  "@add_repo_by_url_tip": {},
+  "get_repo_meta_fail": "Nié ŭdałósia atrymáć infarmácyju áb repazytáry.",
+  "@get_repo_meta_fail": {},
+  "delete_repository": "Výdalić repazytár",
+  "@delete_repository": {},
+  "delete_repository_content": "Žadájecie výdalić repazytár \"{name}\"",
+  "@delete_repository_content": {},
+  "label_add": "Dadáć",
+  "@label_add": {},
+  "label_adding": "Dadáńnie",
+  "@label_adding": {},
+  "extension_usage_terms": "Káb ustalaváć źniéšnija repazytáry, vám nieabchódna pahadzícca z nastúpnym pahadniéńniem:\n1. Já razumiéju, štó Tachimanga anijákim čýnam nié rehulúje źniéšnija repazytáry.\n2. Já razumiéju, štó Tachimanga nié źviazánaja ní ź jakími źniéšnimi pašyréńniami.\n3. Já zhadžájusia nié vykarystóŭvać Tachimanga dlá prahládu kanténtu, ná jakí ŭ mianié niamá pravóŭ.",
+  "@extension_usage_terms": {},
+  "find_repository": "Znajścí repazytár",
+  "@find_repository": {},
+  "get_start": "Raspačynájem",
+  "@get_start": {},
+  "label_copy": "Kapijaváć",
+  "@label_copy": {},
+  "migrate": "Mihraváć",
+  "@migrate": {},
+  "migration_dialog_what_to_include": "Jakíja dányja pieraniéści",
+  "@migration_dialog_what_to_include": {},
+  "migrate_action_migrate": "Mihraváć",
+  "@migrate_action_migrate": {},
+  "migrate_action_show_manga": "Pakazáć séryju",
+  "@migrate_action_show_manga": {},
+  "chapters": "Raździéły",
+  "@chapters": {},
+  "update_all": "Abnavić usio",
+  "@update_all": {},
+  "contact_us": "Źviažýciesia z námi",
+  "@contact_us": {},
+  "changelogs": "Časópis źmiénaŭ",
+  "@changelogs": {},
+  "lock_never": "Anikóli",
+  "@lock_never": {},
+  "secure_screen": "Biaśpiéčny ekrán",
+  "@secure_screen": {},
+  "secure_screen_summary": "Biaśpiéčny ekrán chaváje źmiéściva pragrámy prý pieraklučéńni pamíž pragrámami",
+  "@secure_screen_summary": {},
+  "pref_incognito_mode_on": "Režým inkóhnita ŭklúčany",
+  "@pref_incognito_mode_on": {},
+  "lock_after_mins": "{x, plural, one{Paślá {x} chvilíny} other{Paślá {x} chvilínaŭ}}",
+  "@lock_after_mins": {},
+  "lock_type_biometrics": "FaceID/TouchID",
+  "@lock_type_biometrics": {},
+  "lock_type_passcode": "Paról",
+  "@lock_type_passcode": {},
+  "lock_biometrics_unavailable": "FaceID albó TouchID niedastúpnyja.",
+  "@lock_biometrics_unavailable": {},
+  "relative_time_today": "Sióńnia",
+  "@relative_time_today": {},
+  "num_categories": "{x, plural, one{{x} katehóryja} other{{x} katehóryjaŭ}}",
+  "@num_categories": {},
+  "action_sort_latest_chapter": "Apóšni raździéł",
+  "@action_sort_latest_chapter": {},
+  "tabs_header": "Ukłádki",
+  "@tabs_header": {},
+  "action_display_show_number_of_items": "Pakázvać kólkaść séryjaŭ",
+  "@action_display_show_number_of_items": {},
+  "page_layout": "Makiét starónki",
+  "@page_layout": {},
+  "page_layout_single": "Adná starónka",
+  "@page_layout_single": {},
+  "page_layout_automatic": "Aŭtamatýčna",
+  "@page_layout_automatic": {},
+  "page_layout_tip": "Makiét starónki dziéjničaje tólki ŭ režýmie čytáńnia starónak.",
+  "@page_layout_tip": {},
+  "show_tap_zones_when_start_reading": "Pakázvać nacisknýja zóny prý pačátku čytáńnia.",
+  "@show_tap_zones_when_start_reading": {},
+  "select_chapters": "Abraáć raździéły",
+  "@select_chapters": {},
+  "label_watermark": "Vadzianý znák",
+  "@label_watermark": {},
+  "tap_to_open": "Nacíśnicie, káb adkrýć",
+  "@tap_to_open": {},
+  "labs": "Labaratóryji",
+  "@labs": {},
+  "labsSubtitle": "Eksperymentálnyja fúnkcyji",
+  "@labsSubtitle": {},
+  "concurrent_download_short_title_num": "Adnačasóvyja spampóŭki: {num}",
+  "@concurrent_download_short_title_num": {},
+  "concurrent_download_short_title": "Adnačasóvyja spampóŭki",
+  "@concurrent_download_short_title": {},
+  "concurrent_download_title": "Kólkaść adnačasóvych spampóŭkaŭ",
+  "@concurrent_download_title": {},
+  "concurrent_download_tips": "Adnačasóvaja spampóŭka z adnój i tój žá krynícy ná praciahú dóŭhaha čásu móža pryviéści dá tahó, štó váš IP búdzie zablakavány krynícaj, štó pryviadzié dá zbóju nastúpnych spampóŭkaŭ i čytáńnia z hétaj krynícy.",
+  "@concurrent_download_tips": {},
+  "download_next_n_chapter": "{x, plural, one{Nastúpny raździéł} other{Nastúpnyja {x} raździéły}}",
+  "@download_next_n_chapter": {},
+  "download_unread_chapters": "Usié niepračytányja raździéły",
+  "@download_unread_chapters": {},
+  "download_settings": "Nałády spampóŭki",
+  "@download_settings": {},
+  "remove_after_read": "Výdalić spampavánaje paślá pračytáńnia",
+  "@remove_after_read": {},
+  "pinch_to_zoom": "Ścíśnicie, káb pavialíčyć",
+  "@pinch_to_zoom": {},
+  "errorFilePickUnknownType": "Kalí łáska, abiarýcie fájł {suffix}",
+  "@errorFilePickUnknownType": {},
+  "attention_label": "⚠️Uváha",
+  "@attention_label": {},
+  "homepage_label": "Chátniaja starónka",
+  "@homepage_label": {},
+  "download_limit_exceeded_title": "Limít spampóŭki pieravýšany",
+  "@download_limit_exceeded_title": {},
+  "download_limit_number_title": "Abmiežaváńnie spampóŭki składáje {num} raździéłaŭ.",
+  "@download_limit_number_title": {},
+  "download_limit_increase": "Limít spampóŭkaŭ pavialíčany ná {num}.",
+  "@download_limit_increase": {},
+  "add_download_tips": "{x, plural, one{Dadádzieny 1 raździéł u čarhú spampóŭki.} other{Dadádziena {x} raździéłaŭ u čarhú spampóŭki.}}",
+  "@add_download_tips": {},
+  "watch_ad_label": "Hladziéć reklámu",
+  "@watch_ad_label": {},
+  "display_as_single_page": "Pakazáć ják adnú starónku",
+  "@display_as_single_page": {},
+  "clear_last_hour": "Apóšniaja hadzína",
+  "@clear_last_hour": {},
+  "clear_today": "Sióńnia",
+  "@clear_today": {},
+  "clear_today_and_yesterday": "Sióńnia j učóra",
+  "@clear_today_and_yesterday": {},
+  "clear_all_time": "Uviéś čás",
+  "@clear_all_time": {},
+  "backupsSectionTitle": "Rezervóvyja kópiji",
+  "@backupsSectionTitle": {},
+  "restoreBackup": "Adnavíć",
+  "@restoreBackup": {},
+  "restoreConfirmContent": "Usié biahúčyja dányja búduć výdalenyja j zamiénienyja dánymi z hétaj rezervóvaj kópiji.",
+  "@restoreConfirmContent": {},
+  "restoreBackupTitle": "Adnavíć rezervóvuju kópiju",
+  "@restoreBackupTitle": {
+    "description": "Button text to create backup"
+  },
+  "backupNamePrefixSchedule": "Rezervóvaje kapijaváńnie pá raskłádzie",
+  "@backupNamePrefixSchedule": {},
+  "restoreConfirmTitle": "Adnavíć z hétaj rezervóvaj kópiji?",
+  "@restoreConfirmTitle": {},
+  "invalidBackup": "Niekaréktny fájł rezervóvaj kópiji",
+  "@invalidBackup": {},
+  "exportBackup": "Ekspartaváć",
+  "@exportBackup": {},
+  "autoBackupTipForImport": "Piérad jympártam z rezervóvaj kópiji aŭtamatýčna stvarýć rezervóvuju kópiju.",
+  "@autoBackupTipForImport": {},
+  "theme_tealturquoise": "Sínie-biruzóvy",
+  "@theme_tealturquoise": {},
+  "tapMenu": "Meniú",
+  "@tapMenu": {},
+  "invalidBackupVersion": "Kalí łáska, vykarystóŭvajcie apóšniuju vérsyju pragrámy, dlá adnaŭléńnia rezervóvych kópijaŭ.",
+  "@invalidBackupVersion": {},
+  "autoBackupFailTip": "Nié ŭdałósia stvarýć aŭtamatýčnuju rezervóvuju kópiju piérad adnaŭléńniem. Kalí łáska, skasújcie aŭtamatýčnaje rezervóvaje kapijaváńnie j pasprabújcie jaščé ráz.",
+  "@autoBackupFailTip": {},
+  "checkInWebView": "{msg}, pahladziéć sájt u Véb-prahládzie",
+  "@checkInWebView": {},
+  "byPassSwitch": "Aŭtamatýčny abychód Cloudflare",
+  "@byPassSwitch": {},
+  "imageSaveFail": "Nié ŭdałósia zachaváć vidarýs.",
+  "@imageSaveFail": {},
+  "pref_incognito_mode_summary": "Prypyniáje zápis históryju čytáńnia",
+  "@pref_incognito_mode_summary": {},
+  "select_category_to_update": "Abiarýcie katehóryji dlá abnaŭléńnia",
+  "@select_category_to_update": {},
+  "always_ask": "Zaŭsiódy pytácca",
+  "@always_ask": {},
+  "pref_category_security": "Biaśpiéka",
+  "@pref_category_security": {},
+  "help_translate": "Dapamahčý pierakłáści",
+  "@help_translate": {},
+  "migrate_action_copy": "Kapijaváć",
+  "@migrate_action_copy": {},
+  "pref_incognito_mode_off": "Režým inkóhnita výklučany",
+  "@pref_incognito_mode_off": {},
+  "download_queue": "Čarhá spampóŭvańnia",
+  "@download_queue": {},
+  "page_layout_double": "Padvójnaja starónka",
+  "@page_layout_double": {},
+  "importConfirmContent": "Abjadnáć biblijatéku Tachiyomi ź miacóvaj biblijatékaj. Isnujúčyja miascóvyja dányja NIÉ búduć výdalenyja albó zamiénienyja.",
+  "@importConfirmContent": {},
+  "last_used_source": "Apóšniaje vykarystáńnie",
+  "@last_used_source": {},
+  "theme_strawberrydaiquiri": "Truskávy dajkiry",
+  "@theme_strawberrydaiquiri": {},
+  "chapterShareText": "{title} ád {author}, raździéł {chapter} {link}\nAbahúlena z Tachimanga",
+  "@chapterShareText": {},
+  "theme_midnightdusk": "Paŭnóčny zmrók",
+  "@theme_midnightdusk": {},
+  "theme_tako": "Táko",
+  "@theme_tako": {},
+  "premiumRequired": "Patrabújecca prémijum.",
+  "@premiumRequired": {},
+  "update_6hour": "Kóžnyja 6 hadzínaŭ",
+  "@update_6hour": {},
+  "enableLog": "Uklučýć časópis",
+  "@enableLog": {},
+  "dataUsageSectionTitle": "Vykarystáńnie dánych",
+  "@dataUsageSectionTitle": {},
+  "add_repo_by_name_tip": "Dadájcie dadatkóvyja repazytáry ŭ Tachimanga.\nFarmát repazytára — jymiá_karystálnika/repazytár', dzié jymiá_karystálnika źjaŭlájecca ŭładálnikam repazytára, a repazytár — imiém repazytára",
+  "@add_repo_by_name_tip": {},
+  "backup_created_content": "Vý músicie zachóŭvać kópiji rezervóvych kópijaŭ i ŭ jýnšych miéscach.\nŹviarnície ŭváhu, štó spampavány kantént i miascóvyja krynícy nié ŭklúčanyja ŭ rezervóvuju kópiju.",
+  "@backup_created_content": {},
+  "page_layout_separate_first_page": "Padzialíć piéršuju starónku",
+  "@page_layout_separate_first_page": {},
+  "num_trackers": "{x, plural, one{{x} trékier} other{{x} trékieraŭ}}",
+  "@num_trackers": {},
+  "download_limit_content": "Vý móžacie spampaváć {freeTicket} raździéłaŭ ná dziéń.\n\nPrahlád adnój reklámy móža pavialíčyć héty limít ná {ticketPerAd} raździéłaŭ, a paślá prahládu {maxAds} reklámy abmiežaváńni zdýmucca ná dziéń.\n\nPrémijum-karystálniki májuć nieabmiežavánuju kólkaść spampóŭkaŭ.",
+  "@download_limit_content": {},
+  "pref_incognito_mode": "Režým inkóhnita",
+  "@pref_incognito_mode": {},
+  "download_all_chapters": "Usié raździéły",
+  "@download_all_chapters": {},
+  "lock_with_biometrics": "Błakaváńnie bijamétryjaj",
+  "@lock_with_biometrics": {},
+  "relative_time": "{x, plural, one{Učóra} other{{x} dní/dzión tamú}}",
+  "@relative_time": {},
+  "lock_when_idle": "Blakaváć prý biaździéjnaści",
+  "@lock_when_idle": {},
+  "lock_always": "Zaŭsiódy",
+  "@lock_always": {},
+  "unlock_title": "Razblakaváć Tachimanga",
+  "@unlock_title": {},
+  "pref_date_format": "Farmát dáty",
+  "@pref_date_format": {},
+  "start_reading": "Pačáć čytáć",
+  "@start_reading": {},
+  "continue_reading_chapter": "Praciáhnuć čytáńnie {title}",
+  "@continue_reading_chapter": {},
+  "icon_section_title": "Značók",
+  "@icon_section_title": {},
+  "app_icon_title": "Značók pragrámy",
+  "@app_icon_title": {},
+  "app_icon_author": "Raspracavána {author}",
+  "@app_icon_author": {},
+  "classic_start_reading_button": "Klasýčnaja knópka pačátku čytáńnia",
+  "@classic_start_reading_button": {},
+  "long_press_action_menu": "Meniú dziéjańniaŭ prý dóŭhim nácisku",
+  "@long_press_action_menu": {},
+  "app_icon_update_tip": "Kalí značók nié abnavíŭsia, vý móžacie pačakáć niekatóry čás cí prósta pierazahruzíć pryłádu.",
+  "@app_icon_update_tip": {},
+  "new_category": "Nóvaja katehóryja",
+  "@new_category": {},
+  "update_running_text": "Abnaŭléńnie: {title}",
+  "@update_running_text": {},
+  "update_completed_text": "Abnaŭléńnie zaviéršana. {x} paśpiachóva, {y} niaŭdáła.",
+  "@update_completed_text": {},
+  "add_manga_to": "Dadáć mángu ŭ...",
+  "@add_manga_to": {},
+  "add_to_default_category": "Dadáć u katehóryju pá zmaŭčáńni",
+  "@add_to_default_category": {},
+  "add_to_category": "Dadáć u {category}",
+  "@add_to_category": {},
+  "add_to_categories": "{x, plural, one{Dadáć u katehóryju} other{Dadáć u {x} katehóryji}}}",
+  "@add_to_categories": {},
+  "move_manga_to": "Pierasúnuć mángu ŭ...",
+  "@move_manga_to": {},
+  "keep_in_default_category": "Pakínuć u katehóryji pá zmaŭčáńni",
+  "@keep_in_default_category": {},
+  "iCloud_label": "iCloud",
+  "@iCloud_label": {},
+  "backup_to_iCloud": "Rezervóvaje kapijaváńnie ná iCloud Drive",
+  "@backup_to_iCloud": {},
+  "backup_to_iCloud_tip": "Spampóŭvajcie j zapampóŭvajcie fájły rezervóvych kópijaŭ z iCloud Drive",
+  "@backup_to_iCloud_tip": {},
+  "downloading_from_iCloud": "Spampóŭvańnie z iCloud",
+  "@downloading_from_iCloud": {},
+  "downloading_running_text": "Spampóŭvajecca {running} z {total}",
+  "@downloading_running_text": {},
+  "edit_cover": "Redahaváć vókładku",
+  "@edit_cover": {},
+  "set_as_cover": "Užýć u jákaści vókładki",
+  "@set_as_cover": {},
+  "save_image_user_denied_msg": "U dóstupie admóŭlena, kalí łáska, dazvólcie Tachimanga dóstup dá vášych fotaalbómaŭ u nałádach systémy.",
+  "@save_image_user_denied_msg": {},
+  "reset_to_default": "Skínuć nałády",
+  "@reset_to_default": {},
+  "disagree_label": "Niá zhódny",
+  "@disagree_label": {},
+  "agree_label": "Zhódny",
+  "@agree_label": {},
+  "history_is_empty": "Aničóha nié čytána niadáŭna.",
+  "@history_is_empty": {},
+  "downloaded_is_empty": "Niamá niadáŭna spampaványch.",
+  "@downloaded_is_empty": {},
+  "reset_filters": "Skínuć fíltry",
+  "@reset_filters": {},
+  "manga_auto_refresh_title": "Aŭtamatýčnaje abnaŭléńnie",
+  "@manga_auto_refresh_title": {},
+  "migration_dialog_tips": "Spampaványja raździéły nié pieranósiacca prý mihraváńni.",
+  "@migration_dialog_tips": {},
+  "premium_month_price": "{price}/miésiac",
+  "@premium_month_price": {},
+  "premium_month_price_only": "Usiahó {price}/miésiac",
+  "@premium_month_price_only": {},
+  "premium_year_price": "{price}/hód",
+  "@premium_year_price": {},
+  "early_bird_price": "Ráńniaja caná",
+  "@early_bird_price": {},
+  "sync": "Synchranizácyja",
+  "@sync": {},
+  "enable_sync": "Uklučýć synchranizácyju",
+  "@enable_sync": {},
+  "sync_now": "Synchranizaváć záraz",
+  "@sync_now": {},
+  "sync_settings": "Nałády synchranizácyji",
+  "@sync_settings": {},
+  "login_to_enable_sync": "Uvajdzície, káb uklučýć synchranizácyju",
+  "@login_to_enable_sync": {},
+  "login": "Uvajścí",
+  "@login": {},
+  "register": "Stvarýć nóvy ŭlikóvy zápis",
+  "@register": {},
+  "email": "Elektrónnaja póšta",
+  "@email": {},
+  "password": "Paról",
+  "@password": {},
+  "password_again": "Śćviérdzić paról",
+  "@password_again": {},
+  "password_not_match": "Paról nié supadáje.",
+  "@password_not_match": {},
+  "password_empty": "Kalí łáska, uviadzície paról.",
+  "@password_empty": {},
+  "synced_at_time": "Synchranizavána {time}",
+  "@synced_at_time": {},
+  "just_now": "tólki štó",
+  "@just_now": {},
+  "minutes_ago": "{x, plural, one{1 chvilínu tamú} other{{x} chvilínaŭ tamú}}",
+  "@minutes_ago": {},
+  "hours_ago": "{x, plural, one{1 hadzínu tamú} other{{x} hadzínaŭ tamú}}",
+  "@hours_ago": {},
+  "sync_faq_q2": "Jakíja dányja synchranizújucca?",
+  "@sync_faq_q2": {},
+  "sync_faq_a2": "Synchranizácyja ŭklučáje biblijatéku, históryju čytáńnia, zakłádki, repazytáry j pašyréńni.",
+  "@sync_faq_a2": {},
+  "sync_faq_q3": "Jakíja dányja niá búduć synchranizaványja?",
+  "@sync_faq_q3": {},
+  "sync_faq_q4": "Kalí adbyvájecca synchranizácyja?",
+  "@sync_faq_q4": {},
+  "sync_faq_q5": "Kólki čásu j dánych patrabumújecca dlá synchranizácyji?",
+  "@sync_faq_q5": {},
+  "sign_in_with_apple": "Uvajścí práz Apple",
+  "@sign_in_with_apple": {},
+  "login_with_email": "Uvajścí pá elektrónnaj póšcie",
+  "@login_with_email": {},
+  "login_term": "Ukázvajučy svój ádras elektrónnaj póšty albó vykarystóŭvajučy systému adzínaha ŭvachódu dlá stvaréńnia ŭlikóvaha zápisu, vý zhadžájeciesia z nášymi {terms} i aznajómilisia z nášaj {privacy}.",
+  "@login_term": {},
+  "do_not_have_account": "U vás niamá ŭlikóvaha zápisu?",
+  "@do_not_have_account": {},
+  "register_here": "Zarehistrújciesia tút",
+  "@register_here": {},
+  "logout_all_tips": "Hétaje dziéjańnie výdalić dóstup dá vášaha ŭlikóvaha zápisu Tachimanga ná ŭsích pryłádach.",
+  "@logout_all_tips": {},
+  "delete_account_content": "Paślá výdaleńnia ŭlikóvaha zápisu šláchu nazád užó niá búdzie, i vý niá zmóžacie zarehistraváć nóvy ŭlikóvy zápis, vykarystóŭvajučy tój žá ádras elektrónnaj póšty. Kalí łáska, májcie hétaje ná ŭvázie.",
+  "@delete_account_content": {},
+  "delete_account_verify": "Káb spráŭdzić, uviadzície {text} nižéj:",
+  "@delete_account_verify": {},
+  "receive_timeout_label": "Interváł tájm-áŭtu atrymáńnia",
+  "@receive_timeout_label": {},
+  "receive_timeout_subtitle": "Adrehulújcie héty parámetar, tólki kalí vý částa sutykájeciesia z prablémami tájm-áŭtu atrymáńnia.",
+  "@receive_timeout_subtitle": {},
+  "next": "Daléj",
+  "@next": {},
+  "are_you_sure_proceed": "Vý ŭpéŭnienyja, štó chóčacie praciáhnuć?",
+  "@are_you_sure_proceed": {},
+  "create_backup_before_enable_sync": "Stvarýć rezervóvuju kópiju piérad uklučéńniem synchranizácyji.",
+  "@create_backup_before_enable_sync": {},
+  "subscribe_to_enable_sync": "Padpišýciesia ná prémijum, káb uklučýć synchranizácyju",
+  "@subscribe_to_enable_sync": {},
+  "sync_not_enable": "Synchranizácyja nié ŭklúčanaja.",
+  "@sync_not_enable": {},
+  "login_required": "Patrabújecca aŭtaryzácyja.",
+  "@login_required": {},
+  "extension_filtered_out_by_nsfw": "{x, plural, one{1 pašyréńnie} other{{x} pašyréńni}} nié adlustróŭvajucca z-zá tahó, štó patencýjna ŭtrýmlivajuć niebiaśpiéčny kantént.\nAdrehulújcie nałády pašyréńniaŭ dlá adlustraváńnia.",
+  "@extension_filtered_out_by_nsfw": {},
+  "extension_language_preference": "pieraváha móvy pašyréńniaŭ",
+  "@extension_language_preference": {},
+  "hours_short": "{x} hadz.",
+  "@hours_short": {},
+  "minutes_short": "{x} chv.",
+  "@minutes_short": {},
+  "seconds_short": "{x} sek.",
+  "@seconds_short": {},
+  "hours_minutes_short": "{x} hadz. {y} chv.",
+  "@hours_minutes_short": {},
+  "minutes_seconds_short": "{x} chv. {y} sek.",
+  "@minutes_seconds_short": {},
+  "importTachiyomiBackupDescription": "Jympartaváć biblijatéku z rezervóvaj kópiji Tachiyomi, Mihon i jých razhálinaŭ.",
+  "@importTachiyomiBackupDescription": {},
+  "createTachiyomiBackupDescription": "Stvarýć rezervóvuju kópiju, sumiaščálnuju z Tachiyomi, Mihon i jých razhálinami.",
+  "@createTachiyomiBackupDescription": {},
+  "tachiyomiBackupSectionTitle": "Tachiyomi, Mihon dý jých razháliny",
+  "@tachiyomiBackupSectionTitle": {},
+  "done_label": "Hatóva",
+  "@done_label": {},
+  "reading_insights": "Čytáńnie j udúmlivaść",
+  "@reading_insights": {},
+  "auto_scroll": "Aŭtaprakrútka",
+  "@auto_scroll": {},
+  "seconds_per_page": "{x} sek. ná starónku",
+  "@seconds_per_page": {},
+  "select_all": "Abráć usió",
+  "@select_all": {},
+  "pinch_to_zoom_tip": "Adklučýcie hétuju fúnkcyju prý vykarystáńni kólca mýšy ŭ macOS.",
+  "@pinch_to_zoom_tip": {},
+  "reader_keep_screen_on": "Trymáć ekrán uklúčanym padčás čytáńnia.",
+  "@reader_keep_screen_on": {},
+  "remove_from_library": "Výdalić ź biblijatéki",
+  "@remove_from_library": {},
+  "tachiyomi_import_tip_title": "Pamýłka jýmpartu: fájł rezervóvaj kópiji nádta vialíki.",
+  "@tachiyomi_import_tip_title": {},
+  "apple_pencil_double_tap": "Padvójny nácisk",
+  "@apple_pencil_double_tap": {},
+  "apple_pencil_squeeze": "Ściskáńnie",
+  "@apple_pencil_squeeze": {},
+  "requires_apple_pencil_pro": "Dlá prácy ściskáńnia patrabújecca Apple Pencil Pro.",
+  "@requires_apple_pencil_pro": {},
+  "action_previous_page": "Papiarédniaja starónka",
+  "@action_previous_page": {},
+  "action_next_page": "Nastúpnaja starónka",
+  "@action_next_page": {},
+  "action_next_chapter": "Nastúpny raździéł",
+  "@action_next_chapter": {},
+  "label_select": "Abráć",
+  "@label_select": {},
+  "remove_downloads": "Výdalić spampóŭki",
+  "@remove_downloads": {},
+  "mark_all_read": "Paznáčyć usié raździéły ják pračytányja?",
+  "@mark_all_read": {},
+  "mark_as_read": "Paznáčyć ják pračytánaje",
+  "@mark_as_read": {},
+  "mark_all_unread": "Paznáčyć usié raździéły ják niepračytányja?",
+  "@mark_all_unread": {},
+  "mark_as_unread": "Paznáčyć ják niepračytánaje",
+  "@mark_as_unread": {},
+  "move_to_default_category": "Pierasúnuć u katehóryju pá zmaŭčáńni",
+  "@move_to_default_category": {},
+  "remove_from_category": "Výdalić z {category}",
+  "@remove_from_category": {},
+  "keep_in_category": "Pakínuć u {category}",
+  "@keep_in_category": {},
+  "keep_in_categories": "{x, plural, one{Pakínuć u katehóryji} other{Pakínuć u {x} katehóryjach}}}",
+  "@keep_in_categories": {},
+  "how_to_upgrade_lifetime": "Ják pierajścí ná pažyćcióvy plán?",
+  "@how_to_upgrade_lifetime": {},
+  "upgrade_label": "Abnavíć",
+  "@upgrade_label": {},
+  "subscription_management": "Kiraváńnie padpískaj",
+  "@subscription_management": {},
+  "use_photo_view_title": "Palépšycie dóśvied ád žéstaŭ pieraciáhvańnia padčás maštabaváńnia.",
+  "@use_photo_view_title": {},
+  "source_not_working_tips": "Zdajécca, hétaja kryníca záraz nié pracúje pá róznych pryčýnach; praviércie daviédku pá likvidácyji nepaládak i razhlédźcie mahčýmaść pierachódu ná jýnšyja krynícy.",
+  "@source_not_working_tips": {},
+  "move_to_category": "Pierasúnuć u {category}",
+  "@move_to_category": {},
+  "move_to_categories": "{x, plural, one{Pierasúnuć ŭ katehóryju} other{Pierasúnuć ŭ {x} katehóryji}}}",
+  "@move_to_categories": {},
+  "cover_updated": "Vókładka abnóŭlenaja",
+  "@cover_updated": {},
+  "sync_faq_q1": "Štó takóje synchranizácyja?",
+  "@sync_faq_q1": {},
+  "iCloud_unavailable_tip": "iCloud Drive niedastúpny. Pasprabújcie ŭklučýć iCloud Drive u nałádach systémy. Dlá atrymáńnia dadatkóvaj dapamóhi naviédajcie https://tachimanga.app/icloud",
+  "@iCloud_unavailable_tip": {},
+  "set_as_default": "Užýć ják pá zmaŭčáńni",
+  "@set_as_default": {},
+  "manga_auto_refresh_desc": "Praviaráć najáŭnaść nóvych raździéłaŭ prý prahládzie siéryji.",
+  "@manga_auto_refresh_desc": {},
+  "email_empty": "Kalí łáska, uviadzície dziéjny ádras elektrónnaj póšty.",
+  "@email_empty": {},
+  "repo_not_exist": "Repazytár pašyréńniaŭ nié jysnujé.",
+  "@repo_not_exist": {},
+  "library_is_empty": "Vášaja biblijatáka pustája.\nDadájcie mángu z ukłádki prahládu.",
+  "@library_is_empty": {},
+  "log_enable_tips": "Časópis paśpiachóva ŭklúčany. Źmiény nabúduć móc paślá pierazápusku pragrámy.",
+  "@log_enable_tips": {},
+  "enable_sync_tip": "Uklučéńnie synchranizácyji ŭ piéršy ráz patrabúje zapampóŭki ŭsiój vášaj biblijatéki ná sérver synchranizácyji. Héta móža zaniáć niékalki chvilínaŭ, u zaléžnaści ád kólkaści séryjaŭ i prapusknój zdólnaści siétki. Héta taksáma móža výklikać časóvuju zatrýmku ná vášaj pryłádzie j spažyváć péŭnuju kólkaść dánych.",
+  "@enable_sync_tip": {},
+  "syncing": "Synchranizácyja",
+  "@syncing": {},
+  "sync_time_tip": "Pracés synchranizácyji zaléžyć ád dakłádnaha čásu pryłády dlá apracóŭki kanflíktaŭ dánych, kalí jysnujé znáčnaja róźnica pamíž biahúčym čásam pryłády j čásam sérvera. Výpraŭcie čás pryłády.\nBiahúčy čás pryłády: {deviceTime}.\nČás sérvera synchranizácyji: {serverTime}.",
+  "@sync_time_tip": {},
+  "sync_faq_a1": "Synchranizácyja — héta fúnkcyja, jakája dazvaláje bieśpieraškódna abnaŭláć i atrýmlivać dóstup dá vášaj biblijatéki ná niékalkich pryłádach. Héta garantúje, štó vášaja biblijatéka búdzie pastajánnaj i aktuálnaj niezaléžačy ád pryłády, jakój vý karystájeciesia.",
+  "@sync_faq_a1": {},
+  "sync_faq_a3": "Lakálnyja fájły krynícaŭ, lakálnyja pašyréńni, zahrúzki, abnaŭléńni, nałády pragrámy, nałády pašyréńniaŭ i dányja aŭtaryzácyji dlá trékieraŭ nié synchranizújucca.",
+  "@sync_faq_a3": {},
+  "sync_faq_a4": "Synchranizácyja zapuskájecca aŭtamatýčna ŭ fónie ŭ zadádzienyja pramiéžki čásu albó paślá péŭnych padziéjaŭ, takích ják zápusk pragrámy, abnaŭléńnie kanténtu abó vášyja ŭłásnyja zápyty ná synchranizácyju. Héta garantúje ŭzhódnienaść vášych dánych ná ŭsích źviazanych pryłádach.",
+  "@sync_faq_a4": {},
+  "delete_account_title": "Vý ŭpéŭnienyja, štó chóčacie zrabíć hétaje?",
+  "@delete_account_title": {},
+  "delete_account_label": "Výdalić mój ulikóvy zápis",
+  "@delete_account_label": {},
+  "logout_tips": "Hétaje dziéjańnie výdalić dóstup dá vášaha ŭlikóvaha zápisu Tachimanga ná biahúčaj pryłádzie.",
+  "@logout_tips": {},
+  "logout_all": "Výjści z usích pryłádaŭ.",
+  "@logout_all": {},
+  "already_have_account": "U vás užó jóść ulikóvy zápis?",
+  "@already_have_account": {},
+  "login_here": "Uvajdzície tút",
+  "@login_here": {},
+  "enable_sync_up_to_date_tip": "Piérš čým uklučýć synchranizácyju, pierakanájciesia, štó biblijatéka ná vášaj biahúčaj pryłádzie abnóŭlenaja. Synchranizácyja abjadnáje biblijatéki ŭsích vášych pryłádaŭ, tamú, kalí dányja ná adnój pryłádzie sastaréli j synchranizácyja ŭklúčanaja, sastaréłyja dányja raspaŭsiúdziacca ná ŭsié pryłády.",
+  "@enable_sync_up_to_date_tip": {},
+  "apple_pencil_integration_description": "Padvójny nácisk dý ściskáńnie",
+  "@apple_pencil_integration_description": {},
+  "select_invert": "Invertaváć abránaje",
+  "@select_invert": {},
+  "importTachiyomiBackupTitle": "Jympartaváć rezervóvuju kópiju Tachiyomi",
+  "@importTachiyomiBackupTitle": {},
+  "action_none": "Biéź dziéjańniaŭ",
+  "@action_none": {},
+  "remove_from_categories": "{x, plural, one{Výdalić z katehóryji} other{Výdalić z {x} katehóryjaŭ}}}",
+  "@remove_from_categories": {},
+  "createTachiyomiBackupTitle": "Stvarýć rezervóvuju kópiju, sumiaščálnuju z Tachiyomi",
+  "@createTachiyomiBackupTitle": {},
+  "reading_time_tip": "Čás čytáńnia raźlíčvajecca sá Śniéžnia 2024.",
+  "@reading_time_tip": {},
+  "remove_downloads_if_migrate": "Výdalić spampóŭki prý mihraváńni",
+  "@remove_downloads_if_migrate": {},
+  "sync_faq_a5": "Pieršapačatkóvaja póŭnaja synchranizácyja móža zaniáć niékalki chvilínaŭ, u zaléžnaści ád kólkaści séryjaŭ. Héty pracés spažyváje prapusknúju zdólnaść dánych, bó pieradajé vialíkuju kólkaść źviéstak.\n\nNastúpnaja synchranizácyja paślá pieršapačatkóvaj póŭnaj synchranizácyji skánčvajecca chútka j efektýŭna. Ták ják pastupóvyja synchranizácyji spažyvájuć znáčna miénš dánych u paraŭnáńni ź pieršapačatkóvym pracésam synchranizácyji.",
+  "@sync_faq_a5": {},
+  "action_previous_chapter": "Papiarédni raździéł",
+  "@action_previous_chapter": {},
+  "extension_filtered_out_by_lang": "Pašyréńni dastúpnyja ŭ {text}.\nAdrehulújcie {preference} dlá adlustraváńnia.",
+  "@extension_filtered_out_by_lang": {},
+  "how_to_upgrade_lifetime_steps": "Káb pierajścí ná pažyćcióvy prémijum plán, vám patrabújecca nabýć pažyćcióvy prémijum, a zatým nacíśnuć knópku kiraváńnia padpískaj, káb admianíć štomiésiačnuju cí štohadavúju padpísku.",
+  "@how_to_upgrade_lifetime_steps": {},
+  "select_between": "Abráć pamíž",
+  "@select_between": {},
+  "apple_pencil_integration": "Apple Pencil",
+  "@apple_pencil_integration": {},
+  "tachiyomi_import_tip_content": "Prý stvaréńni rezervóvaj kópiji dlá Tachiyomi, Mihon dý jých razhálinaŭ zrabície rezervóvuju kópiju tólki biblijatéki, katehóryj i adsóčvańnia, a paślá paŭtarýcie spróbu.",
+  "@tachiyomi_import_tip_content": {},
+  "library_search_globally": "Šukáć \"{text}\" glabálna",
+  "@library_search_globally": {},
+  "saved_searches": "Zachaványja póšuki",
+  "@saved_searches": {},
+  "long_press_to_delete": "Nacíśnicie j utrýmlivajcie dlá vydaléńnia.",
+  "@long_press_to_delete": {},
+  "save_query_hint": "Názva",
+  "@save_query_hint": {},
+  "chapterSortChapterName": "Pá náźvie",
+  "@chapterSortChapterName": {},
+  "delete_query_content": "Vý ŭpéŭnienyja, štó chóčacie výdalić {title}?",
+  "@delete_query_content": {},
+  "chapterSortUploadDate": "Pá dácie zapampóŭki",
+  "@chapterSortUploadDate": {},
+  "save_query_title": "Zachaváć biahúčy pošukavý zápyt?",
+  "@save_query_title": {},
+  "delete_query_title": "Výdalić zachavány pošukavý zápyt?",
+  "@delete_query_title": {},
+  "receive_timeout_tips": "Skónčyŭsia čás čakáńnia. Abnavície cí prahlédźcie sájt u WebView",
+  "@receive_timeout_tips": {}
+}

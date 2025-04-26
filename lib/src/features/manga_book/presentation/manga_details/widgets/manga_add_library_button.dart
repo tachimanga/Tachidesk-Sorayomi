@@ -6,27 +6,13 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../../constants/app_constants.dart';
-import '../../../../../constants/app_sizes.dart';
-
-import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
-import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
-import '../../../../../utils/purchase.dart';
-import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
-import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../../../widgets/async_buttons/async_text_icon_button.dart';
 import '../../../../browse_center/presentation/migrate/controller/migrate_controller.dart';
-import '../../../../custom/inapp/purchase_providers.dart';
-import '../../../../library/presentation/category/controller/edit_category_controller.dart';
-import '../../../../settings/presentation/library/controller/category_settings_controller.dart';
-import '../../../../settings/presentation/tracking/widgets/tracker_setting_widget.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/manga/manga_model.dart';
 import 'edit_manga_category_dialog.dart';
@@ -41,7 +27,8 @@ class MangaAddLibraryButton extends HookConsumerWidget {
   final AsyncCallback refresh;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AsyncTextButtonIcon(
+    final inLibrary = manga.inLibrary == true;
+    return AsyncTextIconButton(
       onPressed: () async {
         final val = await AsyncValue.guard(() async {
           if (manga.inLibrary.ifNull()) {
@@ -57,7 +44,7 @@ class MangaAddLibraryButton extends HookConsumerWidget {
           val.showToastOnError(ref.read(toastProvider(context)));
         }
       },
-      onLongPressed: () async {
+      onLongPress: () async {
         await showDialog(
           context: context,
           builder: (context) => EditMangaCategoryDialog(
@@ -67,14 +54,16 @@ class MangaAddLibraryButton extends HookConsumerWidget {
         );
         invokeRefresh(ref);
       },
-      isPrimary: manga.inLibrary.ifNull(),
-      primaryIcon: const Icon(Icons.favorite_rounded),
-      primaryStyle: TextButton.styleFrom(padding: EdgeInsets.zero),
-      secondaryIcon: const Icon(Icons.favorite_border_outlined),
-      secondaryStyle: TextButton.styleFrom(
-          foregroundColor: Colors.grey, padding: EdgeInsets.zero),
-      primaryLabel: Text(context.l10n!.inLibrary),
-      secondaryLabel: Text(context.l10n!.addToLibrary),
+      style: inLibrary
+          ? TextButton.styleFrom(padding: EdgeInsets.zero)
+          : TextButton.styleFrom(
+              foregroundColor: Colors.grey, padding: EdgeInsets.zero),
+      icon: inLibrary
+          ? const Icon(Icons.favorite_rounded)
+          : const Icon(Icons.favorite_border_outlined),
+      label: inLibrary
+          ? Text(context.l10n!.inLibrary)
+          : Text(context.l10n!.addToLibrary),
     );
   }
 

@@ -18,17 +18,21 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/enum.dart';
+import '../../../../../global_providers/device_providers.dart';
 import '../../../../../global_providers/global_providers.dart';
 import '../../../../../global_providers/preference_providers.dart';
 import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/log.dart' as logger;
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/async_buttons/async_icon_button.dart';
+import '../../../../../widgets/async_buttons/async_ink_well.dart';
 import '../../../../../widgets/radio_list_popup.dart';
 import '../../../../../widgets/text_premium.dart';
+import '../../../../browse_center/domain/browse/browse_model.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/reader/widgets/reader_apple_pencil_setting/reader_apple_pencil_controller.dart';
 import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_controller.dart';
@@ -98,6 +102,7 @@ class ReaderWrapper extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final toast = ref.read(toastProvider(context));
     final pipe = ref.watch(getMagicPipeProvider);
+    final deviceInfo = ref.watch(deviceInfoProvider);
     final keepScreenOn = ref.read(readerKeepScreenOnPrefProvider) == true;
 
     final chapterPair = ref.watch(
@@ -337,9 +342,12 @@ class ReaderWrapper extends HookConsumerWidget {
                   preferredSize: const Size.fromHeight(22),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                      child: InkWell(
-                        onTap: () => context
-                            .push(Routes.getWebView(chapter.realUrl ?? "")),
+                      child: AsyncInkWell(
+                        onTap: () => launchUrlInWebView(
+                          context,
+                          ref,
+                          UrlFetchInput.ofChapterId(chapter.id ?? 0),
+                        ),
                         child: Text(
                           "${chapter.realUrl}",
                           overflow: TextOverflow.ellipsis,
@@ -373,10 +381,12 @@ class ReaderWrapper extends HookConsumerWidget {
                     },
                     icon: const Icon(Icomoon.shareRounded),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      context.push(Routes.getWebView(chapter.realUrl ?? ""));
-                    },
+                  AsyncIconButton(
+                    onPressed: () => launchUrlInWebView(
+                      context,
+                      ref,
+                      UrlFetchInput.ofChapterId(chapter.id ?? 0),
+                    ),
                     icon: const Icon(Icons.public),
                   ),
                 ] : null,
@@ -545,7 +555,10 @@ class ReaderWrapper extends HookConsumerWidget {
                         final lastScrollDiff = lastTapDownTimestamp - lastScrollTimestamp;
                         final autoScrollEnable = autoScrollIntervalMs.value != null;
                         final tapDownDiff = DateTime.now().millisecondsSinceEpoch - lastTapDownTimestamp;
-                        if ((lastScrollDiff > tapDelay || autoScrollEnable) && tapDownDiff < 300) {
+                        logger.log('lastScrollDiff:$lastScrollDiff tapDownDiff:$tapDownDiff isiOSAppOnMac:${deviceInfo.isiOSAppOnMac}');
+                        final tapDownMax = deviceInfo.isiOSAppOnMac ? 500 : 300;
+                        if (lastScrollDiff > tapDelay || (autoScrollEnable && tapDownDiff < tapDownMax)) {
+                          //print('ContinuousReaderMode toggleVisibility yes');
                           visibility.value = !visibility.value;
                           autoScrollDemoMode.value = false;
                         }

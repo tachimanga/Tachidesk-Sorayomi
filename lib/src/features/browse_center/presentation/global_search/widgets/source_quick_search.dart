@@ -17,8 +17,10 @@ import '../../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../domain/source/source_model.dart';
 import '../../migrate/widgets/migrate_manga_dialog.dart';
+import '../../source/controller/source_controller.dart';
+import '../controller/source_quick_search_controller.dart';
 
-class SourceShortSearch extends StatelessWidget {
+class SourceShortSearch extends ConsumerWidget {
   const SourceShortSearch({
     super.key,
     required this.source,
@@ -32,7 +34,7 @@ class SourceShortSearch extends StatelessWidget {
   final Manga? migrateSrcManga;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,6 +74,15 @@ class SourceShortSearch extends StatelessWidget {
                     },
                   ),
                 ),
+          refresh: () async {
+            final pin = ref.read(onlySearchPinSourceProvider);
+            final provider = sourceQuickSearchMangaListProvider(
+              source.id!,
+              query: query,
+              pin: pin == true,
+            );
+            await ref.refresh(provider.future);
+          },
         ),
       ],
     );

@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../features/manga_book/domain/manga/manga_model.dart';
+import '../features/manga_book/domain/update_status/update_status_model.dart';
 import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 
@@ -131,14 +133,19 @@ enum MangaSort {
 
 enum ChapterSort {
   source,
-  fetchedDate;
+  // uploadDate
+  fetchedDate,
+  chapterName,
+  ;
 
   String toLocale(BuildContext context) {
     switch (this) {
       case ChapterSort.source:
         return context.l10n!.chapterSortSource;
       case ChapterSort.fetchedDate:
-        return context.l10n!.chapterSortFetchedDate;
+        return context.l10n!.chapterSortUploadDate;
+      case ChapterSort.chapterName:
+        return context.l10n!.chapterSortChapterName;
     }
   }
 }
@@ -521,6 +528,142 @@ enum SelectMode {
         return Icons.select_all_rounded;
       case SelectMode.invert:
         return Icons.flip_to_back_rounded;
+    }
+  }
+}
+
+enum UserAgentTypeEnum {
+  defaultWebView,
+  mobileWebView,
+  desktopWebView,
+  mobileSafari,
+  desktopSafari,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case UserAgentTypeEnum.defaultWebView:
+        return context.l10n!.label_default;
+      case UserAgentTypeEnum.mobileWebView:
+        return context.l10n!.user_agent_mobile_webview;
+      case UserAgentTypeEnum.desktopWebView:
+        return context.l10n!.user_agent_desktop_webview;
+      case UserAgentTypeEnum.mobileSafari:
+        return context.l10n!.user_agent_mobile_safari;
+      case UserAgentTypeEnum.desktopSafari:
+        return context.l10n!.user_agent_desktop_safari;
+    }
+  }
+}
+
+enum UrlFetchType {
+  source,
+  manga,
+  chapter,
+  ;
+}
+
+enum ScanlatorFilterType {
+  filter,
+  priority,
+  ;
+
+  static ScanlatorFilterType safeFromIndex(int? index) {
+    for (final type in ScanlatorFilterType.values) {
+      if (type.index == index) {
+        return type;
+      }
+    }
+    return ScanlatorFilterType.filter;
+  }
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case ScanlatorFilterType.filter:
+        return context.l10n!.scanlator_filter_label;
+      case ScanlatorFilterType.priority:
+        return context.l10n!.scanlator_priority_label;
+    }
+  }
+}
+
+enum UpdateStatusEnum {
+  RUNNING,
+  PENDING,
+  COMPLETE,
+  FAILED,
+  SKIPPED, //client
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case UpdateStatusEnum.RUNNING:
+        return context.l10n!.running;
+      case UpdateStatusEnum.PENDING:
+        return context.l10n!.pending;
+      case UpdateStatusEnum.COMPLETE:
+        return context.l10n!.completed;
+      case UpdateStatusEnum.FAILED:
+        return context.l10n!.failed;
+      case UpdateStatusEnum.SKIPPED:
+        return context.l10n!.skipped;
+    }
+  }
+
+  List<Manga>? fetchMangas(UpdateStatusMap? map) {
+    switch (this) {
+      case UpdateStatusEnum.RUNNING:
+        return map?.running;
+      case UpdateStatusEnum.PENDING:
+        return map?.pending;
+      case UpdateStatusEnum.COMPLETE:
+        return map?.completed;
+      case UpdateStatusEnum.FAILED:
+        return map?.failed;
+      case UpdateStatusEnum.SKIPPED:
+        return null;
+    }
+  }
+
+  IconData toIconData() {
+    switch (this) {
+      case UpdateStatusEnum.RUNNING:
+        return Icons.face;
+      case UpdateStatusEnum.PENDING:
+        return Icons.hourglass_empty;
+      case UpdateStatusEnum.COMPLETE:
+        return Icons.task_alt;
+      case UpdateStatusEnum.FAILED:
+        return Icons.error_outline;
+      case UpdateStatusEnum.SKIPPED:
+        return Icons.skip_next;
+    }
+  }
+}
+
+enum JobErrorCode {
+  UPDATE_FAILED,
+  FILTERED_BY_EXCLUDE_CATEGORY,
+  FILTERED_BY_UPDATE_STRATEGY,
+  FILTERED_BY_MANGA_STATUS,
+  FILTERED_BY_UNREAD,
+  FILTERED_BY_NOT_STARTED,
+  ;
+
+  String toLocale(BuildContext context) {
+    switch (this) {
+      case JobErrorCode.UPDATE_FAILED:
+        return context.l10n!.failed;
+      case JobErrorCode.FILTERED_BY_EXCLUDE_CATEGORY:
+        return context.l10n!.skip_titles_in_excluded_category;
+      case JobErrorCode.FILTERED_BY_UPDATE_STRATEGY:
+        return context.l10n!.skip_titles_only_fetch_once;
+      case JobErrorCode.FILTERED_BY_MANGA_STATUS:
+        return context.l10n!.skip_titles_with_completed_status;
+      case JobErrorCode.FILTERED_BY_UNREAD:
+        return context.l10n!.skip_titles_with_unread_chapters;
+      case JobErrorCode.FILTERED_BY_NOT_STARTED:
+        return context.l10n!.skip_titles_that_havent_been_read;
     }
   }
 }

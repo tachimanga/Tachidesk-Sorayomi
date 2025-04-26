@@ -22,6 +22,7 @@ import '../../../../widgets/text_field_popup.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../../../manga_book/presentation/reader/controller/reader_controller_v2.dart';
+import '../../../settings/presentation/advanced/widgets/useragent_select_tile.dart';
 import '../../../settings/widgets/server_url_tile/server_url_tile.dart';
 import '../../../stats/controller/stats_controller.dart';
 import '../../../sync/controller/sync_controller.dart';
@@ -104,6 +105,7 @@ class DebugScreen extends HookConsumerWidget {
           },
           value: javaUseNativeNet,
         ),
+        UserAgentSelectTile(),
         SwitchListTile(
           controlAffinity: ListTileControlAffinity.trailing,
           secondary: const Icon(Icons.switch_left_rounded),

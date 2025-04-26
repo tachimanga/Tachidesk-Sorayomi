@@ -23,9 +23,12 @@ import '../../../../utils/hooks/paging_controller_hook.dart';
 import '../../../../utils/launch_url_in_web.dart';
 import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
+import '../../../../widgets/async_buttons/async_icon_button.dart';
+import '../../../../widgets/async_buttons/async_ink_well.dart';
 import '../../../../widgets/search_field.dart';
 import '../../../manga_book/domain/manga/manga_model.dart';
 import '../../data/source_repository/source_repository.dart';
+import '../../domain/browse/browse_model.dart';
 import '../../domain/filter/filter_model.dart';
 import '../../domain/source/source_model.dart';
 import 'controller/source_manga_controller.dart';
@@ -108,7 +111,9 @@ class SourceMangaListScreen extends HookConsumerWidget {
           controller,
           pageKey,
           query: query.value,
-          filter: ref.read(filtersProvider.notifier).getAppliedFilter,
+          filter: sourceType == SourceType.filter
+              ? ref.read(filtersProvider.notifier).getAppliedFilter
+              : null,
         ),
       );
       return;
@@ -128,6 +133,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
         appBar: AppBar(
           title: _buildTitleWidget(
             context,
+            ref,
             data,
             showSourceUrl,
             showDirectFlag,
@@ -143,10 +149,12 @@ class SourceMangaListScreen extends HookConsumerWidget {
             ),
             const SourceMangaDisplayIconPopup(),
             if (data?.baseUrl?.isNotEmpty ?? false) ...[
-              IconButton(
-                onPressed: () {
-                  context.push(Routes.getWebView(data?.baseUrl ?? ""));
-                },
+              AsyncIconButton(
+                onPressed: () => launchUrlInWebView(
+                  context,
+                  ref,
+                  UrlFetchInput.ofSource(int.tryParse(sourceId)),
+                ),
                 icon: const Icon(Icons.public),
               ),
             ],
@@ -268,6 +276,7 @@ class SourceMangaListScreen extends HookConsumerWidget {
 
   Widget _buildTitleWidget(
     BuildContext context,
+    WidgetRef ref,
     Source? data,
     bool? showSourceUrl,
     bool? showDirectFlag,
@@ -287,8 +296,12 @@ class SourceMangaListScreen extends HookConsumerWidget {
           style: context.textTheme.titleMedium,
         ),
         if (data?.baseUrl?.isNotEmpty == true) ...[
-          InkWell(
-            onTap: () => context.push(Routes.getWebView(data?.baseUrl ?? "")),
+          AsyncInkWell(
+            onTap: () => launchUrlInWebView(
+              context,
+              ref,
+              UrlFetchInput.ofSource(int.tryParse(sourceId)),
+            ),
             child: Text(
               data?.baseUrl ?? "",
               style: context.textTheme.labelSmall?.copyWith(color: Colors.grey),

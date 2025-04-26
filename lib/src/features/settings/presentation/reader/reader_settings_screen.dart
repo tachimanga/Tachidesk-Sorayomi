@@ -22,12 +22,14 @@ import 'widgets/reader_mode_tile/reader_mode_tile.dart';
 import 'widgets/reader_navigation_layout_tile/reader_navigation_layout_tile.dart';
 import 'widgets/reader_padding_slider/reader_padding_slider.dart';
 import 'widgets/reader_page_layout/reader_page_layout_tile.dart';
+import 'widgets/reader_skip_duplicate_chapters/reader_skip_duplicate_chapters.dart';
 
 class ReaderSettingsScreen extends ConsumerWidget {
   const ReaderSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
     final pipe = ref.watch(getMagicPipeProvider);
 
     final purchaseGate = ref.watch(purchaseGateProvider);
@@ -65,6 +67,9 @@ class ReaderSettingsScreen extends ConsumerWidget {
             ],
             const ReaderNavigationLayoutTile(),
             const ReaderPaddingSlider(),
+            if (magic.b7) ...[
+              const ReaderSkipDuplicateChapters(),
+            ],
             const WatermarkSwitchTile(),
             if (isPad) ...[
               const ReaderApplePencilSettingTile(),

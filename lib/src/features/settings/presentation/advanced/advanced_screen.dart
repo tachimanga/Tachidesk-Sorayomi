@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_constants.dart';
 import '../../../../constants/db_keys.dart';
+import '../../../../constants/enum.dart';
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../global_providers/preference_providers.dart';
@@ -24,6 +25,7 @@ import '../../../../widgets/section_title.dart';
 import '../../../about/presentation/about/widget/file_log_tile.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../browse/widgets/bypass_setting/bypass_switch.dart';
+import 'widgets/useragent_select_tile.dart';
 
 class AdvancedScreen extends ConsumerWidget {
   const AdvancedScreen({super.key});
@@ -84,7 +86,6 @@ class AdvancedScreen extends ConsumerWidget {
                   toastDuration: const Duration(seconds: 30));
               try {
                 await pipe.invokeMethod("ClearCookies");
-                await settingsRepository.clearCookies();
                 log("clearCookies succ");
               } catch (e) {
                 log("clearCookies err $e");
@@ -98,6 +99,14 @@ class AdvancedScreen extends ConsumerWidget {
           ),
           if (magic.b7) ...[
             const ByPassTile(),
+          ],
+          if (magic.b7) ...[
+            UserAgentSelectTile(
+              optionList: [
+                UserAgentTypeEnum.defaultWebView,
+                UserAgentTypeEnum.mobileSafari
+              ],
+            ),
           ],
           const ReceiveTimeoutTile(),
           SectionTitle(title: context.l10n!.logsSectionTitle),
@@ -139,7 +148,7 @@ class ReceiveTimeoutTile extends ConsumerWidget {
           optionDisplayName: (value) => "${value}s",
           value: timeout,
           onChange: (value) async {
-            logEvent3("SETTING:NETWORK:RECEIVE:TIMEOUT", {"x" : "$value"});
+            logEvent3("SETTING:NETWORK:RECEIVE:TIMEOUT", {"x": "$value"});
             ref.read(receiveTimeoutPrefProvider.notifier).update(value);
             final dioClient = ref.read(dioClientKeyProvider);
             dioClient.dio.options.receiveTimeout = Duration(seconds: value);

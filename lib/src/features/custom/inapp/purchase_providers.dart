@@ -7,7 +7,6 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_storekit/src/types/app_store_product_details.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tachidesk_sorayomi/src/utils/storage/dio/dio_client.dart';
 
 import '../../../constants/db_keys.dart';
 import '../../../global_providers/global_providers.dart';
@@ -18,6 +17,7 @@ import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/log.dart';
 import '../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../utils/premium_reset.dart';
+import '../../../utils/storage/dio/dio_client.dart';
 import '../../../utils/usage_util.dart';
 import '../api/api_providers.dart';
 import 'model/purchase_model.dart';

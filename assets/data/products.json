@@ -17,7 +17,9 @@
             "Testflight access. (Please visit https://tachimanga.app/beta for more info.)",
             "Auto scroll.",
             "Create Tachiyomi-compatible backup.",
-            "Apple Pencil integration."
+            "Apple Pencil integration.",
+            "Set priority and skip duplicate chapters.",
+            "Save filters."
         ],
         "list": [
             {
@@ -53,7 +55,9 @@
             "وصول إلى اختبار التطبيق. (يرجى زيارة https://tachimanga.app/beta لمزيد من المعلومات)",
             "التمرير التلقائي.",
             "إنشاء نسخة احتياطية متوافقة مع تاشيومي.",
-            "تكامل مع Apple Pencil."
+            "تكامل مع Apple Pencil.",
+            "تعيين الأولوية وتخطي الفصول المكررة.",
+            "حفظ الفلاتر."
         ],
         "list": [
             {
@@ -89,7 +93,9 @@
             "Testflight-Zugriff. (Bitte besuchen Sie https://tachimanga.app/beta für weitere Informationen.)",
             "Automatisches Scrollen.",
             "Tachiyomi-kompatibles Backup erstellen.",
-            "Apple Pencil-Integration."
+            "Apple Pencil-Integration.",
+            "Priorität setzen und doppelte Kapitel überspringen.",
+            "Filter speichern."
         ],
         "list": [
             {
@@ -125,7 +131,9 @@
             "Acceso a Testflight. (Por favor visita https://tachimanga.app/beta para más información)",
             "Desplazamiento automático.",
             "Crear copia de seguridad compatible con Tachiyomi.",
-            "Integración con Apple Pencil."
+            "Integración con Apple Pencil.",
+            "Establecer prioridad y omitir capítulos duplicados.",
+            "Guardar filtros."
         ],
         "list": [
             {
@@ -161,7 +169,9 @@
             "Accès à Testflight (Veuillez visiter https://tachimanga.app/beta pour plus d'informations)",
             "Défilement automatique.",
             "Créer une sauvegarde compatible avec Tachiyomi.",
-            "Intégration avec Apple Pencil."
+            "Intégration avec Apple Pencil.",
+            "Définir la priorité et ignorer les chapitres en double.",
+            "Enregistrer les filtres."
         ],
         "list": [
             {
@@ -197,7 +207,9 @@
             "Tesztverzióhoz való hozzáférés (https://tachimanga.app/beta további információért)",
             "Automatikus görgetés.",
             "Tachiyomi-kompatibilis biztonsági mentés létrehozása.",
-            "Apple Pencil integráció."
+            "Apple Pencil integráció.",
+            "Prioritás beállítása és ismétlődő fejezetek kihagyása.",
+            "Szűrők mentése."
         ],
         "list": [
             {
@@ -233,7 +245,9 @@
             "Akses Tesfly (Silakan kunjungi https://tachimanga.app/beta untuk informasi lebih lanjut)",
             "Gulir otomatis.",
             "Buat cadangan yang kompatibel dengan Tachiyomi.",
-            "Integrasi Apple Pencil."
+            "Integrasi Apple Pencil.",
+            "Atur prioritas dan lewati bab yang duplikat.",
+            "Simpan filter."
         ],
         "list": [
             {
@@ -269,7 +283,9 @@
             "Accesso Testflight. (Visita https://tachimanga.app/beta per ulteriori informazioni)",
             "Scorrimento automatico.",
             "Crea un backup compatibile con Tachiyomi.",
-            "Integrazione con Apple Pencil."
+            "Integrazione con Apple Pencil.",
+            "Imposta priorità e salta capitoli duplicati.",
+            "Salva filtri."
         ],
         "list": [
             {
@@ -305,7 +321,9 @@
             "Acesso Testflight. (Por favor visite https://tachimanga.app/beta para mais informações)",
             "Rolagem automática.",
             "Criar backup compatível com Tachiyomi.",
-            "Integração com Apple Pencil."
+            "Integração com Apple Pencil.",
+            "Definir prioridade e pular capítulos duplicados.",
+            "Salvar filtros."
         ],
         "list": [
             {
@@ -341,7 +359,9 @@
             "Доступ к Testflight. (Посетите https://tachimanga.app/beta для получения дополнительной информации)",
             "Автоматическая прокрутка.",
             "Создать резервную копию, совместимую с Tachiyomi.",
-            "Интеграция с Apple Pencil."
+            "Интеграция с Apple Pencil.",
+            "Установить приоритет и пропускать повторяющиеся главы.",
+            "Сохранить фильтры."
         ],
         "list": [
             {
@@ -377,7 +397,9 @@
             "เข้าถึง Testflight (โปรดเยี่ยมชม https://tachimanga.app/beta สำหรับข้อมูลเพิ่มเติม)",
             "เลื่อนอัตโนมัติ.",
             "สร้างการสำรองข้อมูลที่เข้ากันได้กับ Tachiyomi.",
-            "การผสานรวมกับ Apple Pencil."
+            "การผสานรวมกับ Apple Pencil.",
+            "ตั้งค่าความสำคัญและข้ามบทที่ซ้ำกัน",
+            "บันทึกตัวกรอง"
         ],
         "list": [
             {
@@ -413,7 +435,9 @@
             "Доступ до Testflight. (Будь ласка, відвідайте https://tachimanga.app/beta для отримання додаткової інформації)",
             "Автоматичне прокручування.",
             "Створити резервну копію, сумісну з Tachiyomi.",
-            "Інтеграція з Apple Pencil."
+            "Інтеграція з Apple Pencil.",
+            "Встановити пріоритет і пропускати повторювані розділи.",
+            "Зберегти фільтри."
         ],
         "list": [
             {
@@ -449,7 +473,9 @@
             "Testflight erişimi. (Daha fazla bilgi için https://tachimanga.app/beta adresini ziyaret edin)",
             "Otomatik kaydırma.",
             "Tachiyomi ile uyumlu yedekleme oluştur.",
-            "Apple Pencil entegrasyonu."
+            "Apple Pencil entegrasyonu.",
+            "Öncelik belirleyin ve yinelenen bölümleri atlayın.",
+            "Filtreleri kaydet."
         ],
         "list": [
             {
@@ -485,7 +511,9 @@
             "Truy cập Testflight. (Vui lòng truy cập https://tachimanga.app/beta để biết thêm thông tin)",
             "Cuộn tự động.",
             "Tạo bản sao lưu tương thích với Tachiyomi.",
-            "Tích hợp Apple Pencil."
+            "Tích hợp Apple Pencil.",
+            "Đặt ưu tiên và bỏ qua các chương trùng lặp.",
+            "Lưu bộ lọc."
         ],
         "list": [
             {
@@ -521,7 +549,9 @@
             "Testflight访问权限。（请访问 https://tachimanga.app/beta 获取更多信息）",
             "自动滚动。",
             "创建与 Tachiyomi 兼容的备份。",
-            "Apple Pencil 集成."
+            "Apple Pencil 集成.",
+            "设置优先级并跳过重复章节。",
+            "保存筛选器。"
         ],
         "list": [
             {
@@ -557,7 +587,9 @@
             "Testflight訪問權限。（請訪問 https://tachimanga.app/beta 以獲取更多資訊）",
             "自動滾動。",
             "創建與 Tachiyomi 兼容的備份。",
-            "Apple Pencil 整合."
+            "Apple Pencil 整合.",
+            "設定優先級並跳過重複章節。",
+            "儲存篩選條件。"
         ],
         "list": [
             {

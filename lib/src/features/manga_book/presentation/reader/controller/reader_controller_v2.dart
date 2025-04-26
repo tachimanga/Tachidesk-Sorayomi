@@ -81,9 +81,10 @@ class ReaderDoublePageData {
 
 class PageChangedData {
   final ReaderPageData currentPage;
+  final Chapter currentChapter;
   final bool flush;
 
-  PageChangedData(this.currentPage, this.flush);
+  PageChangedData(this.currentPage, this.currentChapter, this.flush);
 }
 
 class ReaderChapterState {

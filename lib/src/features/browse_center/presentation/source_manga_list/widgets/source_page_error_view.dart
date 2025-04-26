@@ -17,8 +17,10 @@ import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../utils/storage/dio_error_util.dart';
+import '../../../../../widgets/async_buttons/async_text_button.dart';
 import '../../../../../widgets/emoticons.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
+import '../../../domain/browse/browse_model.dart';
 import '../../../domain/source/source_model.dart';
 
 class SourcePageErrorView extends ConsumerWidget {
@@ -54,10 +56,14 @@ class SourcePageErrorView extends ConsumerWidget {
             ),
           ),
           if (source?.baseUrl?.isNotEmpty ?? false) ...[
-            TextButton(
-              onPressed: () {
-                context.push(Routes.getWebView(source?.baseUrl ?? ""));
+            AsyncTextButton(
+              onPressed: () async {
                 logEvent3("OPEN_WEBVIEW", {"x": source?.extPkgName});
+                await launchUrlInWebView(
+                  context,
+                  ref,
+                  UrlFetchInput.ofSource(int.tryParse(source?.id ?? "")),
+                );
               },
               child: Column(
                 children: [

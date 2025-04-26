@@ -7,13 +7,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
-
 import '../../../../../global_providers/preference_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
@@ -21,9 +19,10 @@ import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/manga_cover_util.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../utils/purchase.dart';
-import '../../../../../widgets/async_buttons/async_text_button_icon.dart';
+import '../../../../../widgets/async_buttons/async_text_icon_button.dart';
 import '../../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
 import '../../../../../widgets/server_image.dart';
+import '../../../../browse_center/domain/browse/browse_model.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/tracking/widgets/tracker_setting_widget.dart';
 import '../../../domain/manga/manga_model.dart';
@@ -79,7 +78,8 @@ class MangaDescription extends HookConsumerWidget {
                 children: [
                   ServerImage(
                     imageUrl: manga.thumbnailUrl ?? "",
-                    imageData: manga.thumbnailImg, fit: BoxFit.cover,
+                    imageData: manga.thumbnailImg,
+                    fit: BoxFit.cover,
                     extInfo: CoverExtInfo.build(manga),
                     size: Size.fromHeight(backgroundImageHeight!),
                     decodeWidth: kMangaCoverDecodeWidth,
@@ -123,12 +123,13 @@ class MangaDescription extends HookConsumerWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: () async {
-                      final purchase = await checkPurchase(
-                          purchaseGate,
-                          testflightFlag,
-                          freeTrialFlag,
-                          context,
-                          toast);
+                    final purchase = await checkPurchase(
+                      purchaseGate,
+                      testflightFlag,
+                      freeTrialFlag,
+                      context,
+                      toast,
+                    );
                     if (!purchase) {
                       return;
                     }
@@ -143,10 +144,10 @@ class MangaDescription extends HookConsumerWidget {
                         context: context,
                         backgroundColor: context.theme.cardColor,
                         clipBehavior: Clip.hardEdge,
-                          builder: (context) =>
-                              TrackerSettingWidget(
-                                  mangaId: manga.id.toString(),
-                                  refresh: refresh),
+                        builder: (context) => TrackerSettingWidget(
+                          mangaId: manga.id.toString(),
+                          refresh: refresh,
+                        ),
                       );
                     }
                   },
@@ -163,17 +164,20 @@ class MangaDescription extends HookConsumerWidget {
                       : Text(context.l10n!.tracking),
                 ),
               ),
-              if (manga.realUrl.isNotBlank)
+              if (manga.sourceId != "0")
                 Expanded(
-                    child: TextButton.icon(
-                  onPressed: () {
-                    context.push(Routes.getWebView(manga.realUrl ?? ""));
-                  },
-                  icon: const Icon(Icons.public),
-                  style: TextButton.styleFrom(
-                      foregroundColor: Colors.grey, padding: EdgeInsets.zero),
-                  label: Text(context.l10n!.webView),
-                )),
+                  child: AsyncTextIconButton(
+                    onPressed: () => launchUrlInWebView(
+                      context,
+                      ref,
+                      UrlFetchInput.ofManga(manga.id),
+                    ),
+                    icon: const Icon(Icons.public),
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.grey, padding: EdgeInsets.zero),
+                    label: Text(context.l10n!.webView),
+                  ),
+                ),
             ],
           ),
         ),
@@ -193,7 +197,8 @@ class MangaDescription extends HookConsumerWidget {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: context.theme.scaffoldBackgroundColor.withOpacity(.7),
+                          color: context.theme.scaffoldBackgroundColor
+                              .withOpacity(.7),
                         ),
                       ],
                       gradient: LinearGradient(

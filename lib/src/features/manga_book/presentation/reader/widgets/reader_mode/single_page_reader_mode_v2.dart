@@ -22,6 +22,7 @@ import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/log.dart';
 import '../../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../widgets/server_image.dart';
+import '../../../../../settings/presentation/reader/widgets/force_enable_scroll_tile/force_enable_scroll_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_long_press_tile/reader_long_press_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_pinch_to_zoom_tile/reader_pinch_to_zoom_tile.dart';
@@ -100,15 +101,17 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     final autoScrollIntervalMs = useState<int?>(null);
     final autoScrollDemoMode = useState(false);
     useEffect(() {
-      notifyPageUpdate(context, currentIndex, currPage, currChapter, false);
+      notifyPageUpdate(context, currentIndex, currPage, currChapter);
       notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter, autoScrollIntervalMs);
       return;
     }, [currentIndex.value]);
     useEffect(() {
       return () {
-        notifyPageUpdate(context, currentIndex, currPage, currChapter, true);
+        if (onPageChanged != null) {
+          onPageChanged!(PageChangedData(currPage.value, currChapter.value, true));
+        }
       };
-    }, [readerListData]);
+    }, []);
 
     useEffect(() {
       final chapter = readerListData.chapterList.firstWhereOrNull(
@@ -116,7 +119,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       if (chapter != null) {
         currChapter.value = chapter;
       }
-      log("[Reader2] ContinuousReaderMode2 update currChapter to:${chapter?.name}");
+      log("[Reader2] SinglePageReaderMode update currChapter to:${chapter?.name}");
       return;
     }, [readerListData]);
 
@@ -130,7 +133,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
 
       scrollController.addListener(listener);
       return () => scrollController.removeListener(listener);
-    }, [readerListData]);
+    }, []);
 
     useEffect(() {
       return () {
@@ -165,12 +168,12 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     final enablePhotoView = ref.watch(readerUsePhotoViewPrefProvider);
     final doubleTapZoomIn = ref.watch(readerDoubleTapZoomInProvider) ??
         DBKeys.doubleTapZoomIn.initial;
-
+    final forceEnableScroll = ref.watch(forceEnableScrollPrefProvider);
     Widget? child;
     if (enablePhotoView == true) {
       child = PhotoViewGallery.builder(
         scrollDirection: scrollDirection,
-        scrollPhysics: pointCount.value != 2
+        scrollPhysics: pointCount.value != 2 || forceEnableScroll == true
             ? const CustomPageViewScrollPhysics()
             : const NeverScrollableScrollPhysics(),
         reverse: reverse,
@@ -210,7 +213,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
             imageUrl: imageUrl,
             imageData: page.imageData,
             traceInfo: traceInfo,
-            chapterUrl: currChapter.value.realUrl,
+            chapterId: currChapter.value.id,
             reloadButton: true,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 CenterCircularProgressIndicator(
@@ -329,7 +332,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
               imageUrl: imageUrl,
               imageData: page.imageData,
               traceInfo: traceInfo,
-              chapterUrl: currChapter.value.realUrl,
+              chapterId: currChapter.value.id,
               reloadButton: true,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   CenterCircularProgressIndicator(
@@ -387,11 +390,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
       BuildContext context,
       ValueNotifier<int> currentIndex,
       ValueNotifier<ReaderPageData> currPage,
-      ValueNotifier<Chapter> currChapter,
-      bool flush) {
-    if (flush && currentIndex.value > readerListData.pageList.length - 1) {
-      currentIndex.value = readerListData.pageList.length - 1;
-    }
+      ValueNotifier<Chapter> currChapter) {
     if (currentIndex.value > readerListData.pageList.length - 1) {
       return;
     }
@@ -405,7 +404,7 @@ class SinglePageReaderMode2 extends HookConsumerWidget {
     // log("[Reader2] curr page ${page.pageIndex} "
     //     "curr chapter: ${pageChapter.index}");
     if (onPageChanged != null) {
-      onPageChanged!(PageChangedData(currPage.value, flush));
+      onPageChanged!(PageChangedData(page, pageChapter, false));
     }
   }
 

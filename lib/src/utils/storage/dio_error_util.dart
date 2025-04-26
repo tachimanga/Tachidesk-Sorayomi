@@ -80,9 +80,11 @@ class DioErrorUtil {
 
   static String localizeErrorMessage(String msg, BuildContext context) {
     if (msg == "Blocked by Cloudflare" ||
-        msg == "Receive timeout" ||
         msg.startsWith("HTTP error ")) {
       return context.l10n!.checkInWebView(msg);
+    }
+    if (msg == "Receive timeout") {
+      return context.l10n!.receive_timeout_tips;
     }
     return msg;
   }

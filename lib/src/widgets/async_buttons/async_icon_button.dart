@@ -16,26 +16,29 @@ class AsyncIconButton extends HookWidget {
     this.onPressed,
     required this.icon,
     this.showLoading,
+    this.visualDensity,
   });
 
   final AsyncCallback? onPressed;
   final Widget icon;
   final bool? showLoading;
+  final VisualDensity? visualDensity;
 
   @override
   Widget build(BuildContext context) {
-    final workingState = useState(false);
+    final running = useState(false);
     return IconButton(
-      onPressed: onPressed == null || workingState.value
+      onPressed: onPressed == null || running.value
           ? null
           : () async {
-              workingState.value = true;
+              running.value = true;
               await onPressed!();
-              workingState.value = false;
+              running.value = false;
             },
-      icon: workingState.value && showLoading == true
+      icon: running.value && showLoading == true
           ? const MiniCircularProgressIndicator()
           : icon,
+      visualDensity: visualDensity,
     );
   }
 }

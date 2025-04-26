@@ -21,6 +21,7 @@ import '../../../../utils/log.dart' as logger;
 import '../../../../utils/log.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/common_error_widget.dart';
+import '../../../browse_center/domain/browse/browse_model.dart';
 import '../../../settings/presentation/appearance/controller/theme_controller.dart';
 import '../../../settings/presentation/reader/widgets/reader_keep_screen_on/reader_keep_screen_on_tile.dart';
 import '../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
@@ -30,6 +31,7 @@ import '../../../settings/presentation/security/controller/security_controller.d
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter_patch/chapter_put_model.dart';
 import '../manga_details/controller/manga_details_controller.dart';
+import '../updates/controller/update_controller.dart';
 import 'controller/reader_controller.dart';
 import 'controller/reader_controller_v2.dart';
 import 'widgets/reader_mode/continuous_reader_mode_v2.dart';
@@ -84,17 +86,11 @@ class ReaderScreen2 extends HookConsumerWidget {
       return;
     }, [manga]);
 
-
-
     final mangaNotifier = ref.read(mangaProvider.notifier);
-
     final chapterListProvider = mangaChapterListProvider(mangaId: mangaId);
     final chapterListNotifier = ref.read(chapterListProvider.notifier);
-    final chapterList = ref.watch(chapterListProvider);
-    final chapterRealUrl = chapterList.valueOrNull
-            ?.where((e) => "${e.index}" == initChapterIndexState.value)
-            .firstOrNull
-            ?.realUrl;
+
+    final updatePageNotifier = ref.watch(updatePageRefreshChapterSignalProvider.notifier);
 
     final keepScreenOn = ref.read(readerKeepScreenOnPrefProvider) == true;
     useEffect(() {
@@ -142,41 +138,28 @@ class ReaderScreen2 extends HookConsumerWidget {
     final onPageChanged2 = useCallback<AsyncValueSetter<PageChangedData>>(
       (PageChangedData pageChangedData) async {
         final currentPage = pageChangedData.currentPage;
+        final currChapter = pageChangedData.currentChapter;
         final flush = pageChangedData.flush;
-
-        final currChapter = readerListData.chapterList.firstWhereOrNull(
-            (element) => element.index == currentPage.chapterIndex);
-        logger.log("[Reader2] onPageChanged currChapter:${currChapter?.name}, "
+        logger.log("[Reader2] onPageChanged currChapter:${currChapter.name}, "
             "currentPage:${currentPage.pageIndex}, flush:$flush");
-        if (currChapter == null) {
-          //logger.log("[Reader2] currChapter is null");
-          return;
-        }
-
-        if (currChapter.read == true) {
-          // logger.log("[Reader2] no need update");
-          return;
-        }
-
         updateLastRead() async {
           final lifecycleState = WidgetsBinding.instance.lifecycleState;
           if (lifecycleState != AppLifecycleState.resumed) {
             logger.log("skip updateLastRead, app in bg:$lifecycleState");
             return;
           }
-          final isReadingCompeted = currChapter.read == true ||
-              currentPage.pageIndex + 1 >=
-                  currChapter.pageCount.ifNullOrNegative(0);
-          // logger.log("[Reader2] updateLastRead "
-          //     "isRead:$isReadingCompeted index:${currentPage.pageIndex}");
+          final isFinalPage = currentPage.pageIndex + 1 >=
+              currChapter.pageCount.ifNullOrNegative(0);
+          logger.log("[Reader2] updateLastRead index:${currentPage.pageIndex} "
+              "isFinalPage:$isFinalPage currChapter.read:${currChapter.read}");
           final duration = readDuration;
           readDuration = 0;
           final input = ChapterModifyInput(
-            mangaId: manga.valueOrNull?.id,
+            mangaId: currChapter.mangaId,
             chapterId: currentPage.chapterId,
-            lastPageRead: isReadingCompeted ? 0 : currentPage.pageIndex,
+            lastPageRead: isFinalPage ? 0 : currentPage.pageIndex,
             readDuration: duration,
-            read: isReadingCompeted,
+            read: currChapter.read == true || isFinalPage,
             incognito: incognito,
           );
           await AsyncValue.guard(
@@ -184,7 +167,10 @@ class ReaderScreen2 extends HookConsumerWidget {
           if (flush) {
             chapterListNotifier.refreshSilently();
           }
-          if (isReadingCompeted && currChapter.downloaded == true) {
+          if (isFinalPage || flush) {
+            updatePageNotifier.update(currentPage.chapterId ?? 0);
+          }
+          if (isFinalPage && currChapter.downloaded == true) {
             autoDeleteService.addToDeleteList(currChapter);
           }
         }
@@ -193,15 +179,16 @@ class ReaderScreen2 extends HookConsumerWidget {
         if ((finalDebounce?.isActive).ifNull()) {
           finalDebounce?.cancel();
         }
-        if (currentPage.pageIndex + 1 >=
-            currChapter.pageCount.ifNullOrNegative(0) || flush) {
+        final isFinalPage = currentPage.pageIndex + 1 >=
+            currChapter.pageCount.ifNullOrNegative(0);
+        if (isFinalPage || flush) {
           updateLastRead();
         } else {
           debounce.value = Timer(const Duration(seconds: 2), updateLastRead);
         }
         return;
       },
-      [readerListData],
+      [],
     );
 
     final AsyncCallback? onNoNextChapter = magic.c3 ? () async {
@@ -337,17 +324,10 @@ class ReaderScreen2 extends HookConsumerWidget {
                         },
                         errorSource: "chapter-details",
                         mangaId: mangaId,
-                        webViewUrlProvider: () async {
-                          if (chapterRealUrl?.isNotEmpty == true) {
-                            return chapterRealUrl;
-                          }
-                          return await ref
-                              .read(mangaBookRepositoryProvider)
-                              .getChapterRealUrl(
-                                mangaId: mangaId,
-                                chapterIndex: initChapterIndexState.value,
-                              );
-                        },
+                        urlFetchInput: UrlFetchInput.ofChapterIndex(
+                          int.tryParse(mangaId),
+                          int.tryParse(initChapterIndexState.value),
+                        ),
                         refresh: () => ref.refresh(chapterProviderWithIndex),
                         addScaffoldWrapper: true,
                       );

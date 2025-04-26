@@ -100,17 +100,16 @@ class ChapterMangaListTile extends StatelessWidget {
             context.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
         selected: isSelected,
         onTap: pair.chapter != null && pair.manga != null
-            ? () async {
+            ? () {
                 if (canTapSelect) {
                   toggleSelect(pair.chapter!);
                 } else {
-                  await context.push(
+                  context.push(
                     Routes.getReader(
                       "${pair.manga!.id}",
                       "${pair.chapter!.index}",
                     ),
                   );
-                  updatePair();
                 }
               }
             : null,

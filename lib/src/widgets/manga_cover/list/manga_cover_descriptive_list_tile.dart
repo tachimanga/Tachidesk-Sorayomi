@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../constants/app_constants.dart';
 import '../../../constants/app_sizes.dart';
 import '../../../constants/enum.dart';
+import '../../../features/browse_center/domain/browse/browse_model.dart';
 import '../../../features/manga_book/domain/manga/manga_model.dart';
 
 import '../../../features/manga_book/presentation/manga_details/manga_cover_screen.dart';
@@ -18,6 +19,8 @@ import '../../../features/settings/presentation/appearance/controller/date_forma
 import '../../../icons/icomoon_icons.dart';
 import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
+import '../../../utils/launch_url_in_web.dart';
+import '../../async_buttons/async_ink_well.dart';
 import '../../custom_circular_progress_indicator.dart';
 import '../grid/manga_cover_grid_tile.dart';
 import '../widgets/clipboard_wrapper.dart';
@@ -223,9 +226,12 @@ class MangaCoverDescriptiveListTile extends ConsumerWidget {
                     if (showSourceUrl && manga.realUrl.isNotBlank == true) ...[
                       Padding(
                           padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                          child: InkWell(
-                            onTap: () => context
-                                .push(Routes.getWebView(manga.realUrl ?? "")),
+                          child: AsyncInkWell(
+                            onTap: () => launchUrlInWebView(
+                              context,
+                              ref,
+                              UrlFetchInput.ofManga(manga.id),
+                            ),
                             child: Text(
                               manga.realUrl ?? "",
                               overflow: TextOverflow.ellipsis,

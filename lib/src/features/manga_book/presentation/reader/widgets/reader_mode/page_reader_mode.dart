@@ -57,7 +57,7 @@ class PageReaderMode extends HookConsumerWidget {
 
     final lastPageRead = max(0,
         min(initChapter.lastPageRead ?? 0, (initChapter.pageCount ?? 1) - 1));
-    final initIndex = initChapter.read == true ? 0 : lastPageRead;
+    final initIndex = lastPageRead;
 
     final sharedPageIndex = useRef(initIndex);
 

@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../constants/db_keys.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
+import '../force_enable_scroll_tile/force_enable_scroll_tile.dart';
 import '../reader_classic_start_button_tile/reader_classic_start_button_tile.dart';
 import '../reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../reader_keep_screen_on/reader_keep_screen_on_tile.dart';
@@ -76,5 +77,8 @@ class ReaderAdvancedScreen extends ConsumerWidget {
     ref
         .read(readerUsePhotoViewPrefProvider.notifier)
         .update(DBKeys.readerUsePhotoView.initial);
+    ref
+        .read(forceEnableScrollPrefProvider.notifier)
+        .update(DBKeys.forceEnableScroll.initial);
   }
 }

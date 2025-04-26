@@ -64,9 +64,16 @@ class MangaMeta with _$MangaMeta {
       fromJson: MangaMeta.fromJsonToBool,
     )
     bool? invertTap,
-    @JsonKey(name: "flutter_readerNavigationLayout")
+    @JsonKey(
+      name: "flutter_readerNavigationLayout",
+      unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+    )
     ReaderNavigationLayout? readerNavigationLayout,
-    @JsonKey(name: "flutter_readerMode") ReaderMode? readerMode,
+    @JsonKey(
+      name: "flutter_readerMode",
+      unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+    )
+    ReaderMode? readerMode,
     @JsonKey(
       name: "flutter_readerPadding",
       fromJson: MangaMeta.fromJsonToDouble,
@@ -93,14 +100,22 @@ class MangaMeta with _$MangaMeta {
     )
     double? readerMagnifierSize,
     @JsonKey(name: "flutter_scanlator") String? scanlator,
-    @JsonKey(name: "flutter_page_layout") ReaderPageLayout? readerPageLayout,
+    @JsonKey(
+      name: "flutter_page_layout",
+      unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+    )
+    ReaderPageLayout? readerPageLayout,
     @JsonKey(
       name: "flutter_page_layout_skip",
       fromJson: MangaMeta.fromJsonToBool,
     )
     bool? readerPageLayoutSkipFirstPage,
     // manga chapter sort options
-    @JsonKey(name: "flutter_chapterSort") ChapterSort? chapterSort,
+    @JsonKey(
+      name: "flutter_chapterSort",
+      unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+    )
+    ChapterSort? chapterSort,
     @JsonKey(
       name: "flutter_chapterSortDirection",
       fromJson: MangaMeta.fromJsonToBool,

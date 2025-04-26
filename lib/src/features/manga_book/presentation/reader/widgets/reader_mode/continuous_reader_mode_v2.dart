@@ -79,7 +79,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     // }, []);
     final lastPageRead = max(0,
         min(initChapter.lastPageRead ?? 0, (initChapter.pageCount ?? 1) - 1));
-    final initIndex = initChapter.read == true ? 0 : lastPageRead;
+    final initIndex = lastPageRead;
     final currentIndex = useState(initIndex);
     final currChapter = useState(initChapter);
     // logger.log("[Reader2] ContinuousReaderMode2 currChapter.state ${currChapter.value.name} "
@@ -101,7 +101,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     bool noNextChapter = chapterPair != null && chapterPair.first == null;
 
     useEffect(() {
-      notifyPageUpdate(context, currentIndex, currPage, currChapter, false);
+      notifyPageUpdate(context, currentIndex, currPage, currChapter);
       if (onNoNextChapter != null) {
         notifyNoNextChapter(currentIndex, chapterPair, onNoNextChapter!);
       }
@@ -109,9 +109,11 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     }, [currentIndex.value]);
     useEffect(() {
       return () {
-        notifyPageUpdate(context, currentIndex, currPage, currChapter, true);
+        if (onPageChanged != null) {
+          onPageChanged!(PageChangedData(currPage.value, currChapter.value, true));
+        }
       };
-    }, [readerListData]);
+    }, []);
 
     useEffect(() {
       final chapter = readerListData.chapterList.firstWhereOrNull(
@@ -195,7 +197,6 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       };
     }, []);
 
-    final dpr = context.devicePixelRatio;
     useEffect(() {
       if (tickerRef.value != null) {
         return;
@@ -341,7 +342,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                   imageUrl: imageUrl,
                   imageData: page.imageData,
                   traceInfo: traceInfo,
-                  chapterUrl: currChapter.value.realUrl,
+                  chapterId: currChapter.value.id,
                   reloadButton: true,
                   progressIndicatorBuilder: (_, __, downloadProgress) => Center(
                     child: CircularProgressIndicator(
@@ -548,8 +549,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       BuildContext context,
       ValueNotifier<int> currentIndex,
       ValueNotifier<ReaderPageData> currPage,
-      ValueNotifier<Chapter> currChapter,
-      bool flush) {
+      ValueNotifier<Chapter> currChapter) {
     final page = readerListData.pageList[currentIndex.value];
     final pageChapter = readerListData.chapterMap[page.chapterIndex]!;
     if (context.mounted) {
@@ -559,7 +559,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
     // logger.log("[Reader2] curr page ${page.pageIndex} "
     //     "curr chapter: ${pageChapter.index}");
     if (onPageChanged != null) {
-      onPageChanged!(PageChangedData(currPage.value, flush));
+      onPageChanged!(PageChangedData(page, pageChapter, false));
     }
   }
 

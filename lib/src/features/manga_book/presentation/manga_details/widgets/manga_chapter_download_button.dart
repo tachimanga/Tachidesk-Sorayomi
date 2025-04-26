@@ -77,7 +77,8 @@ class MangaChapterDownloadButton extends HookConsumerWidget {
         PopupMenuItem(
           onTap: () async {
             logEvent3("MANGA:DOWNLOAD:UNREAD_ALL");
-            final chapterIds = filteredList!
+            final list = isAscSorted ? filteredList! : filteredList!.reversed;
+            final chapterIds = list
                 .where((e) =>
                     e.downloaded != true && e.id != null && e.read != true)
                 .map((e) => e.id!)
@@ -89,7 +90,8 @@ class MangaChapterDownloadButton extends HookConsumerWidget {
         PopupMenuItem(
           onTap: () async {
             logEvent3("MANGA:DOWNLOAD:ALL");
-            final chapterIds = filteredList!
+            final list = isAscSorted ? filteredList! : filteredList!.reversed;
+            final chapterIds = list
                 .where((e) => e.downloaded != true && e.id != null)
                 .map((e) => e.id!)
                 .toList();

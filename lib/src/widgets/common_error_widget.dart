@@ -15,6 +15,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../constants/urls.dart';
+import '../features/browse_center/data/browse_repository/browse_repository.dart';
+import '../features/browse_center/domain/browse/browse_model.dart';
 import '../features/manga_book/data/manga_book_repository.dart';
 import '../features/manga_book/presentation/manga_details/controller/manga_details_controller.dart';
 import '../global_providers/global_providers.dart';
@@ -24,6 +26,7 @@ import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
 import '../utils/misc/toast/toast.dart';
 import '../utils/storage/dio_error_util.dart';
+import 'async_buttons/async_text_button.dart';
 import 'emoticons.dart';
 
 class CommonErrorWidget extends HookConsumerWidget {
@@ -32,7 +35,7 @@ class CommonErrorWidget extends HookConsumerWidget {
     this.refresh,
     this.showGenericError = false,
     this.src,
-    this.webViewUrlProvider,
+    this.urlFetchInput,
     this.mangaId,
     required this.error,
   });
@@ -40,7 +43,7 @@ class CommonErrorWidget extends HookConsumerWidget {
   final bool showGenericError;
   final Object error;
   final String? src;
-  final Future<String?> Function()? webViewUrlProvider;
+  final UrlFetchInput? urlFetchInput;
   final String? mangaId;
 
   @override
@@ -81,20 +84,13 @@ class CommonErrorWidget extends HookConsumerWidget {
               Text(context.l10n!.refresh)
             ]),
           ),
-          if (webViewUrlProvider != null) ...[
-            TextButton(
-              onPressed: () async {
-                (await AsyncValue.guard(() async {
-                  final url = await webViewUrlProvider!();
-                  if (url.isBlank) {
-                    throw Exception("Failed to get page url.");
-                  }
-                  if (context.mounted) {
-                    context.push(Routes.getWebView(url ?? ""));
-                  }
-                }))
-                    .showToastOnError(toast);
-              },
+          if (urlFetchInput != null) ...[
+            AsyncTextButton(
+              onPressed: () => launchUrlInWebView(
+                context,
+                ref,
+                urlFetchInput!,
+              ),
               child: Column(children: [
                 const Icon(Icons.public),
                 Text(context.l10n!.webView)

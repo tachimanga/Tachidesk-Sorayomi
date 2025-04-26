@@ -4,21 +4,21 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
-import '../../../../../global_providers/global_providers.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
-import '../../../../../utils/event_util.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
-import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../library/domain/category/category_model.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
@@ -59,11 +59,11 @@ class MangaWithId extends _$MangaWithId {
     final token = CancelToken();
     ref.onDispose(token.cancel);
     final result = await AsyncValue.guard(
-          () => ref.watch(mangaBookRepositoryProvider).getManga(
-        mangaId: mangaId,
-        cancelToken: token,
-        onlineFetch: false,
-      ),
+      () => ref.watch(mangaBookRepositoryProvider).getManga(
+            mangaId: mangaId,
+            cancelToken: token,
+            onlineFetch: false,
+          ),
     );
     if (result is AsyncError) {
       log("[flush]MangaWithId refresh error $result");
@@ -111,11 +111,11 @@ class MangaChapterList extends _$MangaChapterList {
     final token = CancelToken();
     ref.onDispose(token.cancel);
     final result = await AsyncValue.guard(
-          () => ref.read(mangaBookRepositoryProvider).getChapterList(
-        mangaId: mangaId,
-        cancelToken: token,
-        onlineFetch: false,
-      ),
+      () => ref.read(mangaBookRepositoryProvider).getChapterList(
+            mangaId: mangaId,
+            cancelToken: token,
+            onlineFetch: false,
+          ),
     );
     if (result is AsyncError) {
       log("[flush]MangaChapterList refresh error $result");
@@ -127,55 +127,77 @@ class MangaChapterList extends _$MangaChapterList {
 }
 
 @riverpod
-Set<String> mangaScanlatorList(MangaScanlatorListRef ref,
-    {required String mangaId}) {
+List<Pair<String, int>> mangaScanlatorList(Ref ref, {required String mangaId}) {
   final chapterList = ref.watch(mangaChapterListProvider(mangaId: mangaId));
-  final scanlatorList = <String>{};
+  final Map<String, int> map = {};
   chapterList.whenData((data) {
     if (data == null) return;
     for (final chapter in data) {
-      if (chapter.scanlator.isNotBlank) {
-        scanlatorList.add(chapter.scanlator!);
+      if (chapter.scanlator?.isNotEmpty == true) {
+        final key = chapter.scanlator!;
+        map[key] = (map[key] ?? 0) + 1;
       }
     }
   });
-  return scanlatorList;
+  return map.entries.map((e) => Pair(first: e.key, second: e.value)).toList();
 }
 
 @riverpod
 class MangaChapterFilterScanlator extends _$MangaChapterFilterScanlator {
+  Timer? debounce;
+
   @override
-  List<String> build({required String mangaId}) {
+  ScanlatorMeta build({required String mangaId}) {
     final manga = ref.watch(mangaWithIdProvider(mangaId: mangaId));
     final str = manga.valueOrNull?.meta?.scanlator;
     //print("MangaChapterFilterScanlator init: $str");
     if (str == null || str.isEmpty) {
-      return []; // [] for select all
+      return ScanlatorMeta(list: []); // [] for select all
     }
     if (str.startsWith("{")) {
       final e = json.decode(str);
       if (e is Map<String, dynamic>) {
-        final meta = ScanlatorMeta.fromJson(e);
-        if (meta.list != null) {
-          return meta.list!;
-        }
+        return ScanlatorMeta.fromJson(e);
       }
     }
-    return [str];
+    return ScanlatorMeta(list: [str]);
   }
 
-  void update(List<String> scanlators) async {
-    final str = json.encode(ScanlatorMeta(list: scanlators));
-    //print("MangaChapterFilterScanlator update: $str");
-    await AsyncValue.guard(
-      () => ref.read(mangaBookRepositoryProvider).patchMangaMeta(
-            mangaId: mangaId,
-            key: MangaMetaKeys.scanlator.key,
-            value: str,
-          ),
+  void update(ScanlatorMeta meta) {
+    state = meta;
+
+    if (debounce?.isActive == true) {
+      debounce?.cancel();
+    }
+    debounce = Timer(
+      kInstantDuration,
+      () {
+        AsyncValue.guard(() async {
+          final str = json.encode(meta);
+          await ref.read(mangaBookRepositoryProvider).patchMangaMeta(
+                mangaId: mangaId,
+                key: MangaMetaKeys.scanlator.key,
+                value: str,
+              );
+          await ref
+              .read(mangaWithIdProvider(mangaId: mangaId).notifier)
+              .refreshSilently();
+        });
+      },
     );
-    ref.invalidate(mangaWithIdProvider(mangaId: mangaId));
-    state = scanlators;
+  }
+}
+
+@riverpod
+class FakeMangaChapterFilterScanlator
+    extends _$FakeMangaChapterFilterScanlator {
+  @override
+  ScanlatorMeta build({required String mangaId}) {
+    return ScanlatorMeta(list: []);
+  }
+
+  void update(ScanlatorMeta meta) {
+    state = meta;
   }
 }
 
@@ -211,9 +233,9 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
       .watch(mangaChapterSortDirectionWithMangaIdProvider(mangaId: mangaId))
       .ifNull(true);
   // scanlators
-  final chapterFilterScanlators =
+  final scanlatorMeta =
       ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
-  final selectedScanlatorSet = {...chapterFilterScanlators};
+
   // query
   final query = ref.watch(mangaChapterListQueryProvider(mangaId: mangaId));
 
@@ -233,11 +255,6 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
       return false;
     }
 
-    if (selectedScanlatorSet.isNotEmpty &&
-        !selectedScanlatorSet.contains(chapter.scanlator)) {
-      return false;
-    }
-
     if (query?.isNotEmpty == true && chapter.name?.query(query) != true) {
       return false;
     }
@@ -247,10 +264,14 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
 
   int applyChapterSort(Chapter m1, Chapter m2) {
     switch (sortedBy) {
-      case ChapterSort.fetchedDate:
-        return (m1.fetchedAt ?? 0).compareTo(m2.fetchedAt ?? 0);
       case ChapterSort.source:
         return (m1.index ?? 0).compareTo(m2.index ?? 0);
+      case ChapterSort.fetchedDate:
+        final i = (m1.uploadDate ?? 0).compareTo(m2.uploadDate ?? 0);
+        return i != 0 ? i : (m1.index ?? 0).compareTo(m2.index ?? 0);
+      case ChapterSort.chapterName:
+        final i = compareNatural(m1.name ?? "", m2.name ?? "");
+        return i != 0 ? i : (m1.index ?? 0).compareTo(m2.index ?? 0);
       default:
         return 0;
     }
@@ -258,11 +279,112 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
 
   return chapterList.copyWithData(
     (data) {
-      final list = [...?data?.where(applyChapterFilter)]
+      final list0 = _removeDuplicateChapters(data, scanlatorMeta);
+      final list = [...?list0?.where(applyChapterFilter)]
         ..sort(applyChapterSort);
       return sortedDirection ? list : list.reversed.toList();
     },
   );
+}
+
+List<Chapter>? _removeDuplicateChapters(
+    List<Chapter>? list, ScanlatorMeta meta) {
+  if (list == null) {
+    return list;
+  }
+  final type = ScanlatorFilterType.safeFromIndex(meta.type);
+  if (type == ScanlatorFilterType.filter) {
+    return _removeDuplicateChaptersByFilter(list, meta);
+  }
+
+  final allScanlatorSet = <String>{};
+  for (final chapter in list) {
+    if (chapter.scanlator != null) {
+      allScanlatorSet.add(chapter.scanlator!);
+    }
+  }
+  final allScanlators = allScanlatorSet.toList();
+
+  if (allScanlators.isEmpty) {
+    return list;
+  }
+
+  List<Chapter> window = [];
+  List<List<Chapter>> windows = [];
+
+  void resetWindow() {
+    if (window.isNotEmpty) {
+      windows.add([...window]);
+      window.clear();
+    }
+  }
+
+  List<Chapter> chapterList = [];
+
+  for (final chapter in list) {
+    if (chapter.scanlator == null) {
+      chapterList.add(chapter);
+      resetWindow();
+      continue;
+    }
+    if ((chapter.chapterNumber ?? -1) < 0) {
+      chapterList.add(chapter);
+      resetWindow();
+      continue;
+    }
+    if (window.isNotEmpty &&
+        chapter.chapterNumber != window.first.chapterNumber) {
+      resetWindow();
+    }
+    window.add(chapter);
+  }
+  // last window
+  resetWindow();
+
+  for (final window in windows) {
+    if (window.length == 1) {
+      chapterList.add(window.first);
+      continue;
+    }
+    Map<String, Chapter> chapterMap = {};
+    for (final chapter in window) {
+      chapterMap[chapter.scanlator!] = chapter;
+    }
+    final chapter = _pickFirstChapter(chapterMap, meta.priority) ??
+        _pickFirstChapter(chapterMap, allScanlators) ??
+        window.first;
+    chapterList.add(chapter);
+  }
+  return chapterList;
+}
+
+Chapter? _pickFirstChapter(
+    Map<String, Chapter> chapterMap, List<String>? priorityList) {
+  if (priorityList == null) {
+    return null;
+  }
+  for (final scanlator in priorityList) {
+    final chapter = chapterMap[scanlator];
+    if (chapter != null) {
+      return chapter;
+    }
+  }
+  return null;
+}
+
+List<Chapter>? _removeDuplicateChaptersByFilter(
+    List<Chapter>? list, ScanlatorMeta meta) {
+  final selectedScanlatorSet = {...?meta.list};
+  if (selectedScanlatorSet.isEmpty) {
+    return list;
+  }
+  return list?.where((chapter) {
+    if (chapter.scanlator?.isNotEmpty == true &&
+        !selectedScanlatorSet.contains(chapter.scanlator)) {
+      return false;
+    }
+    return true;
+  }).toList();
 }
 
 @riverpod
@@ -289,7 +411,7 @@ Chapter? firstUnreadInFilteredChapterList(
         lastReadChapter = chapter;
       }
     }
-    if (lastReadChapter?.read == true) {
+    if (lastReadChapter?.read == true && lastReadChapter?.lastPageRead == 0) {
       var find = false;
       for (final chapter in list) {
         if (find) {

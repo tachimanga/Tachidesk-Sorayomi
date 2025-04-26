@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
+import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
@@ -43,6 +44,8 @@ class CategoryMangaList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider =
         categoryMangaListWithQueryAndFilterProvider(categoryId: categoryId);
+    final query = ref.watch(libraryQueryProvider);
+    final magic = ref.watch(getMagicProvider);
     final mangaList = ref.watch(provider);
     final displayMode = ref.watch(libraryDisplayModeProvider);
     final coverWidth =
@@ -85,11 +88,12 @@ class CategoryMangaList extends HookConsumerWidget {
       context,
       (data) {
         if (data.isBlank) {
-          return LibraryMangaEmptyView(
+          final child = LibraryMangaEmptyView(
             refresh: refresh,
             categoryId: categoryId,
             categoryCount: categoryCount,
           );
+          return _withSearchGlobally(context, ref, child, query, magic);
         }
         late final Widget mangaList;
         switch (displayMode) {
@@ -151,11 +155,34 @@ class CategoryMangaList extends HookConsumerWidget {
               fireUpdate(ref, ["$categoryId"]);
             }
           },
-          child: mangaList,
+          child: _withSearchGlobally(context, ref, mangaList, query, magic),
         );
       },
       refresh: refresh,
     );
+  }
+
+  Widget _withSearchGlobally(BuildContext context, WidgetRef ref, Widget child,
+      String? query, Magic magic) {
+    if (magic.b7 && query.isNotBlank) {
+      return Column(
+        children: [
+          TextButton(
+            style: const ButtonStyle(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: () {
+              context.push(Routes.getGlobalSearch(query));
+            },
+            child: Text(
+              context.l10n!.library_search_globally(query ?? ""),
+            ),
+          ),
+          Expanded(child: child),
+        ],
+      );
+    }
+    return child;
   }
 
   bool _isSelected(Manga manga) {
@@ -169,8 +196,7 @@ class CategoryMangaList extends HookConsumerWidget {
     }
     final key = SelectKey(categoryId, manga.id!);
     if (selectMangaMap.value != null) {
-      selectMangaMap.value =
-          selectMangaMap.value.toggleKeyNullable(key, manga);
+      selectMangaMap.value = selectMangaMap.value.toggleKeyNullable(key, manga);
     } else {
       context.push(Routes.getManga(
         manga.id!,
@@ -184,7 +210,6 @@ class CategoryMangaList extends HookConsumerWidget {
       return;
     }
     final key = SelectKey(categoryId, manga.id!);
-    selectMangaMap.value =
-        selectMangaMap.value.toggleKeyNullable(key, manga);
+    selectMangaMap.value = selectMangaMap.value.toggleKeyNullable(key, manga);
   }
 }

@@ -26,6 +26,10 @@ class MangaChapterSort extends ConsumerWidget {
           sortType: ChapterSort.fetchedDate,
           mangaId: mangaId,
         ),
+        MangaChapterSortTile(
+          sortType: ChapterSort.chapterName,
+          mangaId: mangaId,
+        ),
       ],
     );
   }

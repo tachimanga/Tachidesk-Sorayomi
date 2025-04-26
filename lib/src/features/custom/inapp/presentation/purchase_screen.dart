@@ -497,6 +497,7 @@ class UpgradeLifeTime extends HookConsumerWidget {
           }
         });
       }
+      return null;
     }, [purchaseExpireMs]);
 
     if (!canUpgradedToLifeTime) {

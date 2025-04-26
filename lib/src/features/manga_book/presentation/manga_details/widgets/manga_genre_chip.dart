@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -24,11 +25,13 @@ class MangaGenreChip extends HookConsumerWidget {
   final String genre;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filtersProvider = sourceMangaFilterListProvider(manga.sourceId ?? "");
+    final _ = ref.watch(filtersProvider);
+
     return InkWell(
       onTap: () async {
-        final filtersProvider =
-            sourceMangaFilterListProvider(manga.sourceId ?? "");
-        final filterList = await ref.read(filtersProvider.notifier).reset();
+        final filterList =
+            await ref.read(filtersProvider.notifier).loadAndReset();
         if (filterList != null) {
           for (int i = 0; i < filterList.length; i++) {
             final filter = filterList[i];

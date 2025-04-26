@@ -28,17 +28,25 @@ class Category with _$Category {
 @freezed
 class CategoryMeta with _$CategoryMeta {
   factory CategoryMeta({
-    @JsonKey(name: "flutter_sort") MangaSort? sort,
+    @JsonKey(
+      name: "flutter_sort",
+      unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+    )
+    MangaSort? sort,
     @JsonKey(
       name: "flutter_sortDirection",
       fromJson: CategoryMeta.fromJsonToBool,
     )
     bool? sortDirection,
+    @JsonKey(
+      name: "flutter_update_exclude",
+      fromJson: CategoryMeta.fromJsonToBool,
+    )
+    bool? updateExclude,
   }) = _CategoryMeta;
 
-  static bool? fromJsonToBool(dynamic val) => val != null && val is String
-      ? val == "true"
-      : null;
+  static bool? fromJsonToBool(dynamic val) =>
+      val != null && val is String ? val == "true" : null;
 
   factory CategoryMeta.fromJson(Map<String, dynamic> json) =>
       _$CategoryMetaFromJson(json);
@@ -47,6 +55,7 @@ class CategoryMeta with _$CategoryMeta {
 enum CategoryMetaKeys {
   sort("flutter_sort"),
   sortDirection("flutter_sortDirection"),
+  updateExclude("flutter_update_exclude"),
   ;
 
   const CategoryMetaKeys(this.key);

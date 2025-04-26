@@ -6,6 +6,7 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../constants/enum.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../manga/manga_model.dart';
 
@@ -17,6 +18,7 @@ class UpdateStatus with _$UpdateStatus {
   UpdateStatus._();
   factory UpdateStatus({
     UpdateStatusMap? statusMap,
+    Map<int, FailedInfo>? failedInfo,
     bool? running,
     int? numberOfJobs,
     int? completeTimestamp,
@@ -45,4 +47,18 @@ class UpdateStatusMap with _$UpdateStatusMap {
 
   factory UpdateStatusMap.fromJson(Map<String, dynamic> json) =>
       _$UpdateStatusMapFromJson(json);
+}
+
+@freezed
+class FailedInfo with _$FailedInfo {
+  factory FailedInfo({
+    String? errorMessage,
+    @JsonKey(
+      unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
+    )
+    JobErrorCode? errorCode,
+  }) = _FailedInfo;
+
+  factory FailedInfo.fromJson(Map<String, dynamic> json) =>
+      _$FailedInfoFromJson(json);
 }

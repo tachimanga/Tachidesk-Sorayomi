@@ -16,6 +16,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import '../constants/endpoints.dart';
 import '../constants/enum.dart';
 import '../constants/urls.dart';
+import '../features/browse_center/domain/browse/browse_model.dart';
 import '../features/manga_book/domain/img/image_error_widget.dart';
 import '../features/manga_book/domain/img/image_model.dart';
 import '../features/manga_book/domain/img/unique_key_provider.dart';
@@ -32,6 +33,7 @@ import '../utils/launch_url_in_web.dart';
 import '../utils/log.dart';
 import '../utils/manga_cover_util.dart';
 import '../utils/misc/toast/toast.dart';
+import 'async_buttons/async_text_button.dart';
 import 'emoticons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,7 +60,7 @@ class ServerImage extends HookConsumerWidget {
     this.maxDecodeWidth,
     this.maxDecodeHeight,
     this.traceInfo,
-    this.chapterUrl,
+    this.chapterId,
     this.extInfo,
     this.imageBuilder,
   });
@@ -87,7 +89,7 @@ class ServerImage extends HookConsumerWidget {
 
   // extra fields
   final TraceInfo? traceInfo;
-  final String? chapterUrl;
+  final int? chapterId;
   final Map<String, String>? extInfo;
 
   // image builder
@@ -208,16 +210,15 @@ class ServerImage extends HookConsumerWidget {
             onPressed: () => keyState.value = (UniqueKey()),
             child: Text(context.l10n!.refresh),
           ),
-          if (chapterUrl?.isNotEmpty == true) ...[
-            TextButton(
-              onPressed: () {
-                onTapWebViewButton(
-                  context,
-                  chapterUrl,
-                  traceInfo,
-                  error.toString(),
-                );
-              },
+          if (chapterId != null) ...[
+            AsyncTextButton(
+              onPressed: () => onTapWebViewButton(
+                context,
+                ref,
+                chapterId!,
+                traceInfo,
+                error.toString(),
+              ),
               child: Text(context.l10n!.webView),
             ),
           ],
@@ -263,12 +264,13 @@ class ServerImage extends HookConsumerWidget {
     }
   }
 
-  void onTapWebViewButton(
+  Future<void> onTapWebViewButton(
     BuildContext context,
-    String? chapterUrl,
+    WidgetRef ref,
+    int chapterId,
     TraceInfo? traceInfo,
     String? error,
-  ) {
+  ) async {
     final parts = error?.split(", uri = ");
     logEvent3("READER:IMAGE:OPEN:WEBVIEW", {
       "type": traceInfo?.type,
@@ -277,7 +279,11 @@ class ServerImage extends HookConsumerWidget {
       "url": imageUrl,
       "error": parts.firstOrNull,
     });
-    context.push(Routes.getWebView(chapterUrl ?? ""));
+    await launchUrlInWebView(
+      context,
+      ref,
+      UrlFetchInput.ofChapterId(chapterId),
+    );
   }
 }
 

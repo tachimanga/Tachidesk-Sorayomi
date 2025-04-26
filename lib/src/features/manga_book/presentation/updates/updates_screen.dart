@@ -6,12 +6,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
+import '../../../../global_providers/global_providers.dart';
+import '../../../../routes/router_config.dart';
+import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/hooks/paging_controller_hook.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
@@ -29,6 +33,7 @@ import '../../widgets/update_status_fab.dart';
 import '../../widgets/update_status_popup_menu.dart';
 import 'controller/update_controller.dart';
 import 'widgets/chapter_manga_list_tile.dart';
+import 'widgets/update_setting_dialog.dart';
 import 'widgets/update_status_list_tile.dart';
 import 'widgets/updates_pip_button.dart';
 
@@ -65,6 +70,8 @@ class UpdatesScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final magic = ref.watch(getMagicProvider);
+
     final controller =
         usePagingController<int, ChapterMangaPair>(firstPageKey: 0);
     final updatesRepository = ref.watch(updatesRepositoryProvider);
@@ -78,8 +85,6 @@ class UpdatesScreen extends HookConsumerWidget {
       return;
     }, []);
     final selectedChapters = useState<Map<int, Chapter>>({});
-    final alwaysAskSelect = ref.watch(alwaysAskCategoryToUpdatePrefProvider) ??
-        DBKeys.alwaysAskCategoryToUpdate.initial;
     final dateFormatPref =
         ref.watch(dateFormatPrefProvider) ?? DateFormatEnum.yMMMd;
 
@@ -102,8 +107,20 @@ class UpdatesScreen extends HookConsumerWidget {
       return;
     }, [scheduleRefreshSignal]);
 
+    final chapterRefreshSignal =
+        ref.watch(updatePageRefreshChapterSignalProvider);
+    useEffect(() {
+      if (chapterRefreshSignal?.first != null) {
+        _refreshChaptersData(
+          [chapterRefreshSignal!.first],
+          mangaBookRepository,
+          controller,
+        );
+      }
+      return;
+    }, [chapterRefreshSignal]);
+
     final updateRunning = ref.watch(updateRunningProvider);
-    final categoryListValue = ref.watch(categoryControllerProvider);
     final showUpdateStatus = ref.watch(showUpdateStatusProvider);
 
     return Scaffold(
@@ -130,9 +147,9 @@ class UpdatesScreen extends HookConsumerWidget {
                     )
                   : null,
               actions: [
-                if (!alwaysAskSelect) const UpdateSettingIcon(),
                 if (showPipButton) const UpdatesPipButton(),
-                const UpdateStatusPopupMenu()
+                if (magic.b7) const UpdateSettingIcon(),
+                const UpdateStatusPopupMenu(),
               ],
             ),
       bottomSheet: selectedChapters.value.isNotEmpty
@@ -154,10 +171,7 @@ class UpdatesScreen extends HookConsumerWidget {
           selectedChapters.value = <int, Chapter>{};
           controller.refresh();
           if (!updateRunning && !showUpdateStatus) {
-            categoryListValue.whenOrNull(data: (categoryList) {
-              fetchUpdates(context, ref, categoryList);
-              return;
-            });
+            fireGlobalUpdate(ref);
           }
         },
         child: PagedListView(
@@ -180,10 +194,7 @@ class UpdatesScreen extends HookConsumerWidget {
                       onPressed: () {
                         controller.refresh();
                         if (!updateRunning && !showUpdateStatus) {
-                          categoryListValue.whenOrNull(data: (categoryList) {
-                            fetchUpdates(context, ref, categoryList);
-                            return;
-                          });
+                          fireGlobalUpdate(ref);
                         }
                       },
                       child: Text(context.l10n!.refresh),
@@ -300,5 +311,23 @@ class UpdatesScreen extends HookConsumerWidget {
       return e;
     }).toList();
     controller.itemList = itemList;
+  }
+}
+
+class UpdateSettingIcon extends ConsumerWidget {
+  const UpdateSettingIcon({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      icon: const Icon(Icons.settings),
+      onPressed: () {
+        logEvent3("UPDATE:SETTING:BUTTON");
+        showDialog(
+          context: context,
+          builder: (context) => UpdateSettingDialog(),
+        );
+      },
+    );
   }
 }

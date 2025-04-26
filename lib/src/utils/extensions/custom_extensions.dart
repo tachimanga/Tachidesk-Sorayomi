@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../constants/enum.dart';
+import '../../features/browse_center/domain/browse/browse_model.dart';
 import '../../widgets/common_error_widget.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
 import '../../widgets/emoticons.dart';

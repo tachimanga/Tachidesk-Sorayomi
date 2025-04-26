@@ -25,6 +25,7 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/emoticons.dart';
 import '../../../../widgets/manga_cover/list/manga_cover_descriptive_list_tile.dart';
+import '../../../browse_center/domain/browse/browse_model.dart';
 import '../../../library/presentation/library/controller/library_controller.dart';
 import '../../../settings/controller/remote_blacklist_controller.dart';
 import '../../../settings/data/config/remote_blacklist_config.dart';
@@ -252,15 +253,7 @@ class MangaDetailsScreen extends HookConsumerWidget {
         refresh: refresh,
         errorSource: "manga-details",
         mangaId: mangaId,
-        webViewUrlProvider: () async {
-          final url = manga.valueOrNull?.realUrl;
-          if (url?.isNotEmpty == true) {
-            return url;
-          }
-          return await ref
-              .read(mangaBookRepositoryProvider)
-              .getMangaRealUrl(mangaId: mangaId);
-        },
+        urlFetchInput: UrlFetchInput.ofManga(int.tryParse(mangaId)),
         wrapper: (body) => Scaffold(
           appBar: AppBar(
             title: Text(mangaBasic?.title ?? context.l10n!.manga),

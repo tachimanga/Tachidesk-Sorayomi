@@ -7,7 +7,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/db_keys.dart';
 import '../../../../../widgets/highlighted_container.dart';
+import '../../../domain/chapter/chapter_model.dart';
 import '../controller/manga_chapter_controller.dart';
 import '../controller/manga_details_controller.dart';
 
@@ -34,14 +36,18 @@ class ChapterFilterIconButton extends HookConsumerWidget {
     final chapterFilterBookmark =
         ref.watch(filterBookmarkedWithMangaIdProvider);
 
-    final chapterFilterScanlators =
+    final scanlatorsMeta =
         ref.watch(mangaChapterFilterScanlatorProvider(mangaId: mangaId));
+
+    final sortedBy =
+        ref.watch(mangaChapterSortWithMangaIdProvider(mangaId: mangaId));
 
     return HighlightedContainer(
       highlighted: chapterFilterUnread != null ||
           chapterFilterDownloaded != null ||
           chapterFilterBookmark != null ||
-          chapterFilterScanlators.isNotEmpty,
+          sortedBy != DBKeys.chapterSort.initial ||
+          scanlatorIsActive(scanlatorsMeta),
       child: icon,
     );
   }

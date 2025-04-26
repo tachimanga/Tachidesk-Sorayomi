@@ -6,8 +6,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../features/browse_center/data/browse_repository/browse_repository.dart';
+import '../features/browse_center/domain/browse/browse_model.dart';
+import '../routes/router_config.dart';
 import 'extensions/custom_extensions.dart';
 import 'misc/toast/toast.dart';
 
@@ -33,4 +38,24 @@ Future<void> launchUrlInSafari(BuildContext context, String url,
     await Clipboard.setData(ClipboardData(text: url));
     if (context.mounted) toast?.showError(context.l10n!.errorLaunchURL(url));
   }
+}
+
+Future<void> launchUrlInWebView(
+  BuildContext context,
+  WidgetRef ref,
+  UrlFetchInput input,
+) async {
+  final message = context.l10n!.failed_to_get_url;
+  final toast = ref.read(toastProvider(context));
+  (await AsyncValue.guard(() async {
+    final output =
+        await ref.read(browseRepositoryProvider).fetchUrl(input: input);
+    if (output == null || output.url.isNullOrEmpty) {
+      throw Exception(message);
+    }
+    if (context.mounted) {
+      context.push(Routes.goWebView, extra: output);
+    }
+  }))
+      .showToastOnError(toast);
 }

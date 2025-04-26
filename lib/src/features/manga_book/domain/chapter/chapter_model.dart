@@ -6,6 +6,8 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../constants/enum.dart';
+import '../../../../utils/extensions/custom_extensions.dart';
 import '../img/image_model.dart';
 
 part 'chapter_model.freezed.dart';
@@ -42,9 +44,18 @@ class Chapter with _$Chapter {
 @freezed
 class ScanlatorMeta with _$ScanlatorMeta {
   factory ScanlatorMeta({
+    int? type,
     List<String>? list,
+    List<String>? priority,
   }) = _ScanlatorMeta;
 
   factory ScanlatorMeta.fromJson(Map<String, dynamic> json) =>
       _$ScanlatorMetaFromJson(json);
+}
+
+bool scanlatorIsActive(ScanlatorMeta meta) {
+  final type = ScanlatorFilterType.safeFromIndex(meta.type);
+  bool a = type == ScanlatorFilterType.filter && meta.list?.isNotEmpty == true;
+  bool b = type == ScanlatorFilterType.priority;
+  return a || b;
 }

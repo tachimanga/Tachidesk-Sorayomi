@@ -13,6 +13,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../constants/endpoints.dart';
+import '../../../../constants/enum.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/classes/pair/pair_model.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -22,8 +23,6 @@ import '../../domain/chapter_page/chapter_page_model.dart';
 import '../../domain/update_status/update_status_model.dart';
 
 part 'updates_repository.g.dart';
-
-List<int>? prevUpdateCategoryIds;
 
 class UpdatesRepository {
   const UpdatesRepository(this.dioClient);
@@ -48,7 +47,6 @@ class UpdatesRepository {
     List<int>? categoryIds,
     CancelToken? cancelToken,
   }) {
-    prevUpdateCategoryIds = categoryIds;
     return dioClient.post(
       UpdateUrl.fetch,
       cancelToken: cancelToken,
@@ -56,20 +54,30 @@ class UpdatesRepository {
     );
   }
 
-  Future<void> retryUpdates({
-    CancelToken? cancelToken,
-  }) {
-    log("retryUpdates prevUpdateCategoryIds $prevUpdateCategoryIds");
-    return fetchUpdates(
-      categoryIds: prevUpdateCategoryIds,
-      cancelToken: cancelToken,
-    );
-  }
-
   Future<void> resetUpdates({
     CancelToken? cancelToken,
   }) =>
       dioClient.post(UpdateUrl.reset, cancelToken: cancelToken);
+
+  Future<void> retryByCodes({
+    required List<String> errorCodes,
+    CancelToken? cancelToken,
+  }) {
+    return dioClient.post(
+      UpdateUrl.retryByCodes,
+      cancelToken: cancelToken,
+      data: jsonEncode({"errorCodes": errorCodes}),
+    );
+  }
+
+  Future<void> retrySkipped({
+    CancelToken? cancelToken,
+  }) {
+    return dioClient.post(
+      UpdateUrl.retrySkipped,
+      cancelToken: cancelToken,
+    );
+  }
 
   Future<UpdateStatus?> summaryUpdates({
     CancelToken? cancelToken,

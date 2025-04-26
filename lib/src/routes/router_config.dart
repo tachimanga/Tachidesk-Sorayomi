@@ -16,7 +16,7 @@ import '../features/about/presentation/about/debug_keyboard_screen.dart';
 import '../features/about/presentation/about/debug_screen.dart';
 import '../features/account/account_login_screen.dart';
 import '../features/account/account_register_screen.dart';
-import '../features/browse_center/domain/filter/filter_model.dart';
+import '../features/browse_center/domain/browse/browse_model.dart';
 import '../features/browse_center/domain/migrate/migrate_model.dart';
 import '../features/browse_center/presentation/browse/browse_screen.dart';
 import '../features/browse_center/presentation/extension/extension_info_screen.dart';
@@ -33,7 +33,6 @@ import '../features/manga_book/presentation/downloaded/downloaded_screen.dart';
 import '../features/manga_book/presentation/downloads/downloads_screen.dart';
 import '../features/manga_book/presentation/history/history_screen.dart';
 import '../features/manga_book/presentation/manga_details/manga_details_screen.dart';
-import '../features/manga_book/presentation/reader/controller/reader_controller_v2.dart';
 import '../features/manga_book/presentation/reader/reader_screen_v2.dart';
 import '../features/manga_book/presentation/updates/updates_screen.dart';
 import '../features/settings/domain/repo/repo_model.dart';
@@ -132,7 +131,6 @@ abstract class Routes {
   static getGlobalSearch([String? query]) =>
       '/global-search${query.isNotBlank ? "?query=$query" : ''}';
   static const goWebView = '/webView';
-  static getWebView(String url) => '$goWebView?url=$url';
   static const purchase = '/purchase';
   static const migrateMangaList = '/migrate/:sourceId';
   static getMigrateMangaList(String sourceId) => '/migrate/$sourceId';
@@ -429,7 +427,7 @@ GoRouter routerConfig(ref) {
         path: Routes.goWebView,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => WebViewScreen(
-          url: state.uri.queryParameters['url'],
+          params: state.extra as UrlFetchOutput?,
         ),
       ),
       GoRoute(

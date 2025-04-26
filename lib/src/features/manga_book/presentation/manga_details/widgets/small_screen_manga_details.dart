@@ -14,6 +14,7 @@ import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/emoticons.dart';
 import '../../../../../widgets/scrollbar_behavior.dart';
+import '../../../../browse_center/domain/browse/browse_model.dart';
 import '../../../data/manga_book_repository.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/manga/manga_model.dart';
@@ -130,15 +131,7 @@ class SmallScreenMangaDetails extends HookConsumerWidget {
               refresh: () => onRefresh(false),
               errorSource: "manga-details",
               mangaId: mangaId,
-              webViewUrlProvider: () async {
-                final url = manga.realUrl;
-                if (url?.isNotEmpty == true) {
-                  return url;
-                }
-                return await ref
-                    .read(mangaBookRepositoryProvider)
-                    .getMangaRealUrl(mangaId: mangaId);
-              },
+              urlFetchInput: UrlFetchInput.ofManga(int.tryParse(mangaId)),
               wrapper: (child) => SliverToBoxAdapter(
                 child: SizedBox(
                   height: context.height * .5,

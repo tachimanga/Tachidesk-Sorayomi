@@ -75,7 +75,9 @@ enum DBKeys {
   migrateCategoryFlag(true),
   migrateTrackFlag(true),
   removeDownloadsIfMigrate(true),
+  // Deprecated
   categoryIdsToUpdate(<String>[]),
+  // Deprecated
   alwaysAskCategoryToUpdate(true),
   defaultCategory(kCategoryAlwaysAskValue),
   lockType(LockTypeEnum.off),
@@ -102,11 +104,12 @@ enum DBKeys {
   applePencilDoubleTapAction(ApplePencilActon.previousPage),
   applePencilSqueezeAction(ApplePencilActon.nextPage),
   readerUsePhotoView(true),
+  forceEnableScroll(false),
+  userAgentType(UserAgentTypeEnum.defaultWebView),
+  fontFixFor185(false),
   ;
 
   const DBKeys(this.initial);
 
   final dynamic initial;
 }
-
-enum DBStoreName { settings }

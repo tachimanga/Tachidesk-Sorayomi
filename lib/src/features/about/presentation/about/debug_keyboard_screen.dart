@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../utils/extensions/custom_extensions.dart';
+
 class DebugKeyboardScreen extends StatelessWidget {
   const DebugKeyboardScreen({super.key});
 
@@ -29,6 +31,21 @@ class MyCustomForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Text("Hello world 中文 displayLarge", style: context.textTheme.displayLarge,),
+        Text("Hello world 中文 displayMedium", style: context.textTheme.displayMedium,),
+        Text("Hello world 中文 displaySmall", style: context.textTheme.displaySmall,),
+        Text("Hello world 中文 headlineLarge", style: context.textTheme.headlineLarge,),
+        Text("Hello world 中文 headlineMedium", style: context.textTheme.headlineMedium,),
+        Text("Hello world 中文 headlineSmall", style: context.textTheme.headlineSmall,),
+        Text("Hello world 中文 titleLarge", style: context.textTheme.titleLarge,),
+        Text("Hello world 中文 titleMedium", style: context.textTheme.titleMedium,),
+        Text("Hello world 中文 titleSmall", style: context.textTheme.titleSmall,),
+        Text("Hello world 中文 bodyLarge", style: context.textTheme.bodyLarge,),
+        Text("Hello world 中文 bodyMedium", style: context.textTheme.bodyMedium,),
+        Text("Hello world 中文 bodySmall", style: context.textTheme.bodySmall,),
+        Text("Hello world 中文 labelLarge", style: context.textTheme.labelLarge,),
+        Text("Hello world 中文 labelMedium", style: context.textTheme.labelMedium,),
+        Text("Hello world 中文 labelSmall", style: context.textTheme.labelSmall,),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextField(

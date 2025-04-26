@@ -6,11 +6,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../../../constants/enum.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/common_error_widget.dart';
 import '../../../../../widgets/emoticons.dart';
+import '../../../../browse_center/domain/browse/browse_model.dart';
 import '../../../../manga_book/domain/manga/manga_model.dart';
 import '../../../data/manga_book_repository.dart';
+import '../../../domain/chapter/chapter_model.dart';
 import '../controller/manga_chapter_controller.dart';
 import '../controller/manga_details_controller.dart';
 
@@ -37,13 +40,13 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
     final chapterFilterBookmark =
         ref.watch(filterBookmarkedWithMangaIdProvider);
 
-    final chapterFilterScanlators =
+    final scanlatorsMeta =
         ref.watch(mangaChapterFilterScanlatorProvider(mangaId: "${manga.id}"));
 
     if (chapterFilterUnread != null ||
         chapterFilterDownloaded != null ||
         chapterFilterBookmark != null ||
-        chapterFilterScanlators.isNotEmpty) {
+        scanlatorIsActive(scanlatorsMeta)) {
       return Emoticons(
           text: context.l10n!.noChaptersFound,
           button: ElevatedButton(
@@ -67,24 +70,20 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
                   .read(mangaChapterFilterScanlatorProvider(
                           mangaId: "${manga.id}")
                       .notifier)
-                  .update([]);
+                  .update(scanlatorsMeta.copyWith(
+                    type: ScanlatorFilterType.filter.index,
+                    list: [],
+                  ));
             },
             child: Text(context.l10n!.reset_filters),
           ));
     }
 
     return CommonErrorWidget(
-        refresh: refresh,
-        src: "manga_details",
-        webViewUrlProvider: () async {
-          final url = manga.realUrl;
-          if (url?.isNotEmpty == true) {
-            return url;
-          }
-          return await ref
-              .read(mangaBookRepositoryProvider)
-              .getMangaRealUrl(mangaId: "${manga.id}");
-        },
-        error: context.l10n!.noChaptersFound);
+      refresh: refresh,
+      src: "manga_details",
+      urlFetchInput: UrlFetchInput.ofManga(manga.id),
+      error: context.l10n!.noChaptersFound,
+    );
   }
 }

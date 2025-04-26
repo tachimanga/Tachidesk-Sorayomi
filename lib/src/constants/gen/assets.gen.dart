@@ -144,6 +144,10 @@ class $AssetsIconsGen {
   AssetGenImage get lightIcon =>
       const AssetGenImage('assets/icons/light_icon.png');
 
+  /// File path: assets/icons/skip_chapters_guide.png
+  AssetGenImage get skipChaptersGuide =>
+      const AssetGenImage('assets/icons/skip_chapters_guide.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
     appIcon1,
@@ -176,6 +180,7 @@ class $AssetsIconsGen {
     lOGOWhite,
     darkIcon,
     lightIcon,
+    skipChaptersGuide,
   ];
 }
 

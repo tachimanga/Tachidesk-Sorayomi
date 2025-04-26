@@ -59,10 +59,16 @@ Future<void> main() async {
       );
 
   final useNativeNet = sharedPreferences.getBool("config.flutterNativeNet");
-  log("useNativeNet $useNativeNet");
+  final timeout = sharedPreferences.get("config.nativeReqTimeout");
+  log("useNativeNet=$useNativeNet, timeout=$timeout");
   if (useNativeNet == null || useNativeNet == true) {
     log("enable flutter native net");
     final config = URLSessionConfiguration.defaultSessionConfiguration();
+    config.timeoutIntervalForRequest = Duration(seconds: 15);
+    if (timeout != null && timeout is int && timeout > 10) {
+      log("set timeout=$timeout");
+      config.timeoutIntervalForRequest = Duration(seconds: timeout);
+    }
     config.requestCachePolicy = URLRequestCachePolicy.reloadIgnoringLocalCacheData;
     final maxConnPerHostStr = sharedPreferences.getString("config.maxConnPerHost");
     int? maxConnPerHost = maxConnPerHostStr != null

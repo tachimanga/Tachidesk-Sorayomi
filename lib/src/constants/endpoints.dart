@@ -29,6 +29,12 @@ abstract class SettingsUrl {
   static const String _settings = "/settings";
 }
 
+abstract class GlobalMetaUrl {
+  static const String query = '$_meta/query';
+  static const String update = '$_meta/update';
+  static const String _meta = "/meta";
+}
+
 abstract class ExtensionUrl {
   static const String _extension = "/extension";
   static const String list = "$_extension/list";
@@ -59,7 +65,6 @@ abstract class RepoUrl {
 abstract class MangaUrl {
   static String withId(int mangaId) => "$_manga/$mangaId";
   static String fullWithId(String mangaId) => "$_manga/$mangaId/full";
-  static String realUrl(String mangaId) => "$_manga/$mangaId/realUrl";
   static String thumbnail(int mangaId) => "$_manga/$mangaId/thumbnail";
   static String category(String mangaId) => "$_manga/$mangaId/category";
   static String updateCategory(String mangaId) => "$_manga/$mangaId/updateCategory";
@@ -73,8 +78,6 @@ abstract class MangaUrl {
       "$_manga/$mangaId/chapter/$chapterIndex";
   static String chapterMetaWithIndex(int mangaId, int chapterIndex) =>
       "$_manga/$mangaId/chapter/$chapterIndex/meta";
-  static String chapterRealUrlWithIndex(String mangaId, String chapterIndex) =>
-      "$_manga/$mangaId/chapter/$chapterIndex/realUrl";
   static String chapterBatch = "/chapter/batch";
   static String chapterBatchQuery = "/chapter/batchQuery";
   static String chapterModify = "$_manga/chapter/modify";
@@ -143,6 +146,8 @@ abstract class SourceUrl {
   static String search(String sourceId) => "$_source/$sourceId/search";
   static String quickSearch(String sourceId) =>
       "$_source/$sourceId/quick-search";
+  static const String queryMeta = "$_source/meta/query";
+  static const String updateMeta = "$_source/meta/update";
 
   static const String _source = "/source";
 }
@@ -152,6 +157,8 @@ abstract class UpdateUrl {
 
   static const String update = "/update";
   static const String fetch = "/update/fetch2";
+  static const String retryByCodes = "/update/retryByCodes";
+  static const String retrySkipped = "/update/retrySkipped";
   static const String reset = "/update/reset";
   static const String summary = "/update/summary";
 }
@@ -185,4 +192,9 @@ abstract class SyncUrl {
 
 abstract class StatsUrl {
   static const String readTime = "/stats/readTime";
+}
+
+abstract class BrowseUrl {
+  static const String browse = "/browse";
+  static const String fetchUrl = "$browse/fetchUrl";
 }

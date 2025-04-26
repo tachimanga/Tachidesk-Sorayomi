@@ -24,7 +24,11 @@ class MangaAutoRefreshSettingTile extends ConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.refresh_rounded),
       title: Text(context.l10n!.manga_auto_refresh_title),
-      subtitle: Text(context.l10n!.manga_auto_refresh_desc),
+      subtitle: Text(
+        context.l10n!.manga_auto_refresh_desc,
+        style: context.textTheme.labelSmall
+            ?.copyWith(color: Colors.grey, fontSize: 12),
+      ),
       contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("UPDATE:MANGA:AUTO:$value");

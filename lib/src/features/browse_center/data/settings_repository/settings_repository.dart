@@ -22,9 +22,6 @@ class SettingsRepository {
 
   Future<void> uploadSettings({dynamic json}) =>
       dioClient.post(SettingsUrl.uploadSettings, data: json);
-
-  Future<void> clearCookies() =>
-      dioClient.get(SettingsUrl.clearCookies);
 }
 
 @riverpod
