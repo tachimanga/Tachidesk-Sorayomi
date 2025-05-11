@@ -17,8 +17,6 @@ import '../../../../../utils/log.dart';
 import '../../../../../utils/misc/toast/toast.dart';
 import '../../../../../widgets/async_buttons/async_text_button.dart';
 import '../../../../../widgets/pop_button.dart';
-import '../../../../browse_center/data/settings_repository/global_meta_repository.dart';
-import '../../../../browse_center/domain/settings/global_meta_model.dart';
 import '../../../domain/update/update_settings_model.dart';
 import '../controller/category_settings_controller.dart';
 
@@ -75,10 +73,7 @@ class UpdateSkipTitlesSettingTile extends ConsumerWidget {
 class UpdateSkipTitlesSettingDialog extends HookConsumerWidget {
   const UpdateSkipTitlesSettingDialog({
     super.key,
-    this.afterSubmit,
   });
-
-  final VoidCallback? afterSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -152,10 +147,14 @@ class UpdateSkipTitlesSettingDialog extends HookConsumerWidget {
         AsyncTextButton(
           child: Text(context.l10n!.ok),
           onPressed: () async {
+            final x = state.value.filteredByMangaUnread != false;
+            final y = state.value.filteredByMangaNotStart != false;
+            final z = state.value.filteredByMangaStatus != false;
             logEvent3("UPDATE:SKIP:SUBMIT", {
-              "x": "${state.value.filteredByMangaUnread != false}",
-              "y": "${state.value.filteredByMangaNotStart != false}",
-              "z": "${state.value.filteredByMangaStatus != false}",
+              "x": "$x",
+              "y": "$y",
+              "z": "$z",
+              "url": "$x-$y-$z",
             });
             (await AsyncValue.guard(
               () async {
@@ -169,9 +168,6 @@ class UpdateSkipTitlesSettingDialog extends HookConsumerWidget {
               },
             ))
                 .showToastOnError(toast);
-            if (afterSubmit != null) {
-              afterSubmit!();
-            }
           },
         ),
       ],

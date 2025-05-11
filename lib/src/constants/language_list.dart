@@ -124,4 +124,5 @@ const languageList = [
     "name": 'Norwegian Bokmål (Norway)',
     "nativeName": 'Norwegian Bokmål (Norway)'
   },
+  {"code": 'ta', "name": 'Tamil', "nativeName": 'தமிழ்'},
 ];

@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,11 +15,13 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'constants/db_keys.dart';
 import 'constants/navigation_bar_data.dart';
 import 'features/about/presentation/about/widget/file_log_tile.dart';
 import 'features/browse_center/data/settings_repository/settings_repository.dart';
 import 'features/custom/inapp/purchase_providers.dart';
 import 'features/manga_book/presentation/downloads/service/download_ticket_service.dart';
+import 'features/manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import 'features/settings/domain/repo/repo_model.dart';
 import 'features/settings/presentation/appearance/controller/theme_controller.dart';
 import 'features/settings/widgets/theme_mode_tile/theme_mode_tile.dart';

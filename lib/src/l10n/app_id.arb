@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Bagaimana mengaktifkan lewati bab duplikat?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Opsi ini hanya tersedia ketika ada beberapa kelompok scanlator.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Buka di Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Memulihkan pembelian...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Tingkatkan pengalaman geser saat memperbesar",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Kecepatan roda mouse",
+  "@mouse_wheel_speed": {}
 }

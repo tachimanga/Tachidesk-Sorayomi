@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Как включить пропуск дублирующихся глав?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Эта опция доступна только при наличии нескольких групп сканлейтеров.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Открыть в Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Восстановление покупки...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Улучшить жесты перетаскивания при масштабировании",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Скорость колесика мыши",
+  "@mouse_wheel_speed": {}
 }

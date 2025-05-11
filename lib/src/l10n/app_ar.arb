@@ -1568,5 +1568,13 @@
   "how_to_enable_skip_duplicate_chapters": "كيفية تمكين تخطي الفصول المكررة؟",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "هذا الخيار متاح فقط عندما يكون هناك عدة فرق ترجمة.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "فتح في سفاري",
+  "@open_in_safari": {},
+  "restoring_purchase": "استعادة الشراء...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "تحسين تجربة السحب أثناء التكبير",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "سرعة عجلة الماوس",
+  "@mouse_wheel_speed": {}
 }

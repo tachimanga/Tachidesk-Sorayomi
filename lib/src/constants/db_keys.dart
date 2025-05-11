@@ -30,7 +30,7 @@ enum DBKeys {
   showPlus(null),
   repoUrl(null),
   installLocalCount(0),
-  downloadedBadge(true),
+  downloadedBadge(false),
   unreadBadge(true),
   languageBadge(false),
   l10n(null),
@@ -106,7 +106,7 @@ enum DBKeys {
   readerUsePhotoView(true),
   forceEnableScroll(false),
   userAgentType(UserAgentTypeEnum.defaultWebView),
-  fontFixFor185(false),
+  mouseWheelSpeed(1.0),
   ;
 
   const DBKeys(this.initial);

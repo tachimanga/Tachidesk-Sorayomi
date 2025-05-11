@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "วิธีการเปิดใช้งานการข้ามบทที่ซ้ำกัน?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "ตัวเลือกนี้จะใช้งานได้เมื่อมีหลายกลุ่มแปล",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "เปิดใน Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "กำลังกู้คืนการซื้อ...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "ปรับปรุงการลากขณะซูม",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "ความเร็วล้อเมาส์",
+  "@mouse_wheel_speed": {}
 }

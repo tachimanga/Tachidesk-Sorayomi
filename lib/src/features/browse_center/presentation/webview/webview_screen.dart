@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http_status/http_status.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../../constants/app_sizes.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
@@ -13,6 +14,7 @@ import '../../../../utils/log.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
+import '../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../data/settings_repository/settings_repository.dart';
 import '../../domain/browse/browse_model.dart';
 
@@ -137,6 +139,43 @@ class WebViewScreen extends HookConsumerWidget {
           IconButton(
             onPressed: () => launchUrlInSafari(context, url ?? "", toast),
             icon: const Icon(Icons.public),
+          ),
+          PopupMenuButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: KBorderRadius.r16.radius,
+            ),
+            icon: const Icon(Icons.more_vert_rounded),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () => launchUrlInSafari(context, url ?? "", toast),
+                child: PopupItemWithIconChild(
+                  icon: const Icon(Icons.public),
+                  label: Text(context.l10n!.open_in_safari),
+                ),
+              ),
+              PopupMenuItem(
+                onTap: () async {
+                  toast.show("${context.l10n!.clearCookies}...",
+                      gravity: ToastGravity.CENTER,
+                      toastDuration: const Duration(seconds: 3));
+                  try {
+                    await pipe.invokeMethod("ClearCookies");
+                    log("clearCookies succ");
+                  } catch (e) {
+                    log("clearCookies err $e");
+                  }
+                  toast.close();
+                  if (context.mounted) {
+                    toast.show(context.l10n!.cookiesCleared,
+                        gravity: ToastGravity.CENTER);
+                  }
+                },
+                child: PopupItemWithIconChild(
+                  icon: const Icon(Icons.cleaning_services_rounded),
+                  label: Text(context.l10n!.clearCookies),
+                ),
+              ),
+            ],
           ),
         ],
       ),

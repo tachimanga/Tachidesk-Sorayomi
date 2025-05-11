@@ -87,17 +87,19 @@ class UpdateStatusListTile extends HookConsumerWidget {
               children: [
                 Icon(Icons.info_outline),
                 SizedBox(width: 4),
-                IconButton(
-                  onPressed: () {
-                    logEvent3("UPDATE:STATUS:CLOSE");
-                    ref
-                        .read(showUpdateStatusSwitchProvider.notifier)
-                        .update(false);
-                  },
-                  icon: const Icon(Icons.close),
-                  visualDensity: VisualDensity.compact,
+                SizedBox(
+                  width: 44,
+                  height: double.infinity,
+                  child: IconButton(
+                    onPressed: () {
+                      logEvent3("UPDATE:STATUS:CLOSE");
+                      ref
+                          .read(showUpdateStatusSwitchProvider.notifier)
+                          .update(false);
+                    },
+                    icon: const Icon(Icons.close),
+                  ),
                 ),
-                SizedBox(width: 2),
               ],
             ),
       onTap: () {

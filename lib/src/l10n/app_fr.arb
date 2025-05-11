@@ -1516,5 +1516,13 @@
   "how_to_enable_skip_duplicate_chapters": "Comment activer le saut de chapitres en double?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Cette option n'est disponible que lorsqu'il y a plusieurs groupes de scanlation.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Ouvrir dans Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Restauration de l'achat...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Améliorer le geste de glissement pendant le zoom",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Vitesse molette souris",
+  "@mouse_wheel_speed": {}
 }

@@ -332,7 +332,7 @@ class RestoreButton extends ConsumerWidget {
       onPressed: () async {
         log("restorePurchases...");
         pipe.invokeMethod("LogEvent", "IAP_TAP_RESTORE");
-        toast.show("Restore purchase...",
+        toast.show(context.l10n!.restoring_purchase,
             gravity: ToastGravity.CENTER,
             toastDuration: const Duration(seconds: 60));
         try {

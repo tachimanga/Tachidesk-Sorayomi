@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Bagaimana mengaktifkan langkau bab pendua?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Pilihan ini hanya tersedia apabila terdapat beberapa kumpulan scanlator.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Buka dalam Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Memulihkan pembelian...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Tingkatkan pengalaman seret semasa zum",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Kelajuan roda tetikus",
+  "@mouse_wheel_speed": {}
 }

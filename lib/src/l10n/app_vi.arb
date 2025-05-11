@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Làm thế nào để bật chức năng bỏ qua chương trùng lặp?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Tùy chọn này chỉ khả dụng khi có nhiều nhóm dịch.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Mở trong Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Đang khôi phục giao dịch...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Cải thiện thao tác kéo khi phóng to",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Tốc độ bánh xe chuột",
+  "@mouse_wheel_speed": {}
 }

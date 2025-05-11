@@ -349,10 +349,8 @@ class SkippedExpansionTile extends HookConsumerWidget {
                   logEvent3("UPDATE:summary:skipMoreSetting");
                   showDialog(
                     context: context,
-                    builder: (context) => UpdateSkipTitlesSettingDialog(
-                      afterSubmit: () {
-                        fireGlobalUpdate(ref);
-                      },
+                    builder: (context) => UpdateSettingDialog(
+                      retryWhenDismiss: true,
                     ),
                   );
                 },

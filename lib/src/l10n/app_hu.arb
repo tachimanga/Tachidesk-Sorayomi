@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Hogyan engedélyezhető a duplikált fejezetek kihagyása?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Ez az opció csak akkor érhető el, ha több fordítócsoport is dolgozik.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Megnyitás Safariban",
+  "@open_in_safari": {},
+  "restoring_purchase": "Vásárlás visszaállítása...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Húzás élmény javítása zoomoláskor",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Egérgörgő sebesség",
+  "@mouse_wheel_speed": {}
 }

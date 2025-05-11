@@ -1517,5 +1517,13 @@
   "how_to_enable_skip_duplicate_chapters": "How to enable skip duplicate chapters?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "This option is only available when there are multiple scanlators.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Open in Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Restoring Purchase...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Enhance the drag gesture experience during zooming",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Mouse wheel speed",
+  "@mouse_wheel_speed": {}
 }

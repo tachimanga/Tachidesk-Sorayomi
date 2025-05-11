@@ -7,9 +7,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../../constants/app_sizes.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
-
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/custom_checkbox_list_tile.dart';
 import '../../../../../widgets/manga_cover/providers/manga_cover_providers.dart';
@@ -39,22 +39,19 @@ class LibraryMangaDisplay extends ConsumerWidget {
               ref.read(libraryDisplayModeProvider.notifier).update(value),
         ),
         ListTile(
-          title: Text(
-            context.l10n!.badges,
-            style: context.textTheme.labelLarge,
-          ),
+          title: BadgeSectionTitle(),
           dense: true,
-        ),
-        CustomCheckboxListTile(
-          title: context.l10n!.downloaded,
-          provider: downloadedBadgeProvider,
-          onChanged: ref.read(downloadedBadgeProvider.notifier).update,
-          tristate: false,
         ),
         CustomCheckboxListTile(
           title: context.l10n!.unread,
           provider: unreadBadgeProvider,
           onChanged: ref.read(unreadBadgeProvider.notifier).update,
+          tristate: false,
+        ),
+        CustomCheckboxListTile(
+          title: context.l10n!.downloaded,
+          provider: downloadedBadgeProvider,
+          onChanged: ref.read(downloadedBadgeProvider.notifier).update,
           tristate: false,
         ),
         ListTile(
@@ -71,6 +68,76 @@ class LibraryMangaDisplay extends ConsumerWidget {
           tristate: false,
         ),
       ],
+    );
+  }
+}
+
+class BadgeSectionTitle extends ConsumerWidget {
+  const BadgeSectionTitle({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final downloadedBadge =
+        ref.watch(downloadedBadgeProvider) ?? DBKeys.downloadedBadge.initial;
+    final unreadBadge =
+        ref.watch(unreadBadgeProvider) ?? DBKeys.unreadBadge.initial;
+
+    return Row(
+      children: [
+        Text(
+          context.l10n!.badges,
+          style: context.textTheme.labelLarge,
+        ),
+        SizedBox(width: 10),
+        ClipRRect(
+          borderRadius: KBorderRadius.r8.radius,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MangaBadge(
+                text: "X",
+                color: unreadBadge
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+                textColor: context.theme.colorScheme.onPrimary,
+              ),
+              MangaBadge(
+                text: "Y",
+                color: downloadedBadge
+                    ? context.theme.colorScheme.tertiary
+                    : Colors.grey,
+                textColor: context.theme.colorScheme.onTertiary,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class MangaBadge extends StatelessWidget {
+  const MangaBadge({
+    super.key,
+    required this.text,
+    required this.color,
+    required this.textColor,
+  });
+  final String text;
+  final Color color;
+  final Color textColor;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      color: color,
+      shape: const RoundedRectangleBorder(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: Text(text, style: TextStyle(color: textColor)),
+      ),
     );
   }
 }

@@ -139,11 +139,11 @@ class UpdateCategoriesSettingDialog extends HookConsumerWidget {
       actions: [
         PopButton(),
         AsyncTextButton(
-          child: Text(context.l10n!.ok),
+          enable: categoryList.valueOrNull?.length != excludeIds.value.length,
           onPressed: () async {
             logEvent3("UPDATE:CATEGORY:SUBMIT", {
-              "x": "${excludeIds.value.length}",
-              "y": "${categoryList.valueOrNull?.length}",
+              "z": "${excludeIds.value.length}/"
+                  "${categoryList.valueOrNull?.length}",
             });
             (await AsyncValue.guard(
               () async {
@@ -180,6 +180,7 @@ class UpdateCategoriesSettingDialog extends HookConsumerWidget {
             ))
                 .showToastOnError(toast);
           },
+          child: Text(context.l10n!.ok),
         ),
       ],
     );

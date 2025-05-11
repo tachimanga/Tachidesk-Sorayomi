@@ -314,6 +314,16 @@ class DebugScreen extends HookConsumerWidget {
           onChanged: ref.read(showSourceUrlProvider.notifier).update,
           value: ref.watch(showSourceUrlProvider).ifNull(true),
         ),
+        ListTile(
+          leading: const Icon(Icons.science),
+          title: Text(context.l10n!.labs),
+          subtitle: Text(context.l10n!.labsSubtitle),
+          onTap: () => context.push([
+            Routes.settings,
+            Routes.generalSettings,
+            Routes.labsSettings
+          ].toPath),
+        ),
       ]),
     );
   }

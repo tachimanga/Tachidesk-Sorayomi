@@ -1576,5 +1576,13 @@
   "how_to_enable_skip_duplicate_chapters": "Як увімкнути пропуск дубльованих розділів?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Ця опція доступна лише за наявності кількох груп сканлейтерів.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Відкрити в Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Відновлення покупки...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Покращити досвід перетягування під час збільшення",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Швидкість коліщатка миші",
+  "@mouse_wheel_speed": {}
 }

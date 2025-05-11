@@ -49,17 +49,6 @@ class ThemeBlendLevel extends _$ThemeBlendLevel
 }
 
 @riverpod
-class FontFixFor185 extends _$FontFixFor185
-    with SharedPreferenceClientMixin<bool> {
-  @override
-  bool? build() => initialize(
-        ref,
-        key: DBKeys.fontFixFor185.name,
-        initial: DBKeys.fontFixFor185.initial,
-      );
-}
-
-@riverpod
 class ThemeSchemeColor extends _$ThemeSchemeColor {
   @override
   AppThemeData build() {
@@ -69,20 +58,6 @@ class ThemeSchemeColor extends _$ThemeSchemeColor {
     final pureBlackDarkMode = ref.watch(themePureBlackProvider) ??
         DBKeys.themePureBlackDarkMode.initial;
     final scheme = ThemeDefine.schemesMap[key] ?? ThemeDefine.defaultScheme;
-    final fontFix =
-        ref.watch(fontFixFor185Provider) ?? DBKeys.fontFixFor185.initial;
-    final textTheme = fontFix
-        ? TextTheme(
-            displayLarge: TextStyle(fontFamily: 'CupertinoSystemText'),
-            displayMedium: TextStyle(fontFamily: 'CupertinoSystemText'),
-            displaySmall: TextStyle(fontFamily: 'CupertinoSystemText'),
-            headlineLarge: TextStyle(fontFamily: 'CupertinoSystemText'),
-            headlineMedium: TextStyle(fontFamily: 'CupertinoSystemText'),
-            headlineSmall: TextStyle(fontFamily: 'CupertinoSystemText'),
-            titleLarge: TextStyle(fontFamily: 'CupertinoSystemText'),
-          )
-        : null;
-
     ThemeData themeLight = FlexThemeData.light(
       colors: scheme.light,
       surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
@@ -98,7 +73,6 @@ class ThemeSchemeColor extends _$ThemeSchemeColor {
       useMaterial3ErrorColors: true,
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
-      textTheme: textTheme,
     );
     ThemeData themeDark = FlexThemeData.dark(
       colors: scheme.dark,
@@ -119,7 +93,6 @@ class ThemeSchemeColor extends _$ThemeSchemeColor {
       useMaterial3ErrorColors: true,
       visualDensity: FlexColorScheme.comfortablePlatformDensity,
       useMaterial3: true,
-      textTheme: textTheme,
     );
     return AppThemeData(themeLight, themeDark);
   }

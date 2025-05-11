@@ -1175,5 +1175,13 @@
   "how_to_enable_skip_duplicate_chapters": "Como ativar a opção de saltar capítulos duplicados?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Esta opção só está disponível quando existem vários grupos de scanlators.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Abrir no Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "A restaurar compra...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Melhorar experiência de arrasto ao ampliar",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Velocidade roda do rato",
+  "@mouse_wheel_speed": {}
 }

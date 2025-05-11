@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Yinelenen bölümleri atlamayı nasıl etkinleştiririm?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Bu seçenek yalnızca birden fazla çeviri grubu olduğunda kullanılabilir.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Safari'de Aç",
+  "@open_in_safari": {},
+  "restoring_purchase": "Satın Alma Geri Yükleniyor...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Yakınlaştırma sırasında sürükleme deneyimini iyileştir",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Fare tekerlek hızı",
+  "@mouse_wheel_speed": {}
 }

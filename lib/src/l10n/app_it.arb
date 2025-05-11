@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Come attivare il salto dei capitoli duplicati?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Questa opzione è disponibile solo quando ci sono più gruppi di scanlator.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "Apri in Safari",
+  "@open_in_safari": {},
+  "restoring_purchase": "Ripristino acquisto...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Migliora gesto trascinamento durante zoom",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Velocità rotellina mouse",
+  "@mouse_wheel_speed": {}
 }

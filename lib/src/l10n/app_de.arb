@@ -1164,5 +1164,13 @@
   "how_to_enable_skip_duplicate_chapters": "Wie aktiviere ich das Überspringen doppelter Kapitel?",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "Diese Option ist nur verfügbar, wenn mehrere Scanlatorgruppen vorhanden sind.",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "In Safari öffnen",
+  "@open_in_safari": {},
+  "restoring_purchase": "Kauf wird wiederhergestellt...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "Drag-Geste beim Zoomen verbessern",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "Mausrad-Geschwindigkeit",
+  "@mouse_wheel_speed": {}
 }

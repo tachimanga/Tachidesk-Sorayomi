@@ -49,20 +49,6 @@ class UserAgentSelectTile extends HookConsumerWidget {
             ref.read(userAgentTypePrefProvider.notifier).update(value);
             if (context.mounted) {
               context.pop();
-
-              // show tips
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Text(
-                        "If an extension does not work with mobile Safari's user agent, but works normally with the default user agent, please report this to @oldmike"),
-                    actions: [
-                      PopButton(popText: context.l10n!.ok),
-                    ],
-                  );
-                },
-              );
             }
           },
           optionDisplayName: (e) {

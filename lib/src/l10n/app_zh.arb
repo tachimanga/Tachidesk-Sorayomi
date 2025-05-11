@@ -1504,5 +1504,13 @@
   "how_to_enable_skip_duplicate_chapters": "如何启用跳过重复章节？",
   "@how_to_enable_skip_duplicate_chapters": {},
   "how_to_enable_skip_duplicate_chapters_tips": "此选项仅在存在多个汉化组时可用。",
-  "@how_to_enable_skip_duplicate_chapters_tips": {}
+  "@how_to_enable_skip_duplicate_chapters_tips": {},
+  "open_in_safari": "在Safari中打开",
+  "@open_in_safari": {},
+  "restoring_purchase": "恢复购买中...",
+  "@restoring_purchase": {},
+  "enhance_drag_gesture": "增强缩放时的拖拽体验",
+  "@enhance_drag_gesture": {},
+  "mouse_wheel_speed": "鼠标滚轮速度",
+  "@mouse_wheel_speed": {}
 }

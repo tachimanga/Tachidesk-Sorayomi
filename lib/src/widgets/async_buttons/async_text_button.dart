@@ -16,17 +16,19 @@ class AsyncTextButton extends HookWidget {
     this.onPressed,
     required this.child,
     this.showLoading,
+    this.enable,
   });
 
   final AsyncCallback? onPressed;
   final Widget child;
   final bool? showLoading;
+  final bool? enable;
 
   @override
   Widget build(BuildContext context) {
     final running = useState(false);
     return TextButton(
-      onPressed: onPressed == null || running.value
+      onPressed: onPressed == null || running.value || enable == false
           ? null
           : () async {
               running.value = true;
