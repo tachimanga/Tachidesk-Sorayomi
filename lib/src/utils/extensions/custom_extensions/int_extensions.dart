@@ -69,4 +69,32 @@ extension IntExtensions on int? {
       return context.l10n!.hours_minutes_short(hours, minutes);
     }
   }
+
+  String? toFormattedSize() {
+    if (this == null) {
+      return null;
+    }
+    double converted = this!.toDouble();
+    List<String> units = ['B', 'KB', 'MB', 'GB'];
+    int unitIndex = 0;
+
+    // Using 1000 instead of 1024 to match system's storage calculation method
+    int unit = 1000;
+    while (converted > unit && unitIndex < units.length - 1) {
+      converted /= unit;
+      unitIndex++;
+    }
+
+    return '${converted.toStringAsFixed(2)} ${units[unitIndex]}';
+  }
+
+  int? toZeroIfLessThan(int min) {
+    if (this == null) {
+      return this;
+    }
+    if (this! < min) {
+      return 0;
+    }
+    return this!;
+  }
 }

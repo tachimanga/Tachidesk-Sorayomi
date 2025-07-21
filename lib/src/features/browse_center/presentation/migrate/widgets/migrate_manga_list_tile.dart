@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_sizes.dart';
+import '../../../../../routes/route_params.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/manga_cover_util.dart';
@@ -25,8 +26,8 @@ class MigrateMangaListTile extends ConsumerWidget {
     return ListTile(
       onTap: () {
         context.push(
-          Routes.getGlobalSearch(manga.title ?? ""),
-          extra: manga,
+          Routes.globalSearch,
+          extra: GlobalSearchInput(manga.title ?? "", manga: manga),
         );
       },
       contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 16.0),
@@ -59,8 +60,8 @@ class MigrateMangaListTile extends ConsumerWidget {
               PopupMenuItem(
                 onTap: () {
                   context.push(
-                    Routes.getGlobalSearch(manga.title ?? ""),
-                    extra: manga,
+                    Routes.globalSearch,
+                    extra: GlobalSearchInput(manga.title ?? "", manga: manga),
                   );
                 },
                 child: Text(context.l10n!.migrate),

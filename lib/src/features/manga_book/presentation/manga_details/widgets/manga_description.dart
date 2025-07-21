@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/app_sizes.dart';
 import '../../../../../global_providers/preference_providers.dart';
+import '../../../../../routes/route_params.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/launch_url_in_web.dart';
@@ -67,7 +68,10 @@ class MangaDescription extends HookConsumerWidget {
       enableSourceEntrance: true,
       showSourceUrl: showSourceUrl == true,
       showReadDuration: true,
-      onTitleClicked: (query) => context.push(Routes.getGlobalSearch(query)),
+      onTitleClicked: (query) => context.push(
+        Routes.globalSearch,
+        extra: GlobalSearchInput(query),
+      ),
     );
 
     return Column(

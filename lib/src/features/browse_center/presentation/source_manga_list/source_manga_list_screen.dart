@@ -236,8 +236,8 @@ class SourceMangaListScreen extends HookConsumerWidget {
                             Routes.getSourceManga(
                               sourceId,
                               SourceType.filter,
-                              query: val,
                             ),
+                            extra: val,
                           );
                         }
                       },

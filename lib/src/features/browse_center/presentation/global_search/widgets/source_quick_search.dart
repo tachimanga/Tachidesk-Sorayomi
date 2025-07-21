@@ -46,8 +46,8 @@ class SourceShortSearch extends ConsumerWidget {
             Routes.getSourceManga(
               source.id!,
               SourceType.filter,
-              query: query,
             ),
+            extra: query,
           ),
         ),
         mangaList.showUiWhenData(

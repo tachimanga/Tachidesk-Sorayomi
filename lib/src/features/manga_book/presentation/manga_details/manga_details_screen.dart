@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../constants/app_sizes.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
+import '../../../../routes/route_params.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/classes/trace/trace_ref.dart';
 import '../../../../utils/cover/cover_cache_manager.dart';
@@ -150,7 +151,8 @@ class MangaDetailsScreen extends HookConsumerWidget {
     useRouteObserver(routeObserver, didPop: () {
       log("MangaDetailsScreen did pop");
       if (categoryId != null) {
-        ref.invalidate(categoryMangaListWithIdProvider(categoryId: categoryId!));
+        ref.invalidate(
+            categoryMangaListWithIdProvider(categoryId: categoryId!));
       }
     });
     final toast = ref.read(toastProvider(context));
@@ -270,8 +272,10 @@ class MangaDetailsScreen extends HookConsumerWidget {
                                 child: MangaCoverDescriptiveListTile(
                                   manga: mangaBasic!,
                                   showBadges: false,
-                                  onTitleClicked: (query) => context
-                                      .push(Routes.getGlobalSearch(query)),
+                                  onTitleClicked: (query) => context.push(
+                                    Routes.globalSearch,
+                                    extra: GlobalSearchInput(query),
+                                  ),
                                 ),
                               ),
                               const Expanded(child: SizedBox.expand()),
@@ -280,8 +284,10 @@ class MangaDetailsScreen extends HookConsumerWidget {
                         : MangaCoverDescriptiveListTile(
                             manga: mangaBasic!,
                             showBadges: false,
-                            onTitleClicked: (query) =>
-                                context.push(Routes.getGlobalSearch(query)),
+                            onTitleClicked: (query) => context.push(
+                              Routes.globalSearch,
+                              extra: GlobalSearchInput(query),
+                            ),
                           ),
                     body,
                   ],

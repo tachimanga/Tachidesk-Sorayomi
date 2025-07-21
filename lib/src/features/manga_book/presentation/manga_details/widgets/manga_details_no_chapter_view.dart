@@ -81,9 +81,10 @@ class MangaDetailsNoChapterErrorView extends ConsumerWidget {
 
     return CommonErrorWidget(
       refresh: refresh,
-      src: "manga_details",
+      src: "manga-details",
       urlFetchInput: UrlFetchInput.ofManga(manga.id),
       error: context.l10n!.noChaptersFound,
+      mangaId: "${manga.id}",
     );
   }
 }

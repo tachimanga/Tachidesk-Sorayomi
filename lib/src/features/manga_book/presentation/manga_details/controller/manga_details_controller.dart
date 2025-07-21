@@ -7,7 +7,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,6 +14,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
+import '../../../../../utils/chapter_utils.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../utils/log.dart';
@@ -262,26 +262,11 @@ AsyncValue<List<Chapter>?> mangaChapterListWithFilter(
     return true;
   }
 
-  int applyChapterSort(Chapter m1, Chapter m2) {
-    switch (sortedBy) {
-      case ChapterSort.source:
-        return (m1.index ?? 0).compareTo(m2.index ?? 0);
-      case ChapterSort.fetchedDate:
-        final i = (m1.uploadDate ?? 0).compareTo(m2.uploadDate ?? 0);
-        return i != 0 ? i : (m1.index ?? 0).compareTo(m2.index ?? 0);
-      case ChapterSort.chapterName:
-        final i = compareNatural(m1.name ?? "", m2.name ?? "");
-        return i != 0 ? i : (m1.index ?? 0).compareTo(m2.index ?? 0);
-      default:
-        return 0;
-    }
-  }
-
   return chapterList.copyWithData(
     (data) {
       final list0 = _removeDuplicateChapters(data, scanlatorMeta);
       final list = [...?list0?.where(applyChapterFilter)]
-        ..sort(applyChapterSort);
+        ..sort(chapterSortComparator(sortedBy));
       return sortedDirection ? list : list.reversed.toList();
     },
   );

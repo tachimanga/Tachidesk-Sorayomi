@@ -22,6 +22,8 @@ import '../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../../widgets/popup_Item_with_icon_child.dart';
 import '../../../domain/backup/backup_model.dart';
 import '../../appearance/controller/date_format_controller.dart';
+import '../../storage/controller/stroage_controller.dart';
+import '../../storage/utils/storage_util.dart';
 import '../controller/backup_controller.dart';
 
 class BackupListTile extends ConsumerWidget {
@@ -168,6 +170,7 @@ class BackupListTile extends ConsumerWidget {
                     await refresh();
                   }))
                       .showToastOnError(toast);
+                  invalidStorageProviders(ref);
                   loadingState.value = false;
                 },
                 child: PopupItemWithIconChild(

@@ -16,6 +16,7 @@ import '../../../../constants/enum.dart';
 import '../../../../constants/language_list.dart';
 import '../../../../global_providers/global_providers.dart';
 import '../../../../global_providers/preference_providers.dart';
+import '../../../../routes/router_config.dart';
 import '../../../../utils/event_util.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
@@ -55,6 +56,13 @@ class AdvancedScreen extends ConsumerWidget {
             title: Text(context.l10n!.clearCache),
             contentPadding: kSettingPadding,
             trailing: kSettingTrailing,
+            onTap: () => context.push([
+              Routes.settings,
+              Routes.generalSettings,
+              Routes.storageSettings,
+              Routes.storageCacheSettings
+            ].toPath),
+            /*
             onTap: () async {
               toast.show("${context.l10n!.clearCache}...",
                   gravity: ToastGravity.CENTER,
@@ -73,6 +81,7 @@ class AdvancedScreen extends ConsumerWidget {
                     gravity: ToastGravity.CENTER);
               }
             },
+             */
           ),
           SectionTitle(title: context.l10n!.networkSectionTitle),
           ListTile(

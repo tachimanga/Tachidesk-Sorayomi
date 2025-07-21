@@ -31,9 +31,12 @@ class AsyncTextButton extends HookWidget {
       onPressed: onPressed == null || running.value || enable == false
           ? null
           : () async {
-              running.value = true;
-              await onPressed!();
-              running.value = false;
+              try {
+                running.value = true;
+                await onPressed!();
+              } finally {
+                running.value = false;
+              }
             },
       child: running.value && showLoading == true
           ? const MiniCircularProgressIndicator()

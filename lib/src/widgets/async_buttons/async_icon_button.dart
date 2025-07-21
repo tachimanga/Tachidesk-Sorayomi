@@ -31,9 +31,12 @@ class AsyncIconButton extends HookWidget {
       onPressed: onPressed == null || running.value
           ? null
           : () async {
-              running.value = true;
-              await onPressed!();
-              running.value = false;
+              try {
+                running.value = true;
+                await onPressed!();
+              } finally {
+                running.value = false;
+              }
             },
       icon: running.value && showLoading == true
           ? const MiniCircularProgressIndicator()

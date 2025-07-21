@@ -35,16 +35,22 @@ class AsyncTextIconButton extends HookWidget {
       onPressed: onPressed == null || running.value
           ? null
           : () async {
-              running.value = true;
-              await onPressed!();
-              running.value = false;
+              try {
+                running.value = true;
+                await onPressed!();
+              } finally {
+                running.value = false;
+              }
             },
       onLongPress: onLongPress == null || running.value
           ? null
           : () async {
-              running.value = true;
-              await onLongPress!();
-              running.value = false;
+              try {
+                running.value = true;
+                await onLongPress!();
+              } finally {
+                running.value = false;
+              }
             },
       style: style,
       icon: running.value && showLoading == true

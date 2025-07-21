@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
+import '../../../settings/presentation/storage/utils/storage_util.dart';
 import '../../data/downloads/downloads_repository.dart';
 import '../../data/manga_book_repository.dart';
 import '../../domain/chapter_batch/chapter_batch_model.dart';
@@ -59,6 +60,9 @@ class MultiChaptersActionIcon extends ConsumerWidget {
                 ),
           ))
               .showToastOnError(toast);
+          if (change?.delete == true) {
+            invalidStorageProviders(ref);
+          }
         }
         await refresh(change != null);
       },

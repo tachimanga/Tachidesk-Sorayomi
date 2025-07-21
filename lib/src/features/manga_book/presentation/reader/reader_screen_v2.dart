@@ -240,7 +240,14 @@ class ReaderScreen2 extends HookConsumerWidget {
                                 appBar: AppBar(backgroundColor: Colors.black.withOpacity(.7)),
                                 body: CommonErrorWidget(
                                     refresh: () => ref.refresh(chapterProviderWithIndex),
-                                    error: "No Pages found"));
+                                    error: context.l10n!.noPagesFound,
+                                    mangaId: mangaId,
+                                    urlFetchInput: UrlFetchInput.ofChapterIndex(
+                                      int.tryParse(mangaId),
+                                      int.tryParse(initChapterIndexState.value),
+                                    ),
+                                ),
+                            );
                           }
                           switch (readerMode) {
                             case ReaderMode.singleVertical:

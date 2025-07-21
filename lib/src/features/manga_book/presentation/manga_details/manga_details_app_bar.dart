@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 import '../../../../icons/icomoon_icons.dart';
+import '../../../../routes/route_params.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/log.dart';
@@ -197,8 +198,11 @@ class MangaDetailsAppBar extends HookConsumerWidget
                     PopupMenuItem(
                       onTap: () async {
                         context.push(
-                          Routes.getGlobalSearch(data?.title ?? ""),
-                          extra: data,
+                          Routes.globalSearch,
+                          extra: GlobalSearchInput(
+                            data?.title ?? "",
+                            manga: data,
+                          ),
                         );
                       },
                       child: PopupItemWithIconChild(

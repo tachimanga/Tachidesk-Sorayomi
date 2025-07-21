@@ -30,7 +30,7 @@ class UpdateCategoriesSettingTile extends ConsumerWidget {
     final categoryList = ref.watch(categoryControllerProvider);
     final list = [...?categoryList.valueOrNull]
         .where((e) => e.meta?.updateExclude == true)
-        .map((e) => e.name)
+        .map((e) => e.id == 0 ? context.l10n!.label_default : e.name ?? "")
         .toSet();
     final subText =
         list.isNotEmpty ? list.join(", ") : context.l10n!.none_label;
@@ -114,7 +114,9 @@ class UpdateCategoriesSettingDialog extends HookConsumerWidget {
                         ),
                         for (final category in list!)
                           InvertCheckboxListTile(
-                            title: Text(category.name ?? ""),
+                            title: Text(category.id == 0
+                                ? context.l10n!.label_default
+                                : category.name ?? ""),
                             value: excludeIds.value.contains(category.id!),
                             controlAffinity: ListTileControlAffinity.leading,
                             activeColor: context.theme.indicatorColor,

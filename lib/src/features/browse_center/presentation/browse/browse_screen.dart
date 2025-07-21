@@ -11,12 +11,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../constants/app_sizes.dart';
 
-import '../../../../constants/urls.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../routes/route_params.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
-import '../../../../utils/launch_url_in_web.dart';
-import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/search_field.dart';
 import '../../../settings/presentation/browse/widgets/mutil_repo_setting/repo_help_button.dart';
 import '../../../sync/widgets/sync_info_widget.dart';
@@ -82,7 +80,7 @@ class BrowseScreen extends HookConsumerWidget {
                 if (tabController.index == 0 && magic.b7 == true) ...[
                   IconButton(
                     onPressed: () {
-                      context.push(Routes.getGlobalSearch(""));
+                      context.push(Routes.globalSearch);
                     },
                     icon: const Icon(Icons.travel_explore_rounded),
                   ),
@@ -112,7 +110,8 @@ class BrowseScreen extends HookConsumerWidget {
               TabBar(
                 dividerColor: Colors.transparent,
                 isScrollable: context.isTablet ? true : false,
-                tabAlignment: context.isTablet ? TabAlignment.center : TabAlignment.fill,
+                tabAlignment:
+                    context.isTablet ? TabAlignment.center : TabAlignment.fill,
                 controller: tabController,
                 tabs: [
                   Tab(text: context.l10n!.sources),
@@ -147,7 +146,10 @@ class BrowseScreen extends HookConsumerWidget {
                               ref
                                   .read(sourceQueryProvider.notifier)
                                   .update(null);
-                              context.push(Routes.getGlobalSearch(value));
+                              context.push(
+                                Routes.globalSearch,
+                                extra: GlobalSearchInput(value),
+                              );
                             }
                           },
                           onClose: () => showSearch.value = false,

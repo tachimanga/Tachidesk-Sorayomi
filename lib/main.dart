@@ -26,7 +26,6 @@ import 'src/features/about/presentation/about/controllers/about_controller.dart'
 import 'src/global_providers/device_providers.dart';
 import 'src/global_providers/global_providers.dart';
 import 'src/sorayomi.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'src/utils/log.dart';
 

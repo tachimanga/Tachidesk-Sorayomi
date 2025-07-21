@@ -90,5 +90,17 @@
   "editCategory": "വിഭാഗം തിരുത്തുക",
   "@editCategory": {
     "description": "Screen title, Button text and  of Downloads screen"
+  },
+  "discord": "ഡിസ്‌കോർഡ്",
+  "@discord": {
+    "description": "Discord app title"
+  },
+  "mangaStatusCompleted": "പൂർത്തിയാക്കി",
+  "@mangaStatusCompleted": {
+    "description": "Text to show Manga Status Completed in Manga details screen"
+  },
+  "mangaStatusLicensed": "ലൈസൻസ് ഉള്ളത്",
+  "@mangaStatusLicensed": {
+    "description": "Text to show Manga Status Licensed in Manga details screen"
   }
 }

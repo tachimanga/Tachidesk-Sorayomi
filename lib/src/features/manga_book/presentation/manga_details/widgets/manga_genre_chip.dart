@@ -95,11 +95,13 @@ class MangaGenreChip extends HookConsumerWidget {
           }
         }
         if (context.mounted) {
-          context.push(Routes.getSourceManga(
-            manga.sourceId ?? "",
-            SourceType.filter,
-            query: genre,
-          ));
+          context.push(
+            Routes.getSourceManga(
+              manga.sourceId ?? "",
+              SourceType.filter,
+            ),
+            extra: genre,
+          );
         }
       },
       child: Chip(

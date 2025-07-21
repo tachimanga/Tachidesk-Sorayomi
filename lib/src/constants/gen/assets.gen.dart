@@ -109,6 +109,18 @@ class $AssetsIconsGen {
   AssetGenImage get appIcon33 =>
       const AssetGenImage('assets/icons/AppIcon 33.png');
 
+  /// File path: assets/icons/AppIcon 34.png
+  AssetGenImage get appIcon34 =>
+      const AssetGenImage('assets/icons/AppIcon 34.png');
+
+  /// File path: assets/icons/AppIcon 35.png
+  AssetGenImage get appIcon35 =>
+      const AssetGenImage('assets/icons/AppIcon 35.png');
+
+  /// File path: assets/icons/AppIcon 37.png
+  AssetGenImage get appIcon37 =>
+      const AssetGenImage('assets/icons/AppIcon 37.png');
+
   /// File path: assets/icons/AppIcon 4.png
   AssetGenImage get appIcon4 =>
       const AssetGenImage('assets/icons/AppIcon 4.png');
@@ -171,6 +183,9 @@ class $AssetsIconsGen {
     appIcon32,
     appIcon33Dark,
     appIcon33,
+    appIcon34,
+    appIcon35,
+    appIcon37,
     appIcon4,
     appIcon5,
     appIcon6,

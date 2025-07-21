@@ -13,6 +13,7 @@ import '../../../../constants/app_sizes.dart';
 import '../../../../constants/db_keys.dart';
 import '../../../../constants/enum.dart';
 import '../../../../global_providers/global_providers.dart';
+import '../../../../routes/route_params.dart';
 import '../../../../routes/router_config.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../widgets/manga_cover/grid/manga_cover_grid_tile.dart';
@@ -172,7 +173,10 @@ class CategoryMangaList extends HookConsumerWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             onPressed: () {
-              context.push(Routes.getGlobalSearch(query));
+              context.push(
+                Routes.globalSearch,
+                extra: GlobalSearchInput(query),
+              );
             },
             child: Text(
               context.l10n!.library_search_globally(query ?? ""),

@@ -125,6 +125,8 @@ abstract class DownloaderUrl {
 abstract class DownloadedUrl {
   static const String list = "/downloaded/list";
   static const String batchDelete = "/downloaded/batch";
+  static const String batchRemoveLegacyDownloads = "/downloaded/batchRemoveLegacyDownloads";
+  static const String batchQueryMangaInfo = "/downloaded/batchQueryMangaInfo";
 }
 
 abstract class ProtoBackupUrl {

@@ -164,6 +164,7 @@ class LibraryScreen extends HookConsumerWidget {
                                 onTapSelectManga: () {
                                   selectedMangeMap.value = {};
                                 },
+                                showRandomButton: true,
                               );
                             },
                           ),

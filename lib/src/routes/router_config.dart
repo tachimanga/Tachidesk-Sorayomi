@@ -54,6 +54,11 @@ import '../features/settings/presentation/reader/widgets/reader_advanced_setting
 import '../features/settings/presentation/reader/widgets/reader_apple_pencil_setting/reader_apple_pencil_setting_screen.dart';
 import '../features/settings/presentation/security/security_setting_screen.dart';
 import '../features/settings/presentation/settings/settings_screen.dart';
+import '../features/settings/presentation/storage/storage_cache_screen.dart';
+import '../features/settings/presentation/storage/storage_downloads_screen.dart';
+import '../features/settings/presentation/storage/storage_legacy_downloads_screen.dart';
+import '../features/settings/presentation/storage/storage_local_sources_screen.dart';
+import '../features/settings/presentation/storage/storage_screen.dart';
 import '../features/settings/presentation/tracking/tracker_settings_screen.dart';
 import '../features/settings/presentation/tracking/tracking_manga_search_screen.dart';
 import '../features/stats/read_time_stats_screen.dart';
@@ -64,6 +69,7 @@ import '../global_providers/preference_providers.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/log.dart';
 import '../widgets/shell/shell_screen.dart';
+import 'route_params.dart';
 
 part 'router_config.g.dart';
 
@@ -86,6 +92,11 @@ abstract class Routes {
   static const appearanceSettings = 's-appearance';
   static const generalSettings = 's-general';
   static const advancedSettings = 's-advanced';
+  static const storageSettings = 's-storage';
+  static const storageCacheSettings = 's-storage-cache';
+  static const storageDownloadsSettings = 's-storage-downloads';
+  static const storageDownloadsV1Settings = 's-storage-downloads-v1';
+  static const storageLocalSourcesSettings = 's-storage-locals';
   static const labsSettings = 's-labs';
   static const debugSettings = 's-debug';
   static const backup = 'backup';
@@ -121,15 +132,12 @@ abstract class Routes {
   static const userRegister = '/user/register';
   static getMangaTrackSearch(int trackerId, int mangaId) => '/track/search/$trackerId/$mangaId';
   static const sourceManga = '/source/:sourceId/:sourceType';
-  static getSourceManga(String sourceId, SourceType sourceType,
-          {String? query}) =>
-      '/source/$sourceId/${sourceType.name}${query.isNotBlank ? "?query=$query" : ''}';
+  static getSourceManga(String sourceId, SourceType sourceType) =>
+      '/source/$sourceId/${sourceType.name}';
   static const sourcePref = '/configure/:sourceId';
   static getSourcePref(String sourceId) =>
       '/configure/$sourceId';
   static const globalSearch = '/global-search';
-  static getGlobalSearch([String? query]) =>
-      '/global-search${query.isNotBlank ? "?query=$query" : ''}';
   static const goWebView = '/webView';
   static const purchase = '/purchase';
   static const migrateMangaList = '/migrate/:sourceId';
@@ -210,11 +218,14 @@ GoRouter routerConfig(ref) {
       GoRoute(
         path: Routes.globalSearch,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => GlobalSearchScreen(
-          key: ValueKey(state.uri.queryParameters['query'] ?? "1"),
-          initialQuery: state.uri.queryParameters['query'],
-          migrateSrcManga: state.extra as Manga?,
-        ),
+        builder: (context, state) {
+          final extra = state.extra as GlobalSearchInput?;
+          return GlobalSearchScreen(
+            key: ValueKey(extra?.query ?? "1"),
+            initialQuery: extra?.query,
+            migrateSrcManga: extra?.manga,
+          );
+        },
       ),
       GoRoute(
         path: Routes.sourceManga,
@@ -222,7 +233,7 @@ GoRouter routerConfig(ref) {
         builder: (context, state) => SourceMangaListScreen(
           key: ValueKey(state.pathParameters['sourceId'] ?? "0"),
           sourceId: state.pathParameters['sourceId'] ?? "0",
-          initialQuery: state.uri.queryParameters['query'],
+          initialQuery: state.extra as String?,
           sourceType: SourceType.values.firstWhere(
             (element) => element.name.query(state.pathParameters['sourceType']),
             orElse: () => SourceType.popular,
@@ -352,6 +363,30 @@ GoRouter routerConfig(ref) {
             path: Routes.generalSettings,
             builder: (context, state) => const GeneralScreen(),
             routes: [
+              GoRoute(
+                path: Routes.storageSettings,
+                builder: (context, state) => const StorageScreen(),
+                routes: [
+                  GoRoute(
+                    path: Routes.storageCacheSettings,
+                    builder: (context, state) => const StorageCacheScreen(),
+                  ),
+                  GoRoute(
+                    path: Routes.storageDownloadsSettings,
+                    builder: (context, state) => const StorageDownloadsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: Routes.storageDownloadsV1Settings,
+                        builder: (context, state) => const StorageLegacyDownloadsScreen(),
+                      ),
+                    ]
+                  ),
+                  GoRoute(
+                    path: Routes.storageLocalSourcesSettings,
+                    builder: (context, state) => const StorageLocalSourcesScreen(),
+                  ),
+                ],
+              ),
               GoRoute(
                 path: Routes.advancedSettings,
                 builder: (context, state) => const AdvancedScreen(),

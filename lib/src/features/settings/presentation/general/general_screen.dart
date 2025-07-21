@@ -21,6 +21,7 @@ import '../../../../widgets/radio_list_popup.dart';
 import '../../../browse_center/data/settings_repository/settings_repository.dart';
 import '../../../custom/inapp/purchase_providers.dart';
 import '../lab/controller/pip_controller.dart';
+import '../storage/widgets/storage_management_tile.dart';
 import 'widgets/default_tab_tile/default_tab_tile.dart';
 
 class GeneralScreen extends ConsumerWidget {
@@ -65,6 +66,7 @@ class GeneralScreen extends ConsumerWidget {
             ),
           ),
           const DefaultTabTile(),
+          const StorageManagementTile(),
           ListTile(
             leading: const Icon(Icons.code_rounded),
             title: Text(context.l10n!.advanced),

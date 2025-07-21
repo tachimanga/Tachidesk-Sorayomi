@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_sizes.dart';
@@ -68,6 +67,12 @@ class MangaChapterFilter extends HookConsumerWidget {
     final scanlatorMeta = ref.watch(scanlatorMetaProvider);
     final scanlatorType = ScanlatorFilterType.safeFromIndex(scanlatorMeta.type);
 
+    final scanlatorWasActive = useState(false);
+    useEffect(() {
+      scanlatorWasActive.value =
+          scanlatorWasActive.value || scanlatorIsActive(scanlatorMeta);
+    }, [scanlatorMeta]);
+
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -110,7 +115,7 @@ class MangaChapterFilter extends HookConsumerWidget {
             },
           ),
         ),
-        if (mangaScanlatorList.isNotBlank && mangaScanlatorList.length > 1) ...[
+        if (mangaScanlatorList.length > 1 || scanlatorWasActive.value) ...[
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.fromLTRB(16, 16, 16, 4),

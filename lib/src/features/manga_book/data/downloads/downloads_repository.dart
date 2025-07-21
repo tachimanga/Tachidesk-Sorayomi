@@ -18,6 +18,7 @@ import '../../../../global_providers/global_providers.dart';
 import '../../../../utils/classes/pair/pair_model.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/storage/dio/dio_client.dart';
+import '../../../settings/presentation/storage/domain/storage_model.dart';
 import '../../domain/downloads/downloads_model.dart';
 import '../../domain/downloads_queue/downloads_queue_model.dart';
 import '../../domain/manga/manga_model.dart';
@@ -76,7 +77,23 @@ class DownloadsRepository {
           .data;
 
   Future<void> batchDeleteDownloadedManga(List<int> mangaIds) =>
-      dioClient.delete(DownloadedUrl.batchDelete, data: jsonEncode({'mangaIds': mangaIds}));
+      dioClient.delete(DownloadedUrl.batchDelete,
+          data: jsonEncode({'mangaIds': mangaIds}));
+
+  Future<void> batchRemoveLegacyDownloads(List<LegacyDownloadsInfo> list) =>
+      dioClient.post(DownloadedUrl.batchRemoveLegacyDownloads,
+          data: jsonEncode({'list': list}));
+
+  Future<DownloadMangaQueryOutput?> batchQueryDownloadMangaInfo({
+    CancelToken? cancelToken,
+  }) async =>
+      (await dioClient.get<DownloadMangaQueryOutput, DownloadMangaQueryOutput?>(
+        DownloadedUrl.batchQueryMangaInfo,
+        decoder: (e) => e is Map<String, dynamic>
+            ? DownloadMangaQueryOutput.fromJson(e)
+            : null,
+      ))
+          .data;
 }
 
 @riverpod

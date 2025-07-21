@@ -27,9 +27,12 @@ class AsyncInkWell extends HookWidget {
       onTap: onTap == null || running.value
           ? null
           : () async {
-              running.value = true;
-              await onTap!();
-              running.value = false;
+              try {
+                running.value = true;
+                await onTap!();
+              } finally {
+                running.value = false;
+              }
             },
       child: child,
     );

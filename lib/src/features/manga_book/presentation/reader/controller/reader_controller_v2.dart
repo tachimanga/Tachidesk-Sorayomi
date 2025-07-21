@@ -4,22 +4,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import 'dart:async';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../constants/db_keys.dart';
-import '../../../../../global_providers/global_providers.dart';
-import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../constants/enum.dart';
+import '../../../../../utils/chapter_utils.dart';
 import '../../../../../utils/log.dart';
 import '../../../../../utils/mixin/shared_preferences_client_mixin.dart';
 import '../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../domain/chapter/chapter_model.dart';
 import '../../../domain/img/image_model.dart';
-import '../../manga_details/controller/manga_details_controller.dart';
+import '../../manga_details/controller/manga_chapter_controller.dart';
 import 'reader_setting_controller.dart';
 
 part 'reader_controller_v2.g.dart';
@@ -196,20 +191,24 @@ class ReaderListStateWithMangeId extends _$ReaderListStateWithMangeId {
         ref.watch(readerSinglePageSetWithMangeIdProvider(mangaId: mangaId));
     final skipFirstPage = ref
         .watch(readerPageLayoutSkipFirstWithMangaIdProvider(mangaId: mangaId));
-    log("[Reader2] skipFirstPage:$skipFirstPage, singlePageSet:$singlePageSet");
-    return buildListData(mangaId, chapterState, singlePageSet, skipFirstPage);
+    final sortedBy =
+        ref.watch(mangaChapterSortWithMangaIdProvider(mangaId: mangaId));
+    log("[Reader2] skipFirstPage:$skipFirstPage, singlePageSet:$singlePageSet sortedBy:$sortedBy");
+    return buildListData(
+        mangaId, chapterState, sortedBy, singlePageSet, skipFirstPage);
   }
 
   ReaderListData buildListData(
     String mangaId,
     ReaderChapterState chapterState,
+    ChapterSort? sortedBy,
     Set<String> singlePageSet,
     bool? skipFirstPage,
   ) {
     final chapterMap = chapterState.chapterMap;
 
     final chapterList = chapterMap.values.toList()
-      ..sort((a, b) => a.index!.compareTo(b.index!));
+      ..sort(chapterSortComparator(sortedBy));
 
     var totalPageCount = 0;
     final List<ReaderPageData> pageList = [];

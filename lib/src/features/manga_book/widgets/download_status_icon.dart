@@ -18,6 +18,7 @@ import '../../../routes/router_config.dart';
 import '../../../utils/extensions/custom_extensions.dart';
 import '../../../utils/misc/toast/toast.dart';
 import '../../../widgets/custom_circular_progress_indicator.dart';
+import '../../settings/presentation/storage/utils/storage_util.dart';
 import '../data/downloads/downloads_repository.dart';
 import '../data/manga_book_repository.dart';
 import '../domain/chapter/chapter_model.dart';
@@ -171,6 +172,7 @@ class DownloadStatusIcon extends HookConsumerWidget {
                     ),
               ))
                   .showToastOnError(toast);
+              invalidStorageProviders(ref);
               await newUpdatePair(ref, isLoading);
             },
           );

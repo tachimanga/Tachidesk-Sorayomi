@@ -21,6 +21,7 @@ import '../features/manga_book/data/manga_book_repository.dart';
 import '../features/manga_book/presentation/manga_details/controller/manga_details_controller.dart';
 import '../global_providers/global_providers.dart';
 import '../icons/icomoon_icons.dart';
+import '../routes/route_params.dart';
 import '../routes/router_config.dart';
 import '../utils/extensions/custom_extensions.dart';
 import '../utils/launch_url_in_web.dart';
@@ -119,8 +120,11 @@ class CommonErrorWidget extends HookConsumerWidget {
               onPressed: () {
                 final manga = mangaValue?.valueOrNull;
                 context.push(
-                  Routes.getGlobalSearch(manga?.title ?? ""),
-                  extra: manga,
+                  Routes.globalSearch,
+                  extra: GlobalSearchInput(
+                    manga?.title ?? "",
+                    manga: manga,
+                  ),
                 );
               },
               child: Column(
