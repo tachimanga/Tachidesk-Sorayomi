@@ -250,8 +250,8 @@ class MouseWheelSpeedPref extends _$MouseWheelSpeedPref
     with SharedPreferenceClientMixin<double> {
   @override
   double? build() => initialize(
-    ref,
-    initial: DBKeys.mouseWheelSpeed.initial,
-    key: DBKeys.mouseWheelSpeed.name,
-  );
+        ref,
+        initial: DBKeys.mouseWheelSpeed.initial,
+        key: DBKeys.mouseWheelSpeed.name,
+      );
 }

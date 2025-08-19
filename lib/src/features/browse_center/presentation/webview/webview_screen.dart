@@ -15,7 +15,6 @@ import '../../../../utils/misc/toast/toast.dart';
 import '../../../../utils/route/route_aware.dart';
 import '../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../widgets/popup_Item_with_icon_child.dart';
-import '../../data/settings_repository/settings_repository.dart';
 import '../../domain/browse/browse_model.dart';
 
 class WebViewScreen extends HookConsumerWidget {
@@ -50,6 +49,12 @@ class WebViewScreen extends HookConsumerWidget {
       final controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(backgroundColor)
+        ..setOnJavaScriptAlertDialog(
+            (req) => _onJavaScriptAlertDialog(context, req))
+        ..setOnJavaScriptConfirmDialog(
+            (req) => _onJavaScriptConfirmDialog(context, req))
+        ..setOnJavaScriptTextInputDialog(
+            (req) => _onJavaScriptTextInputDialog(context, req))
         ..setNavigationDelegate(
           NavigationDelegate(
             onProgress: (int progress) {
@@ -192,5 +197,94 @@ class WebViewScreen extends HookConsumerWidget {
       message = "${s.code} ${s.name}";
     } catch (_) {}
     return context.l10n!.errorMessageFrom(message);
+  }
+
+  Future<void> _onJavaScriptAlertDialog(
+    BuildContext context,
+    JavaScriptAlertDialogRequest request,
+  ) async {
+    final result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(request.message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(context.l10n!.ok),
+            ),
+          ],
+        );
+      },
+    );
+    log("[Webview] _onJavaScriptAlertDialog result=$result");
+  }
+
+  Future<bool> _onJavaScriptConfirmDialog(
+    BuildContext context,
+    JavaScriptConfirmDialogRequest request,
+  ) async {
+    bool? result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(request.message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(context.l10n!.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(context.l10n!.ok),
+            ),
+          ],
+        );
+      },
+    );
+    log("[Webview] _onJavaScriptConfirmDialog result=$result");
+    return result ?? false;
+  }
+
+  Future<String> _onJavaScriptTextInputDialog(
+    BuildContext context,
+    JavaScriptTextInputDialogRequest request,
+  ) async {
+    final TextEditingController textController = TextEditingController();
+    String? result = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: TextField(
+            controller: textController,
+            decoration: InputDecoration(
+              hintText: request.defaultText,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(context.l10n!.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(textController.text);
+              },
+              child: Text(context.l10n!.ok),
+            ),
+          ],
+        );
+      },
+    );
+    log("[Webview] _onJavaScriptTextInputDialog result=$result");
+    return result ?? '';
   }
 }

@@ -107,6 +107,7 @@ enum DBKeys {
   forceEnableScroll(false),
   userAgentType(UserAgentTypeEnum.defaultWebView),
   mouseWheelSpeed(1.0),
+  longPressScroll(false),
   ;
 
   const DBKeys(this.initial);

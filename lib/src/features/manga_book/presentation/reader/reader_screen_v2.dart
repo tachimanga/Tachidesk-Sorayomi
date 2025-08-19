@@ -227,6 +227,7 @@ class ReaderScreen2 extends HookConsumerWidget {
                 )
               ),
               child: manga.showUiWhenData(
+                    skipError: true,
                     context,
                         (data) {
                       if (data == null) return const SizedBox.shrink();

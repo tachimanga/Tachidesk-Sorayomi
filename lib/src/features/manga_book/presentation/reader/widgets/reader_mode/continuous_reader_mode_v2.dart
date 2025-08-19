@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:octo_image/octo_image.dart';
@@ -23,9 +24,10 @@ import '../../../../../../constants/enum.dart';
 import '../../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../../utils/classes/trace/trace_model.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../../utils/keyboard_util.dart';
 import '../../../../../../utils/log.dart' as logger;
 import '../../../../../../widgets/server_image.dart';
-import '../../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_controller.dart';
+import '../../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scroll_controller.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_long_press_tile/reader_long_press_tile.dart';
 import '../../../../../settings/presentation/reader/widgets/reader_pinch_to_zoom_tile/reader_pinch_to_zoom_tile.dart';
@@ -37,6 +39,7 @@ import '../../../manga_details/controller/manga_details_controller.dart';
 import '../../controller/ad_controller.dart';
 import '../../controller/reader_controller.dart';
 import '../../controller/reader_controller_v2.dart';
+import '../../controller/reader_setting_controller.dart';
 import '../chapter_loading_widget.dart';
 import '../chapter_separator.dart';
 import '../interactive_wrapper.dart';
@@ -170,8 +173,10 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
 
     final isAnimationEnabled =
         ref.read(readerScrollAnimationProvider).ifNull(false);
-    final longPressEnable =
+    final longPressActionMenuEnable =
         ref.watch(readerLongPressActionMenuPrefProvider) != false;
+    final longPressScrollEnable = ref.watch(longPressScrollPrefProvider) ??
+        DBKeys.longPressScroll.initial;
 
     final pointCount = useState(0);
     final windowPadding =
@@ -190,6 +195,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
 
     final autoScrollIntervalMs = useState<int?>(null);
     final autoScrollDemoMode = useState(false);
+    final longPressScrolling = useState(false);
 
     useEffect(() {
       return () {
@@ -216,10 +222,10 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
         if (autoScrollIntervalMs.value == null) {
           return;
         }
-        if (pointCount.value > 0) {
+        if (pointCount.value == 1 && !longPressScrolling.value) {
           return;
         }
-        if (visibility.value && !autoScrollDemoMode.value) {
+        if (visibility.value && !autoScrollDemoMode.value && !longPressScrolling.value) {
           return;
         }
         final curr = scrollOffsetController.controller.offset;
@@ -231,11 +237,13 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
           return;
         }
         final intervalMs = autoScrollTransform(autoScrollIntervalMs.value!);
+        final factor = max(pointCount.value, isSpeedUpKeyPressed() ? 2 : 1);
         final delta = 1.0 *
             diff.inMicroseconds /
             1000 *
             screenHeight /
-            intervalMs;
+            intervalMs *
+            max(1, factor);
         final to = curr + delta;
         scrollOffsetController.controller.jumpTo(to);
       });
@@ -256,6 +264,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
       initChapterIndexState: initChapterIndexState,
       autoScrollIntervalMs: autoScrollIntervalMs,
       autoScrollDemoMode: autoScrollDemoMode,
+      longPressScrolling: longPressScrolling,
       continuousMode: true,
       onPrevious: () {
         final ItemPosition itemPosition =
@@ -311,7 +320,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
           },
           child: _buildInteractiveWrapper(
             enablePhotoView: enablePhotoView,
-            doubleTapEnabled: doubleTapZoomIn,
+            doubleTapEnabled: doubleTapZoomIn && !longPressScrolling.value,
             child: ScrollablePositionedList.separated(
               physics: enablePhotoView != true && pointCount.value == 2
                   ? const NeverScrollableScrollPhysics()
@@ -375,7 +384,7 @@ class ContinuousReaderMode2 extends HookConsumerWidget {
                 );
 
                 final image = buildGestureDetector(
-                  longPressEnable: longPressEnable,
+                  longPressEnable: longPressActionMenuEnable && !longPressScrollEnable,
                   onLongPress: () {
                     if (autoScrollIntervalMs.value != null) {
                       return;

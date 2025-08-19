@@ -214,7 +214,7 @@ class StorageScreen extends ConsumerWidget {
           Expanded(
             flex: (freePercent * 1000).round(),
             child: Container(
-              color: Colors.grey[300],
+              color: Colors.grey[200],
             ),
           ),
         ],
@@ -240,7 +240,7 @@ class StorageScreen extends ConsumerWidget {
         _buildLegendItem(
           context,
           context.l10n!.storage_remaining,
-          Colors.grey[300]!,
+          Colors.grey[200]!,
         ),
       ],
     );

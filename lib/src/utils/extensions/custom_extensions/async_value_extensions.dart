@@ -37,6 +37,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     bool showGenericError = false,
     bool addScaffoldWrapper = false,
     bool skipLoadingOnReload = false,
+    bool skipError = false,
     String? errorSource,
     String? mangaId,
     UrlFetchInput? urlFetchInput,
@@ -48,6 +49,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
     }
     return when2(
       skipLoadingOnReload: skipLoadingOnReload,
+      skipError: skipError,
       data: data,
       error: (error, trace) => wrapper == null
           ? CommonErrorWidget(
@@ -55,7 +57,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               showGenericError: showGenericError,
               error: error,
               src: errorSource,
-              mangaId : mangaId,
+              mangaId: mangaId,
               urlFetchInput: urlFetchInput,
             )
           : wrapper(CommonErrorWidget(
@@ -63,7 +65,7 @@ extension AsyncValueExtensions<T> on AsyncValue<T> {
               showGenericError: showGenericError,
               error: error,
               src: errorSource,
-              mangaId : mangaId,
+              mangaId: mangaId,
               urlFetchInput: urlFetchInput,
             )),
       loading: () => wrapper == null

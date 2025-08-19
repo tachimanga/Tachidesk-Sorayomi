@@ -36,6 +36,11 @@ class ReaderLongPressActionMenuTile extends HookConsumerWidget {
       controlAffinity: ListTileControlAffinity.trailing,
       secondary: const Icon(Icons.touch_app_rounded),
       title: Text(context.l10n!.long_press_action_menu),
+      subtitle: Text(
+        context.l10n!.long_press_action_menu_tips,
+        style: context.textTheme.labelSmall
+            ?.copyWith(color: Colors.grey, fontSize: 12),
+      ),
       contentPadding: kSettingPadding,
       onChanged: (value) {
         logEvent3("READER:LONG_PRESS:$value");

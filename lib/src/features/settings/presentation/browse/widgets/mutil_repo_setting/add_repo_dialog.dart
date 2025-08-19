@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../constants/app_sizes.dart';
+import '../../../../../../constants/urls.dart';
 import '../../../../../../global_providers/global_providers.dart';
 import '../../../../../../routes/router_config.dart';
 import '../../../../../../utils/event_util.dart';
@@ -19,6 +20,7 @@ import '../../../../../../utils/misc/toast/toast.dart';
 import '../../../../../../widgets/custom_circular_progress_indicator.dart';
 import '../../../../../../widgets/pop_button.dart';
 import '../../../../../browse_center/presentation/extension/controller/extension_controller.dart';
+import '../../../../../help/domain/page_model.dart';
 import '../../../../controller/edit_repo_controller.dart';
 import '../../../../controller/remote_blacklist_controller.dart';
 import '../../../../data/config/remote_blacklist_config.dart';
@@ -190,6 +192,15 @@ class AddRepoDialog extends HookConsumerWidget {
         children: [
           Text(context.l10n!.add_repository),
           if (addingState.value) ...[const MiniCircularProgressIndicator()],
+          if (!addingState.value) ...[
+            IconButton(
+              onPressed: () {
+                logEvent3("REPO:HELP:ADD:HELP");
+                context.push(Routes.getMdPage(MdPageCode.findRepo.name));
+              },
+              icon: const Icon(Icons.help_rounded),
+            )
+          ],
         ],
       ),
       content: SingleChildScrollView(

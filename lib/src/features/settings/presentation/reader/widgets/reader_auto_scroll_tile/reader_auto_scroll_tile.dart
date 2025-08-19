@@ -15,7 +15,7 @@ import '../../../../../../utils/log.dart' as logger;
 import '../../../../../../utils/log.dart';
 import '../../../../../../widgets/premium_required_tile.dart';
 import '../../../../../custom/inapp/purchase_providers.dart';
-import 'reader_auto_scoll_controller.dart';
+import 'reader_auto_scroll_controller.dart';
 
 class ReaderAutoScrollTile extends HookConsumerWidget {
   const ReaderAutoScrollTile({
@@ -71,6 +71,9 @@ class ReaderAutoScrollTile extends HookConsumerWidget {
             logEvent3("READER:AUTO:SCROLL:ENABLE");
           }
           intervalState.value = value ? globalInterval : null;
+          ref
+              .read(autoScrollingProvider.notifier)
+              .update(value);
           signal.value = signal.value + 1;
         },
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -102,6 +105,9 @@ class ReaderAutoScrollTile extends HookConsumerWidget {
                           .read(autoScrollIntervalPrefProvider.notifier)
                           .update(value.toInt());
                     }
+                    ref
+                        .read(autoScrollingProvider.notifier)
+                        .update(true);
                     signal.value = signal.value + 1;
                   },
                 ),

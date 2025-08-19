@@ -26,6 +26,8 @@ import '../features/browse_center/presentation/source_manga_list/source_manga_li
 import '../features/browse_center/presentation/source_preference/source_preference_screen.dart';
 import '../features/browse_center/presentation/webview/webview_screen.dart';
 import '../features/custom/inapp/presentation/purchase_screen.dart';
+import '../features/help/domain/page_model.dart';
+import '../features/help/md_page_screen.dart';
 import '../features/library/presentation/category/edit_category_screen.dart';
 import '../features/library/presentation/library/library_screen.dart';
 import '../features/manga_book/domain/manga/manga_model.dart';
@@ -143,6 +145,8 @@ abstract class Routes {
   static const migrateMangaList = '/migrate/:sourceId';
   static getMigrateMangaList(String sourceId) => '/migrate/$sourceId';
   static const statsReadTime = '/stats/time';
+  static const mdPage = '/mdPage';
+  static getMdPage(String code) => '/mdPage?code=$code';
 }
 
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -469,6 +473,13 @@ GoRouter routerConfig(ref) {
         path: Routes.purchase,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const PurchaseScreen(),
+      ),
+      GoRoute(
+        path: Routes.mdPage,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MdPageScreen(
+          code: MdPageCode.fromCode(state.uri.queryParameters['code'] ?? ""),
+        ),
       ),
     ],
   );

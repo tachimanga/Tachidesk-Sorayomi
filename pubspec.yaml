@@ -57,6 +57,7 @@ dependencies:
   # https://github.com/flutter/flutter/issues/162437
   webview_flutter_wkwebview: ^3.17.0
   photo_view: ^0.15.0
+  markdown_widget: ^2.3.2+8
 
 dependency_overrides:
   flutter_cache_manager:

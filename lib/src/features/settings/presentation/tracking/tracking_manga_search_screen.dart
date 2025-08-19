@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../utils/extensions/custom_extensions.dart';
 import '../../../../utils/misc/toast/toast.dart';
 import '../../../../widgets/emoticons.dart';
+import '../../domain/tracking/tracking_model.dart';
 import 'controller/tracking_controller.dart';
 import 'widgets/track_search_list_tile.dart';
 
@@ -24,7 +25,22 @@ class TrackingMangaSearchScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = trackSearchWithIdProvider(trackerId: trackerId);
-    final list = ref.watch(provider);
+    final list0 = ref.watch(provider);
+
+    final list = list0.map(
+      data: (e) => e,
+      error: (e) {
+        if (e.error == "Invalid token") {
+          return AsyncError<List<TrackSearch>?>(
+            context.l10n!.tracker_token_expire_message,
+            e.stackTrace,
+          );
+        }
+        return e;
+      },
+      loading: (e) => e,
+    );
+
     final toast = ref.read(toastProvider(context));
 
     refresh() => ref.refresh(provider.future);

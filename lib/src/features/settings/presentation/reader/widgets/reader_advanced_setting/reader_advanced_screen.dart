@@ -13,6 +13,7 @@ import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../manga_book/presentation/reader/controller/reader_setting_controller.dart';
 import '../force_enable_scroll_tile/force_enable_scroll_tile.dart';
 import '../mouse_wheel_speed_slider/mouse_wheel_speed_slider.dart';
+import '../reader_auto_scroll_tile/reader_long_press_scroll_tile.dart';
 import '../reader_classic_start_button_tile/reader_classic_start_button_tile.dart';
 import '../reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../reader_keep_screen_on/reader_keep_screen_on_tile.dart';
@@ -45,6 +46,7 @@ class ReaderAdvancedScreen extends ConsumerWidget {
           if (enablePhotoView != true) ...[
             ReaderPinchToZoomTile(),
           ],
+          ReaderLongPressScrollTile(globalReaderSetting: true),
           ReaderLongPressActionMenuTile(),
           ShowStatusBarTile(),
           ReaderClassicStartButtonTile(),

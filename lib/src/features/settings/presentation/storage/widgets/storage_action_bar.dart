@@ -31,8 +31,12 @@ class StorageActionBar extends ConsumerWidget {
             .padding
             .bottom;
     return Container(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      padding: EdgeInsets.fromLTRB(10, 0, 20, safeAreaBottom),
+      color: Color.lerp(
+        Theme.of(context).colorScheme.surfaceContainer,
+        Colors.white,
+        Theme.of(context).brightness == Brightness.dark ? 0.05 : 0.3,
+      ),
+      padding: EdgeInsets.fromLTRB(10, 5, 20, safeAreaBottom),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

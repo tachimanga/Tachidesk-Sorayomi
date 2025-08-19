@@ -17,9 +17,10 @@ import '../../../../../../constants/enum.dart';
 
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/mixin/shared_preferences_client_mixin.dart';
+import '../../../../../../utils/mixin/state_provider_mixin.dart';
 import '../../../../../../widgets/radio_list_popup.dart';
 
-part 'reader_auto_scoll_controller.g.dart';
+part 'reader_auto_scroll_controller.g.dart';
 
 @riverpod
 class AutoScrollIntervalPref extends _$AutoScrollIntervalPref
@@ -43,8 +44,25 @@ class AutoSmoothScrollIntervalPref extends _$AutoSmoothScrollIntervalPref
       );
 }
 
+@riverpod
+class LongPressScrollPref extends _$LongPressScrollPref
+    with SharedPreferenceClientMixin<bool> {
+  @override
+  bool? build() => initialize(
+        ref,
+        key: DBKeys.longPressScroll.name,
+        initial: DBKeys.longPressScroll.initial,
+      );
+}
+
+@riverpod
+class AutoScrolling extends _$AutoScrolling with StateProviderMixin<bool> {
+  @override
+  bool build() => false;
+}
+
 int autoScrollTransform(int input) {
-  if (input < 4800) {
+  if (input.abs() < 4800) {
     return input;
   }
   // 5~10 to 5~30

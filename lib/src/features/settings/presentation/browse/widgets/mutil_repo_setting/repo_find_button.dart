@@ -6,10 +6,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../../constants/urls.dart';
 import '../../../../../../global_providers/global_providers.dart';
+import '../../../../../../routes/router_config.dart';
 import '../../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../../utils/launch_url_in_web.dart';
 import '../../../../../../utils/misc/toast/toast.dart';
@@ -30,7 +32,9 @@ class RepoFindButton extends HookConsumerWidget {
       onPressed: () {
         final url = userDefaults.getString("config.repoFindUrl") ??
             AppUrls.findRepositories.url;
-        if (url.contains("/a")) {
+        if (url.startsWith(Routes.mdPage)) {
+          context.push(url);
+        } else if (url.contains("/a")) {
           launchUrlInSafari(context, url, toast);
         } else {
           launchUrlInWeb(context, url, toast);

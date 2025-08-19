@@ -9,6 +9,7 @@ import 'dart:math';
 
 import 'package:apple_pencil_double_tap/apple_pencil_double_tap.dart';
 import 'package:apple_pencil_double_tap/entities/preferred_action.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../../constants/app_sizes.dart';
+import '../../../../../constants/db_keys.dart';
 import '../../../../../constants/enum.dart';
 import '../../../../../global_providers/device_providers.dart';
 import '../../../../../global_providers/global_providers.dart';
@@ -25,6 +27,7 @@ import '../../../../../icons/icomoon_icons.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/classes/pair/pair_model.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
+import '../../../../../utils/keyboard_util.dart';
 import '../../../../../utils/launch_url_in_web.dart';
 import '../../../../../utils/log.dart' as logger;
 import '../../../../../utils/misc/toast/toast.dart';
@@ -35,8 +38,9 @@ import '../../../../../widgets/text_premium.dart';
 import '../../../../browse_center/domain/browse/browse_model.dart';
 import '../../../../custom/inapp/purchase_providers.dart';
 import '../../../../settings/presentation/reader/widgets/reader_apple_pencil_setting/reader_apple_pencil_controller.dart';
-import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_controller.dart';
-import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scoll_tile.dart';
+import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scroll_controller.dart';
+import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_auto_scroll_tile.dart';
+import '../../../../settings/presentation/reader/widgets/reader_auto_scroll_tile/reader_long_press_scroll_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_double_tap_zoom_in_tile/reader_double_tap_zoom_in_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_keep_screen_on/reader_keep_screen_on_tile.dart';
 import '../../../../settings/presentation/reader/widgets/reader_mode_tile/reader_mode_tile.dart';
@@ -51,6 +55,7 @@ import '../../../domain/manga/manga_model.dart';
 import '../../../widgets/chapter_actions/single_chapter_action_icon.dart';
 import '../../manga_details/controller/manga_details_controller.dart';
 import '../controller/reader_controller.dart';
+import '../controller/reader_setting_controller.dart';
 import 'page_number_slider.dart';
 import 'reader_navigation_layout/reader_navigation_layout.dart';
 import 'reader_page_layout/manga_page_layout_popup.dart';
@@ -77,6 +82,7 @@ class ReaderWrapper extends HookConsumerWidget {
     required this.visibility,
     required this.autoScrollIntervalMs,
     required this.autoScrollDemoMode,
+    this.longPressScrolling,
     this.reverse = false,
     this.pageLayout,
     this.continuousMode,
@@ -96,6 +102,7 @@ class ReaderWrapper extends HookConsumerWidget {
   final ValueNotifier<bool> visibility;
   final ValueNotifier<int?> autoScrollIntervalMs;
   final ValueNotifier<bool> autoScrollDemoMode;
+  final ValueNotifier<bool>? longPressScrolling;
   final bool? continuousMode;
 
   @override
@@ -308,10 +315,21 @@ class ReaderWrapper extends HookConsumerWidget {
           continuousMode: continuousMode,
           autoScrollDemoMode: autoScrollDemoMode,
         ),
+        if (continuousMode == true) ...[
+          ReaderLongPressScrollTile(),
+        ],
       ],
     );
     final reverseKey = Directionality.of(context) == TextDirection.ltr ? reverse : !reverse;
     final safeAreaBottom = MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.bottom;
+
+    final smoothInterval = ref.watch(autoSmoothScrollIntervalPrefProvider) ??
+        DBKeys.autoSmoothScrollInterval.initial;
+    final longPressScrollEnable = ref.watch(longPressScrollPrefProvider) ??
+        DBKeys.longPressScroll.initial;
+    final previousKeys = reverseKey ? previousKeySetReversed : previousKeySet;
+    final nextKeys = reverseKey ? nextKeySetReversed : nextKeySet;
+
     return Theme(
       data: context.theme.copyWith(
         bottomSheetTheme: const BottomSheetThemeData(
@@ -503,35 +521,31 @@ class ReaderWrapper extends HookConsumerWidget {
                 ),
               )
             : null,
-        body: Shortcuts(
-          shortcuts: {
-            const SingleActivator(LogicalKeyboardKey.arrowLeft):
-                reverseKey ? NextScrollIntent() : PreviousScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.arrowRight):
-                reverseKey ? PreviousScrollIntent() : NextScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.arrowUp):
-                PreviousScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.arrowDown):
-                NextScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.keyW):
-                PreviousScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.keyS): NextScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.keyA):
-                reverseKey ? NextScrollIntent() : PreviousScrollIntent(),
-            const SingleActivator(LogicalKeyboardKey.keyD):
-                reverseKey ? PreviousScrollIntent() : NextScrollIntent(),
-          },
-          child: Actions(
-            actions: {
-              PreviousScrollIntent: CallbackAction<PreviousScrollIntent>(
-                onInvoke: (intent) => onPrevious(),
-              ),
-              NextScrollIntent: CallbackAction<NextScrollIntent>(
-                onInvoke: (intent) => onNext(),
-              ),
-            },
-            child: Focus(
-              autofocus: true,
+        body: FocusWrapper(
+                previousKeys: previousKeys,
+                nextKeys: nextKeys,
+                continuousMode: continuousMode,
+                longPressScrollEnable: longPressScrollEnable,
+                onPress: (key) {
+                  if (previousKeys.contains(key)) {
+                    onPrevious();
+                  }
+                  else if (nextKeys.contains(key)) {
+                    onNext();
+                  }
+                },
+                onLongPress: (key) {
+                  longPressScrolling?.value = true;
+                  if (key == null || nextKeys.contains(key)) {
+                    autoScrollIntervalMs.value = smoothInterval;
+                  } else {
+                    autoScrollIntervalMs.value = -smoothInterval;
+                  }
+                },
+                onLongPressUp: (key) {
+                  longPressScrolling?.value = false;
+                  autoScrollIntervalMs.value = null;
+                },
                 child:
                 NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification notification) {
@@ -564,8 +578,26 @@ class ReaderWrapper extends HookConsumerWidget {
                         }
                       },
                       scrollDirection: scrollDirection,
-                      onNext: onNext,
-                      onPrevious: onPrevious,
+                      onNext: () {
+                        if (longPressScrollEnable && continuousMode == true) {
+                          final lastScrollDiff = DateTime.now().millisecondsSinceEpoch - lastScrollTimestamp;
+                          if (lastScrollDiff > 100) {
+                            onNext();
+                          }
+                        } else {
+                          onNext();
+                        }
+                      },
+                      onPrevious: () {
+                        if (longPressScrollEnable && continuousMode == true) {
+                          final lastScrollDiff = DateTime.now().millisecondsSinceEpoch - lastScrollTimestamp;
+                          if (lastScrollDiff > 100) {
+                            onPrevious();
+                          }
+                        } else {
+                          onPrevious();
+                        }
+                      },
                       mangaReaderNavigationLayout: effectNavigationLayout,
                       readerMode: effectReaderMode,
                       child: child,
@@ -573,8 +605,6 @@ class ReaderWrapper extends HookConsumerWidget {
                   ),
                 )
             ),
-          ),
-        ),
       ),
     );
   }
@@ -658,6 +688,137 @@ class ReaderWrapper extends HookConsumerWidget {
         loadPrevOrNextChapter(ref, chapterPair!.first!, true);
       }
     }
+  }
+}
+
+enum LongPressState {
+  init,
+  wait,
+  longPressing,
+  ;
+}
+
+class FocusWrapper extends HookConsumerWidget {
+  final Widget child;
+  final ValueSetter<LogicalKeyboardKey?>? onPress;
+  final ValueSetter<LogicalKeyboardKey?>? onLongPress;
+  final ValueSetter<LogicalKeyboardKey?>? onLongPressUp;
+  final bool? continuousMode;
+  final bool longPressScrollEnable;
+  final Set<LogicalKeyboardKey> previousKeys;
+  final Set<LogicalKeyboardKey> nextKeys;
+
+  const FocusWrapper({
+    super.key,
+    required this.child,
+    required this.previousKeys,
+    required this.nextKeys,
+    required this.continuousMode,
+    required this.longPressScrollEnable,
+    this.onPress,
+    this.onLongPress,
+    this.onLongPressUp,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (continuousMode != true) {
+      return Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent &&
+              (previousKeys.contains(event.logicalKey) ||
+                  nextKeys.contains(event.logicalKey))) {
+            onPress?.call(event.logicalKey);
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: child,
+      );
+    }
+
+    final state = useRef(LongPressState.init);
+    final longPressTimer = useRef<Timer?>(null);
+    final pointCount = useRef<int>(0);
+    final waitStartTime = useRef<int>(0);
+    final autoScrolling = ref.watch(autoScrollingProvider);
+
+    void onPointerDown(LogicalKeyboardKey? key) {
+      pointCount.value = pointCount.value + 1;
+      //logger.log("[TOUCH]onPointerDown state:${state.value} pointCount:${pointCount.value}");
+      if (state.value == LongPressState.init) {
+        state.value = LongPressState.wait;
+        waitStartTime.value = DateTime.now().millisecondsSinceEpoch;
+        //logger.log("[TOUCH] state=WAIT");
+        longPressTimer.value = Timer(kLongPressTimeout, () {
+          state.value = LongPressState.longPressing;
+          //logger.log("[TOUCH] state=LONG_PRESSING");
+          onLongPress?.call(key);
+          //logger.log("[TOUCH] trigger onLongPress");
+        });
+      } else if (state.value == LongPressState.wait) {
+        if (pointCount.value > 1 &&
+            DateTime.now().millisecondsSinceEpoch - waitStartTime.value < 500) {
+          longPressTimer.value?.cancel();
+          state.value = LongPressState.init;
+          //logger.log("[TOUCH] two point cancel");
+        }
+      }
+    }
+
+    void onPointerUp(LogicalKeyboardKey? key) {
+      pointCount.value = pointCount.value - 1;
+      //logger.log("[TOUCH]onPointerUp state:${state.value} pointCount:${pointCount.value}");
+      if (state.value == LongPressState.wait) {
+        state.value = LongPressState.init;
+        //logger.log("[TOUCH] state=INIT");
+        longPressTimer.value?.cancel();
+        longPressTimer.value = null;
+        onPress?.call(key);
+        //logger.log("[TOUCH] trigger onPress");
+      } else if (state.value == LongPressState.longPressing &&
+          pointCount.value == 0) {
+        state.value = LongPressState.init;
+        //logger.log("[TOUCH] state=INIT");
+        onLongPressUp?.call(key);
+        //logger.log("[TOUCH] trigger onLongPressUp");
+      }
+    }
+
+    useEffect(() {
+      return () {
+        longPressTimer.value?.cancel();
+      };
+    }, []);
+
+    return Focus(
+      autofocus: true,
+      onKeyEvent: (node, event) {
+        if (autoScrolling) {
+          return KeyEventResult.ignored;
+        }
+        if ((event is KeyDownEvent || event is KeyUpEvent) &&
+            (previousKeys.contains(event.logicalKey) ||
+                nextKeys.contains(event.logicalKey))) {
+          if (event is KeyDownEvent) {
+            onPointerDown(event.logicalKey);
+          } else {
+            onPointerUp(event.logicalKey);
+          }
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: longPressScrollEnable && !autoScrolling
+          ? Listener(
+              onPointerDown: (_) => onPointerDown(null),
+              onPointerUp: (_) => onPointerUp(null),
+              onPointerCancel: (_) => onPointerUp(null),
+              child: child,
+            )
+          : Listener(child: child),
+    );
   }
 }
 
