@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "僅在條漫和連續閱讀模式下可用。",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "雙指長按可加速滾動。",
+  "hold_to_scroll_speed_up_tip": "按住一根手指，再按住另一根手指可加速滾動。",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "啟用\"長按滾動\"時將禁用此功能。",
   "@long_press_action_menu_tips": {},

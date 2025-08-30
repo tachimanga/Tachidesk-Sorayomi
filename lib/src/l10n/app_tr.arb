@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Sadece Webtoon ve Sürekli Okuma modlarında kullanılabilir.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Kaydırmayı hızlandırmak için iki parmakla basılı tutun.",
+  "hold_to_scroll_speed_up_tip": "Daha hızlı kaydırmak için bir parmağı basılı tutun, sonra başka bir parmağı basılı tutun.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "\"Kaydırmak için basılı tutun\" açıkken devre dışı bırakılır.",
   "@long_press_action_menu_tips": {},

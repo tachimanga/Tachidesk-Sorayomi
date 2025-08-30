@@ -1254,7 +1254,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Solo disponible en modos Webtoon y Lectura continua.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Presiona con dos dedos para acelerar el desplazamiento.",
+  "hold_to_scroll_speed_up_tip": "Mantén un dedo presionado, luego otro para desplazarte más rápido.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Desactivado cuando \"Mantén presionado para desplazarte\" está activado.",
   "@long_press_action_menu_tips": {},

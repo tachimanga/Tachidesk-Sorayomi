@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "ใช้ได้เฉพาะในโหมดเว็บตูนและโหมดอ่านต่อเนื่องเท่านั้น",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "กดค้างด้วยสองนิ้วเพื่อเลื่อนเร็วขึ้น",
+  "hold_to_scroll_speed_up_tip": "กดนิ้วหนึ่งค้างไว้ แล้วกดอีกนิ้วเพื่อเลื่อนเร็วขึ้น",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "ปิดใช้งานเมื่อเปิดใช้ \"กดค้างเพื่อเลื่อน\"",
   "@long_press_action_menu_tips": {},

@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Csak Webtoon és Folyamatos olvasás módban érhető el.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Két ujjjal nyomva tartva gyorsabban görgethet.",
+  "hold_to_scroll_speed_up_tip": "Tartsd az egyik ujjad, majd a másikat a gyorsabb görgetéshez.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Letiltva, ha a \"Nyomva tartás a görgetéshez\" be van kapcsolva.",
   "@long_press_action_menu_tips": {},

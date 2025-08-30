@@ -31,16 +31,21 @@ class MigrateMangaListTile extends ConsumerWidget {
         );
       },
       contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 16.0),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          color: context.theme.canvasColor,
-          child: ServerImage(
-            imageUrl: manga.thumbnailUrl ?? "",
-            imageData: manga.thumbnailImg,
-            extInfo: CoverExtInfo.build(manga),
-            size: const Size.square(48),
-            decodeWidth: 48,
+      leading: InkWell(
+        onTap: () {
+          context.push(Routes.getManga(manga.id ?? 0));
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            color: context.theme.canvasColor,
+            child: ServerImage(
+              imageUrl: manga.thumbnailUrl ?? "",
+              imageData: manga.thumbnailImg,
+              extInfo: CoverExtInfo.build(manga),
+              size: const Size.square(48),
+              decodeWidth: 48,
+            ),
           ),
         ),
       ),

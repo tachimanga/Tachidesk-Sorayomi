@@ -14,6 +14,7 @@ import '../../../../../global_providers/global_providers.dart';
 import '../../../../../routes/router_config.dart';
 import '../../../../../utils/extensions/custom_extensions.dart';
 import '../../../../../widgets/server_image.dart';
+import '../../../../settings/presentation/security/controller/security_controller.dart';
 import '../../../domain/source/source_model.dart';
 import '../controller/source_controller.dart';
 
@@ -34,10 +35,13 @@ class SourceListTile extends ConsumerWidget {
     final magic = ref.watch(getMagicProvider);
     final pinned = pinSourceIdSet.contains(source.id ?? '');
     final localSource = source.lang?.code == 'localsourcelang';
+    final incognito = ref.watch(incognitoModePrefProvider);
     return ListTile(
       onTap: (() async {
         if (source.id == null) return;
-        ref.read(sourceLastUsedProvider.notifier).update(source.id);
+        if (incognito != true) {
+          ref.read(sourceLastUsedProvider.notifier).update(source.id);
+        }
         context.push(Routes.getSourceManga(
           source.id!,
           SourceType.popular,

@@ -1250,7 +1250,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Disponível apenas nos modos Webtoon e Leitura contínua.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Pressione com dois dedos para acelerar a rolagem.",
+  "hold_to_scroll_speed_up_tip": "Mantenha um dedo pressionado, depois outro para rolar mais rápido.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Desativado quando \"Mantenha pressionado para rolar\" está ativado.",
   "@long_press_action_menu_tips": {},

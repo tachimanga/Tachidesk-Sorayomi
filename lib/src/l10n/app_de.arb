@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Nur im Webtoon- und Kontinuierliches Lesen-Modus verfügbar.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Mit zwei Fingern gedrückt halten, um schneller zu scrollen.",
+  "hold_to_scroll_speed_up_tip": "Halte einen Finger gedrückt, dann einen zweiten, um schneller zu scrollen.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Deaktiviert, wenn \"Zum Scrollen gedrückt halten\" aktiviert ist.",
   "@long_press_action_menu_tips": {},

@@ -147,6 +147,14 @@ class SourceMangaListScreen extends HookConsumerWidget {
               onPressed: () => showSearch.value = true,
               icon: const Icon(Icons.search_rounded),
             ),
+            if (data?.isConfigurable == true) ...[
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  context.push(Routes.getSourcePref(sourceId));
+                },
+              )
+            ],
             const SourceMangaDisplayIconPopup(),
             if (data?.baseUrl?.isNotEmpty ?? false) ...[
               AsyncIconButton(

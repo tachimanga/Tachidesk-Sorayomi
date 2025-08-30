@@ -1651,7 +1651,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Доступно лише у режимах Webtoon та Безперервного читання.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Утримуйте двома пальцями для прискорення прокрутки.",
+  "hold_to_scroll_speed_up_tip": "Утримуйте один палець, потім інший для швидкої прокрутки.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Вимкнено, коли активовано \"Утримуйте для прокрутки\".",
   "@long_press_action_menu_tips": {},

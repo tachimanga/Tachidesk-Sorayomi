@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Доступно только в режимах Webtoon и Непрерывного чтения.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Удерживайте двумя пальцами для ускоренной прокрутки.",
+  "hold_to_scroll_speed_up_tip": "Удерживайте один палец, затем другой для быстрой прокрутки.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Отключено при активации \"Удерживайте для прокрутки\".",
   "@long_press_action_menu_tips": {},

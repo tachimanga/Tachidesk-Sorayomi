@@ -1592,7 +1592,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Only available in Webtoon and Continuous Reading modes.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Two-finger press and hold to speed up scrolling.",
+  "hold_to_scroll_speed_up_tip": "Hold one finger, then hold another to scroll faster.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Disabled when \"Press and hold to scroll\" is on.",
   "@long_press_action_menu_tips": {},

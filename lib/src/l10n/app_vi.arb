@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Chỉ khả dụng trong chế độ Webtoon và Đọc liên tục.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Nhấn giữ bằng hai ngón tay để cuộn nhanh hơn.",
+  "hold_to_scroll_speed_up_tip": "Giữ một ngón tay, sau đó giữ ngón khác để cuộn nhanh hơn.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Bị vô hiệu hóa khi \"Nhấn giữ để cuộn\" được bật.",
   "@long_press_action_menu_tips": {},

@@ -1591,7 +1591,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Disponible uniquement en mode Webtoon et Lecture continue.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Appuyez avec deux doigts pour accélérer le défilement.",
+  "hold_to_scroll_speed_up_tip": "Maintenez un doigt, puis un autre pour défiler plus vite.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Désactivé lorsque \"Maintenir pour faire défiler\" est activé.",
   "@long_press_action_menu_tips": {},

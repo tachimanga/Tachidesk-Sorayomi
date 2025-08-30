@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Disponibile solo in modalità Webtoon e Lettura continua.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Tieni premuto con due dita per accelerare lo scorrimento.",
+  "hold_to_scroll_speed_up_tip": "Tieni premuto un dito, poi un altro per scorrere più velocemente.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Disattivato quando \"Tieni premuto per scorrere\" è attivo.",
   "@long_press_action_menu_tips": {},

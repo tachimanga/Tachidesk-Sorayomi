@@ -1239,7 +1239,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "Hanya tersedia di mode Webtoon dan Baca Berkelanjutan.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "Tekan dengan dua jari untuk mempercepat pengguliran.",
+  "hold_to_scroll_speed_up_tip": "Tahan satu jari, lalu tahan jari lain untuk menggulir lebih cepat.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "Dinonaktifkan saat \"Tahan untuk menggulir\" aktif.",
   "@long_press_action_menu_tips": {},

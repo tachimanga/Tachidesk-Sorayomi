@@ -1643,7 +1643,7 @@
   "@hold_to_scroll": {},
   "hold_to_scroll_tip": "متاح فقط في وضع ويبتون ووضع القراءة المستمرة.",
   "@hold_to_scroll_tip": {},
-  "hold_to_scroll_speed_up_tip": "اضغط بإصبعين مع الاستمرار لتسريع التمرير.",
+  "hold_to_scroll_speed_up_tip": "اضغط بإصبع واحد، ثم اضغط بإصبع آخر للتمرير بشكل أسرع.",
   "@hold_to_scroll_speed_up_tip": {},
   "long_press_action_menu_tips": "معطل عند تفعيل \"اضغط مع الاستمرار للتمرير\".",
   "@long_press_action_menu_tips": {},
